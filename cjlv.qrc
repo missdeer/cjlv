@@ -1,5 +1,9 @@
 <RCC>
     <qresource prefix="/">
         <file>cjlv.png</file>
+        <file>image/open-file.png</file>
+        <file>image/open-folder.png</file>
+        <file>image/open-installed-folder.png</file>
+        <file>image/open-zip-file.png</file>
     </qresource>
 </RCC>

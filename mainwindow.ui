@@ -70,7 +70,7 @@
      <x>0</x>
      <y>0</y>
      <width>795</width>
-     <height>22</height>
+     <height>18</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -115,6 +115,12 @@
    <addaction name="menu_Help"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
+   <property name="iconSize">
+    <size>
+     <width>32</width>
+     <height>32</height>
+    </size>
+   </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
    </attribute>
@@ -128,6 +134,10 @@
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionOpenZipLogBundle">
+   <property name="icon">
+    <iconset resource="cjlv.qrc">
+     <normaloff>:/image/open-zip-file.png</normaloff>:/image/open-zip-file.png</iconset>
+   </property>
    <property name="text">
     <string>Open &amp;Zip Log Bundle...</string>
    </property>
@@ -136,6 +146,10 @@
    </property>
   </action>
   <action name="actionOpenRawLogFile">
+   <property name="icon">
+    <iconset resource="cjlv.qrc">
+     <normaloff>:/image/open-file.png</normaloff>:/image/open-file.png</iconset>
+   </property>
    <property name="text">
     <string>Open &amp;Raw Log File...</string>
    </property>
@@ -144,6 +158,10 @@
    </property>
   </action>
   <action name="actionOpenLogFolder">
+   <property name="icon">
+    <iconset resource="cjlv.qrc">
+     <normaloff>:/image/open-folder.png</normaloff>:/image/open-folder.png</iconset>
+   </property>
    <property name="text">
     <string>Open Log &amp;Folder...</string>
    </property>
@@ -152,6 +170,10 @@
    </property>
   </action>
   <action name="actionOpenCurrentInstalledJabberLogFolder">
+   <property name="icon">
+    <iconset resource="cjlv.qrc">
+     <normaloff>:/image/open-installed-folder.png</normaloff>:/image/open-installed-folder.png</iconset>
+   </property>
    <property name="text">
     <string>Open Current &amp;Installed Jabber Log Folder</string>
    </property>
