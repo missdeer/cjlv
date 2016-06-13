@@ -4,6 +4,7 @@
 #include <QFileDialog>
 #include <QStandardPaths>
 #include <QMessageBox>
+#include <QMdiSubWindow>
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
@@ -77,17 +78,24 @@ void MainWindow::on_actionOpenCurrentInstalledJabberLogFolder_triggered()
 
 void MainWindow::on_actionClose_triggered()
 {
-
+    ui->mdiArea->closeActiveSubWindow();
 }
 
 void MainWindow::on_actionCloseAll_triggered()
 {
-
+    ui->mdiArea->closeAllSubWindows();
 }
 
 void MainWindow::on_actionCloseAllButThis_triggered()
 {
-
+    QMdiSubWindow * win = ui->mdiArea->currentSubWindow();
+    Q_FOREACH(QMdiSubWindow *w, ui->mdiArea->subWindowList())
+    {
+        if (win != w)
+        {
+            w->close();
+        }
+    }
 }
 
 void MainWindow::on_actionExit_triggered()
@@ -112,7 +120,7 @@ void MainWindow::on_actionPreference_triggered()
 
 void MainWindow::on_actionAbout_triggered()
 {
-
+    QMessageBox::about(this, this->windowTitle(), tr("Easy to use tool for Cisco Jabber log reading.\r\nContact me at fyang3@cisco.com if you have any problem about this application."));
 }
 
 void MainWindow::on_radioSearch_clicked()
