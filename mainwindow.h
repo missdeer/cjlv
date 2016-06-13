@@ -40,6 +40,10 @@ private slots:
 
     void on_actionAbout_triggered();
 
+    void on_radioSearch_clicked();
+
+    void on_radioFilter_clicked();
+
 private:
     Ui::MainWindow *ui;
 };

@@ -1,5 +1,6 @@
 
 #include <QApplication>
+#include <QActionGroup>
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
@@ -8,6 +9,9 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    QActionGroup *group = new QActionGroup(this);
+    group->addAction(ui->actionFilter);
+    group->addAction(ui->actionSearch);
 }
 
 MainWindow::~MainWindow()
@@ -57,12 +61,12 @@ void MainWindow::on_actionExit_triggered()
 
 void MainWindow::on_actionSearch_triggered()
 {
-
+    ui->radioSearch->setChecked(ui->actionSearch->isChecked());
 }
 
 void MainWindow::on_actionFilter_triggered()
 {
-
+    ui->radioFilter->setChecked(ui->actionFilter->isChecked());
 }
 
 void MainWindow::on_actionPreference_triggered()
@@ -73,4 +77,14 @@ void MainWindow::on_actionPreference_triggered()
 void MainWindow::on_actionAbout_triggered()
 {
 
+}
+
+void MainWindow::on_radioSearch_clicked()
+{
+    ui->actionSearch->setChecked(ui->radioSearch->isChecked());
+}
+
+void MainWindow::on_radioFilter_clicked()
+{
+    ui->actionFilter->setChecked(ui->radioFilter->isChecked());
 }
