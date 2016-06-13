@@ -44,6 +44,10 @@ private slots:
 
     void on_radioFilter_clicked();
 
+    void on_cbKeyword_editTextChanged(const QString &text);
+
+    void on_cbKeyword_currentIndexChanged(const QString &text);
+
 private:
     Ui::MainWindow *ui;
 };

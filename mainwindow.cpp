@@ -132,3 +132,13 @@ void MainWindow::on_radioFilter_clicked()
 {
     ui->actionFilter->setChecked(ui->radioFilter->isChecked());
 }
+
+void MainWindow::on_cbKeyword_editTextChanged(const QString &text)
+{
+
+}
+
+void MainWindow::on_cbKeyword_currentIndexChanged(const QString &text)
+{
+
+}
