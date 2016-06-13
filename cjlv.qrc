@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/">
+        <file>cjlv.png</file>
+    </qresource>
+</RCC>

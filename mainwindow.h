@@ -15,6 +15,31 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+private slots:
+    void on_actionOpenZipLogBundle_triggered();
+
+    void on_actionOpenRawLogFile_triggered();
+
+    void on_actionOpenLogFolder_triggered();
+
+    void on_actionOpenCurrentInstalledJabberLogFolder_triggered();
+
+    void on_actionClose_triggered();
+
+    void on_actionCloseAll_triggered();
+
+    void on_actionCloseAllButThis_triggered();
+
+    void on_actionExit_triggered();
+
+    void on_actionSearch_triggered();
+
+    void on_actionFilter_triggered();
+
+    void on_action_About_triggered();
+
+    void on_actionPreference_triggered();
+
 private:
     Ui::MainWindow *ui;
 };

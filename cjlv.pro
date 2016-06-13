@@ -18,3 +18,21 @@ SOURCES += main.cpp\
 HEADERS  += mainwindow.h
 
 FORMS    += mainwindow.ui
+
+DISTFILES += \
+    cjlv.png
+
+RESOURCES += \
+    cjlv.qrc
+
+# Windows icons
+RC_FILE = cjlv.rc
+
+# Mac OS X icon
+macx: {
+    QMAKE_MAC_SDK = macosx10.11
+    ICON = cjlv.icns
+    icon.path = $$PWD
+    icon.files += cjlv.png
+    INSTALLS += icon
+}
