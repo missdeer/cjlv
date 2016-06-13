@@ -8,7 +8,7 @@ QT       += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-TARGET = Cisco Jabber Log Viewer
+TARGET = "Cisco Jabber Log Viewer"
 TEMPLATE = app
 
 
