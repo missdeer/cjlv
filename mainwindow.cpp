@@ -7,6 +7,7 @@
 #include <QMdiSubWindow>
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "logview.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -32,7 +33,9 @@ void MainWindow::on_actionOpenZipLogBundle_triggered()
     if (fileName.isEmpty())
         return;
 
-    QMessageBox::information(this, "Opened zip file", fileName, QMessageBox::Ok);
+    LogView* v = new LogView();
+    ui->mdiArea->addSubWindow(v);
+    v->showMaximized();
 }
 
 void MainWindow::on_actionOpenRawLogFile_triggered()
