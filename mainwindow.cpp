@@ -65,12 +65,12 @@ void MainWindow::on_actionFilter_triggered()
 
 }
 
-void MainWindow::on_action_About_triggered()
+void MainWindow::on_actionPreference_triggered()
 {
 
 }
 
-void MainWindow::on_actionPreference_triggered()
+void MainWindow::on_actionAbout_triggered()
 {
 
 }
