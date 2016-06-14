@@ -4,6 +4,8 @@
 #include <QTableView>
 #include <QStringList>
 
+class LogModel;
+
 class LogView : public QTableView
 {
     Q_OBJECT
@@ -18,7 +20,7 @@ protected:
 private slots:
 
 private:
-    QString m_path;
+    LogModel* m_model;
 };
 
 #endif // LOGVIEW_H
