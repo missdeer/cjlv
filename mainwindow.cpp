@@ -30,21 +30,32 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_actionOpenZipLogBundle_triggered()
 {
-    QString fileName = QFileDialog::getOpenFileName(this,
-                                                    tr("Open Cisco Jabber Log Zip Bundle"),
+    QStringList fileNames = QFileDialog::getOpenFileNames(this,
+                                                    tr("Open Cisco Jabber Log Zip Bundles"),
+                                                #if defined(Q_OS_WIN)
+                                                    QString(),
+                                                #else
                                                     QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation),
+                                                #endif
                                                     tr("Cisco Jabber Log Zip Bundle (*.zip);;All files (*.*)"));
-    if (fileName.isEmpty())
+    if (fileNames.isEmpty())
         return;
 
-    ui->tabWidget->openZipBundle(fileName);
+    Q_FOREACH(const QString& fileName, fileNames)
+    {
+        ui->tabWidget->openZipBundle(fileName);
+    }
 }
 
 void MainWindow::on_actionOpenRawLogFile_triggered()
 {
     QStringList fileNames = QFileDialog::getOpenFileNames(this,
                                                           tr("Open Cisco Jabber Log Files"),
+                                                      #if defined(Q_OS_WIN)
+                                                          QString(),
+                                                      #else
                                                           QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation),
+                                                      #endif
                                                           tr("Cisco Jabber Log Files (jabber.log*);;All files (*.*)"));
 
     if (fileNames.isEmpty())
@@ -57,7 +68,11 @@ void MainWindow::on_actionOpenLogFolder_triggered()
 {
     QString dir = QFileDialog::getExistingDirectory(this,
                                                     tr("Open Cisco Jabber Log Folder"),
+                                                #if defined(Q_OS_WIN)
+                                                    QString(),
+                                                #else
                                                     QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation),
+                                                #endif
                                                     QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
 
     if (dir.isEmpty())
