@@ -1,11 +1,21 @@
 #include <QtCore>
+#include <QCoreApplication>
 #include <QHeaderView>
 #include <QFileInfo>
 #include <QDir>
 #include <QStandardPaths>
+#include <QtConcurrent>
 #include <JlCompress.h>
 #include "logmodel.h"
 #include "logview.h"
+
+static const QEvent::Type EXTRACTED_EVENT = QEvent::Type(QEvent::User + 1);
+
+class ExtractedEvent : public QEvent
+{
+public:
+    ExtractedEvent() : QEvent(EXTRACTED_EVENT) {}
+};
 
 LogView::LogView()
 {
@@ -16,9 +26,10 @@ LogView::LogView()
 
 LogView::~LogView()
 {
-    Q_FOREACH(const QString& fileName, m_extractFiles)
+    if (!m_extractDir.isEmpty())
     {
-        QFile::remove(fileName);
+        QDir dir(m_extractDir);
+        dir.removeRecursively();
     }
 }
 
@@ -28,27 +39,12 @@ void LogView::openZipBundle(const QString &path)
     QFileInfo fi(path);
     setWindowTitle(fi.fileName());
 
-    QString targetDir = QStandardPaths::writableLocation(QStandardPaths::TempLocation);
-    targetDir.append("/CiscoJabberLogs/" + fi.completeBaseName());
-    QDir dir(targetDir);
+    m_extractDir = QStandardPaths::writableLocation(QStandardPaths::TempLocation);
+    m_extractDir.append("/CiscoJabberLogs/" + fi.completeBaseName());
+    QDir dir(m_extractDir);
     if (!dir.exists())
-        dir.mkpath(targetDir);
-    m_extractFiles = JlCompress::extractDir(path, targetDir);
-
-    dir.setFilter(QDir::Files | QDir::NoSymLinks);
-    dir.setSorting(QDir::Name);
-    QStringList filters;
-    filters << "jabber.log" << "jabber.log.*";
-    dir.setNameFilters(filters);
-
-    QStringList fileNames;
-    QFileInfoList list = dir.entryInfoList();
-    for (int i = 0; i < list.size(); ++i) {
-        QFileInfo fileInfo = list.at(i);
-        fileNames << fileInfo.filePath();
-    }
-
-    m_model->loadFromFiles(fileNames);
+        dir.mkpath(m_extractDir);
+    QtConcurrent::run(this, &LogView::extract, this, path, m_extractDir);
 }
 
 void LogView::openRawLogFile(const QStringList &paths)
@@ -92,4 +88,41 @@ bool LogView::matched(const QString &path)
 bool LogView::matched(const QStringList &paths)
 {
     return paths.join(":") == m_path;
+}
+
+bool LogView::event(QEvent* e)
+{
+    QMutexLocker lock(&m_mutex);
+
+    switch (int(e->type()))
+    {
+    case EXTRACTED_EVENT:
+        {
+            QDir dir(m_extractDir);
+            dir.setFilter(QDir::Files | QDir::NoSymLinks);
+            dir.setSorting(QDir::Name);
+            QStringList filters;
+            filters << "jabber.log" << "jabber.log.*";
+            dir.setNameFilters(filters);
+
+            QStringList fileNames;
+            QFileInfoList list = dir.entryInfoList();
+            for (int i = 0; i < list.size(); ++i) {
+                QFileInfo fileInfo = list.at(i);
+                fileNames << fileInfo.filePath();
+            }
+
+            m_model->loadFromFiles(fileNames);
+        }
+        return true;
+    default:
+        return QObject::event(e);
+    }
+}
+
+void LogView::extract(LogView* v, const QString& fileName, const QString& dirName)
+{
+    ExtractedEvent* e = new ExtractedEvent;
+    JlCompress::extractDir(fileName, dirName);
+    QCoreApplication::postEvent(v, e);
 }
