@@ -7,7 +7,6 @@
 #include <QMdiSubWindow>
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "logview.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -17,6 +16,11 @@ MainWindow::MainWindow(QWidget *parent) :
     QActionGroup *group = new QActionGroup(this);
     group->addAction(ui->actionFilter);
     group->addAction(ui->actionSearch);
+
+    connect(ui->actionClose, &QAction::triggered, ui->tabWidget, &TabWidget::closeCurrent);
+    connect(ui->actionCloseAll, &QAction::triggered, ui->tabWidget, &TabWidget::closeAll);
+    connect(ui->actionCloseAllButThis, &QAction::triggered, ui->tabWidget, &TabWidget::closeAllButThis);
+    connect(ui->actionExit, &QAction::triggered, qApp, &QApplication::quit);
 }
 
 MainWindow::~MainWindow()
@@ -33,9 +37,7 @@ void MainWindow::on_actionOpenZipLogBundle_triggered()
     if (fileName.isEmpty())
         return;
 
-    LogView* v = new LogView();
-    v->OpenZipBundle(fileName);
-    ui->tabWidget->addTab(v, v->windowTitle());
+    ui->tabWidget->openZipBundle(fileName);
 }
 
 void MainWindow::on_actionOpenRawLogFile_triggered()
@@ -48,9 +50,7 @@ void MainWindow::on_actionOpenRawLogFile_triggered()
     if (fileNames.isEmpty())
         return;
 
-    LogView* v = new LogView();
-    v->OpenRawLogFile(fileNames);
-    ui->tabWidget->addTab(v, v->windowTitle());
+    ui->tabWidget->openRawLogFile(fileNames);
 }
 
 void MainWindow::on_actionOpenLogFolder_triggered()
@@ -63,9 +63,7 @@ void MainWindow::on_actionOpenLogFolder_triggered()
     if (dir.isEmpty())
         return;
 
-    LogView* v = new LogView();
-    v->OpenFolder(dir);
-    ui->tabWidget->addTab(v, v->windowTitle());
+    ui->tabWidget->openFolder(dir);
 }
 
 void MainWindow::on_actionOpenCurrentInstalledJabberLogFolder_triggered()
@@ -79,30 +77,7 @@ void MainWindow::on_actionOpenCurrentInstalledJabberLogFolder_triggered()
 
     if (dir.isEmpty())
         return;
-
-    LogView* v = new LogView();
-    v->OpenFolder(dir);
-    ui->tabWidget->addTab(v, v->windowTitle());
-}
-
-void MainWindow::on_actionClose_triggered()
-{
-    ui->tabWidget->closeCurrent();
-}
-
-void MainWindow::on_actionCloseAll_triggered()
-{
-    ui->tabWidget->closeAll();
-}
-
-void MainWindow::on_actionCloseAllButThis_triggered()
-{
-    ui->tabWidget->closeAllButThis();
-}
-
-void MainWindow::on_actionExit_triggered()
-{
-    qApp->quit();
+    ui->tabWidget->openFolder(dir);
 }
 
 void MainWindow::on_actionSearch_triggered()

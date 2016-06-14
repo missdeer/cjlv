@@ -24,14 +24,6 @@ private slots:
 
     void on_actionOpenCurrentInstalledJabberLogFolder_triggered();
 
-    void on_actionClose_triggered();
-
-    void on_actionCloseAll_triggered();
-
-    void on_actionCloseAllButThis_triggered();
-
-    void on_actionExit_triggered();
-
     void on_actionSearch_triggered();
 
     void on_actionFilter_triggered();

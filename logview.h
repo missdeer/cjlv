@@ -12,15 +12,19 @@ class LogView : public QTableView
 public:
     LogView();
 
-    void OpenZipBundle(const QString& path);
-    void OpenRawLogFile(const QStringList& paths);
-    void OpenFolder(const QString& path);
+    void openZipBundle(const QString& path);
+    void openRawLogFile(const QStringList& paths);
+    void openFolder(const QString& path);
+
+    bool matched(const QString& path);
+    bool matched(const QStringList& paths);
 protected:
 
 private slots:
 
 private:
     LogModel* m_model;
+    QString m_path;
 };
 
 #endif // LOGVIEW_H

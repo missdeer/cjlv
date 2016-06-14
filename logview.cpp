@@ -1,3 +1,4 @@
+#include <QtCore>
 #include <QHeaderView>
 #include <QFileInfo>
 #include "logmodel.h"
@@ -10,21 +11,34 @@ LogView::LogView()
     horizontalHeader()->setSectionResizeMode(7, QHeaderView::Stretch);
 }
 
-void LogView::OpenZipBundle(const QString &path)
+void LogView::openZipBundle(const QString &path)
 {
+    m_path = path;
     QFileInfo fi(path);
     setWindowTitle(fi.fileName());
 }
 
-void LogView::OpenRawLogFile(const QStringList &paths)
+void LogView::openRawLogFile(const QStringList &paths)
 {
+    m_path = paths.join(":");
     QString path = paths.at(0);
     QFileInfo fi(path);
     setWindowTitle(fi.fileName());
 }
 
-void LogView::OpenFolder(const QString &path)
+void LogView::openFolder(const QString &path)
 {
+    m_path = path;
     QFileInfo fi(path);
     setWindowTitle(fi.fileName());
+}
+
+bool LogView::matched(const QString &path)
+{
+    return path == m_path;
+}
+
+bool LogView::matched(const QStringList &paths)
+{
+    return paths.join(":") == m_path;
 }
