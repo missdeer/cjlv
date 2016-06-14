@@ -87,17 +87,17 @@ void MainWindow::on_actionOpenCurrentInstalledJabberLogFolder_triggered()
 
 void MainWindow::on_actionClose_triggered()
 {
-
+    ui->tabWidget->closeCurrent();
 }
 
 void MainWindow::on_actionCloseAll_triggered()
 {
-
+    ui->tabWidget->closeAll();
 }
 
 void MainWindow::on_actionCloseAllButThis_triggered()
 {
-
+    ui->tabWidget->closeAllButThis();
 }
 
 void MainWindow::on_actionExit_triggered()
