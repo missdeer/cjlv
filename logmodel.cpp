@@ -101,3 +101,8 @@ QVariant LogModel::headerData(int section, Qt::Orientation orientation, int role
 
     return QVariant();
 }
+
+void LogModel::loadFromFiles(const QStringList& fileNames)
+{
+
+}

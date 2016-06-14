@@ -11,6 +11,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = "Cisco Jabber Log Viewer"
 TEMPLATE = app
 
+include(3rdparty/quazip-0.7.2/quazip.pri)
 
 SOURCES += main.cpp\
         mainwindow.cpp \
@@ -41,4 +42,9 @@ macx: {
     icon.path = $$PWD
     icon.files += cjlv.png
     INSTALLS += icon
+    LIBS+=-L$$PWD/3rdparty/zlib-1.2.8 -lz
+}
+
+win32: {
+    LIBS+=-L$$PWD/3rdparty/zlib-1.2.8 -lzlib
 }

@@ -1,6 +1,7 @@
 #include <QtCore>
 #include <QHeaderView>
 #include <QFileInfo>
+#include <QDir>
 #include "logmodel.h"
 #include "logview.h"
 
@@ -24,6 +25,8 @@ void LogView::openRawLogFile(const QStringList &paths)
     QString path = paths.at(0);
     QFileInfo fi(path);
     setWindowTitle(fi.fileName());
+
+    m_model->loadFromFiles(paths);
 }
 
 void LogView::openFolder(const QString &path)
@@ -31,6 +34,22 @@ void LogView::openFolder(const QString &path)
     m_path = path;
     QFileInfo fi(path);
     setWindowTitle(fi.fileName());
+
+    QDir dir(path);
+    dir.setFilter(QDir::Files | QDir::NoSymLinks);
+    dir.setSorting(QDir::Time);
+    QStringList filters;
+    filters << "jabber.log" << "jabber.log.*";
+    dir.setNameFilters(filters);
+
+    QStringList fileNames;
+    QFileInfoList list = dir.entryInfoList();
+    for (int i = 0; i < list.size(); ++i) {
+        QFileInfo fileInfo = list.at(i);
+        fileNames << fileInfo.filePath();
+    }
+
+    m_model->loadFromFiles(fileNames);
 }
 
 bool LogView::matched(const QString &path)
