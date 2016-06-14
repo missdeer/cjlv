@@ -21,7 +21,7 @@ public slots:
 private:
     int findTab(const QString& path);
     int findTab(const QStringList& paths);
-    void addTab(QWidget* w, const QString& text, const QString& tooltip);
+    int addTab(QWidget* w, const QString& text, const QString& tooltip);
 };
 
 #endif // TABWIDGET_H

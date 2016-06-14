@@ -19,7 +19,8 @@ void TabWidget::openZipBundle(const QString &path)
     }
     LogView* v = new LogView();
     v->openZipBundle(path);
-    addTab(v, v->windowTitle(), path);
+    index = addTab(v, v->windowTitle(), path);
+    setTabIcon(index, QIcon(":/image/open-zip-file.png"));
 }
 
 void TabWidget::openRawLogFile(const QStringList &paths)
@@ -32,7 +33,8 @@ void TabWidget::openRawLogFile(const QStringList &paths)
     }
     LogView* v = new LogView();
     v->openRawLogFile(paths);
-    addTab(v, v->windowTitle(), paths[0]);
+    index = addTab(v, v->windowTitle(), paths.join("\n"));
+    setTabIcon(index, QIcon(":/image/open-file.png"));
 }
 
 void TabWidget::openFolder(const QString &path)
@@ -45,7 +47,8 @@ void TabWidget::openFolder(const QString &path)
     }
     LogView* v = new LogView();
     v->openFolder(path);
-    addTab(v, v->windowTitle(), path);
+    index = addTab(v, v->windowTitle(), path);
+    setTabIcon(index, QIcon(":/image/open-folder.png"));
 }
 
 void TabWidget::closeAll()
@@ -106,9 +109,10 @@ int TabWidget::findTab(const QStringList &paths)
     return -1;
 }
 
-void TabWidget::addTab(QWidget *w, const QString &text, const QString &tooltip)
+int TabWidget::addTab(QWidget *w, const QString &text, const QString &tooltip)
 {
     int index = QTabWidget::addTab(w, text);
     setTabToolTip(index, tooltip);
     setCurrentIndex(index);
+    return index;
 }
