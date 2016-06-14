@@ -11,6 +11,7 @@ class LogView : public QTableView
     Q_OBJECT
 public:
     LogView();
+    ~LogView();
 
     void openZipBundle(const QString& path);
     void openRawLogFile(const QStringList& paths);
@@ -25,6 +26,7 @@ private slots:
 private:
     LogModel* m_model;
     QString m_path;
+    QStringList m_extractFiles;
 };
 
 #endif // LOGVIEW_H
