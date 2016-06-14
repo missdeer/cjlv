@@ -10,12 +10,12 @@ public:
 
     void openZipBundle(const QString& path);
     void openRawLogFile(const QStringList& paths);
-    void openFolder(const QString& path);
+    void openFolder(const QString& path, bool installed);
 
 public slots:
-    void closeAll();
-    void closeAllButThis();
-    void closeCurrent();
+    void onCloseAll();
+    void onCloseAllButThis();
+    void onCloseCurrent();
     void onTabCloseRequested(int index);
 
 private:

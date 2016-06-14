@@ -17,9 +17,9 @@ MainWindow::MainWindow(QWidget *parent) :
     group->addAction(ui->actionFilter);
     group->addAction(ui->actionSearch);
 
-    connect(ui->actionClose, &QAction::triggered, ui->tabWidget, &TabWidget::closeCurrent);
-    connect(ui->actionCloseAll, &QAction::triggered, ui->tabWidget, &TabWidget::closeAll);
-    connect(ui->actionCloseAllButThis, &QAction::triggered, ui->tabWidget, &TabWidget::closeAllButThis);
+    connect(ui->actionClose, &QAction::triggered, ui->tabWidget, &TabWidget::onCloseCurrent);
+    connect(ui->actionCloseAll, &QAction::triggered, ui->tabWidget, &TabWidget::onCloseAll);
+    connect(ui->actionCloseAllButThis, &QAction::triggered, ui->tabWidget, &TabWidget::onCloseAllButThis);
     connect(ui->actionExit, &QAction::triggered, qApp, &QApplication::quit);
 }
 
@@ -63,7 +63,7 @@ void MainWindow::on_actionOpenLogFolder_triggered()
     if (dir.isEmpty())
         return;
 
-    ui->tabWidget->openFolder(dir);
+    ui->tabWidget->openFolder(dir, false);
 }
 
 void MainWindow::on_actionOpenCurrentInstalledJabberLogFolder_triggered()
@@ -77,7 +77,7 @@ void MainWindow::on_actionOpenCurrentInstalledJabberLogFolder_triggered()
 
     if (dir.isEmpty())
         return;
-    ui->tabWidget->openFolder(dir);
+    ui->tabWidget->openFolder(dir, true);
 }
 
 void MainWindow::on_actionSearch_triggered()

@@ -37,7 +37,7 @@ void TabWidget::openRawLogFile(const QStringList &paths)
     setTabIcon(index, QIcon(":/image/open-file.png"));
 }
 
-void TabWidget::openFolder(const QString &path)
+void TabWidget::openFolder(const QString &path, bool installed)
 {
     int index = findTab(path);
     if (index >= 0)
@@ -48,10 +48,10 @@ void TabWidget::openFolder(const QString &path)
     LogView* v = new LogView();
     v->openFolder(path);
     index = addTab(v, v->windowTitle(), path);
-    setTabIcon(index, QIcon(":/image/open-folder.png"));
+    setTabIcon(index, QIcon(installed ? ":/image/open-installed-folder.png" : ":/image/open-folder.png"));
 }
 
-void TabWidget::closeAll()
+void TabWidget::onCloseAll()
 {
     for (int index = count() -1; index >=0; index--)
     {
@@ -59,7 +59,7 @@ void TabWidget::closeAll()
     }
 }
 
-void TabWidget::closeAllButThis()
+void TabWidget::onCloseAllButThis()
 {
     for (int index = count() -1; index > currentIndex(); index--)
     {
@@ -71,7 +71,7 @@ void TabWidget::closeAllButThis()
     }
 }
 
-void TabWidget::closeCurrent()
+void TabWidget::onCloseCurrent()
 {
     onTabCloseRequested(currentIndex());
 }
