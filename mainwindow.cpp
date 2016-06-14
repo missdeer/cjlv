@@ -1,10 +1,9 @@
-
 #include <QApplication>
 #include <QActionGroup>
 #include <QFileDialog>
 #include <QStandardPaths>
 #include <QMessageBox>
-#include <QMdiSubWindow>
+#include <QDir>
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
@@ -90,8 +89,13 @@ void MainWindow::on_actionOpenCurrentInstalledJabberLogFolder_triggered()
     QString dir = QStandardPaths::writableLocation(QStandardPaths::HomeLocation) + "/Library/Log/Jabber";
 #endif
 
-    if (dir.isEmpty())
+    QDir d(dir);
+    if (!d.exists())
+    {
+        QMessageBox::warning(this, tr("Warning"), tr("Folder doesn't exist."), QMessageBox::Ok);
         return;
+    }
+
     ui->tabWidget->openFolder(dir, true);
 }
 
