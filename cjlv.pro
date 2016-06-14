@@ -15,11 +15,13 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     logview.cpp \
-    logmodel.cpp
+    logmodel.cpp \
+    tabwidget.cpp
 
 HEADERS  += mainwindow.h \
     logview.h \
-    logmodel.h
+    logmodel.h \
+    tabwidget.h
 
 FORMS    += mainwindow.ui
 

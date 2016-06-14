@@ -34,8 +34,8 @@ void MainWindow::on_actionOpenZipLogBundle_triggered()
         return;
 
     LogView* v = new LogView();
-    ui->mdiArea->addSubWindow(v);
-    v->showMaximized();
+    v->OpenZipBundle(fileName);
+    ui->tabWidget->addTab(v, v->windowTitle());
 }
 
 void MainWindow::on_actionOpenRawLogFile_triggered()
@@ -48,7 +48,9 @@ void MainWindow::on_actionOpenRawLogFile_triggered()
     if (fileNames.isEmpty())
         return;
 
-    QMessageBox::information(this, "Opened Raw Log Files", fileNames.join(", "), QMessageBox::Ok);
+    LogView* v = new LogView();
+    v->OpenRawLogFile(fileNames);
+    ui->tabWidget->addTab(v, v->windowTitle());
 }
 
 void MainWindow::on_actionOpenLogFolder_triggered()
@@ -61,7 +63,9 @@ void MainWindow::on_actionOpenLogFolder_triggered()
     if (dir.isEmpty())
         return;
 
-    QMessageBox::information(this, "Opened Cisco Jabber Log Folder", dir, QMessageBox::Ok);
+    LogView* v = new LogView();
+    v->OpenFolder(dir);
+    ui->tabWidget->addTab(v, v->windowTitle());
 }
 
 void MainWindow::on_actionOpenCurrentInstalledJabberLogFolder_triggered()
@@ -76,29 +80,24 @@ void MainWindow::on_actionOpenCurrentInstalledJabberLogFolder_triggered()
     if (dir.isEmpty())
         return;
 
-    QMessageBox::information(this, "Opened Current Installed Cisco Jabber Log Folder", dir, QMessageBox::Ok);
+    LogView* v = new LogView();
+    v->OpenFolder(dir);
+    ui->tabWidget->addTab(v, v->windowTitle());
 }
 
 void MainWindow::on_actionClose_triggered()
 {
-    ui->mdiArea->closeActiveSubWindow();
+
 }
 
 void MainWindow::on_actionCloseAll_triggered()
 {
-    ui->mdiArea->closeAllSubWindows();
+
 }
 
 void MainWindow::on_actionCloseAllButThis_triggered()
 {
-    QMdiSubWindow * win = ui->mdiArea->currentSubWindow();
-    Q_FOREACH(QMdiSubWindow *w, ui->mdiArea->subWindowList())
-    {
-        if (win != w)
-        {
-            w->close();
-        }
-    }
+
 }
 
 void MainWindow::on_actionExit_triggered()
