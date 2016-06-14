@@ -11,6 +11,9 @@ public:
     void closeAll();
     void closeAllButThis();
     void closeCurrent();
+
+public slots:
+    void onTabCloseRequested(int index);
 };
 
 #endif // TABWIDGET_H

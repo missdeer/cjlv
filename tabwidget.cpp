@@ -3,16 +3,14 @@
 TabWidget::TabWidget(QWidget *parent)
     : QTabWidget(parent)
 {
-
+    connect(this, &QTabWidget::tabCloseRequested, this, &TabWidget::onTabCloseRequested);
 }
 
 void TabWidget::closeAll()
 {
     for (int index = count() -1; index >=0; index--)
     {
-        QWidget* w = widget(index);
-        removeTab(index);
-        w->deleteLater();
+        onTabCloseRequested(index);
     }
 }
 
@@ -20,21 +18,22 @@ void TabWidget::closeAllButThis()
 {
     for (int index = count() -1; index > currentIndex(); index--)
     {
-        QWidget* w = widget(index);
-        removeTab(index);
-        w->deleteLater();
+        onTabCloseRequested(index);
     }
     while (count() > 1)
     {
-        QWidget* w = widget(0);
-        removeTab(0);
-        w->deleteLater();
+        onTabCloseRequested(0);
     }
 }
 
 void TabWidget::closeCurrent()
 {
-    QWidget* w = currentWidget();
-    removeTab(currentIndex());
+    onTabCloseRequested(currentIndex());
+}
+
+void TabWidget::onTabCloseRequested(int index)
+{
+    QWidget* w = widget(index);
+    removeTab(index);
     w->deleteLater();
 }
