@@ -1,7 +1,6 @@
 #ifndef LOGMODEL_H
 #define LOGMODEL_H
 
-
 #include <QAbstractTableModel>
 #include <QList>
 #include <QSharedPointer>
@@ -22,6 +21,7 @@ class LogModel : public QAbstractTableModel
     Q_OBJECT
 public:
     explicit LogModel(QObject *parent = 0);
+    ~LogModel();
 
     virtual QModelIndex index(int row, int column, const QModelIndex & parent = QModelIndex()) const Q_DECL_OVERRIDE;
     virtual int rowCount(const QModelIndex & parent = QModelIndex()) const Q_DECL_OVERRIDE;
@@ -32,12 +32,18 @@ public:
                         int role = Qt::DisplayRole) const Q_DECL_OVERRIDE;
 
     void loadFromFiles(const QStringList& fileNames);
+    void reload();
 signals:
 
 public slots:
 
 private:
+    QString m_dbFile;
+    QStringList m_logFiles;
     QList<QSharedPointer<LogItem>> m_logs;
+
+    void createDatabase();
+    void copyFromFileToDatabase(const QString& fileName);
 };
 
 #endif // LOGMODEL_H

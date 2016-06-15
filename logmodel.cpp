@@ -1,9 +1,26 @@
+#include <QtCore>
+#include <QSqlDatabase>
+#include <QSqlQuery>
+#include <QSqlError>
+#include <QStandardPaths>
+#include <QFile>
+#include <QDir>
+#include <QDateTime>
 #include "logmodel.h"
 
 LogModel::LogModel(QObject *parent)
     : QAbstractTableModel(parent)
 {
 
+}
+
+LogModel::~LogModel()
+{
+    QSqlDatabase db = QSqlDatabase::database(m_dbFile, false);
+    if (db.isValid() && db.isOpen())
+        db.close();
+
+    QFile::remove(m_dbFile);
 }
 
 QModelIndex LogModel::index(int row, int column, const QModelIndex &parent) const
@@ -103,6 +120,52 @@ QVariant LogModel::headerData(int section, Qt::Orientation orientation, int role
 }
 
 void LogModel::loadFromFiles(const QStringList& fileNames)
+{
+    m_logFiles = fileNames;
+    reload();
+}
+
+void LogModel::reload()
+{
+    createDatabase();
+    Q_FOREACH(const QString& fileName, m_logFiles)
+    {
+        copyFromFileToDatabase(fileName);
+    }
+}
+
+void LogModel::createDatabase()
+{
+    m_dbFile = QStandardPaths::writableLocation(QStandardPaths::TempLocation);
+    m_dbFile.append("/CiscoJabberLogs/database");
+    QDir dir(m_dbFile);
+    if (!dir.exists())
+        dir.mkpath(m_dbFile);
+    m_dbFile.append("/");
+    m_dbFile.append(QDateTime::currentDateTime().toString("ddd MMMM d yyyy hh-mm-ss.zzz"));
+    m_dbFile.append(".db");
+
+    QFile::remove(m_dbFile);
+
+    QSqlDatabase db = QSqlDatabase::database(m_dbFile, true);
+    if (!db.isValid()) {
+        db = QSqlDatabase::addDatabase("QSQLITE", m_dbFile);
+        db.setDatabaseName(m_dbFile);
+    }
+
+    if (db.open())
+    {
+        QSqlQuery query(db);
+        query.exec("CREATE TABLE logs(id INTEGER PRIMARY KEY AUTOINCREMENT,time TEXT UNIQUE,level TEXT,thread TEXT,source TEXT,category TEXT,method TEXT, content TEXT);");
+        query.exec("CREATE INDEX it ON logs (time);");
+        query.exec("CREATE INDEX is ON logs (source);");
+        query.exec("CREATE INDEX ic ON logs (category);");
+        query.exec("CREATE INDEX im ON logs (method);");
+        query.exec("CREATE INDEX io ON logs (content);");
+    }
+}
+
+void LogModel::copyFromFileToDatabase(const QString &fileName)
 {
 
 }
