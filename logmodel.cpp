@@ -6,6 +6,8 @@
 #include <QFile>
 #include <QDir>
 #include <QDateTime>
+#include <QRegularExpression>
+#include <QtConcurrent>
 #include "logmodel.h"
 
 LogModel::LogModel(QObject *parent)
@@ -127,6 +129,11 @@ void LogModel::loadFromFiles(const QStringList& fileNames)
 
 void LogModel::reload()
 {
+    QtConcurrent::run(this, &LogModel::doReload);
+}
+
+void LogModel::doReload()
+{
     createDatabase();
     Q_FOREACH(const QString& fileName, m_logFiles)
     {
@@ -167,5 +174,62 @@ void LogModel::createDatabase()
 
 void LogModel::copyFromFileToDatabase(const QString &fileName)
 {
+    QSqlDatabase db = QSqlDatabase::database(m_dbFile, false);
+    if (!db.isValid() || !db.isOpen())
+    {
+        qDebug() << "opening database file failed " << m_dbFile;
+        return;
+    }
 
+    QFile f(fileName);
+    if (!f.open(QIODevice::ReadOnly))
+    {
+        qDebug() << "opening log file failed " << fileName;
+        return;
+    }
+
+    QRegularExpression re("^([0-9]{4}\\-[0-9]{2}\\-[0-9]{2}\\s[0-9]{2}:[0-9]{2}:[0-9]{2},[0-9]{3})\\s+([A-Z]{4,5})\\s+\\[(0x[0-9a-f]{16})\\]\\s+\\[([0-9a-zA-Z\\/\\(\\)\\.]+)\\]\\s+\\[([0-9a-zA-Z\\-\\_\\.]+)\\]\\s+\\[([0-9a-zA-Z\\-\\_\\.]+)\\]\\s+\\-\\s+(.+)$");
+
+    QByteArray line = f.readLine();
+    QRegularExpressionMatch m = re.match(line);
+    if (!m.hasMatch())
+    {
+        // append to last line
+    }
+    else
+    {
+        dateTime = m.captured(1);
+        level = m.captured(2);
+        thread = m.captured(3);
+        source = m.captured(4);
+        category = m.captured(5);
+        method = m.captured(6);
+        content = m.captured(7);
+    }
+
+    while(!f.atEnd())
+    {
+        QByteArray lookAhead = f.readLine();
+        m = re.match(line);
+        if (! m.hasMatch())
+        {
+            // append to last line
+            content.append(lookAhead);
+        }
+        else
+        {
+            // save to database
+
+            // parse lookAhead
+            dateTime = m.captured(1);
+            level = m.captured(2);
+            thread = m.captured(3);
+            source = m.captured(4);
+            category = m.captured(5);
+            method = m.captured(6);
+            content = m.captured(7);
+        }
+    }
+
+    f.close();
 }

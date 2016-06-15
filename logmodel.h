@@ -42,8 +42,16 @@ private:
     QStringList m_logFiles;
     QList<QSharedPointer<LogItem>> m_logs;
 
+    QString dateTime;
+    QString level ;
+    QString thread ;
+    QString source ;
+    QString category;
+    QString method ;
+    QString content ;
     void createDatabase();
     void copyFromFileToDatabase(const QString& fileName);
+    void doReload();
 };
 
 #endif // LOGMODEL_H
