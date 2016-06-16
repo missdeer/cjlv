@@ -135,10 +135,13 @@ void LogModel::reload()
 void LogModel::doReload()
 {
     createDatabase();
+    QDateTime t = QDateTime::currentDateTime();
     Q_FOREACH(const QString& fileName, m_logFiles)
     {
         copyFromFileToDatabase(fileName);
     }
+    qint64 q = t.secsTo(QDateTime::currentDateTime());
+    qDebug() << "loaded elapsed " << q << " s";
 }
 
 void LogModel::createDatabase()
@@ -163,7 +166,7 @@ void LogModel::createDatabase()
     if (db.open())
     {
         QSqlQuery query(db);
-        query.exec("CREATE TABLE logs(id INTEGER PRIMARY KEY AUTOINCREMENT,time TEXT UNIQUE,level TEXT,thread TEXT,source TEXT,category TEXT,method TEXT, content TEXT);");
+        query.exec("CREATE TABLE logs(id INTEGER PRIMARY KEY AUTOINCREMENT,time TEXT,level TEXT,thread TEXT,source TEXT,category TEXT,method TEXT, content TEXT);");
         query.exec("CREATE INDEX it ON logs (time);");
         query.exec("CREATE INDEX is ON logs (source);");
         query.exec("CREATE INDEX ic ON logs (category);");
@@ -188,13 +191,14 @@ void LogModel::copyFromFileToDatabase(const QString &fileName)
         return;
     }
 
-    QRegularExpression re("^([0-9]{4}\\-[0-9]{2}\\-[0-9]{2}\\s[0-9]{2}:[0-9]{2}:[0-9]{2},[0-9]{3})\\s+([A-Z]{4,5})\\s+\\[(0x[0-9a-f]{16})\\]\\s+\\[([0-9a-zA-Z\\/\\(\\)\\.]+)\\]\\s+\\[([0-9a-zA-Z\\-\\_\\.]+)\\]\\s+\\[([0-9a-zA-Z\\-\\_\\.]+)\\]\\s+\\-\\s+(.+)$");
+    QRegularExpression re("^([0-9]{4}\\-[0-9]{2}\\-[0-9]{2}\\s[0-9]{2}:[0-9]{2}:[0-9]{2},[0-9]{3})\\s+([A-Z]{4,5})\\s+\\[(0x[0-9a-f]{8,16})\\]\\s+\\[([0-9a-zA-Z:\\-\\/\\\\\\(\\)\\.]+)\\]\\s+\\[([0-9a-zA-Z\\-\\_\\.]+)\\]\\s+\\[([0-9a-zA-Z:\\-\\_\\.]+)\\]\\s+\\-\\s+(.+)$");
 
     QByteArray line = f.readLine();
     QRegularExpressionMatch m = re.match(line);
     if (!m.hasMatch())
     {
         // append to last line
+        content.append(line);
     }
     else
     {
@@ -207,18 +211,37 @@ void LogModel::copyFromFileToDatabase(const QString &fileName)
         content = m.captured(7);
     }
 
+    db.transaction();
     while(!f.atEnd())
     {
         QByteArray lookAhead = f.readLine();
-        m = re.match(line);
+        m = re.match(lookAhead);
         if (! m.hasMatch())
         {
             // append to last line
             content.append(lookAhead);
+            //qDebug() << "append look ahead" << QString(lookAhead);
         }
         else
         {
+            //qDebug() << "save line";
+            QSqlQuery query(db);
             // save to database
+            query.prepare("INSERT INTO logs (time, level, thread, source, category, method, content) "
+                "VALUES (:time, :level, :thread, :source, :category, :method, :content );");
+            query.bindValue(":time", dateTime);
+            query.bindValue(":level", level);
+            query.bindValue(":thread", thread);
+            query.bindValue(":source", source);
+            query.bindValue(":category", category);
+            query.bindValue(":method", method);
+            query.bindValue(":content", content);
+            if (!query.exec()) {
+        #ifdef _DEBUG
+                qDebug() << dateTime << level << thread << source << category << method << content << " inserting log into database failed!" << query.lastError();
+        #endif
+            }
+            query.clear();
 
             // parse lookAhead
             dateTime = m.captured(1);
@@ -228,8 +251,10 @@ void LogModel::copyFromFileToDatabase(const QString &fileName)
             category = m.captured(5);
             method = m.captured(6);
             content = m.captured(7);
+            //qDebug() << "parse look ahead";
         }
     }
+    db.commit();
 
     f.close();
 }
