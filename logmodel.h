@@ -41,6 +41,8 @@ private:
     QString m_dbFile;
     QStringList m_logFiles;
     QList<QSharedPointer<LogItem>> m_logs;
+    QMutex m_mutex;
+    int m_rowCount;
 
     QString dateTime;
     QString level ;
@@ -52,6 +54,8 @@ private:
     void createDatabase();
     void copyFromFileToDatabase(const QString& fileName);
     void doReload();
+
+    bool event(QEvent *e) Q_DECL_OVERRIDE;
 };
 
 #endif // LOGMODEL_H

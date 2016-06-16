@@ -10,6 +10,15 @@
 #include <QtConcurrent>
 #include "logmodel.h"
 
+static const QEvent::Type ROWCOUNT_EVENT = QEvent::Type(QEvent::User + 1);
+
+class RowCountEvent : public QEvent
+{
+public:
+    RowCountEvent() : QEvent(ROWCOUNT_EVENT) {}
+    int m_rowCount;
+};
+
 LogModel::LogModel(QObject *parent)
     : QAbstractTableModel(parent)
 {
@@ -35,7 +44,7 @@ QModelIndex LogModel::index(int row, int column, const QModelIndex &parent) cons
 
 int LogModel::rowCount(const QModelIndex &/*parent*/) const
 {
-    return 0;
+    return m_rowCount;
 }
 
 int LogModel::columnCount(const QModelIndex &/*parent*/) const
@@ -142,6 +151,32 @@ void LogModel::doReload()
     }
     qint64 q = t.secsTo(QDateTime::currentDateTime());
     qDebug() << "loaded elapsed " << q << " s";
+    RowCountEvent* e = new RowCountEvent;
+    e->m_rowCount = 0;
+    QSqlDatabase db = QSqlDatabase::database(m_dbFile, false);
+    if (db.open())
+    {
+        QSqlQuery query(db);
+        e->m_rowCount = query.lastInsertId().toInt();
+    }
+    QCoreApplication::postEvent(this, e);
+}
+
+bool LogModel::event(QEvent *e)
+{
+    QMutexLocker lock(&m_mutex);
+
+    switch (int(e->type()))
+    {
+    case ROWCOUNT_EVENT:
+        m_rowCount = ((RowCountEvent*)e)->m_rowCount;
+        emit dataChanged(index(0, 0), index(m_rowCount -1, 0));
+        return true;
+    default:
+        break;
+    }
+
+    return QObject::event(e);
 }
 
 void LogModel::createDatabase()
