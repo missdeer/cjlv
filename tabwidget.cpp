@@ -1,4 +1,4 @@
-
+#include <QtCore>
 
 #include "logview.h"
 #include "tabwidget.h"
@@ -49,6 +49,17 @@ void TabWidget::openFolder(const QString &path, bool installed)
     v->openFolder(path);
     index = addTab(v, v->windowTitle(), path);
     setTabIcon(index, QIcon(installed ? ":/image/open-installed-folder.png" : ":/image/open-folder.png"));
+}
+
+void TabWidget::filter(const QString& keyword)
+{
+    QWidget* w = currentWidget();
+    if (w)
+    {
+        LogView* v = qobject_cast<LogView*>(w);
+        qDebug() << __FUNCTION__ << keyword;
+        emit v->filter(keyword);
+    }
 }
 
 void TabWidget::onCloseAll()

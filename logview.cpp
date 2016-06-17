@@ -32,6 +32,8 @@ LogView::LogView(QWidget *parent)
     m_model = new LogModel(this);
     m_tableView->setModel(m_model);
     m_tableView->horizontalHeader()->setSectionResizeMode(7, QHeaderView::Stretch);
+
+    connect(this, &LogView::filter, m_model, &LogModel::filter);
 }
 
 LogView::~LogView()

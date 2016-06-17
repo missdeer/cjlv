@@ -131,10 +131,10 @@ void MainWindow::on_radioFilter_clicked()
 
 void MainWindow::on_cbKeyword_editTextChanged(const QString &text)
 {
-
+    ui->tabWidget->filter(text);
 }
 
 void MainWindow::on_cbKeyword_currentIndexChanged(const QString &text)
 {
-
+    ui->tabWidget->filter(text);
 }

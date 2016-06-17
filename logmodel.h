@@ -36,12 +36,12 @@ public:
 
     void loadFromFiles(const QStringList& fileNames);
     void reload();
-    void filter(const QString& keyword);
     void query(int offset);
 signals:
     void logItemReady(int, QSharedPointer<LogItem>);
 public slots:
     void onLogItemReady(int i, QSharedPointer<LogItem> log);
+    void filter(const QString& keyword);
 private:
     QString m_sqlCount;
     QString m_sqlFetch ;

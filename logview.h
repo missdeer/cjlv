@@ -20,6 +20,9 @@ public:
 
     bool matched(const QString& path);
     bool matched(const QStringList& paths);
+
+signals:
+    void filter(const QString& keyword);
 protected:
 
 private slots:

@@ -79,7 +79,9 @@ QVariant LogModel::data(const QModelIndex &index, int role) const
     auto it = m_logs.find(index.row());
     if (m_logs.end() == it)
     {
+#ifndef QT_NO_DEBUG
         qDebug() << "do query index:" << index.row();
+#endif
         const_cast<LogModel&>(*this).query(index.row());
         return QVariant();
     }
@@ -171,7 +173,17 @@ void LogModel::reload()
 
 void LogModel::filter(const QString &keyword)
 {
+    if (m_rowCount > 0)
+    {
+        beginRemoveRows(QModelIndex(), 0, m_rowCount-1);
+        m_logs.clear();
+        m_rowCount = 0;
+        m_totalRowCount = 0;
+        endRemoveRows();
+    }
+
     m_keyword = keyword;
+    query(0);
 }
 
 void LogModel::query(int offset)
@@ -180,6 +192,7 @@ void LogModel::query(int offset)
     {
         if (offset >= i && offset < i + 200)
         {
+            qDebug() << __FUNCTION__ << "offset:" << offset << ", i:" << i;
             return;
         }
     }
@@ -191,7 +204,9 @@ void LogModel::query(int offset)
 
 void LogModel::onLogItemReady(int i,  QSharedPointer<LogItem> log)
 {
+#ifndef QT_NO_DEBUG
     qDebug() << __FUNCTION__ << i << log;
+#endif
     m_logs[i] = log;
     emit dataChanged(index(i,0), index(i, 0));
 }
@@ -213,6 +228,7 @@ void LogModel::doReload()
 
 void LogModel::doQuery(int offset)
 {
+    qDebug() << __FUNCTION__ << offset;
     QMutexLocker lock(&m_queryMutex);
     QString sqlCount;
     QString sqlFetch ;
@@ -223,11 +239,17 @@ void LogModel::doQuery(int offset)
     }
     else
     {
-
+        sqlCount = QString("SELECT COUNT(*) FROM logs WHERE content LIKE '%%1%'").arg(m_keyword);
+        sqlFetch = QString("SELECT * FROM logs WHERE content LIKE '%%1%' ORDER BY datetime(time) DESC, line ASC LIMIT %2, 200;").arg(m_keyword).arg(offset);
     }
 
+    FinishedQueryEvent* e = new FinishedQueryEvent;
+    e->m_offset = offset;
     if (sqlFetch == m_sqlFetch && sqlCount == m_sqlCount)
+    {
+        QCoreApplication::postEvent(this, e);
         return;
+    }
     m_sqlCount = sqlCount;
     m_sqlFetch = sqlFetch;
 
@@ -239,8 +261,6 @@ void LogModel::doQuery(int offset)
 
     if (db.open())
     {
-        FinishedQueryEvent* e = new FinishedQueryEvent;
-        e->m_offset = offset;
         QSqlQuery q(db);
         q.prepare(m_sqlCount);
         if (q.exec()) {
@@ -286,8 +306,8 @@ void LogModel::doQuery(int offset)
             q.clear();
             q.finish();
         }
-        QCoreApplication::postEvent(this, e);
     }
+    QCoreApplication::postEvent(this, e);
 }
 
 bool LogModel::event(QEvent *e)
@@ -313,6 +333,7 @@ bool LogModel::event(QEvent *e)
         }
         return true;
     case FINISHEDQUERY_EVENT:
+        qDebug() << "remove offset " << ((FinishedQueryEvent*)e)->m_offset;
         m_inQuery.removeAll(((FinishedQueryEvent*)e)->m_offset);
         return true;
     default:

@@ -12,6 +12,7 @@ public:
     void openRawLogFile(const QStringList& paths);
     void openFolder(const QString& path, bool installed);
 
+    void filter(const QString& keyword);
 public slots:
     void onCloseAll();
     void onCloseAllButThis();
