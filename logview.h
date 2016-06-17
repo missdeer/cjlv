@@ -11,7 +11,7 @@ class LogView : public QTableView
 {
     Q_OBJECT
 public:
-    LogView();
+    LogView(QWidget *parent = NULL);
     ~LogView();
 
     void openZipBundle(const QString& path);

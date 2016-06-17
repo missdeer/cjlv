@@ -1,6 +1,8 @@
 #include <QtCore>
+#include <QMessageBox>
 #include <QSqlDatabase>
 #include <QSqlQuery>
+#include <QSqlRecord>
 #include <QSqlError>
 #include <QStandardPaths>
 #include <QFile>
@@ -21,8 +23,11 @@ public:
 
 LogModel::LogModel(QObject *parent)
     : QAbstractTableModel(parent)
+    , m_rowCount(0)
+    , m_totalRowCount(0)
 {
-
+    qRegisterMetaType<QSharedPointer<LogItem>>("QSharedPointer<LogItem>");
+    connect(this, &LogModel::logItemReady, this, &LogModel::onLogItemReady);
 }
 
 LogModel::~LogModel()
@@ -49,28 +54,35 @@ int LogModel::rowCount(const QModelIndex &/*parent*/) const
 
 int LogModel::columnCount(const QModelIndex &/*parent*/) const
 {
-    return 8;
+    return 10;
 }
 
 QVariant LogModel::data(const QModelIndex &index, int role) const
 {
-
     if (!index.isValid())
         return QVariant();
 
     if (role != Qt::DisplayRole)
         return QVariant();
 
-    if (index.row() < 0 || index.row() >= m_logs.size())
+    if (index.row() < 0 || index.row() >= m_totalRowCount)
         return QVariant();
 
-    QSharedPointer<LogItem> r = m_logs.at(index.row());
+    auto it = m_logs.find(index.row());
+    if (m_logs.end() == it)
+    {
+        qDebug() << "do query index:" << index.row();
+        const_cast<LogModel&>(*this).query(index.row());
+        return QVariant();
+    }
+
+    QSharedPointer<LogItem> r = *it;
     switch (index.column())
     {
     case 0:
         return QVariant(r->id);
     case 1:
-        return QVariant(r->time);
+        return QVariant(r->time.toString("YYYY-MM-dd hh:mm:ss.zzz"));
     case 2:
         return QVariant(r->level);
     case 3:
@@ -83,6 +95,10 @@ QVariant LogModel::data(const QModelIndex &index, int role) const
         return QVariant(r->method);
     case 7:
         return QVariant(r->content);
+    case 8:
+        return QVariant(r->logFile);
+    case 9:
+        return QVariant(r->line);
     default:
         break;
     }
@@ -121,6 +137,10 @@ QVariant LogModel::headerData(int section, Qt::Orientation orientation, int role
             return QVariant(tr("Method"));
         case 7:
             return QVariant(tr("Content"));
+        case 8:
+            return QVariant(tr("Log File"));
+        case 9:
+            return QVariant(tr("Line"));
         default:
             break;
         }
@@ -141,36 +161,135 @@ void LogModel::reload()
     QtConcurrent::run(this, &LogModel::doReload);
 }
 
+void LogModel::filter(const QString &keyword)
+{
+    m_keyword = keyword;
+}
+
+void LogModel::query(int offset)
+{
+    QtConcurrent::run(this, &LogModel::doQuery, offset);
+}
+
+void LogModel::onLogItemReady(int i,  QSharedPointer<LogItem> log)
+{
+    qDebug() << __FUNCTION__ << i << log;
+    m_logs[i] = log;
+    emit dataChanged(index(i,0), index(i, 0));
+}
+
 void LogModel::doReload()
 {
+    RowCountEvent* e = new RowCountEvent;
+    e->m_rowCount = 0;
     createDatabase();
     QDateTime t = QDateTime::currentDateTime();
     Q_FOREACH(const QString& fileName, m_logFiles)
     {
-        copyFromFileToDatabase(fileName);
+        e->m_rowCount += copyFromFileToDatabase(fileName);
     }
     qint64 q = t.secsTo(QDateTime::currentDateTime());
     qDebug() << "loaded elapsed " << q << " s";
-    RowCountEvent* e = new RowCountEvent;
-    e->m_rowCount = 0;
-    QSqlDatabase db = QSqlDatabase::database(m_dbFile, false);
+    QCoreApplication::postEvent(this, e);
+}
+
+void LogModel::doQuery(int offset)
+{
+    QMutexLocker lock(&m_queryMutex);
+    QString sqlCount;
+    QString sqlFetch ;
+    if (m_keyword.isEmpty())
+    {
+         sqlCount = "SELECT COUNT(*) FROM logs";
+         sqlFetch = QString("SELECT * FROM logs ORDER BY datetime(time) DESC, line ASC LIMIT %1, 200;").arg(offset);
+    }
+    else
+    {
+
+    }
+
+    if (sqlFetch == m_sqlFetch && sqlCount == m_sqlCount)
+        return;
+    m_sqlCount = sqlCount;
+    m_sqlFetch = sqlFetch;
+
+    QSqlDatabase db = QSqlDatabase::database(m_dbFile, true);
+    if (!db.isValid()) {
+        db = QSqlDatabase::addDatabase("QSQLITE", m_dbFile);
+        db.setDatabaseName(m_dbFile);
+    }
+
     if (db.open())
     {
-        QSqlQuery query(db);
-        e->m_rowCount = query.lastInsertId().toInt();
+        QSqlQuery q(db);
+        q.prepare(m_sqlCount);
+        if (q.exec()) {
+            RowCountEvent* e = new RowCountEvent;
+            e->m_rowCount = 0;
+            if (q.next())
+            {
+                e->m_rowCount = q.value(0).toInt();
+            }
+            q.clear();
+            q.finish();
+            qDebug() << __FUNCTION__ << " query row count: " << e->m_rowCount;
+            QCoreApplication::postEvent(this, e);
+        }
+
+        q.prepare(m_sqlFetch);
+        if (q.exec()) {
+            int idIndex = q.record().indexOf("id");
+            int dateTimeIndex = q.record().indexOf("time");
+            int levelIndex = q.record().indexOf("level");
+            int threadIndex = q.record().indexOf("thread");
+            int sourceIndex = q.record().indexOf("source");
+            int categoryIndex = q.record().indexOf("category");
+            int methodIndex = q.record().indexOf("method");
+            int contentIndex = q.record().indexOf("content");
+            int logIndex = q.record().indexOf("log");
+            int lineIndex = q.record().indexOf("line");
+            while (q.next()) {
+                QSharedPointer<LogItem> log =  QSharedPointer<LogItem>(new LogItem);
+                log->id = q.value(idIndex).toInt();
+                log->time = q.value(dateTimeIndex).toDateTime();
+                log->level = q.value(levelIndex).toString();
+                log->thread = q.value(threadIndex).toString();
+                log->source = q.value(sourceIndex).toString();
+                log->category = q.value(categoryIndex).toString();
+                log->method = q.value(methodIndex).toString();
+                log->content = q.value(contentIndex).toString();
+                log->logFile = q.value(logIndex).toString();
+                log->line = q.value(lineIndex).toInt();
+
+                emit logItemReady(offset++, log);
+            }
+            q.clear();
+            q.finish();
+        }
     }
-    QCoreApplication::postEvent(this, e);
 }
 
 bool LogModel::event(QEvent *e)
 {
-    QMutexLocker lock(&m_mutex);
+    QMutexLocker lock(&m_eventMutex);
 
     switch (int(e->type()))
     {
     case ROWCOUNT_EVENT:
+        if (m_rowCount != 0)
+        {
+            beginRemoveRows(QModelIndex(), 0, m_rowCount-1);
+            endRemoveRows();
+        }
         m_rowCount = ((RowCountEvent*)e)->m_rowCount;
-        emit dataChanged(index(0, 0), index(m_rowCount -1, 0));
+        if (m_rowCount > m_totalRowCount)
+            m_totalRowCount = m_rowCount;
+        qDebug() << "row count event:" << m_rowCount;
+        if (m_rowCount != 0)
+        {
+            beginInsertRows(QModelIndex(), 0, m_rowCount-1);
+            endInsertRows();
+        }
         return true;
     default:
         break;
@@ -201,8 +320,8 @@ void LogModel::createDatabase()
     if (db.open())
     {
         QSqlQuery query(db);
-        query.exec("CREATE TABLE logs(id INTEGER PRIMARY KEY AUTOINCREMENT,time TEXT,level TEXT,thread TEXT,source TEXT,category TEXT,method TEXT, content TEXT);");
-        query.exec("CREATE INDEX it ON logs (time);");
+        query.exec("CREATE TABLE logs(id INTEGER PRIMARY KEY AUTOINCREMENT,time TEXT,level TEXT,thread TEXT,source TEXT,category TEXT,method TEXT, content TEXT, log TEXT, line INTEGER);");
+        query.exec("CREATE INDEX it ON logs (time, line);");
         query.exec("CREATE INDEX is ON logs (source);");
         query.exec("CREATE INDEX ic ON logs (category);");
         query.exec("CREATE INDEX im ON logs (method);");
@@ -210,25 +329,28 @@ void LogModel::createDatabase()
     }
 }
 
-void LogModel::copyFromFileToDatabase(const QString &fileName)
+int LogModel::copyFromFileToDatabase(const QString &fileName)
 {
     QSqlDatabase db = QSqlDatabase::database(m_dbFile, false);
     if (!db.isValid() || !db.isOpen())
     {
         qDebug() << "opening database file failed " << m_dbFile;
-        return;
+        return 0;
     }
 
     QFile f(fileName);
     if (!f.open(QIODevice::ReadOnly))
     {
         qDebug() << "opening log file failed " << fileName;
-        return;
+        return 0;
     }
 
+    QFileInfo fi(fileName);
+    QString suffix = fi.suffix();
     QRegularExpression re("^([0-9]{4}\\-[0-9]{2}\\-[0-9]{2}\\s[0-9]{2}:[0-9]{2}:[0-9]{2},[0-9]{3})\\s+([A-Z]{4,5})\\s+\\[(0x[0-9a-f]{8,16})\\]\\s+\\[([0-9a-zA-Z:\\-\\/\\\\\\(\\)\\.]+)\\]\\s+\\[([0-9a-zA-Z\\-\\_\\.]+)\\]\\s+\\[([0-9a-zA-Z:\\-\\_\\.]+)\\]\\s+\\-\\s+(.+)$");
 
     QByteArray line = f.readLine();
+    int lineNo = 1;
     QRegularExpressionMatch m = re.match(line);
     if (!m.hasMatch())
     {
@@ -246,24 +368,29 @@ void LogModel::copyFromFileToDatabase(const QString &fileName)
         content = m.captured(7);
     }
 
-    db.transaction();
+    int recordCount = 0;
+    int appendLine = 1;
+    QSqlQuery query(db);
+    db.transaction();    
     while(!f.atEnd())
     {
         QByteArray lookAhead = f.readLine();
+        lineNo++;
         m = re.match(lookAhead);
         if (! m.hasMatch())
         {
             // append to last line
+            content.append("\n");
             content.append(lookAhead);
             //qDebug() << "append look ahead" << QString(lookAhead);
+            appendLine++;
         }
         else
         {
             //qDebug() << "save line";
-            QSqlQuery query(db);
             // save to database
-            query.prepare("INSERT INTO logs (time, level, thread, source, category, method, content) "
-                "VALUES (:time, :level, :thread, :source, :category, :method, :content );");
+            query.prepare("INSERT INTO logs (time, level, thread, source, category, method, content, log, line) "
+                "VALUES (:time, :level, :thread, :source, :category, :method, :content, :log, :line );");
             query.bindValue(":time", dateTime);
             query.bindValue(":level", level);
             query.bindValue(":thread", thread);
@@ -271,13 +398,18 @@ void LogModel::copyFromFileToDatabase(const QString &fileName)
             query.bindValue(":category", category);
             query.bindValue(":method", method);
             query.bindValue(":content", content);
+            query.bindValue(":log", suffix);
+            query.bindValue(":line", lineNo-appendLine);
             if (!query.exec()) {
         #ifdef _DEBUG
                 qDebug() << dateTime << level << thread << source << category << method << content << " inserting log into database failed!" << query.lastError();
         #endif
+            } else {
+                recordCount++;
             }
             query.clear();
 
+            appendLine = 1;
             // parse lookAhead
             dateTime = m.captured(1);
             level = m.captured(2);
@@ -292,4 +424,6 @@ void LogModel::copyFromFileToDatabase(const QString &fileName)
     db.commit();
 
     f.close();
+
+    return recordCount;
 }

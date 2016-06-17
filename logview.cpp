@@ -17,7 +17,8 @@ public:
     ExtractedEvent() : QEvent(EXTRACTED_EVENT) {}
 };
 
-LogView::LogView()
+LogView::LogView(QWidget *parent)
+    :QTableView (parent)
 {
     m_model = new LogModel(this);
     setModel(m_model);

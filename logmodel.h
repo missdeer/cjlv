@@ -2,18 +2,21 @@
 #define LOGMODEL_H
 
 #include <QAbstractTableModel>
-#include <QList>
+#include <QDateTime>
+#include <QMap>
 #include <QSharedPointer>
 
 struct LogItem {
     int id;
-    QString time;
+    QDateTime time;
     QString level;
     QString thread;
     QString source;
     QString category;
     QString method;
     QString content;
+    QString logFile;
+    int line;
 };
 
 class LogModel : public QAbstractTableModel
@@ -33,16 +36,23 @@ public:
 
     void loadFromFiles(const QStringList& fileNames);
     void reload();
+    void filter(const QString& keyword);
+    void query(int offset);
 signals:
-
+    void logItemReady(int, QSharedPointer<LogItem>);
 public slots:
-
+    void onLogItemReady(int i, QSharedPointer<LogItem> log);
 private:
+    QString m_sqlCount;
+    QString m_sqlFetch ;
+    QString m_keyword;
     QString m_dbFile;
     QStringList m_logFiles;
-    QList<QSharedPointer<LogItem>> m_logs;
-    QMutex m_mutex;
+    QMap<int, QSharedPointer<LogItem>> m_logs;
+    QMutex m_eventMutex;
+    QMutex m_queryMutex;
     int m_rowCount;
+    int m_totalRowCount;
 
     QString dateTime;
     QString level ;
@@ -52,9 +62,9 @@ private:
     QString method ;
     QString content ;
     void createDatabase();
-    void copyFromFileToDatabase(const QString& fileName);
+    int copyFromFileToDatabase(const QString& fileName);
     void doReload();
-
+    void doQuery(int offset);
     bool event(QEvent *e) Q_DECL_OVERRIDE;
 };
 

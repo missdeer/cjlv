@@ -17,7 +17,7 @@ void TabWidget::openZipBundle(const QString &path)
         setCurrentIndex(index);
         return;
     }
-    LogView* v = new LogView();
+    LogView* v = new LogView(this);
     v->openZipBundle(path);
     index = addTab(v, v->windowTitle(), path);
     setTabIcon(index, QIcon(":/image/open-zip-file.png"));
@@ -31,7 +31,7 @@ void TabWidget::openRawLogFile(const QStringList &paths)
         setCurrentIndex(index);
         return;
     }
-    LogView* v = new LogView();
+    LogView* v = new LogView(this);
     v->openRawLogFile(paths);
     index = addTab(v, v->windowTitle(), paths.join("\n"));
     setTabIcon(index, QIcon(":/image/open-file.png"));
@@ -45,7 +45,7 @@ void TabWidget::openFolder(const QString &path, bool installed)
         setCurrentIndex(index);
         return;
     }
-    LogView* v = new LogView();
+    LogView* v = new LogView(this);
     v->openFolder(path);
     index = addTab(v, v->windowTitle(), path);
     setTabIcon(index, QIcon(installed ? ":/image/open-installed-folder.png" : ":/image/open-folder.png"));
