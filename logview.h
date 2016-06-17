@@ -7,6 +7,11 @@
 
 class LogModel;
 
+QT_BEGIN_NAMESPACE
+class QTableView;
+QT_END_NAMESPACE
+
+
 class LogView : public QWidget
 {
     Q_OBJECT
@@ -26,8 +31,9 @@ signals:
 protected:
 
 private slots:
-
+    void onForceRepaint();
 private:
+    QTableView *m_tableView;
     LogModel* m_model;
     QString m_path;
     QString m_extractDir;

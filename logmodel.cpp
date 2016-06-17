@@ -171,7 +171,7 @@ void LogModel::reload()
     QtConcurrent::run(this, &LogModel::doReload);
 }
 
-void LogModel::filter(const QString &keyword)
+void LogModel::onFilter(const QString &keyword)
 {
     if (m_rowCount > 0)
     {
@@ -192,7 +192,9 @@ void LogModel::query(int offset)
     {
         if (offset >= i && offset < i + 200)
         {
+#ifndef QT_NO_DEBUG
             qDebug() << __FUNCTION__ << "offset:" << offset << ", i:" << i;
+#endif
             return;
         }
     }
@@ -209,6 +211,7 @@ void LogModel::onLogItemReady(int i,  QSharedPointer<LogItem> log)
 #endif
     m_logs[i] = log;
     emit dataChanged(index(i,0), index(i, 0));
+    emit forceRepaint();
 }
 
 void LogModel::doReload()
@@ -239,13 +242,13 @@ void LogModel::doQuery(int offset)
     }
     else
     {
-        sqlCount = QString("SELECT COUNT(*) FROM logs WHERE content LIKE '%%1%'").arg(m_keyword);
-        sqlFetch = QString("SELECT * FROM logs WHERE content LIKE '%%1%' ORDER BY datetime(time) DESC, line ASC LIMIT %2, 200;").arg(m_keyword).arg(offset);
+        sqlCount = QString("SELECT COUNT(*) FROM logs WHERE content LIKE '%'||?||'%'");
+        sqlFetch = QString("SELECT * FROM logs WHERE content LIKE '%'||?||'%' ORDER BY datetime(time) DESC, line ASC LIMIT %1, 200;").arg(offset);
     }
 
     FinishedQueryEvent* e = new FinishedQueryEvent;
     e->m_offset = offset;
-    if (sqlFetch == m_sqlFetch && sqlCount == m_sqlCount)
+    if (sqlFetch == m_sqlFetch && sqlCount == m_sqlCount && m_keyword.isEmpty())
     {
         QCoreApplication::postEvent(this, e);
         return;
@@ -263,6 +266,8 @@ void LogModel::doQuery(int offset)
     {
         QSqlQuery q(db);
         q.prepare(m_sqlCount);
+        if (!m_keyword.isEmpty())
+            q.addBindValue(m_keyword);
         if (q.exec()) {
             RowCountEvent* e = new RowCountEvent;
             e->m_rowCount = 0;
@@ -277,6 +282,8 @@ void LogModel::doQuery(int offset)
         }
 
         q.prepare(m_sqlFetch);
+        if (!m_keyword.isEmpty())
+            q.addBindValue(m_keyword);
         if (q.exec()) {
             int idIndex = q.record().indexOf("id");
             int dateTimeIndex = q.record().indexOf("time");

@@ -25,7 +25,7 @@ LogView::LogView(QWidget *parent)
     QVBoxLayout* m_mainLayout = new QVBoxLayout;
     Q_ASSERT(m_mainLayout);
     m_mainLayout->setMargin(0);
-    QTableView *m_tableView = new QTableView(this);
+    m_tableView = new QTableView(this);
     m_mainLayout->addWidget(m_tableView);
     setLayout(m_mainLayout);
 
@@ -33,7 +33,8 @@ LogView::LogView(QWidget *parent)
     m_tableView->setModel(m_model);
     m_tableView->horizontalHeader()->setSectionResizeMode(7, QHeaderView::Stretch);
 
-    connect(this, &LogView::filter, m_model, &LogModel::filter);
+    connect(this, &LogView::filter, m_model, &LogModel::onFilter);
+    connect(m_model, &LogModel::forceRepaint, this, &LogView::onForceRepaint);
 }
 
 LogView::~LogView()
@@ -100,6 +101,15 @@ bool LogView::matched(const QString &path)
 bool LogView::matched(const QStringList &paths)
 {
     return paths.join(":") == m_path;
+}
+
+void LogView::onForceRepaint()
+{
+    QSize size = parentWidget()->parentWidget()->size();
+    size.setHeight(size.height() + 1);
+    parentWidget()->parentWidget()->resize(size);
+    size.setHeight(size.height() - 1);
+    parentWidget()->parentWidget()->resize(size);
 }
 
 bool LogView::event(QEvent* e)
