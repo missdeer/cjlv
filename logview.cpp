@@ -5,6 +5,8 @@
 #include <QDir>
 #include <QStandardPaths>
 #include <QtConcurrent>
+#include <QVBoxLayout>
+#include <QTableView>
 #include <JlCompress.h>
 #include "logmodel.h"
 #include "logview.h"
@@ -18,11 +20,18 @@ public:
 };
 
 LogView::LogView(QWidget *parent)
-    :QTableView (parent)
+    :QWidget (parent)
 {
+    QVBoxLayout* m_mainLayout = new QVBoxLayout;
+    Q_ASSERT(m_mainLayout);
+    m_mainLayout->setMargin(0);
+    QTableView *m_tableView = new QTableView(this);
+    m_mainLayout->addWidget(m_tableView);
+    setLayout(m_mainLayout);
+
     m_model = new LogModel(this);
-    setModel(m_model);
-    horizontalHeader()->setSectionResizeMode(7, QHeaderView::Stretch);
+    m_tableView->setModel(m_model);
+    m_tableView->horizontalHeader()->setSectionResizeMode(7, QHeaderView::Stretch);
 }
 
 LogView::~LogView()

@@ -1,13 +1,13 @@
 #ifndef LOGVIEW_H
 #define LOGVIEW_H
 
-#include <QTableView>
+#include <QWidget>
 #include <QStringList>
 #include <QMutex>
 
 class LogModel;
 
-class LogView : public QTableView
+class LogView : public QWidget
 {
     Q_OBJECT
 public:

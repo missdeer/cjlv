@@ -49,6 +49,7 @@ private:
     QString m_dbFile;
     QStringList m_logFiles;
     QMap<int, QSharedPointer<LogItem>> m_logs;
+    QList<int> m_inQuery;
     QMutex m_eventMutex;
     QMutex m_queryMutex;
     int m_rowCount;

@@ -13,12 +13,20 @@
 #include "logmodel.h"
 
 static const QEvent::Type ROWCOUNT_EVENT = QEvent::Type(QEvent::User + 1);
+static const QEvent::Type FINISHEDQUERY_EVENT = QEvent::Type(QEvent::User + 2);
 
 class RowCountEvent : public QEvent
 {
 public:
     RowCountEvent() : QEvent(ROWCOUNT_EVENT) {}
     int m_rowCount;
+};
+
+class FinishedQueryEvent : public QEvent
+{
+public:
+    FinishedQueryEvent() : QEvent(FINISHEDQUERY_EVENT){}
+    int m_offset;
 };
 
 LogModel::LogModel(QObject *parent)
@@ -82,7 +90,7 @@ QVariant LogModel::data(const QModelIndex &index, int role) const
     case 0:
         return QVariant(r->id);
     case 1:
-        return QVariant(r->time.toString("YYYY-MM-dd hh:mm:ss.zzz"));
+        return QVariant(r->time.toString("yyyy-MM-dd hh:mm:ss.zzz"));
     case 2:
         return QVariant(r->level);
     case 3:
@@ -168,6 +176,16 @@ void LogModel::filter(const QString &keyword)
 
 void LogModel::query(int offset)
 {
+    Q_FOREACH(int i, m_inQuery)
+    {
+        if (offset >= i && offset < i + 200)
+        {
+            return;
+        }
+    }
+
+    m_inQuery.push_back(offset);
+
     QtConcurrent::run(this, &LogModel::doQuery, offset);
 }
 
@@ -221,6 +239,8 @@ void LogModel::doQuery(int offset)
 
     if (db.open())
     {
+        FinishedQueryEvent* e = new FinishedQueryEvent;
+        e->m_offset = offset;
         QSqlQuery q(db);
         q.prepare(m_sqlCount);
         if (q.exec()) {
@@ -266,6 +286,7 @@ void LogModel::doQuery(int offset)
             q.clear();
             q.finish();
         }
+        QCoreApplication::postEvent(this, e);
     }
 }
 
@@ -290,6 +311,9 @@ bool LogModel::event(QEvent *e)
             beginInsertRows(QModelIndex(), 0, m_rowCount-1);
             endInsertRows();
         }
+        return true;
+    case FINISHEDQUERY_EVENT:
+        m_inQuery.removeAll(((FinishedQueryEvent*)e)->m_offset);
         return true;
     default:
         break;
