@@ -28,6 +28,7 @@ class FinishedQueryEvent : public QEvent
 public:
     FinishedQueryEvent() : QEvent(FINISHEDQUERY_EVENT){}
     int m_offset;
+    int m_size;
 };
 
 LogModel::LogModel(QObject *parent)
@@ -211,8 +212,6 @@ void LogModel::onLogItemReady(int i,  QSharedPointer<LogItem> log)
     qDebug() << __FUNCTION__ << i << log;
 #endif
     m_logs[i] = log;
-    emit dataChanged(index(i,0), index(i, 0));
-    emit forceRepaint();
 }
 
 void LogModel::doReload()
@@ -250,6 +249,7 @@ void LogModel::doQuery(int offset)
 
     FinishedQueryEvent* e = new FinishedQueryEvent;
     e->m_offset = offset;
+    e->m_size = 0;
     if (sqlFetch == m_sqlFetch && sqlCount == m_sqlCount && m_keyword.isEmpty())
     {
         QCoreApplication::postEvent(this, e);
@@ -310,6 +310,7 @@ void LogModel::doQuery(int offset)
                 log->logFile = q.value(logIndex).toString();
                 log->line = q.value(lineIndex).toInt();
 
+                e->m_size++;
                 emit logItemReady(offset++, log);
             }
             q.clear();
@@ -342,8 +343,15 @@ bool LogModel::event(QEvent *e)
         }
         return true;
     case FINISHEDQUERY_EVENT:
-        qDebug() << "remove offset " << ((FinishedQueryEvent*)e)->m_offset;
-        m_inQuery.removeAll(((FinishedQueryEvent*)e)->m_offset);
+    {
+        int offset = ((FinishedQueryEvent*)e)->m_offset;
+        qDebug() << "remove offset " << offset;
+        m_inQuery.removeAll(offset);
+
+        int size = ((FinishedQueryEvent*)e)->m_size;
+        emit dataChanged(index(offset,0), index(offset+size, 0));
+        emit forceRepaint();
+    }
         return true;
     default:
         break;
