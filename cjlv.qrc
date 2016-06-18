@@ -5,5 +5,23 @@
         <file>image/open-folder.png</file>
         <file>image/open-installed-folder.png</file>
         <file>image/open-zip-file.png</file>
+        <file>image/preference.png</file>
+        <file>image/copy.png</file>
+        <file>image/copy-cell.png</file>
+        <file>image/copy-cells.png</file>
+        <file>image/copy-rows.png</file>
+        <file>image/close.png</file>
+        <file>image/closeall.png</file>
+        <file>image/keyword.png</file>
+        <file>image/field/content.png</file>
+        <file>image/field/method.png</file>
+        <file>image/field/category.png</file>
+        <file>image/field/datetime.png</file>
+        <file>image/field/id.png</file>
+        <file>image/field/level.png</file>
+        <file>image/field/line.png</file>
+        <file>image/field/log.png</file>
+        <file>image/field/source-file.png</file>
+        <file>image/field/thread.png</file>
     </qresource>
 </RCC>

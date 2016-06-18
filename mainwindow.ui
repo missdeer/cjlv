@@ -86,7 +86,7 @@
      <height>21</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menu_File">
+   <widget class="QMenu" name="menuFile">
     <property name="title">
      <string>&amp;File</string>
     </property>
@@ -105,7 +105,7 @@
     <property name="title">
      <string>Find</string>
     </property>
-    <widget class="QMenu" name="menuSearch_Field">
+    <widget class="QMenu" name="menuSearchField">
      <property name="title">
       <string>Search Field</string>
      </property>
@@ -118,16 +118,15 @@
      <addaction name="actionSearchFieldMethod"/>
      <addaction name="actionSearchFieldLogFile"/>
      <addaction name="actionSearchFieldLine"/>
+     <addaction name="actionLevel"/>
     </widget>
     <addaction name="actionSearch"/>
     <addaction name="actionFilter"/>
     <addaction name="separator"/>
     <addaction name="actionInputKeyword"/>
-    <addaction name="menuSearch_Field"/>
-    <addaction name="separator"/>
-    <addaction name="actionPreference"/>
+    <addaction name="menuSearchField"/>
    </widget>
-   <widget class="QMenu" name="menu_Help">
+   <widget class="QMenu" name="menuHelp">
     <property name="title">
      <string>&amp;Help</string>
     </property>
@@ -139,7 +138,7 @@
     </property>
     <addaction name="actionEditExtensions"/>
    </widget>
-   <widget class="QMenu" name="menu_Window">
+   <widget class="QMenu" name="menuWindow">
     <property name="title">
      <string>&amp;Window</string>
     </property>
@@ -155,13 +154,15 @@
     <addaction name="actionCopyCurrentRow"/>
     <addaction name="actionCopySelectedCells"/>
     <addaction name="actionCopySelectedRows"/>
+    <addaction name="separator"/>
+    <addaction name="actionPreference"/>
    </widget>
-   <addaction name="menu_File"/>
+   <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
    <addaction name="menuFind"/>
    <addaction name="menuExtension"/>
-   <addaction name="menu_Window"/>
-   <addaction name="menu_Help"/>
+   <addaction name="menuWindow"/>
+   <addaction name="menuHelp"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <property name="iconSize">
@@ -231,6 +232,10 @@
    </property>
   </action>
   <action name="actionClose">
+   <property name="icon">
+    <iconset resource="cjlv.qrc">
+     <normaloff>:/image/close.png</normaloff>:/image/close.png</iconset>
+   </property>
    <property name="text">
     <string>&amp;Close</string>
    </property>
@@ -239,6 +244,10 @@
    </property>
   </action>
   <action name="actionCloseAll">
+   <property name="icon">
+    <iconset resource="cjlv.qrc">
+     <normaloff>:/image/closeall.png</normaloff>:/image/closeall.png</iconset>
+   </property>
    <property name="text">
     <string>Close All</string>
    </property>
@@ -294,6 +303,10 @@
    </property>
   </action>
   <action name="actionAbout">
+   <property name="icon">
+    <iconset resource="cjlv.qrc">
+     <normaloff>:/cjlv.png</normaloff>:/cjlv.png</iconset>
+   </property>
    <property name="text">
     <string>&amp;About...</string>
    </property>
@@ -302,6 +315,10 @@
    </property>
   </action>
   <action name="actionPreference">
+   <property name="icon">
+    <iconset resource="cjlv.qrc">
+     <normaloff>:/image/preference.png</normaloff>:/image/preference.png</iconset>
+   </property>
    <property name="text">
     <string>&amp;Preference...</string>
    </property>
@@ -321,6 +338,10 @@
    </property>
   </action>
   <action name="actionInputKeyword">
+   <property name="icon">
+    <iconset resource="cjlv.qrc">
+     <normaloff>:/image/keyword.png</normaloff>:/image/keyword.png</iconset>
+   </property>
    <property name="text">
     <string>Input Keyword</string>
    </property>
@@ -338,6 +359,10 @@
    <property name="checked">
     <bool>true</bool>
    </property>
+   <property name="icon">
+    <iconset resource="cjlv.qrc">
+     <normaloff>:/image/field/content.png</normaloff>:/image/field/content.png</iconset>
+   </property>
    <property name="text">
     <string>Content</string>
    </property>
@@ -351,6 +376,10 @@
   <action name="actionSearchFieldID">
    <property name="checkable">
     <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="cjlv.qrc">
+     <normaloff>:/image/field/id.png</normaloff>:/image/field/id.png</iconset>
    </property>
    <property name="text">
     <string>ID</string>
@@ -366,6 +395,10 @@
    <property name="checkable">
     <bool>true</bool>
    </property>
+   <property name="icon">
+    <iconset resource="cjlv.qrc">
+     <normaloff>:/image/field/datetime.png</normaloff>:/image/field/datetime.png</iconset>
+   </property>
    <property name="text">
     <string>Date Time</string>
    </property>
@@ -379,6 +412,10 @@
   <action name="actionSearchFieldThread">
    <property name="checkable">
     <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="cjlv.qrc">
+     <normaloff>:/image/field/thread.png</normaloff>:/image/field/thread.png</iconset>
    </property>
    <property name="text">
     <string>Thread</string>
@@ -394,6 +431,10 @@
    <property name="checkable">
     <bool>true</bool>
    </property>
+   <property name="icon">
+    <iconset resource="cjlv.qrc">
+     <normaloff>:/image/field/category.png</normaloff>:/image/field/category.png</iconset>
+   </property>
    <property name="text">
     <string>Category</string>
    </property>
@@ -407,6 +448,10 @@
   <action name="actionSearchFieldSourceFile">
    <property name="checkable">
     <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="cjlv.qrc">
+     <normaloff>:/image/field/source-file.png</normaloff>:/image/field/source-file.png</iconset>
    </property>
    <property name="text">
     <string>Source File</string>
@@ -422,6 +467,10 @@
    <property name="checkable">
     <bool>true</bool>
    </property>
+   <property name="icon">
+    <iconset resource="cjlv.qrc">
+     <normaloff>:/image/field/method.png</normaloff>:/image/field/method.png</iconset>
+   </property>
    <property name="text">
     <string>Method</string>
    </property>
@@ -435,6 +484,10 @@
   <action name="actionSearchFieldLogFile">
    <property name="checkable">
     <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="cjlv.qrc">
+     <normaloff>:/image/field/log.png</normaloff>:/image/field/log.png</iconset>
    </property>
    <property name="text">
     <string>Log File</string>
@@ -450,6 +503,10 @@
    <property name="checkable">
     <bool>true</bool>
    </property>
+   <property name="icon">
+    <iconset resource="cjlv.qrc">
+     <normaloff>:/image/field/line.png</normaloff>:/image/field/line.png</iconset>
+   </property>
    <property name="text">
     <string>Line</string>
    </property>
@@ -461,11 +518,19 @@
    </property>
   </action>
   <action name="actionCopyCurrentCell">
+   <property name="icon">
+    <iconset resource="cjlv.qrc">
+     <normaloff>:/image/copy-cell.png</normaloff>:/image/copy-cell.png</iconset>
+   </property>
    <property name="text">
     <string>Copy Current Cell</string>
    </property>
   </action>
   <action name="actionCopyCurrentRow">
+   <property name="icon">
+    <iconset resource="cjlv.qrc">
+     <normaloff>:/image/copy.png</normaloff>:/image/copy.png</iconset>
+   </property>
    <property name="text">
     <string>Copy Current Row</string>
    </property>
@@ -474,13 +539,39 @@
    </property>
   </action>
   <action name="actionCopySelectedCells">
+   <property name="icon">
+    <iconset resource="cjlv.qrc">
+     <normaloff>:/image/copy-cells.png</normaloff>:/image/copy-cells.png</iconset>
+   </property>
    <property name="text">
     <string>Copy Selected Cells</string>
    </property>
   </action>
   <action name="actionCopySelectedRows">
+   <property name="icon">
+    <iconset resource="cjlv.qrc">
+     <normaloff>:/image/copy-rows.png</normaloff>:/image/copy-rows.png</iconset>
+   </property>
    <property name="text">
     <string>Copy Selected Rows</string>
+   </property>
+  </action>
+  <action name="actionLevel">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="cjlv.qrc">
+     <normaloff>:/image/field/level.png</normaloff>:/image/field/level.png</iconset>
+   </property>
+   <property name="text">
+    <string>Level</string>
+   </property>
+   <property name="toolTip">
+    <string>Search Level Field</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+F, Ctrl+V</string>
    </property>
   </action>
  </widget>

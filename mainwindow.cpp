@@ -223,3 +223,8 @@ void MainWindow::on_actionCopySelectedRows_triggered()
 {
     qDebug() << __FUNCTION__;
 }
+
+void MainWindow::on_actionLevel_triggered()
+{
+    ui->cbKeyword->lineEdit()->setPlaceholderText(tr("Search Field Level"));
+}

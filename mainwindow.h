@@ -68,6 +68,8 @@ private slots:
 
     void on_actionCopySelectedRows_triggered();
 
+    void on_actionLevel_triggered();
+
 private:
     Ui::MainWindow *ui;
 };
