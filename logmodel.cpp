@@ -108,7 +108,7 @@ QVariant LogModel::data(const QModelIndex &index, int role) const
     case 7:
         return QVariant(r->content);
     case 8:
-        return QVariant(r->logFile);
+        return QVariant("." + r->logFile);
     case 9:
         return QVariant(r->line);
     default:
