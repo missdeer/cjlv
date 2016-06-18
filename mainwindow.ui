@@ -109,16 +109,16 @@
      <property name="title">
       <string>Search Field</string>
      </property>
-     <addaction name="actionSearchFieldContent"/>
      <addaction name="actionSearchFieldID"/>
      <addaction name="actionSearchFieldDateTime"/>
+     <addaction name="actionSearchFieldLevel"/>
      <addaction name="actionSearchFieldThread"/>
-     <addaction name="actionSearchFieldCategory"/>
      <addaction name="actionSearchFieldSourceFile"/>
+     <addaction name="actionSearchFieldCategory"/>
      <addaction name="actionSearchFieldMethod"/>
+     <addaction name="actionSearchFieldContent"/>
      <addaction name="actionSearchFieldLogFile"/>
      <addaction name="actionSearchFieldLine"/>
-     <addaction name="actionSearchFieldLevel"/>
     </widget>
     <addaction name="actionSearch"/>
     <addaction name="actionFilter"/>
