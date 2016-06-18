@@ -103,6 +103,26 @@ bool LogView::matched(const QStringList &paths)
     return paths.join(":") == m_path;
 }
 
+void LogView::copyCurrentCell()
+{
+
+}
+
+void LogView::copyCurrentRow()
+{
+
+}
+
+void LogView::copySelectedCells()
+{
+
+}
+
+void LogView::copySelectedRows()
+{
+
+}
+
 void LogView::onForceRepaint()
 {
     QSize size = parentWidget()->parentWidget()->size();

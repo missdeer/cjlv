@@ -60,15 +60,7 @@ private slots:
 
     void on_actionSearchFieldLine_triggered();
 
-    void on_actionCopyCurrentCell_triggered();
-
-    void on_actionCopyCurrentRow_triggered();
-
-    void on_actionCopySelectedCells_triggered();
-
-    void on_actionCopySelectedRows_triggered();
-
-    void on_actionLevel_triggered();
+    void on_actionSearchFieldLevel_triggered();
 
     void on_actionClearKeyword_triggered();
 

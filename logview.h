@@ -26,6 +26,10 @@ public:
     bool matched(const QString& path);
     bool matched(const QStringList& paths);
 
+    void copyCurrentCell();
+    void copyCurrentRow();
+    void copySelectedCells();
+    void copySelectedRows();
 signals:
     void filter(const QString& keyword);
 protected:

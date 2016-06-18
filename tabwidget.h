@@ -19,6 +19,10 @@ public slots:
     void onCloseCurrent();
     void onTabCloseRequested(int index);
 
+    void onCopyCurrentCell();
+    void onCopyCurrentRow();
+    void onCopySelectedCells();
+    void onCopySelectedRows();
 private:
     int findTab(const QString& path);
     int findTab(const QStringList& paths);

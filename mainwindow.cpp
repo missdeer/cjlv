@@ -35,6 +35,10 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionClose, &QAction::triggered, ui->tabWidget, &TabWidget::onCloseCurrent);
     connect(ui->actionCloseAll, &QAction::triggered, ui->tabWidget, &TabWidget::onCloseAll);
     connect(ui->actionCloseAllButThis, &QAction::triggered, ui->tabWidget, &TabWidget::onCloseAllButThis);
+    connect(ui->actionCopyCurrentCell, &QAction::triggered, ui->tabWidget, &TabWidget::onCopyCurrentCell);
+    connect(ui->actionCopyCurrentRow, &QAction::triggered, ui->tabWidget, &TabWidget::onCopyCurrentRow);
+    connect(ui->actionCopySelectedCells, &QAction::triggered, ui->tabWidget, &TabWidget::onCopySelectedCells);
+    connect(ui->actionCopySelectedRows, &QAction::triggered, ui->tabWidget, &TabWidget::onCopySelectedRows);
     connect(ui->actionExit, &QAction::triggered, qApp, &QApplication::quit);
 
     g_settings.setSearchField("content");
@@ -222,30 +226,10 @@ void MainWindow::on_actionSearchFieldLine_triggered()
     g_settings.setSearchField("line");
 }
 
-void MainWindow::on_actionLevel_triggered()
+void MainWindow::on_actionSearchFieldLevel_triggered()
 {
     ui->cbKeyword->lineEdit()->setPlaceholderText(tr("Search Field Level"));
     g_settings.setSearchField("level");
-}
-
-void MainWindow::on_actionCopyCurrentCell_triggered()
-{
-    qDebug() << __FUNCTION__;
-}
-
-void MainWindow::on_actionCopyCurrentRow_triggered()
-{
-    qDebug() << __FUNCTION__;
-}
-
-void MainWindow::on_actionCopySelectedCells_triggered()
-{
-    qDebug() << __FUNCTION__;
-}
-
-void MainWindow::on_actionCopySelectedRows_triggered()
-{
-    qDebug() << __FUNCTION__;
 }
 
 void MainWindow::on_actionClearKeyword_triggered()

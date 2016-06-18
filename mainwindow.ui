@@ -118,7 +118,7 @@
      <addaction name="actionSearchFieldMethod"/>
      <addaction name="actionSearchFieldLogFile"/>
      <addaction name="actionSearchFieldLine"/>
-     <addaction name="actionLevel"/>
+     <addaction name="actionSearchFieldLevel"/>
     </widget>
     <addaction name="actionSearch"/>
     <addaction name="actionFilter"/>
@@ -557,7 +557,7 @@
     <string>Copy Selected Rows</string>
    </property>
   </action>
-  <action name="actionLevel">
+  <action name="actionSearchFieldLevel">
    <property name="checkable">
     <bool>true</bool>
    </property>

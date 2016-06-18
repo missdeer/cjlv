@@ -57,8 +57,47 @@ void TabWidget::filter(const QString& keyword)
     if (w)
     {
         LogView* v = qobject_cast<LogView*>(w);
-        qDebug() << __FUNCTION__ << keyword;
         emit v->filter(keyword);
+    }
+}
+
+void TabWidget::onCopyCurrentCell()
+{
+    QWidget* w = currentWidget();
+    if (w)
+    {
+        LogView* v = qobject_cast<LogView*>(w);
+        v->copyCurrentCell();
+    }
+}
+
+void TabWidget::onCopyCurrentRow()
+{
+    QWidget* w = currentWidget();
+    if (w)
+    {
+        LogView* v = qobject_cast<LogView*>(w);
+        v->copyCurrentRow();
+    }
+}
+
+void TabWidget::onCopySelectedCells()
+{
+    QWidget* w = currentWidget();
+    if (w)
+    {
+        LogView* v = qobject_cast<LogView*>(w);
+        v->copySelectedCells();
+    }
+}
+
+void TabWidget::onCopySelectedRows()
+{
+    QWidget* w = currentWidget();
+    if (w)
+    {
+        LogView* v = qobject_cast<LogView*>(w);
+        v->copySelectedRows();
     }
 }
 
