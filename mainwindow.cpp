@@ -107,7 +107,10 @@ void MainWindow::on_actionOpenCurrentInstalledJabberLogFolder_triggered()
     QDir d(dir);
     if (!d.exists())
     {
-        QMessageBox::warning(this, tr("Warning"), tr("Folder doesn't exist."), QMessageBox::Ok);
+        QMessageBox::critical(this,
+                             tr("Warning"),
+                             QString(tr("Folder '%1' doesn't exist.")).arg(dir),
+                             QMessageBox::Ok);
         return;
     }
 
