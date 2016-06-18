@@ -1,9 +1,11 @@
+#include <QtCore>
 #include <QApplication>
 #include <QActionGroup>
 #include <QFileDialog>
 #include <QStandardPaths>
 #include <QMessageBox>
 #include <QDir>
+#include <QLineEdit>
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
@@ -12,9 +14,22 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    QActionGroup *group = new QActionGroup(this);
-    group->addAction(ui->actionFilter);
-    group->addAction(ui->actionSearch);
+    QActionGroup *searchModeGroup = new QActionGroup(this);
+    searchModeGroup->addAction(ui->actionFilter);
+    searchModeGroup->addAction(ui->actionSearch);
+
+    QActionGroup *searchFieldGroup = new QActionGroup(this);
+    searchFieldGroup->addAction(ui->actionSearchFieldContent);
+    searchFieldGroup->addAction(ui->actionSearchFieldID);
+    searchFieldGroup->addAction(ui->actionSearchFieldCategory);
+    searchFieldGroup->addAction(ui->actionSearchFieldSourceFile);
+    searchFieldGroup->addAction(ui->actionSearchFieldMethod);
+    searchFieldGroup->addAction(ui->actionSearchFieldLogFile);
+    searchFieldGroup->addAction(ui->actionSearchFieldLine);
+    searchFieldGroup->addAction(ui->actionSearchFieldThread);
+    searchFieldGroup->addAction(ui->actionSearchFieldDateTime);
+
+    ui->cbKeyword->lineEdit()->setPlaceholderText(tr("Search Field Content"));
 
     connect(ui->actionClose, &QAction::triggered, ui->tabWidget, &TabWidget::onCloseCurrent);
     connect(ui->actionCloseAll, &QAction::triggered, ui->tabWidget, &TabWidget::onCloseAll);
@@ -137,4 +152,74 @@ void MainWindow::on_cbKeyword_editTextChanged(const QString &text)
 void MainWindow::on_cbKeyword_currentIndexChanged(const QString &text)
 {
     ui->tabWidget->filter(text);
+}
+
+void MainWindow::on_actionInputKeyword_triggered()
+{
+    ui->cbKeyword->setFocus();
+}
+
+void MainWindow::on_actionSearchFieldContent_triggered()
+{
+    ui->cbKeyword->lineEdit()->setPlaceholderText(tr("Search Field Content"));
+}
+
+void MainWindow::on_actionSearchFieldID_triggered()
+{
+    ui->cbKeyword->lineEdit()->setPlaceholderText(tr("Search Field ID"));
+}
+
+void MainWindow::on_actionSearchFieldDateTime_triggered()
+{
+    ui->cbKeyword->lineEdit()->setPlaceholderText(tr("Search Field Date Time"));
+}
+
+void MainWindow::on_actionSearchFieldThread_triggered()
+{
+    ui->cbKeyword->lineEdit()->setPlaceholderText(tr("Search Field Thread"));
+}
+
+void MainWindow::on_actionSearchFieldCategory_triggered()
+{
+    ui->cbKeyword->lineEdit()->setPlaceholderText(tr("Search Field Category"));
+}
+
+void MainWindow::on_actionSearchFieldSourceFile_triggered()
+{
+    ui->cbKeyword->lineEdit()->setPlaceholderText(tr("Search Field Source File"));
+}
+
+void MainWindow::on_actionSearchFieldMethod_triggered()
+{
+    ui->cbKeyword->lineEdit()->setPlaceholderText(tr("Search Field Method"));
+}
+
+void MainWindow::on_actionSearchFieldLogFile_triggered()
+{
+    ui->cbKeyword->lineEdit()->setPlaceholderText(tr("Search Field Log File"));
+}
+
+void MainWindow::on_actionSearchFieldLine_triggered()
+{
+    ui->cbKeyword->lineEdit()->setPlaceholderText(tr("Search Field Line"));
+}
+
+void MainWindow::on_actionCopyCurrentCell_triggered()
+{
+    qDebug() << __FUNCTION__;
+}
+
+void MainWindow::on_actionCopyCurrentRow_triggered()
+{
+    qDebug() << __FUNCTION__;
+}
+
+void MainWindow::on_actionCopySelectedCells_triggered()
+{
+    qDebug() << __FUNCTION__;
+}
+
+void MainWindow::on_actionCopySelectedRows_triggered()
+{
+    qDebug() << __FUNCTION__;
 }

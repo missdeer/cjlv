@@ -40,6 +40,34 @@ private slots:
 
     void on_cbKeyword_currentIndexChanged(const QString &text);
 
+    void on_actionInputKeyword_triggered();
+
+    void on_actionSearchFieldContent_triggered();
+
+    void on_actionSearchFieldID_triggered();
+
+    void on_actionSearchFieldDateTime_triggered();
+
+    void on_actionSearchFieldThread_triggered();
+
+    void on_actionSearchFieldCategory_triggered();
+
+    void on_actionSearchFieldSourceFile_triggered();
+
+    void on_actionSearchFieldMethod_triggered();
+
+    void on_actionSearchFieldLogFile_triggered();
+
+    void on_actionSearchFieldLine_triggered();
+
+    void on_actionCopyCurrentCell_triggered();
+
+    void on_actionCopyCurrentRow_triggered();
+
+    void on_actionCopySelectedCells_triggered();
+
+    void on_actionCopySelectedRows_triggered();
+
 private:
     Ui::MainWindow *ui;
 };
