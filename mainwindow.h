@@ -70,6 +70,8 @@ private slots:
 
     void on_actionLevel_triggered();
 
+    void on_actionClearKeyword_triggered();
+
 private:
     Ui::MainWindow *ui;
 };

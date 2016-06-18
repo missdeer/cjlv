@@ -124,6 +124,7 @@
     <addaction name="actionFilter"/>
     <addaction name="separator"/>
     <addaction name="actionInputKeyword"/>
+    <addaction name="actionClearKeyword"/>
     <addaction name="menuSearchField"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
@@ -572,6 +573,14 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+F, Ctrl+V</string>
+   </property>
+  </action>
+  <action name="actionClearKeyword">
+   <property name="text">
+    <string>Clear Keyword</string>
+   </property>
+   <property name="shortcut">
+    <string>Esc</string>
    </property>
   </action>
  </widget>

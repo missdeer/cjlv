@@ -10,6 +10,7 @@
 #include <QDateTime>
 #include <QRegularExpression>
 #include <QtConcurrent>
+#include "settings.h"
 #include "logmodel.h"
 
 static const QEvent::Type ROWCOUNT_EVENT = QEvent::Type(QEvent::User + 1);
@@ -242,8 +243,9 @@ void LogModel::doQuery(int offset)
     }
     else
     {
-        sqlCount = QString("SELECT COUNT(*) FROM logs WHERE content LIKE '%'||?||'%'");
-        sqlFetch = QString("SELECT * FROM logs WHERE content LIKE '%'||?||'%' ORDER BY datetime(time) DESC, line ASC LIMIT %1, 200;").arg(offset);
+        QString field = g_settings.searchField();
+        sqlCount = QString("SELECT COUNT(*) FROM logs WHERE %1 LIKE '%'||?||'%'").arg(field);
+        sqlFetch = QString("SELECT * FROM logs WHERE %1 LIKE '%'||?||'%' ORDER BY datetime(time) DESC, line ASC LIMIT %2, 200;").arg(field).arg(offset);
     }
 
     FinishedQueryEvent* e = new FinishedQueryEvent;

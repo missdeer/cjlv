@@ -15,12 +15,14 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     logview.cpp \
     logmodel.cpp \
-    tabwidget.cpp
+    tabwidget.cpp \
+    settings.cpp
 
 HEADERS  += mainwindow.h \
     logview.h \
     logmodel.h \
-    tabwidget.h
+    tabwidget.h \
+    settings.h
 
 FORMS    += mainwindow.ui
 

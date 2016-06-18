@@ -6,6 +6,7 @@
 #include <QMessageBox>
 #include <QDir>
 #include <QLineEdit>
+#include "settings.h"
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
@@ -35,6 +36,9 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionCloseAll, &QAction::triggered, ui->tabWidget, &TabWidget::onCloseAll);
     connect(ui->actionCloseAllButThis, &QAction::triggered, ui->tabWidget, &TabWidget::onCloseAllButThis);
     connect(ui->actionExit, &QAction::triggered, qApp, &QApplication::quit);
+
+    g_settings.setSearchField("content");
+    g_settings.setSearchOrFitler(false);
 }
 
 MainWindow::~MainWindow()
@@ -140,11 +144,13 @@ void MainWindow::on_actionAbout_triggered()
 void MainWindow::on_radioSearch_clicked()
 {
     ui->actionSearch->setChecked(ui->radioSearch->isChecked());
+    g_settings.setSearchOrFitler(ui->radioSearch->isChecked());
 }
 
 void MainWindow::on_radioFilter_clicked()
 {
     ui->actionFilter->setChecked(ui->radioFilter->isChecked());
+    g_settings.setSearchOrFitler(ui->radioSearch->isChecked());
 }
 
 void MainWindow::on_cbKeyword_editTextChanged(const QString &text)
@@ -165,46 +171,61 @@ void MainWindow::on_actionInputKeyword_triggered()
 void MainWindow::on_actionSearchFieldContent_triggered()
 {
     ui->cbKeyword->lineEdit()->setPlaceholderText(tr("Search Field Content"));
+    g_settings.setSearchField("content");
 }
 
 void MainWindow::on_actionSearchFieldID_triggered()
 {
     ui->cbKeyword->lineEdit()->setPlaceholderText(tr("Search Field ID"));
+    g_settings.setSearchField("id");
 }
 
 void MainWindow::on_actionSearchFieldDateTime_triggered()
 {
     ui->cbKeyword->lineEdit()->setPlaceholderText(tr("Search Field Date Time"));
+    g_settings.setSearchField("time");
 }
 
 void MainWindow::on_actionSearchFieldThread_triggered()
 {
     ui->cbKeyword->lineEdit()->setPlaceholderText(tr("Search Field Thread"));
+    g_settings.setSearchField("thread");
 }
 
 void MainWindow::on_actionSearchFieldCategory_triggered()
 {
     ui->cbKeyword->lineEdit()->setPlaceholderText(tr("Search Field Category"));
+    g_settings.setSearchField("category");
 }
 
 void MainWindow::on_actionSearchFieldSourceFile_triggered()
 {
     ui->cbKeyword->lineEdit()->setPlaceholderText(tr("Search Field Source File"));
+    g_settings.setSearchField("line");
 }
 
 void MainWindow::on_actionSearchFieldMethod_triggered()
 {
     ui->cbKeyword->lineEdit()->setPlaceholderText(tr("Search Field Method"));
+    g_settings.setSearchField("method");
 }
 
 void MainWindow::on_actionSearchFieldLogFile_triggered()
 {
     ui->cbKeyword->lineEdit()->setPlaceholderText(tr("Search Field Log File"));
+    g_settings.setSearchField("log");
 }
 
 void MainWindow::on_actionSearchFieldLine_triggered()
 {
     ui->cbKeyword->lineEdit()->setPlaceholderText(tr("Search Field Line"));
+    g_settings.setSearchField("line");
+}
+
+void MainWindow::on_actionLevel_triggered()
+{
+    ui->cbKeyword->lineEdit()->setPlaceholderText(tr("Search Field Level"));
+    g_settings.setSearchField("level");
 }
 
 void MainWindow::on_actionCopyCurrentCell_triggered()
@@ -227,7 +248,7 @@ void MainWindow::on_actionCopySelectedRows_triggered()
     qDebug() << __FUNCTION__;
 }
 
-void MainWindow::on_actionLevel_triggered()
+void MainWindow::on_actionClearKeyword_triggered()
 {
-    ui->cbKeyword->lineEdit()->setPlaceholderText(tr("Search Field Level"));
+    ui->cbKeyword->clearEditText();
 }
