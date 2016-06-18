@@ -105,22 +105,38 @@ bool LogView::matched(const QStringList &paths)
 
 void LogView::copyCurrentCell()
 {
+    QItemSelectionModel* selected =  m_tableView->selectionModel();
+    if (!selected->hasSelection())
+        return;
+    QModelIndex i = selected->currentIndex();
 
 }
 
 void LogView::copyCurrentRow()
 {
-
+    QItemSelectionModel* selected =  m_tableView->selectionModel();
+    if (!selected->hasSelection())
+        return;
+    int row = selected->currentIndex().row();
+    if (row >= 0)
+    {
+    }
 }
 
 void LogView::copySelectedCells()
 {
-
+    QItemSelectionModel* selected =  m_tableView->selectionModel();
+    if (!selected->hasSelection())
+        return;
+    QModelIndexList l = selected->selectedIndexes();
 }
 
 void LogView::copySelectedRows()
 {
-
+    QItemSelectionModel* selected =  m_tableView->selectionModel();
+    if (!selected->hasSelection())
+        return;
+    QModelIndexList l = selected->selectedIndexes();
 }
 
 void LogView::onForceRepaint()
