@@ -45,8 +45,10 @@ public:
     const QString& getText(const QModelIndex &index);
 signals:
     void logItemReady(int, QSharedPointer<LogItem>);
+    void logItemsReady(QMap<int, QSharedPointer<LogItem>>);
 public slots:
     void onLogItemReady(int i, QSharedPointer<LogItem> log);
+    void onLogItemsReady(QMap<int, QSharedPointer<LogItem>> logs);
     void onFilter(const QString& keyword);
 private:
     QString m_sqlCount;

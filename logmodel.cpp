@@ -17,6 +17,7 @@
 
 static const QEvent::Type ROWCOUNT_EVENT = QEvent::Type(QEvent::User + 1);
 static const QEvent::Type FINISHEDQUERY_EVENT = QEvent::Type(QEvent::User + 2);
+static const int align = 0x3F;
 
 class RowCountEvent : public QEvent
 {
@@ -40,6 +41,8 @@ LogModel::LogModel(QObject *parent)
 {
     qRegisterMetaType<QSharedPointer<LogItem>>("QSharedPointer<LogItem>");
     connect(this, &LogModel::logItemReady, this, &LogModel::onLogItemReady);
+    qRegisterMetaType<QMap<int, QSharedPointer<LogItem>>>("QMap<int, QSharedPointer<LogItem>>");
+    connect(this, &LogModel::logItemsReady, this, &LogModel::onLogItemsReady);
 }
 
 LogModel::~LogModel()
@@ -83,10 +86,11 @@ QVariant LogModel::data(const QModelIndex &index, int role) const
     auto it = m_logs.find(index.row());
     if (m_logs.end() == it)
     {
-#ifndef QT_NO_DEBUG
-        qDebug() << "do query index:" << index.row();
+        int alignRow = index.row() & (~align);
+#ifdef QT_NO_DEBUG
+        qDebug() << "do query index:" << alignRow;
 #endif
-        const_cast<LogModel&>(*this).query(index.row());
+        const_cast<LogModel&>(*this).query(alignRow);
         return QVariant();
     }
 
@@ -196,7 +200,6 @@ void LogModel::onFilter(const QString &keyword)
         beginRemoveRows(QModelIndex(), 0, m_rowCount-1);
         m_logs.clear();
         m_rowCount = 0;
-        m_totalRowCount = 0;
         endRemoveRows();
     }
 
@@ -390,6 +393,15 @@ void LogModel::onLogItemReady(int i,  QSharedPointer<LogItem> log)
     m_logs[i] = log;
 }
 
+void LogModel::onLogItemsReady(QMap<int, QSharedPointer<LogItem> > logs)
+{
+    auto i = logs.constBegin();
+    while (i != logs.constEnd()) {
+        m_logs[i.key()] = i.value();
+        ++i;
+    }
+}
+
 void LogModel::doReload()
 {
     RowCountEvent* e = new RowCountEvent;
@@ -412,7 +424,7 @@ void LogModel::doReload()
 void LogModel::doQuery(int offset)
 {
     //qDebug() << __FUNCTION__ << offset;
-    if (!m_queryMutex.tryLock())
+    if (!m_queryMutex.tryLock(m_totalRowCount/2000))
     {
         qDebug() << "obtaining lock failed";
         return;
@@ -519,6 +531,8 @@ void LogModel::doQuery(int offset)
             int contentIndex = q.record().indexOf("content");
             int logIndex = q.record().indexOf("log");
             int lineIndex = q.record().indexOf("line");
+            QMap<int, QSharedPointer<LogItem>> logs;
+            int logItemCount = 0;
             while (q.next() && !m_stopQuerying) {
                 QSharedPointer<LogItem> log =  QSharedPointer<LogItem>(new LogItem);
                 log->id = q.value(idIndex).toInt();
@@ -532,8 +546,24 @@ void LogModel::doQuery(int offset)
                 log->logFile = q.value(logIndex).toString();
                 log->line = q.value(lineIndex).toInt();
 
+                logs[ offset ] = log;
+                offset++;
+
                 e->m_size++;
-                emit logItemReady(offset++, log);
+                logItemCount++;
+                if (logItemCount == align)
+                {
+                    emit logItemsReady(logs);
+                    logs.clear();
+                    logItemCount = 0;
+                }
+                //emit logItemReady(offset++, log);
+            }
+            if (logItemCount)
+            {
+                emit logItemsReady(logs);
+                logs.clear();
+                logItemCount = 0;
             }
             q.clear();
             q.finish();
