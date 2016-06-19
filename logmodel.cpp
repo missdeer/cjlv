@@ -543,21 +543,52 @@ void LogModel::doQuery(int offset)
 bool LogModel::parseLine(const QByteArray& line, QStringList& results)
 {
     //QRegularExpression re("^([0-9]{4}\\-[0-9]{2}\\-[0-9]{2}\\s[0-9]{2}:[0-9]{2}:[0-9]{2},[0-9]{3})\\s+([A-Z]{4,5})\\s+\\[(0x[0-9a-f]{8,16})\\]\\s+\\[([0-9a-zA-Z:\\s\\-\\_\\/\\\\\\(\\)\\.]+)\\]\\s+\\[([0-9a-zA-Z\\-\\_\\.]+)\\]\\s+\\[([0-9a-zA-Z:~<>\\-\\_\\.]+)\\]\\s+\\-\\s+(.+)$");
-    QRegularExpression re("^([^A-Z]+)([^\\s]+)\\s+(\\[[^\\]]+\\])\\s+(\\[[^\\]]+\\])\\s+(\\[[^\\]]+\\])\\s+(\\[[^\\]]+\\])\\s+\\-\\s+(.+)$");
-    QRegularExpressionMatch m = re.match(line);
-    if (m.hasMatch())
+//    QRegularExpression re("^([^A-Z]+)([^\\s]+)\\s+(\\[[^\\]]+\\])\\s+(\\[[^\\]]+\\])\\s+(\\[[^\\]]+\\])\\s+(\\[[^\\]]+\\])\\s+\\-\\s+(.+)$");
+//    QRegularExpressionMatch m = re.match(line);
+//    if (m.hasMatch())
+//    {
+//        results.append( m.captured(1).trimmed());
+//        results.append( m.captured(2));
+//        results.append( m.captured(3));
+//        results.append( m.captured(4));
+//        results.append( m.captured(5));
+//        results.append( m.captured(6));
+//        results.append( m.captured(7));
+//        return true;
+//    }
+//    return false;
+
+    // manual parse
+    int startPos = 0;
+    int endPos = line.indexOf(' ');
+    if (endPos <= startPos)
+        return false;
+    endPos = line.indexOf(' ', endPos + 1);
+    if (endPos <= startPos)
+        return false;
+    results.append(line.mid(startPos, endPos - startPos)); // date time
+
+    startPos = endPos;
+    while(startPos < line.length() && line.at(startPos) == ' ')
+        startPos++;
+    endPos = line.indexOf(' ', startPos + 1);
+    if (endPos < 0 || endPos - startPos > 6 )
+        return false;
+    results.append(line.mid(startPos, endPos - startPos)); // level
+
+    for (int i = 0; i < 4; i++)
     {
-        results.append( m.captured(1).trimmed());
-        results.append( m.captured(2));
-        results.append( m.captured(3));
-        results.append( m.captured(4));
-        results.append( m.captured(5));
-        results.append( m.captured(6));
-        results.append( m.captured(7));
-        return true;
+        startPos = line.indexOf('[', endPos);
+        if (startPos < 0)
+            return false;
+        endPos = line.indexOf(']', startPos + 1);
+        if (endPos <= startPos)
+            return false;
+        results.append(line.mid(startPos + 1, endPos - startPos -1)); // thread, source, category, method
     }
 
-    return false;
+    results.append(line.mid(endPos + 3, -1)); // content
+    return true;
 }
 
 bool LogModel::event(QEvent *e)
