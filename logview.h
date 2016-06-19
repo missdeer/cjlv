@@ -4,11 +4,13 @@
 #include <QWidget>
 #include <QStringList>
 #include <QMutex>
+#include "scintillaconfig.h"
 
 class LogModel;
 
 QT_BEGIN_NAMESPACE
 class QTableView;
+class QSplitter;
 QT_END_NAMESPACE
 
 
@@ -37,11 +39,14 @@ protected:
 private slots:
     void onForceRepaint();
 private:
+    QSplitter* m_verticalSplitter;
+    ScintillaEdit* m_codeEditor;
     QTableView *m_tableView;
     LogModel* m_model;
     QString m_path;
     QString m_extractDir;
     QMutex m_mutex;
+    ScintillaConfig m_sc;
     bool event(QEvent *e) Q_DECL_OVERRIDE;
 
     void extract(LogView* v, const QString& fileName, const QString& dirName);

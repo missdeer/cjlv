@@ -7,7 +7,9 @@
 #include <QtConcurrent>
 #include <QVBoxLayout>
 #include <QTableView>
+#include <QSplitter>
 #include <JlCompress.h>
+#include "ScintillaEdit.h"
 #include "logmodel.h"
 #include "logview.h"
 
@@ -20,12 +22,17 @@ public:
 };
 
 LogView::LogView(QWidget *parent)
-    :QWidget (parent)
+    : QWidget (parent)
+    , m_verticalSplitter(new QSplitter( Qt::Vertical, parent))
+    , m_tableView(new QTableView(parent))
 {
+    m_verticalSplitter->addWidget(m_tableView);
+    m_verticalSplitter->addWidget(m_codeEditor);
+
     QVBoxLayout* m_mainLayout = new QVBoxLayout;
     Q_ASSERT(m_mainLayout);
     m_mainLayout->setMargin(0);
-    m_tableView = new QTableView(this);
+
     m_mainLayout->addWidget(m_tableView);
     setLayout(m_mainLayout);
 

@@ -4,25 +4,36 @@
 #
 #-------------------------------------------------
 
-QT       += core gui concurrent widgets sql
+QT       += core gui concurrent widgets sql xml
 
 TARGET = "Cisco Jabber Log Viewer"
 TEMPLATE = app
 
-include(3rdparty/quazip-0.7.2/quazip.pri)
+include($$PWD/3rdparty/quazip-0.7.2/quazip.pri)
+
+INCLUDEPATH += $$PWD/3rdparty/rapidxml-1.13 \
+    $$PWD/3rdparty/scintilla/qt/ScintillaEditBase \
+    $$PWD/3rdparty/scintilla/qt/ScintillaEdit \
+    $$PWD/3rdparty/scintilla/include \
+    $$PWD/3rdparty/scintilla/src \
+    $$PWD/3rdparty/scintilla/lexlib
+
+DEFINES += SCINTILLA_QT=1 SCI_LEXER=1 _CRT_SECURE_NO_DEPRECATE=1 SCI_STATIC_LINK=1 LOKI_FUNCTOR_IS_NOT_A_SMALLOBJECT
 
 SOURCES += main.cpp\
         mainwindow.cpp \
     logview.cpp \
     logmodel.cpp \
     tabwidget.cpp \
-    settings.cpp
+    settings.cpp \
+    scintillaconfig.cpp
 
 HEADERS  += mainwindow.h \
     logview.h \
     logmodel.h \
     tabwidget.h \
-    settings.h
+    settings.h \
+    scintillaconfig.h
 
 FORMS    += mainwindow.ui
 
@@ -42,9 +53,9 @@ macx: {
     icon.path = $$PWD
     icon.files += cjlv.png
     INSTALLS += icon
-    LIBS+=-L$$PWD/3rdparty/zlib-1.2.8 -lz
+    LIBS+=-L$$PWD/3rdparty/zlib-1.2.8 -F $$PWD/3rdparty/scintilla/bin -framework ScintillaEdit  -lz
 }
 
 win32: {
-    LIBS+=-L$$PWD/3rdparty/zlib-1.2.8 -lzlib
+    LIBS+=-L$$PWD/3rdparty/zlib-1.2.8 -L$$PWD/3rdparty/scintilla/bin -lScintillaEdit3 -lzlib
 }
