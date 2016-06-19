@@ -125,7 +125,7 @@ void LogView::copyCurrentCell()
     if (!selected->hasSelection())
         return;
     QModelIndex i = selected->currentIndex();
-
+    m_model->copyCell(i);
 }
 
 void LogView::copyCurrentRow()
@@ -134,9 +134,7 @@ void LogView::copyCurrentRow()
     if (!selected->hasSelection())
         return;
     int row = selected->currentIndex().row();
-    if (row >= 0)
-    {
-    }
+    m_model->copyRow(row);
 }
 
 void LogView::copySelectedCells()
@@ -145,6 +143,7 @@ void LogView::copySelectedCells()
     if (!selected->hasSelection())
         return;
     QModelIndexList l = selected->selectedIndexes();
+    m_model->copyCells(l);
 }
 
 void LogView::copySelectedRows()
@@ -153,6 +152,15 @@ void LogView::copySelectedRows()
     if (!selected->hasSelection())
         return;
     QModelIndexList l = selected->selectedIndexes();
+    QList<int> rows;
+    Q_FOREACH(const QModelIndex& i, l)
+    {
+        rows.append(i.row());
+    }
+    auto t = rows.toStdList();
+    t.unique();
+    rows = QList<int>::fromStdList(t);
+    m_model->copyRows(rows);
 }
 
 void LogView::scrollToTop()

@@ -37,6 +37,10 @@ public:
     void loadFromFiles(const QStringList& fileNames);
     void reload();
     void query(int offset);
+    void copyCell(const QModelIndex& cell);
+    void copyRow(int row);
+    void copyCells(const QModelIndexList& cells);
+    void copyRows(const QList<int>& rows);
     const QString& getText(const QModelIndex &index);
 signals:
     void logItemReady(int, QSharedPointer<LogItem>);

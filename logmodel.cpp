@@ -1,4 +1,5 @@
 #include <QtCore>
+#include <QApplication>
 #include <QMessageBox>
 #include <QSqlDatabase>
 #include <QSqlQuery>
@@ -10,6 +11,7 @@
 #include <QDateTime>
 #include <QRegularExpression>
 #include <QtConcurrent>
+#include <QClipboard>
 #include "settings.h"
 #include "logmodel.h"
 
@@ -211,6 +213,158 @@ void LogModel::query(int offset)
     m_inQuery.push_back(offset);
 
     QtConcurrent::run(this, &LogModel::doQuery, offset);
+}
+
+void LogModel::copyCell(const QModelIndex& cell)
+{
+    auto it = m_logs.find(cell.row());
+    if (m_logs.end() == it)
+    {
+        return;
+    }
+
+    QSharedPointer<LogItem> r = *it;
+    QClipboard *clipboard = QApplication::clipboard();
+    switch (cell.column())
+    {
+    case 0:
+        clipboard->setText(QString("%1").arg(r->id));
+        break;
+    case 1:
+        clipboard->setText(r->time.toString("yyyy-MM-dd hh:mm:ss.zzz"));
+        break;
+    case 2:
+        clipboard->setText(r->level);
+        break;
+    case 3:
+        clipboard->setText(r->thread);
+        break;
+    case 4:
+        clipboard->setText(r->source);
+        break;
+    case 5:
+        clipboard->setText(r->category);
+        break;
+    case 6:
+        clipboard->setText(r->method);
+        break;
+    case 7:
+        clipboard->setText(r->content);
+        break;
+    case 8:
+        clipboard->setText("." + r->logFile);
+        break;
+    case 9:
+        clipboard->setText(QString("%1").arg(r->line));
+        break;
+    default:
+        break;
+    }
+}
+
+void LogModel::copyRow(int row)
+{
+    auto it = m_logs.find(row);
+    if (m_logs.end() == it)
+    {
+        return;
+    }
+
+    QSharedPointer<LogItem> r = *it;
+    QClipboard *clipboard = QApplication::clipboard();
+    QString text = QString("%1 %2 [%3] [%4] [%5] [%6] - %7")
+                   .arg(r->time.toString("yyyy-MM-dd hh:mm:ss.zzz"))
+                   .arg(r->level)
+                   .arg(r->thread)
+                   .arg(r->source)
+                   .arg(r->category)
+                   .arg(r->method)
+                   .arg(r->content);
+    clipboard->setText(text);
+}
+
+void LogModel::copyCells(const QModelIndexList& cells)
+{
+    QString text;
+    QString t;
+    int lastRow = cells.at(0).row();
+    Q_FOREACH(const QModelIndex& cell, cells)
+    {
+        auto it = m_logs.find(cell.row());
+        if (m_logs.end() == it)
+        {
+            continue;
+        }
+
+        if (cell.row() != lastRow)
+        {
+            lastRow = cell.row();
+            text.append(t);
+            text.append("\n");
+            t.clear();
+        }
+
+        qDebug() << cell;
+
+        QSharedPointer<LogItem> r = *it;
+        switch (cell.column())
+        {
+        case 1:
+            t.append(r->time.toString("yyyy-MM-dd hh:mm:ss.zzz"));
+            text.append(" ");
+            break;
+        case 2:
+            t.append(r->level);
+            text.append(" ");
+            break;
+        case 3:
+            t.append(QString("[%1] ").arg(r->thread));
+            break;
+        case 4:
+            t.append(QString("[%1] ").arg(r->source));
+            break;
+        case 5:
+            t.append(QString("[%1] ").arg(r->category));
+            break;
+        case 6:
+            t.append(QString("[%1] ").arg(r->method));
+            break;
+        case 7:
+            t.append(QString("- %1").arg(r->content));
+            break;
+        default:
+            break;
+        }
+    }
+    text.append(t);
+    QClipboard *clipboard = QApplication::clipboard();
+    clipboard->setText(text);
+}
+
+void LogModel::copyRows(const QList<int>& rows)
+{
+    QString text;
+    Q_FOREACH(int row, rows)
+    {
+        auto it = m_logs.find(row);
+        if (m_logs.end() == it)
+        {
+            continue;
+        }
+
+        QSharedPointer<LogItem> r = *it;
+        QString t = QString("%1 %2 [%3] [%4] [%5] [%6] - %7\n")
+                       .arg(r->time.toString("yyyy-MM-dd hh:mm:ss.zzz"))
+                       .arg(r->level)
+                       .arg(r->thread)
+                       .arg(r->source)
+                       .arg(r->category)
+                       .arg(r->method)
+                       .arg(r->content);
+        text.append(t);
+    }
+    QClipboard *clipboard = QApplication::clipboard();
+    clipboard->setText(text);
 }
 
 const QString& LogModel::getText(const QModelIndex& index)
