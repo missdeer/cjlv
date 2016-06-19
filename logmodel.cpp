@@ -404,6 +404,7 @@ void LogModel::doReload()
         e->m_rowCount += copyFromFileToDatabase(fileName);
     }
     qint64 q = t.secsTo(QDateTime::currentDateTime());
+    createDatabaseIndex();
     qDebug() << "loaded elapsed " << q << " s";
     QCoreApplication::postEvent(this, e);
 }
@@ -630,6 +631,28 @@ bool LogModel::event(QEvent *e)
     return QObject::event(e);
 }
 
+void LogModel::createDatabaseIndex()
+{
+    QSqlDatabase db = QSqlDatabase::database(m_dbFile, true);
+    if (!db.isValid()) {
+        db = QSqlDatabase::addDatabase("QSQLITE", m_dbFile);
+        db.setDatabaseName(m_dbFile);
+    }
+
+    if (db.open())
+    {
+        QSqlQuery query(db);
+        query.exec("CREATE INDEX itime ON logs (epoch);");
+        query.exec("CREATE INDEX it ON logs (epoch, time);");
+        query.exec("CREATE INDEX il ON logs (epoch, level);");
+        query.exec("CREATE INDEX ith ON logs (epoch, thread);");
+        query.exec("CREATE INDEX is ON logs (epoch, source);");
+        query.exec("CREATE INDEX ic ON logs (epoch, category);");
+        query.exec("CREATE INDEX im ON logs (epoch, method);");
+        query.exec("CREATE INDEX io ON logs (epoch, content);");
+    }
+}
+
 void LogModel::createDatabase()
 {
     m_dbFile = QStandardPaths::writableLocation(QStandardPaths::TempLocation);
@@ -653,14 +676,6 @@ void LogModel::createDatabase()
     {
         QSqlQuery query(db);
         query.exec("CREATE TABLE logs(id INTEGER PRIMARY KEY AUTOINCREMENT,epoch INTEGER, time DATETIME,level TEXT,thread TEXT,source TEXT,category TEXT,method TEXT, content TEXT, log TEXT, line INTEGER);");
-        query.exec("CREATE INDEX itime ON logs (epoch);");
-        query.exec("CREATE INDEX it ON logs (epoch, time);");
-        query.exec("CREATE INDEX il ON logs (epoch, level);");
-        query.exec("CREATE INDEX ith ON logs (epoch, thread);");
-        query.exec("CREATE INDEX is ON logs (epoch, source);");
-        query.exec("CREATE INDEX ic ON logs (epoch, category);");
-        query.exec("CREATE INDEX im ON logs (epoch, method);");
-        query.exec("CREATE INDEX io ON logs (epoch, content);");
     }
 }
 
@@ -704,7 +719,11 @@ int LogModel::copyFromFileToDatabase(const QString &fileName)
     int recordCount = 0;
     int appendLine = 1;
     QSqlQuery query(db);
-    db.transaction();    
+    query.exec("PRAGMA synchronous = OFF");
+    query.exec("PRAGMA journal_mode = MEMORY");
+    query.prepare("INSERT INTO logs (time, epoch, level, thread, source, category, method, content, log, line) "
+        "VALUES (:time, :epoch, :level, :thread, :source, :category, :method, :content, :log, :line );");
+    db.transaction();
     while(!f.atEnd())
     {
         QByteArray lookAhead = f.readLine();
@@ -722,8 +741,6 @@ int LogModel::copyFromFileToDatabase(const QString &fileName)
         {
             //qDebug() << "save line";
             // save to database
-            query.prepare("INSERT INTO logs (time, epoch, level, thread, source, category, method, content, log, line) "
-                "VALUES (:time, :epoch, :level, :thread, :source, :category, :method, :content, :log, :line );");
             query.bindValue(":time", dateTime);
             query.bindValue(":epoch", QDateTime::fromString(dateTime, "yyyy-MM-dd hh:mm:ss,zzz").toMSecsSinceEpoch());
             query.bindValue(":level", level);
@@ -741,7 +758,7 @@ int LogModel::copyFromFileToDatabase(const QString &fileName)
             } else {
                 recordCount++;
             }
-            query.clear();
+            //query.clear();
 
             appendLine = 1;
             // parse lookAhead

@@ -76,6 +76,7 @@ private:
     void doQuery(int offset);
     bool parseLine(const QByteArray& line, QStringList& results);
     bool event(QEvent *e) Q_DECL_OVERRIDE;
+    void createDatabaseIndex();
 };
 
 #endif // LOGMODEL_H
