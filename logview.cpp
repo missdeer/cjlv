@@ -167,7 +167,10 @@ void LogView::onDoubleClicked(const QModelIndex& index)
         {
             QString header = text.mid(0, startPos);
             QString xmlIn = text.mid(startPos, endPos - startPos + 1);
-
+#ifndef QT_NO_DEBUG
+            qDebug() << "raw text:" << text;
+            qDebug() << "xml in:" << xmlIn;
+#endif
             QString xmlOut;
 
             QXmlStreamReader reader(xmlIn);
