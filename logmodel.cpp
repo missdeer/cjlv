@@ -175,6 +175,9 @@ void LogModel::reload()
 
 void LogModel::onFilter(const QString &keyword)
 {
+    // stop other query thread first
+
+    // then start new query
     if (m_rowCount > 0)
     {
         beginRemoveRows(QModelIndex(), 0, m_rowCount-1);
@@ -240,7 +243,26 @@ void LogModel::doReload()
 void LogModel::doQuery(int offset)
 {
     qDebug() << __FUNCTION__ << offset;
-    QMutexLocker lock(&m_queryMutex);
+    if (!m_queryMutex.tryLock())
+    {
+        qDebug() << "obtaining lock failed";
+        return;
+    }
+
+    struct scoped_unlock
+    {
+        QMutex& m_queryMutex_;
+        explicit scoped_unlock(QMutex& queryMutex)
+            : m_queryMutex_(queryMutex)
+        {
+        }
+        ~scoped_unlock()
+        {
+            m_queryMutex_.unlock();
+        }
+    };
+    scoped_unlock sl(m_queryMutex);
+
     QString sqlCount;
     QString sqlFetch ;
     if (m_keyword.isEmpty())
@@ -258,9 +280,24 @@ void LogModel::doQuery(int offset)
     FinishedQueryEvent* e = new FinishedQueryEvent;
     e->m_offset = offset;
     e->m_size = 0;
+
+    struct scoped_event_throw
+    {
+        LogModel* target_;
+        FinishedQueryEvent* e_;
+        scoped_event_throw(LogModel* t, FinishedQueryEvent* e)
+            : target_(t), e_(e)
+        {
+        }
+        ~scoped_event_throw()
+        {
+            QCoreApplication::postEvent(target_, e_);
+        }
+    };
+    scoped_event_throw se(this, e);
+
     if (sqlFetch == m_sqlFetch && sqlCount == m_sqlCount && m_keyword.isEmpty())
     {
-        QCoreApplication::postEvent(this, e);
         return;
     }
     m_sqlCount = sqlCount;
@@ -328,7 +365,6 @@ void LogModel::doQuery(int offset)
             q.finish();
         }
     }
-    QCoreApplication::postEvent(this, e);
 }
 
 bool LogModel::event(QEvent *e)
