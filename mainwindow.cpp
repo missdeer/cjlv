@@ -189,7 +189,7 @@ void MainWindow::on_actionSearchFieldID_triggered()
 void MainWindow::on_actionSearchFieldDateTime_triggered()
 {
     ui->cbKeyword->lineEdit()->setPlaceholderText(tr("Search Field Date Time"));
-    g_settings.setSearchField("timecol");
+    g_settings.setSearchField("time");
 }
 
 void MainWindow::on_actionSearchFieldThread_triggered()

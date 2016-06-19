@@ -183,6 +183,13 @@ void LogModel::onFilter(const QString &keyword)
     // stop other query thread first
     m_stopQuerying = true;
 
+    if (!m_queryFuture.isFinished())
+    {
+        qDebug() << "wait for finished";
+        m_queryFuture.waitForFinished();
+        m_inQuery.clear();
+    }
+
     // then start new query
     if (m_rowCount > 0)
     {
@@ -212,7 +219,7 @@ void LogModel::query(int offset)
 
     m_inQuery.push_back(offset);
 
-    QtConcurrent::run(this, &LogModel::doQuery, offset);
+    m_queryFuture = QtConcurrent::run(this, &LogModel::doQuery, offset);
 }
 
 void LogModel::copyCell(const QModelIndex& cell)
@@ -387,10 +394,13 @@ void LogModel::doReload()
 {
     RowCountEvent* e = new RowCountEvent;
     e->m_rowCount = 0;
+    //qDebug() << "creating database";
     createDatabase();
+    //qDebug() << "created database";
     QDateTime t = QDateTime::currentDateTime();
     Q_FOREACH(const QString& fileName, m_logFiles)
     {
+       // qDebug() << "copying from file " << fileName;
         e->m_rowCount += copyFromFileToDatabase(fileName);
     }
     qint64 q = t.secsTo(QDateTime::currentDateTime());
@@ -400,7 +410,7 @@ void LogModel::doReload()
 
 void LogModel::doQuery(int offset)
 {
-    qDebug() << __FUNCTION__ << offset;
+    //qDebug() << __FUNCTION__ << offset;
     if (!m_queryMutex.tryLock())
     {
         qDebug() << "obtaining lock failed";
@@ -426,13 +436,13 @@ void LogModel::doQuery(int offset)
     if (m_keyword.isEmpty())
     {
          sqlCount = "SELECT COUNT(*) FROM logs";
-         sqlFetch = QString("SELECT * FROM logs ORDER BY timecol LIMIT %1, 200;").arg(offset);
+         sqlFetch = QString("SELECT * FROM logs ORDER BY epoch LIMIT %1, 200;").arg(offset);
     }
     else
     {
         QString field = g_settings.searchField();
         sqlCount = QString("SELECT COUNT(*) FROM logs WHERE %1 LIKE '%'||?||'%'").arg(field);
-        sqlFetch = QString("SELECT * FROM logs WHERE %1 LIKE '%'||?||'%' ORDER BY timecol LIMIT %2, 200;").arg(field).arg(offset);
+        sqlFetch = QString("SELECT * FROM logs WHERE %1 LIKE '%'||?||'%' ORDER BY epoch LIMIT %2, 200;").arg(field).arg(offset);
     }
 
     FinishedQueryEvent* e = new FinishedQueryEvent;
@@ -499,7 +509,7 @@ void LogModel::doQuery(int offset)
             if (m_stopQuerying)
                 return;
             int idIndex = q.record().indexOf("id");
-            int dateTimeIndex = q.record().indexOf("timecol");
+            int dateTimeIndex = q.record().indexOf("time");
             int levelIndex = q.record().indexOf("level");
             int threadIndex = q.record().indexOf("thread");
             int sourceIndex = q.record().indexOf("source");
@@ -511,10 +521,7 @@ void LogModel::doQuery(int offset)
             while (q.next() && !m_stopQuerying) {
                 QSharedPointer<LogItem> log =  QSharedPointer<LogItem>(new LogItem);
                 log->id = q.value(idIndex).toInt();
-                qint64 ms = q.value(dateTimeIndex).toLongLong();
-                QDateTime dt;
-                dt.setMSecsSinceEpoch(ms);
-                log->time = dt;
+                log->time =  q.value(dateTimeIndex).toDateTime();
                 log->level = q.value(levelIndex).toString();
                 log->thread = q.value(threadIndex).toString();
                 log->source = q.value(sourceIndex).toString();
@@ -531,6 +538,26 @@ void LogModel::doQuery(int offset)
             q.finish();
         }
     }
+}
+
+bool LogModel::parseLine(const QByteArray& line, QStringList& results)
+{
+    //QRegularExpression re("^([0-9]{4}\\-[0-9]{2}\\-[0-9]{2}\\s[0-9]{2}:[0-9]{2}:[0-9]{2},[0-9]{3})\\s+([A-Z]{4,5})\\s+\\[(0x[0-9a-f]{8,16})\\]\\s+\\[([0-9a-zA-Z:\\s\\-\\_\\/\\\\\\(\\)\\.]+)\\]\\s+\\[([0-9a-zA-Z\\-\\_\\.]+)\\]\\s+\\[([0-9a-zA-Z:~<>\\-\\_\\.]+)\\]\\s+\\-\\s+(.+)$");
+    QRegularExpression re("^([^A-Z]+)([^\\s]+)\\s+(\\[[^\\]]+\\])\\s+(\\[[^\\]]+\\])\\s+(\\[[^\\]]+\\])\\s+(\\[[^\\]]+\\])\\s+\\-\\s+(.+)$");
+    QRegularExpressionMatch m = re.match(line);
+    if (m.hasMatch())
+    {
+        results.append( m.captured(1).trimmed());
+        results.append( m.captured(2));
+        results.append( m.captured(3));
+        results.append( m.captured(4));
+        results.append( m.captured(5));
+        results.append( m.captured(6));
+        results.append( m.captured(7));
+        return true;
+    }
+
+    return false;
 }
 
 bool LogModel::event(QEvent *e)
@@ -594,13 +621,15 @@ void LogModel::createDatabase()
     if (db.open())
     {
         QSqlQuery query(db);
-        query.exec("CREATE TABLE logs(id INTEGER PRIMARY KEY AUTOINCREMENT,timecol INTEGER,level TEXT,thread TEXT,source TEXT,category TEXT,method TEXT, content TEXT, log TEXT, line INTEGER);");
-        query.exec("CREATE INDEX itime ON logs (timecol);");
-        query.exec("CREATE INDEX it ON logs (timecol, line);");
-        query.exec("CREATE INDEX is ON logs (source);");
-        query.exec("CREATE INDEX ic ON logs (category);");
-        query.exec("CREATE INDEX im ON logs (method);");
-        query.exec("CREATE INDEX io ON logs (content);");
+        query.exec("CREATE TABLE logs(id INTEGER PRIMARY KEY AUTOINCREMENT,epoch INTEGER, time DATETIME,level TEXT,thread TEXT,source TEXT,category TEXT,method TEXT, content TEXT, log TEXT, line INTEGER);");
+        query.exec("CREATE INDEX itime ON logs (epoch);");
+        query.exec("CREATE INDEX it ON logs (epoch, time);");
+        query.exec("CREATE INDEX il ON logs (epoch, level);");
+        query.exec("CREATE INDEX ith ON logs (epoch, thread);");
+        query.exec("CREATE INDEX is ON logs (epoch, source);");
+        query.exec("CREATE INDEX ic ON logs (epoch, category);");
+        query.exec("CREATE INDEX im ON logs (epoch, method);");
+        query.exec("CREATE INDEX io ON logs (epoch, content);");
     }
 }
 
@@ -622,25 +651,23 @@ int LogModel::copyFromFileToDatabase(const QString &fileName)
 
     QFileInfo fi(fileName);
     QString suffix = fi.suffix();
-    QRegularExpression re("^([0-9]{4}\\-[0-9]{2}\\-[0-9]{2}\\s[0-9]{2}:[0-9]{2}:[0-9]{2},[0-9]{3})\\s+([A-Z]{4,5})\\s+\\[(0x[0-9a-f]{8,16})\\]\\s+\\[([0-9a-zA-Z:\\s\\-\\_\\/\\\\\\(\\)\\.]+)\\]\\s+\\[([0-9a-zA-Z\\-\\_\\.]+)\\]\\s+\\[([0-9a-zA-Z:~<>\\-\\_\\.]+)\\]\\s+\\-\\s+(.+)$");
-
+    QStringList results;
     QByteArray line = f.readLine();
     int lineNo = 1;
-    QRegularExpressionMatch m = re.match(line);
-    if (!m.hasMatch())
+    if (!parseLine(line, results))
     {
         // append to last line
         content.append(line);
     }
     else
     {
-        dateTime = m.captured(1);
-        level = m.captured(2);
-        thread = m.captured(3);
-        source = m.captured(4);
-        category = m.captured(5);
-        method = m.captured(6);
-        content = m.captured(7);
+        dateTime = results.at(0);
+        level = results.at(1);
+        thread = results.at(2);
+        source = results.at(3);
+        category = results.at(4);
+        method = results.at(5);
+        content = results.at(6);
     }
 
     int recordCount = 0;
@@ -651,8 +678,8 @@ int LogModel::copyFromFileToDatabase(const QString &fileName)
     {
         QByteArray lookAhead = f.readLine();
         lineNo++;
-        m = re.match(lookAhead);
-        if (! m.hasMatch())
+        results.clear();
+        if (!parseLine(lookAhead, results))
         {
             // append to last line
             content.append("\n");
@@ -664,9 +691,10 @@ int LogModel::copyFromFileToDatabase(const QString &fileName)
         {
             //qDebug() << "save line";
             // save to database
-            query.prepare("INSERT INTO logs (timecol, level, thread, source, category, method, content, log, line) "
-                "VALUES (:timecol, :level, :thread, :source, :category, :method, :content, :log, :line );");
-            query.bindValue(":timecol", QDateTime::fromString(dateTime, "yyyy-MM-dd hh:mm:ss,zzz").toMSecsSinceEpoch());
+            query.prepare("INSERT INTO logs (time, epoch, level, thread, source, category, method, content, log, line) "
+                "VALUES (:time, :epoch, :level, :thread, :source, :category, :method, :content, :log, :line );");
+            query.bindValue(":time", dateTime);
+            query.bindValue(":epoch", QDateTime::fromString(dateTime, "yyyy-MM-dd hh:mm:ss,zzz").toMSecsSinceEpoch());
             query.bindValue(":level", level);
             query.bindValue(":thread", thread);
             query.bindValue(":source", source);
@@ -686,13 +714,13 @@ int LogModel::copyFromFileToDatabase(const QString &fileName)
 
             appendLine = 1;
             // parse lookAhead
-            dateTime = m.captured(1);
-            level = m.captured(2);
-            thread = m.captured(3);
-            source = m.captured(4);
-            category = m.captured(5);
-            method = m.captured(6);
-            content = m.captured(7);
+            dateTime = results.at(0);
+            level = results.at(1);
+            thread = results.at(2);
+            source = results.at(3);
+            category = results.at(4);
+            method = results.at(5);
+            content = results.at(6);
             //qDebug() << "parse look ahead";
         }
     }

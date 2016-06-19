@@ -5,6 +5,7 @@
 #include <QDateTime>
 #include <QMap>
 #include <QSharedPointer>
+#include <QFuture>
 
 struct LogItem {
     int id;
@@ -57,6 +58,7 @@ private:
     QList<int> m_inQuery;
     QMutex m_eventMutex;
     QMutex m_queryMutex;
+    QFuture<void> m_queryFuture;
     int m_rowCount;
     int m_totalRowCount;
     bool m_stopQuerying;
@@ -72,6 +74,7 @@ private:
     int copyFromFileToDatabase(const QString& fileName);
     void doReload();
     void doQuery(int offset);
+    bool parseLine(const QByteArray& line, QStringList& results);
     bool event(QEvent *e) Q_DECL_OVERRIDE;
 };
 
