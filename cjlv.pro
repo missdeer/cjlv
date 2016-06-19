@@ -57,5 +57,7 @@ macx: {
 }
 
 win32: {
-    LIBS+=-L$$PWD/3rdparty/zlib-1.2.8 -L$$PWD/3rdparty/scintilla/bin -lScintillaEdit3 -lzlib
+    CONFIG(release, debug|release): LIBS += -L$$PWD/3rdparty/scintilla/bin/release
+    else: LIBS += -L$$PWD/3rdparty/scintilla/bin/debug
+    LIBS+=-L$$PWD/3rdparty/zlib-1.2.8 -lScintillaEdit3 -lzlib
 }
