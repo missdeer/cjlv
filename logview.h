@@ -32,6 +32,9 @@ public:
     void copyCurrentRow();
     void copySelectedCells();
     void copySelectedRows();
+
+    void scrollToTop();
+    void scrollToBottom();
 signals:
     void filter(const QString& keyword);
 protected:

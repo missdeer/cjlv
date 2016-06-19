@@ -155,6 +155,16 @@ void LogView::copySelectedRows()
     QModelIndexList l = selected->selectedIndexes();
 }
 
+void LogView::scrollToTop()
+{
+    m_tableView->scrollToTop();
+}
+
+void LogView::scrollToBottom()
+{
+    m_tableView->scrollToBottom();
+}
+
 void LogView::onDoubleClicked(const QModelIndex& index)
 {
     if (index.column() == 7)// the content field

@@ -126,6 +126,9 @@
     <addaction name="actionInputKeyword"/>
     <addaction name="actionClearKeyword"/>
     <addaction name="menuSearchField"/>
+    <addaction name="separator"/>
+    <addaction name="actionScrollToTop"/>
+    <addaction name="actionScrollToBottom"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
@@ -585,6 +588,22 @@
    </property>
    <property name="shortcut">
     <string>Esc</string>
+   </property>
+  </action>
+  <action name="actionScrollToTop">
+   <property name="text">
+    <string>Scroll To Top</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+T</string>
+   </property>
+  </action>
+  <action name="actionScrollToBottom">
+   <property name="text">
+    <string>Scroll To Bottom</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+B</string>
    </property>
   </action>
  </widget>

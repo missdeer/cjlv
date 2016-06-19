@@ -101,6 +101,26 @@ void TabWidget::onCopySelectedRows()
     }
 }
 
+void TabWidget::onScrollToTop()
+{
+    QWidget* w = currentWidget();
+    if (w)
+    {
+        LogView* v = qobject_cast<LogView*>(w);
+        v->scrollToTop();
+    }
+}
+
+void TabWidget::onScrollToBottom()
+{
+    QWidget* w = currentWidget();
+    if (w)
+    {
+        LogView* v = qobject_cast<LogView*>(w);
+        v->scrollToBottom();
+    }
+}
+
 void TabWidget::onCloseAll()
 {
     for (int index = count() -1; index >=0; index--)

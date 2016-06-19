@@ -23,6 +23,9 @@ public slots:
     void onCopyCurrentRow();
     void onCopySelectedCells();
     void onCopySelectedRows();
+
+    void onScrollToTop();
+    void onScrollToBottom();
 private:
     int findTab(const QString& path);
     int findTab(const QStringList& paths);
