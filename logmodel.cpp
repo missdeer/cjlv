@@ -206,6 +206,14 @@ void LogModel::query(int offset)
     QtConcurrent::run(this, &LogModel::doQuery, offset);
 }
 
+const QString& LogModel::getText(const QModelIndex& index)
+{
+    auto it = m_logs.find(index.row());
+    Q_ASSERT(m_logs.end() != it);
+    QSharedPointer<LogItem> r = *it;
+    return r->content;
+}
+
 void LogModel::onLogItemReady(int i,  QSharedPointer<LogItem> log)
 {
 #ifndef QT_NO_DEBUG

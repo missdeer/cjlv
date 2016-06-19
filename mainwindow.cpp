@@ -234,5 +234,6 @@ void MainWindow::on_actionSearchFieldLevel_triggered()
 
 void MainWindow::on_actionClearKeyword_triggered()
 {
+    ui->cbKeyword->setFocus();
     ui->cbKeyword->clearEditText();
 }

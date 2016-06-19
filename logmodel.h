@@ -37,6 +37,7 @@ public:
     void loadFromFiles(const QStringList& fileNames);
     void reload();
     void query(int offset);
+    const QString& getText(const QModelIndex &index);
 signals:
     void logItemReady(int, QSharedPointer<LogItem>);
 public slots:

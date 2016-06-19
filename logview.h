@@ -37,11 +37,11 @@ signals:
 protected:
 
 private slots:
-
+    void onDoubleClicked(const QModelIndex &index);
 private:
     QSplitter* m_verticalSplitter;
-    ScintillaEdit* m_codeEditor;
     QTableView *m_tableView;
+    ScintillaEdit* m_codeEditor;
     LogModel* m_model;
     QString m_path;
     QString m_extractDir;
