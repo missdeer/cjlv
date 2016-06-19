@@ -1,0 +1,4 @@
+<AinesmileLanguage name="haskell" pattern="" suffix="hs lhs as las" comment_line="--" comment_start="" comment_end="">
+	<keyword name="instre1">as case class data default deriving do else hiding if import in infix infixl infixr instance let module newtype of proc qualified rec then type where _</keyword>
+</AinesmileLanguage>
+

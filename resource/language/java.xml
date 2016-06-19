@@ -1,0 +1,5 @@
+<AinesmileLanguage name="java" pattern="" suffix="java" comment_line="//" comment_start="/*" comment_end="*/">
+	<keyword name="instre1">instanceof assert if else switch case default break goto return for while do continue new throw throws try catch finally this super extends implements import true false null</keyword>
+	<keyword name="type1">package transient strictfp void char short int long double float const static volatile byte boolean class interface native private protected public final abstract synchronized enum</keyword>
+</AinesmileLanguage>
+

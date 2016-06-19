@@ -1,0 +1,4 @@
+<AinesmileLanguage name="ruby" pattern="" suffix="rb rbw" comment_line="#" comment_start="" comment_end="">
+	<keyword name="instre1">ARGF ARGV BEGIN END ENV FALSE DATA NIL RUBY_PATCHLEVEL RUBY_PLATFORM RUBY_RELEASE_DATE RUBY_VERSION PLATFORM RELEASE_DATE STDERR STDIN STDOUT TOPLEVEL_BINDING TRUE __ENCODING__ __END__ __FILE__ __LINE__ alias and begin break case class def defined? do else elsif end ensure false for if in module next nil not or redo rescue retry return self super then true undef unless until when while yield</keyword>
+</AinesmileLanguage>
+

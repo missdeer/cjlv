@@ -1,0 +1,7 @@
+<AinesmileLanguage name="objc" pattern="" suffix="" comment_line="//" comment_start="/*" comment_end="*/">
+	<keyword name="instre1">if else switch case default break goto return for while do continue typedef sizeof NULL self super nil NIL</keyword>
+	<keyword name="instre2">interface implementation protocol end private protected public class selector encode defs</keyword>
+	<keyword name="type1">void struct union enum char short int long double float signed unsigned const static extern auto register volatile id Class SEL IMP BOOL</keyword>
+	<keyword name="type2">oneway in out inout bycopy byref</keyword>
+</AinesmileLanguage>
+

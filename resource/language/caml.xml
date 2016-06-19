@@ -1,0 +1,6 @@
+<AinesmileLanguage name="caml" pattern="" suffix="ml mli sml thy" comment_line="" comment_start="(*" comment_end="*)">
+	<keyword name="instre1">and as assert asr begin class constraint do done downto else end exception external false for fun function functor if in include inherit initializer land lazy let lor lsl lsr lxor match method mod module mutable new object of open or private rec sig struct then to true try type val virtual when while with</keyword>
+	<keyword name="instre2">option Some None ignore ref lnot succ pred</keyword>
+	<keyword name="type1">array bool char float int list string unit</keyword>
+</AinesmileLanguage>
+

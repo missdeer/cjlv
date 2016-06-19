@@ -1,0 +1,4 @@
+<AinesmileLanguage name="matlab" pattern="" suffix="m" comment_line="%" comment_start="" comment_end="">
+	<keyword name="instre1">break case catch continue else elseif end for function global if otherwise persistent return switch try while</keyword>
+</AinesmileLanguage>
+

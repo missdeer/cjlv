@@ -1,0 +1,4 @@
+<AinesmileLanguage name="python" pattern="" suffix="py pyw" comment_line="#" comment_start="" comment_end="">
+	<keyword name="instre1">and as assert break class continue def del elif else except exec False finally for from global if import in is lambda None not or pass print raise return triple True try while with yield</keyword>
+</AinesmileLanguage>
+

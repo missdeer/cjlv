@@ -1,0 +1,4 @@
+<AinesmileLanguage name="ada" pattern="" suffix="ada ads adb" comment_line="--" comment_start="" comment_end="">
+	<keyword name="instre1">abort abstract accept access aliased all and array at begin body case constant declare delay delta digits do else elsif end entry exception exit for function generic goto if in is limited loop new not null of others out or package pragma private procedure protected raise range record renames requeue return reverse select separate subtype tagged task terminate then type until use when while with</keyword>
+</AinesmileLanguage>
+

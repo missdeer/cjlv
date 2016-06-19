@@ -1,0 +1,4 @@
+<AinesmileLanguage name="smalltalk" pattern="" suffix="st" comment_line="" comment_start='"' comment_end='"'>
+	<keyword name="instre1">ifTrue: ifFalse: whileTrue: whileFalse: ifNil: ifNotNil: whileTrue whileFalse repeat isNil notNil</keyword>
+</AinesmileLanguage>
+
