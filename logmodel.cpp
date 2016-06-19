@@ -246,13 +246,13 @@ void LogModel::doQuery(int offset)
     if (m_keyword.isEmpty())
     {
          sqlCount = "SELECT COUNT(*) FROM logs";
-         sqlFetch = QString("SELECT * FROM logs ORDER BY datetime(timecol) LIMIT %1, 200;").arg(offset);
+         sqlFetch = QString("SELECT * FROM logs ORDER BY timecol LIMIT %1, 200;").arg(offset);
     }
     else
     {
         QString field = g_settings.searchField();
         sqlCount = QString("SELECT COUNT(*) FROM logs WHERE %1 LIKE '%'||?||'%'").arg(field);
-        sqlFetch = QString("SELECT * FROM logs WHERE %1 LIKE '%'||?||'%' ORDER BY datetime(timecol) LIMIT %2, 200;").arg(field).arg(offset);
+        sqlFetch = QString("SELECT * FROM logs WHERE %1 LIKE '%'||?||'%' ORDER BY timecol LIMIT %2, 200;").arg(field).arg(offset);
     }
 
     FinishedQueryEvent* e = new FinishedQueryEvent;
@@ -308,7 +308,10 @@ void LogModel::doQuery(int offset)
             while (q.next()) {
                 QSharedPointer<LogItem> log =  QSharedPointer<LogItem>(new LogItem);
                 log->id = q.value(idIndex).toInt();
-                log->time = q.value(dateTimeIndex).toDateTime();
+                qint64 ms = q.value(dateTimeIndex).toLongLong();
+                QDateTime dt;
+                dt.setMSecsSinceEpoch(ms);
+                log->time = dt;
                 log->level = q.value(levelIndex).toString();
                 log->thread = q.value(threadIndex).toString();
                 log->source = q.value(sourceIndex).toString();
@@ -389,8 +392,8 @@ void LogModel::createDatabase()
     if (db.open())
     {
         QSqlQuery query(db);
-        query.exec("CREATE TABLE logs(id INTEGER PRIMARY KEY AUTOINCREMENT,timecol DATETIME,level TEXT,thread TEXT,source TEXT,category TEXT,method TEXT, content TEXT, log TEXT, line INTEGER);");
-        query.exec("CREATE INDEX itime ON logs (datetime(timecol));");
+        query.exec("CREATE TABLE logs(id INTEGER PRIMARY KEY AUTOINCREMENT,timecol INTEGER,level TEXT,thread TEXT,source TEXT,category TEXT,method TEXT, content TEXT, log TEXT, line INTEGER);");
+        query.exec("CREATE INDEX itime ON logs (timecol);");
         query.exec("CREATE INDEX it ON logs (timecol, line);");
         query.exec("CREATE INDEX is ON logs (source);");
         query.exec("CREATE INDEX ic ON logs (category);");
@@ -417,7 +420,7 @@ int LogModel::copyFromFileToDatabase(const QString &fileName)
 
     QFileInfo fi(fileName);
     QString suffix = fi.suffix();
-    QRegularExpression re("^([0-9]{4}\\-[0-9]{2}\\-[0-9]{2}\\s[0-9]{2}:[0-9]{2}:[0-9]{2},[0-9]{3})\\s+([A-Z]{4,5})\\s+\\[(0x[0-9a-f]{8,16})\\]\\s+\\[([0-9a-zA-Z:\\-\\_\\/\\\\\\(\\)\\.]+)\\]\\s+\\[([0-9a-zA-Z\\-\\_\\.]+)\\]\\s+\\[([0-9a-zA-Z:~<>\\-\\_\\.]+)\\]\\s+\\-\\s+(.+)$");
+    QRegularExpression re("^([0-9]{4}\\-[0-9]{2}\\-[0-9]{2}\\s[0-9]{2}:[0-9]{2}:[0-9]{2},[0-9]{3})\\s+([A-Z]{4,5})\\s+\\[(0x[0-9a-f]{8,16})\\]\\s+\\[([0-9a-zA-Z:\\s\\-\\_\\/\\\\\\(\\)\\.]+)\\]\\s+\\[([0-9a-zA-Z\\-\\_\\.]+)\\]\\s+\\[([0-9a-zA-Z:~<>\\-\\_\\.]+)\\]\\s+\\-\\s+(.+)$");
 
     QByteArray line = f.readLine();
     int lineNo = 1;
@@ -461,7 +464,7 @@ int LogModel::copyFromFileToDatabase(const QString &fileName)
             // save to database
             query.prepare("INSERT INTO logs (timecol, level, thread, source, category, method, content, log, line) "
                 "VALUES (:timecol, :level, :thread, :source, :category, :method, :content, :log, :line );");
-            query.bindValue(":timecol", dateTime);
+            query.bindValue(":timecol", QDateTime::fromString(dateTime, "yyyy-MM-dd hh:mm:ss,zzz").toMSecsSinceEpoch());
             query.bindValue(":level", level);
             query.bindValue(":thread", thread);
             query.bindValue(":source", source);
