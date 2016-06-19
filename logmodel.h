@@ -55,6 +55,7 @@ private:
     QMutex m_queryMutex;
     int m_rowCount;
     int m_totalRowCount;
+    bool m_stopQuerying;
 
     QString dateTime;
     QString level ;

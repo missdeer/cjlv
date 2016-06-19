@@ -176,6 +176,7 @@ void LogModel::reload()
 void LogModel::onFilter(const QString &keyword)
 {
     // stop other query thread first
+    m_stopQuerying = true;
 
     // then start new query
     if (m_rowCount > 0)
@@ -249,19 +250,19 @@ void LogModel::doQuery(int offset)
         return;
     }
 
-    struct scoped_unlock
+    struct ScopedUnlock
     {
         QMutex& m_queryMutex_;
-        explicit scoped_unlock(QMutex& queryMutex)
+        explicit ScopedUnlock(QMutex& queryMutex)
             : m_queryMutex_(queryMutex)
         {
         }
-        ~scoped_unlock()
+        ~ScopedUnlock()
         {
             m_queryMutex_.unlock();
         }
     };
-    scoped_unlock sl(m_queryMutex);
+    ScopedUnlock sl(m_queryMutex);
 
     QString sqlCount;
     QString sqlFetch ;
@@ -281,20 +282,20 @@ void LogModel::doQuery(int offset)
     e->m_offset = offset;
     e->m_size = 0;
 
-    struct scoped_event_throw
+    struct ScopedEventThrow
     {
         LogModel* target_;
         FinishedQueryEvent* e_;
-        scoped_event_throw(LogModel* t, FinishedQueryEvent* e)
+        ScopedEventThrow(LogModel* t, FinishedQueryEvent* e)
             : target_(t), e_(e)
         {
         }
-        ~scoped_event_throw()
+        ~ScopedEventThrow()
         {
             QCoreApplication::postEvent(target_, e_);
         }
     };
-    scoped_event_throw se(this, e);
+    ScopedEventThrow se(this, e);
 
     if (sqlFetch == m_sqlFetch && sqlCount == m_sqlCount && m_keyword.isEmpty())
     {
@@ -302,6 +303,8 @@ void LogModel::doQuery(int offset)
     }
     m_sqlCount = sqlCount;
     m_sqlFetch = sqlFetch;
+
+    m_stopQuerying = false;
 
     QSqlDatabase db = QSqlDatabase::database(m_dbFile, true);
     if (!db.isValid()) {
@@ -311,27 +314,33 @@ void LogModel::doQuery(int offset)
 
     if (db.open())
     {
+        if (m_stopQuerying)
+            return;
         QSqlQuery q(db);
         q.prepare(m_sqlCount);
         if (!m_keyword.isEmpty())
             q.addBindValue(m_keyword);
         if (q.exec()) {
-            RowCountEvent* e = new RowCountEvent;
-            e->m_rowCount = 0;
+            RowCountEvent* erc = new RowCountEvent;
+            erc->m_rowCount = 0;
             if (q.next())
             {
-                e->m_rowCount = q.value(0).toInt();
+                erc->m_rowCount = q.value(0).toInt();
             }
             q.clear();
             q.finish();
-            qDebug() << __FUNCTION__ << " query row count: " << e->m_rowCount;
-            QCoreApplication::postEvent(this, e);
+            qDebug() << __FUNCTION__ << " query row count: " << erc->m_rowCount;
+            QCoreApplication::postEvent(this, erc);
         }
 
+        if (m_stopQuerying)
+            return;
         q.prepare(m_sqlFetch);
         if (!m_keyword.isEmpty())
             q.addBindValue(m_keyword);
         if (q.exec()) {
+            if (m_stopQuerying)
+                return;
             int idIndex = q.record().indexOf("id");
             int dateTimeIndex = q.record().indexOf("timecol");
             int levelIndex = q.record().indexOf("level");
@@ -342,7 +351,7 @@ void LogModel::doQuery(int offset)
             int contentIndex = q.record().indexOf("content");
             int logIndex = q.record().indexOf("log");
             int lineIndex = q.record().indexOf("line");
-            while (q.next()) {
+            while (q.next() && !m_stopQuerying) {
                 QSharedPointer<LogItem> log =  QSharedPointer<LogItem>(new LogItem);
                 log->id = q.value(idIndex).toInt();
                 qint64 ms = q.value(dateTimeIndex).toLongLong();
