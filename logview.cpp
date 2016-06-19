@@ -192,6 +192,14 @@ void LogView::onDoubleClicked(const QModelIndex& index)
         m_codeEditor->emptyUndoBuffer();
         m_sc.initEditorStyle(m_codeEditor);
         m_codeEditor->colourise(0, -1);
+
+        const QList<int>& sizes = m_verticalSplitter->sizes();
+        if (sizes.length() == 2 && sizes[1] < height()/10)
+        {
+            QList<int> resizes;
+            resizes << height()/2 <<  height()/2;
+            m_verticalSplitter->setSizes(resizes);
+        }
     }
 }
 
