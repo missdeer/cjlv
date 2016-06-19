@@ -24,16 +24,20 @@ public:
 LogView::LogView(QWidget *parent)
     : QWidget (parent)
     , m_verticalSplitter(new QSplitter( Qt::Vertical, parent))
-    , m_tableView(new QTableView(parent))
+    , m_tableView(new QTableView(m_verticalSplitter))
+    , m_codeEditor(new ScintillaEdit(m_verticalSplitter))
 {
     m_verticalSplitter->addWidget(m_tableView);
     m_verticalSplitter->addWidget(m_codeEditor);
 
+    QList<int> sizes;
+    sizes << 0x7FFFF << 0;
+    m_verticalSplitter->setSizes(sizes);
+
     QVBoxLayout* m_mainLayout = new QVBoxLayout;
     Q_ASSERT(m_mainLayout);
     m_mainLayout->setMargin(0);
-
-    m_mainLayout->addWidget(m_tableView);
+    m_mainLayout->addWidget(m_verticalSplitter);
     setLayout(m_mainLayout);
 
     m_model = new LogModel(this);
@@ -41,7 +45,6 @@ LogView::LogView(QWidget *parent)
     m_tableView->horizontalHeader()->setSectionResizeMode(7, QHeaderView::Stretch);
 
     connect(this, &LogView::filter, m_model, &LogModel::onFilter);
-    connect(m_model, &LogModel::forceRepaint, this, &LogView::onForceRepaint);
 }
 
 LogView::~LogView()
@@ -144,15 +147,6 @@ void LogView::copySelectedRows()
     if (!selected->hasSelection())
         return;
     QModelIndexList l = selected->selectedIndexes();
-}
-
-void LogView::onForceRepaint()
-{
-    QSize size = parentWidget()->parentWidget()->size();
-    size.setHeight(size.height() + 1);
-    parentWidget()->parentWidget()->resize(size);
-    size.setHeight(size.height() - 1);
-    parentWidget()->parentWidget()->resize(size);
 }
 
 bool LogView::event(QEvent* e)

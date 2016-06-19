@@ -39,7 +39,6 @@ public:
     void query(int offset);
 signals:
     void logItemReady(int, QSharedPointer<LogItem>);
-    void forceRepaint();
 public slots:
     void onLogItemReady(int i, QSharedPointer<LogItem> log);
     void onFilter(const QString& keyword);

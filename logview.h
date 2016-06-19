@@ -37,7 +37,7 @@ signals:
 protected:
 
 private slots:
-    void onForceRepaint();
+
 private:
     QSplitter* m_verticalSplitter;
     ScintillaEdit* m_codeEditor;

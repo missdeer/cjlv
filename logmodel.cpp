@@ -350,7 +350,6 @@ bool LogModel::event(QEvent *e)
 
         int size = ((FinishedQueryEvent*)e)->m_size;
         emit dataChanged(index(offset,0), index(offset+size, 0));
-        emit forceRepaint();
     }
         return true;
     default:
