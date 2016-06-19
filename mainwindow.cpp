@@ -166,7 +166,7 @@ void MainWindow::on_cbKeyword_editTextChanged(const QString &text)
 
 void MainWindow::on_cbKeyword_currentIndexChanged(const QString &text)
 {
-    ui->tabWidget->filter(text);
+    ui->tabWidget->filter(text.trimmed());
 }
 
 void MainWindow::on_actionInputKeyword_triggered()

@@ -175,6 +175,9 @@ void LogModel::reload()
 
 void LogModel::onFilter(const QString &keyword)
 {
+    if (m_keyword == keyword)
+        return;
+
     // stop other query thread first
     m_stopQuerying = true;
 
