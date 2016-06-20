@@ -684,13 +684,13 @@ void LogModel::createDatabaseIndex()
     {
         QSqlQuery query(db);
         query.exec("CREATE INDEX itime ON logs (epoch);");
-        query.exec("CREATE INDEX it ON logs (epoch, time);");
-        query.exec("CREATE INDEX il ON logs (epoch, level);");
-        query.exec("CREATE INDEX ith ON logs (epoch, thread);");
-        query.exec("CREATE INDEX is ON logs (epoch, source);");
-        query.exec("CREATE INDEX ic ON logs (epoch, category);");
-        query.exec("CREATE INDEX im ON logs (epoch, method);");
-        query.exec("CREATE INDEX io ON logs (epoch, content);");
+        query.exec("CREATE INDEX it ON logs ( time);");
+        query.exec("CREATE INDEX il ON logs ( level);");
+        query.exec("CREATE INDEX ith ON logs ( thread);");
+        query.exec("CREATE INDEX is ON logs ( source);");
+        query.exec("CREATE INDEX ic ON logs ( category);");
+        query.exec("CREATE INDEX im ON logs ( method);");
+        query.exec("CREATE INDEX io ON logs ( content);");
     }
 }
 
