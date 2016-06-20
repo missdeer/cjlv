@@ -28,7 +28,6 @@ public:
 
 LogView::LogView(QWidget *parent)
     : QWidget (parent)
-    , m_timer(nullptr)
     , m_progressDialog(nullptr)
     , m_verticalSplitter(new QSplitter( Qt::Vertical, parent))
     , m_tableView(new QTableView(m_verticalSplitter))
@@ -57,7 +56,6 @@ LogView::LogView(QWidget *parent)
     connect(this, &LogView::filter, m_model, &LogModel::onFilter);
     connect(m_tableView, &QAbstractItemView::doubleClicked, this, &LogView::onDoubleClicked);
     connect(m_model, &LogModel::dataLoaded, this, &LogView::onDataLoaded);
-    connect(m_timer, &QTimer::timeout, this, &LogView::timeout);
 }
 
 LogView::~LogView()
@@ -238,14 +236,6 @@ void LogView::onDoubleClicked(const QModelIndex& index)
     }
 }
 
-void LogView::timeout()
-{
-    if (m_progressDialog)
-        m_progressDialog->setValue(m_progressDialog->value()+1);
-
-    qApp->processEvents();
-}
-
 void LogView::onDataLoaded()
 {
     closeProgressDialog();
@@ -305,22 +295,10 @@ void LogView::showProgressDialog()
     }
     m_progressDialog->show();
     qApp->processEvents();
-
-    if (!m_timer)
-    m_timer = new QTimer;
-    m_timer->start(1000);
-    qApp->processEvents();
 }
 
 void LogView::closeProgressDialog()
 {
-    if (m_timer)
-    {
-        m_timer->stop();
-        delete m_timer;
-        m_timer = nullptr;
-    }
-
     if (m_progressDialog)
     {
         m_progressDialog->setValue(200);

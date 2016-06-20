@@ -45,10 +45,8 @@ protected:
 
 private slots:
     void onDoubleClicked(const QModelIndex &index);
-    void timeout();
     void onDataLoaded();
 private:
-    QTimer* m_timer;
     QProgressDialog* m_progressDialog;
     QSplitter* m_verticalSplitter;
     QTableView *m_tableView;
