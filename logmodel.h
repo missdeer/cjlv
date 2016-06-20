@@ -77,7 +77,7 @@ private:
     int copyFromFileToDatabase(const QString& fileName);
     void doReload();
     void doQuery(int offset);
-    bool parseLine(const QByteArray& line, QStringList& results);
+    bool parseLine(const QString &line, QStringList& results);
     bool event(QEvent *e) Q_DECL_OVERRIDE;
     void createDatabaseIndex();
 };

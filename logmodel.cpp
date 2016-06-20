@@ -1,6 +1,5 @@
 #include <QtCore>
 #include <QApplication>
-#include <QMessageBox>
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QSqlRecord>
@@ -12,6 +11,7 @@
 #include <QRegularExpression>
 #include <QtConcurrent>
 #include <QClipboard>
+#include <QTextStream>
 #include "settings.h"
 #include "logmodel.h"
 
@@ -582,7 +582,7 @@ void LogModel::doQuery(int offset)
     }
 }
 
-bool LogModel::parseLine(const QByteArray& line, QStringList& results)
+bool LogModel::parseLine(const QString& line, QStringList& results)
 {
     //QRegularExpression re("^([0-9]{4}\\-[0-9]{2}\\-[0-9]{2}\\s[0-9]{2}:[0-9]{2}:[0-9]{2},[0-9]{3})\\s+([A-Z]{4,5})\\s+\\[(0x[0-9a-f]{8,16})\\]\\s+\\[([0-9a-zA-Z:\\s\\-\\_\\/\\\\\\(\\)\\.]+)\\]\\s+\\[([0-9a-zA-Z\\-\\_\\.]+)\\]\\s+\\[([0-9a-zA-Z:~<>\\-\\_\\.]+)\\]\\s+\\-\\s+(.+)$");
 //    QRegularExpression re("^([^A-Z]+)([^\\s]+)\\s+(\\[[^\\]]+\\])\\s+(\\[[^\\]]+\\])\\s+(\\[[^\\]]+\\])\\s+(\\[[^\\]]+\\])\\s+\\-\\s+(.+)$");
@@ -739,11 +739,13 @@ int LogModel::copyFromFileToDatabase(const QString &fileName)
         qDebug() << "opening log file failed " << fileName;
         return 0;
     }
+    QTextStream ts(f.readAll(), QIODevice::ReadOnly);
+    f.close();
 
     QFileInfo fi(fileName);
     QString suffix = fi.suffix();
     QStringList results;
-    QByteArray line = f.readLine();
+    QString line = ts.readLine();
     int lineNo = 1;
     if (!parseLine(line, results))
     {
@@ -769,9 +771,9 @@ int LogModel::copyFromFileToDatabase(const QString &fileName)
     query.prepare("INSERT INTO logs (time, epoch, level, thread, source, category, method, content, log, line) "
         "VALUES (:time, :epoch, :level, :thread, :source, :category, :method, :content, :log, :line );");
     db.transaction();
-    while(!f.atEnd())
+    while(!ts.atEnd())
     {
-        QByteArray lookAhead = f.readLine();
+        QString lookAhead = ts.readLine();
         lineNo++;
         results.clear();
         if (!parseLine(lookAhead, results))
@@ -818,8 +820,6 @@ int LogModel::copyFromFileToDatabase(const QString &fileName)
         }
     }
     db.commit();
-
-    f.close();
 
     return recordCount;
 }
