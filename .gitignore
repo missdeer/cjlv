@@ -1,4 +1,8 @@
 *.o
+*.obj
+*.pdb
+*.exp
+*.exe
 moc_*.cpp
 *.cmake
 *.pyc
