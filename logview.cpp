@@ -8,6 +8,8 @@
 #include <QVBoxLayout>
 #include <QTableView>
 #include <QSplitter>
+#include <QDomDocument>
+#include <QTextStream>
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
 #include <JlCompress.h>
@@ -196,16 +198,10 @@ void LogView::onDoubleClicked(const QModelIndex& index)
 #endif
             QString xmlOut;
 
-            QXmlStreamReader reader(xmlIn);
-            QXmlStreamWriter writer(&xmlOut);
-            writer.setAutoFormatting(true);
-
-            while (!reader.atEnd()) {
-                reader.readNext();
-                if (!reader.isWhitespace()) {
-                    writer.writeCurrentToken(reader);
-                }
-            }
+            QDomDocument doc;
+            doc.setContent(xmlIn, false);
+            QTextStream writer(&xmlOut);
+            doc.save(writer, 4);
 
             header.append("\n");
             header.append(xmlOut);
