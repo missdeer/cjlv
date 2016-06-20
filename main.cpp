@@ -23,7 +23,7 @@ int main(int argc, char *argv[])
     g_settings.setTemporaryDirectory( parser.value("t"));
 
     MainWindow w;
-    w.show();
+    w.showMaximized();
 
     return a.exec();
 }
