@@ -111,7 +111,7 @@ void MainWindow::on_actionOpenCurrentInstalledJabberLogFolder_triggered()
     QString dir = QStandardPaths::writableLocation(QStandardPaths::HomeLocation) + "/AppData/Local/Cisco/Unified Communications/Jabber/CSF/Logs";
 #endif
 #if defined(Q_OS_MAC)
-    QString dir = QStandardPaths::writableLocation(QStandardPaths::HomeLocation) + "/Library/Log/Jabber";
+    QString dir = QStandardPaths::writableLocation(QStandardPaths::HomeLocation) + "/Library/Logs/Jabber";
 #endif
 
     QDir d(dir);
