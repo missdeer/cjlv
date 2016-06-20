@@ -416,14 +416,11 @@ void LogModel::doReload()
 {
     RowCountEvent* e = new RowCountEvent;
     e->m_rowCount = 0;
-    //qDebug() << "creating database";
     createDatabase();
-    //qDebug() << "created database";
     QDateTime t = QDateTime::currentDateTime();
-    Q_FOREACH(const QString& fileName, m_logFiles)
+    for (auto it = m_logFiles.rbegin(); m_logFiles.rend() != it; ++it)
     {
-       // qDebug() << "copying from file " << fileName;
-        e->m_rowCount += copyFromFileToDatabase(fileName);
+        e->m_rowCount += copyFromFileToDatabase(*it);
     }
     qint64 q = t.secsTo(QDateTime::currentDateTime());
     createDatabaseIndex();
@@ -434,7 +431,6 @@ void LogModel::doReload()
 
 void LogModel::doQuery(int offset)
 {
-    //qDebug() << __FUNCTION__ << offset;
     if (!m_queryMutex.tryLock())
     {
         qDebug() << "obtaining lock failed";
