@@ -1,4 +1,5 @@
 #include <QStandardPaths>
+#include <QDir>
 #include "settings.h"
 
 Settings g_settings;
@@ -11,6 +12,11 @@ Settings::Settings()
 #if defined(Q_OS_MAC)
     m_lastOpenedDirectory = QStandardPaths::writableLocation(QStandardPaths::HomeLocation) + "/Library/Logs/Jabber";
 #endif
+    QDir dir(m_lastOpenedDirectory);
+    if (!dir.exists())
+    {
+        m_lastOpenedDirectory = QStandardPaths::writableLocation(QStandardPaths::DownloadLocation);
+    }
 }
 
 bool Settings::searchOrFitler() const
