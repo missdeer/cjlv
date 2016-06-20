@@ -131,11 +131,13 @@ void MainWindow::on_actionOpenCurrentInstalledJabberLogFolder_triggered()
 void MainWindow::on_actionSearch_triggered()
 {
     ui->radioSearch->setChecked(ui->actionSearch->isChecked());
+    g_settings.setSearchOrFitler(ui->radioSearch->isChecked());
 }
 
 void MainWindow::on_actionFilter_triggered()
 {
     ui->radioFilter->setChecked(ui->actionFilter->isChecked());
+    g_settings.setSearchOrFitler(ui->radioSearch->isChecked());
 }
 
 void MainWindow::on_actionPreference_triggered()

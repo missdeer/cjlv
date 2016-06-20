@@ -181,30 +181,40 @@ void LogModel::reload()
 
 void LogModel::onFilter(const QString &keyword)
 {
-    if (m_keyword == keyword)
-        return;
-
-    // stop other query thread first
-    m_stopQuerying = true;
-
-    if (!m_queryFuture.isFinished())
+    if (g_settings.searchOrFitler())
     {
-        qDebug() << "wait for finished";
-        m_queryFuture.waitForFinished();
-        m_inQuery.clear();
+        // search
+        qDebug() << "search " << keyword;
     }
-
-    // then start new query
-    if (m_rowCount > 0)
+    else
     {
-        beginRemoveRows(QModelIndex(), 0, m_rowCount-1);
-        m_logs.clear();
-        m_rowCount = 0;
-        endRemoveRows();
-    }
+        qDebug() << "filter " << keyword;
+        // filter
+        if (m_keyword == keyword)
+            return;
 
-    m_keyword = keyword;
-    query(0);
+        // stop other query thread first
+        m_stopQuerying = true;
+
+        if (!m_queryFuture.isFinished())
+        {
+            qDebug() << "wait for finished";
+            m_queryFuture.waitForFinished();
+            m_inQuery.clear();
+        }
+
+        // then start new query
+        if (m_rowCount > 0)
+        {
+            beginRemoveRows(QModelIndex(), 0, m_rowCount-1);
+            m_logs.clear();
+            m_rowCount = 0;
+            endRemoveRows();
+        }
+
+        m_keyword = keyword;
+        query(0);
+    }
 }
 
 void LogModel::query(int offset)
