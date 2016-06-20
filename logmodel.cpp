@@ -424,7 +424,7 @@ void LogModel::doReload()
 void LogModel::doQuery(int offset)
 {
     //qDebug() << __FUNCTION__ << offset;
-    if (!m_queryMutex.tryLock(m_totalRowCount/2000))
+    if (!m_queryMutex.tryLock())
     {
         qDebug() << "obtaining lock failed";
         return;
