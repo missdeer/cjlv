@@ -51,9 +51,17 @@ macx: {
     QMAKE_MAC_SDK = macosx10.11
     ICON = cjlv.icns
     icon.path = $$PWD
-    icon.files += cjlv.png
+    #icon.files += cjlv.png
     INSTALLS += icon
     LIBS+=-L$$PWD/3rdparty/zlib-1.2.8 -F $$PWD/3rdparty/scintilla/bin -framework ScintillaEdit  -lz
+
+    copy_themes.commands = cp -R \"$$PWD/resource/MacOSX/themes\" \"$${INSTALLER_NAME}.app/Contents/Resources\"
+    copy_language.commands = cp -R \"$$PWD/resource/language\" \"$${INSTALLER_NAME}.app/Contents/Resources\"
+    copy_scintilla.commands = cp -R \"$$PWD/3rdparty/scintilla/bin/ScintillaEdit.framework\" \"$${INSTALLER_NAME}.app/Contents/Resources\"
+
+    codesign_installer.commands = codesign -s \"$(SIGNING_IDENTITY)\" $(SIGNING_FLAGS) \"$${INSTALLER_NAME}.app\"
+    dmg_installer.commands = hdiutil create -srcfolder "$${INSTALLER_NAME}.app" -volname \"Cisco Jabber Log Viewer\" -format UDBZ "CiscoJabberLogViewer-installer.dmg" -ov -scrub -stretch 2g
+    QMAKE_EXTRA_TARGETS +=  copy_scintilla copy_themes copy_language codesign_installer dmg_installer
 }
 
 win32: {

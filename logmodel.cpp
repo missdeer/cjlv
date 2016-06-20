@@ -87,7 +87,7 @@ QVariant LogModel::data(const QModelIndex &index, int role) const
     if (m_logs.end() == it)
     {
         int alignRow = index.row() & (~align);
-#ifdef QT_NO_DEBUG
+#ifndef QT_NO_DEBUG
         qDebug() << "do query index:" << alignRow;
 #endif
         const_cast<LogModel&>(*this).query(alignRow);
@@ -184,11 +184,9 @@ void LogModel::onFilter(const QString &keyword)
     if (g_settings.searchOrFitler())
     {
         // search
-        qDebug() << "search " << keyword;
     }
     else
     {
-        qDebug() << "filter " << keyword;
         // filter
         if (m_keyword == keyword)
             return;
@@ -323,8 +321,6 @@ void LogModel::copyCells(const QModelIndexList& cells)
             text.append("\n");
             t.clear();
         }
-
-        qDebug() << cell;
 
         QSharedPointer<LogItem> r = *it;
         switch (cell.column())
@@ -795,7 +791,7 @@ int LogModel::copyFromFileToDatabase(const QString &fileName)
             query.bindValue(":log", suffix);
             query.bindValue(":line", lineNo-appendLine);
             if (!query.exec()) {
-        #ifdef _DEBUG
+        #ifndef QT_NO_DEBUG
                 qDebug() << dateTime << level << thread << source << category << method << content << " inserting log into database failed!" << query.lastError();
         #endif
             } else {
