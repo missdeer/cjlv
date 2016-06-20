@@ -58,14 +58,13 @@ void MainWindow::on_actionOpenZipLogBundle_triggered()
 {
     QStringList fileNames = QFileDialog::getOpenFileNames(this,
                                                     tr("Open Cisco Jabber Log Zip Bundles"),
-                                                #if defined(Q_OS_WIN)
-                                                    QString(),
-                                                #else
-                                                    QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation),
-                                                #endif
+                                                    g_settings.lastOpenedDirectory(),
                                                     tr("Cisco Jabber Log Zip Bundle (*.zip);;All files (*.*)"));
     if (fileNames.isEmpty())
         return;
+
+    QFileInfo fi(fileNames.at(0));
+    g_settings.setLastOpenedDirectory(fi.absolutePath());
 
     Q_FOREACH(const QString& fileName, fileNames)
     {
@@ -77,15 +76,14 @@ void MainWindow::on_actionOpenRawLogFile_triggered()
 {
     QStringList fileNames = QFileDialog::getOpenFileNames(this,
                                                           tr("Open Cisco Jabber Log Files"),
-                                                      #if defined(Q_OS_WIN)
-                                                          QString(),
-                                                      #else
-                                                          QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation),
-                                                      #endif
+                                                          g_settings.lastOpenedDirectory(),
                                                           tr("Cisco Jabber Log Files (jabber.log*);;All files (*.*)"));
 
     if (fileNames.isEmpty())
         return;
+
+    QFileInfo fi(fileNames.at(0));
+    g_settings.setLastOpenedDirectory(fi.absolutePath());
 
     ui->tabWidget->openRawLogFile(fileNames);
 }
@@ -94,16 +92,13 @@ void MainWindow::on_actionOpenLogFolder_triggered()
 {
     QString dir = QFileDialog::getExistingDirectory(this,
                                                     tr("Open Cisco Jabber Log Folder"),
-                                                #if defined(Q_OS_WIN)
-                                                    QString(),
-                                                #else
-                                                    QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation),
-                                                #endif
+                                                    g_settings.lastOpenedDirectory(),
                                                     QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
 
     if (dir.isEmpty())
         return;
 
+    g_settings.setLastOpenedDirectory(dir);
     ui->tabWidget->openFolder(dir, false);
 }
 

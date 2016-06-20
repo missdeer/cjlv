@@ -17,10 +17,14 @@ public:
     QString temporaryDirectory() const;
     void setTemporaryDirectory(const QString &temporaryDirectory);
 
+    QString lastOpenedDirectory() const;
+    void setLastOpenedDirectory(const QString &lastOpenedDirectory);
+
 private:
     bool m_searchOrFitler;
     QString m_searchField;
     QString m_temporaryDirectory;
+    QString m_lastOpenedDirectory;
 };
 
 extern Settings g_settings;
