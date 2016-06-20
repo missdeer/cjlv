@@ -293,13 +293,16 @@ void LogView::extract(LogView* v, const QString& fileName, const QString& dirNam
 void LogView::showProgressDialog()
 {
     if (!m_progressDialog)
-        m_progressDialog = new QProgressDialog("Loading log from files...", "Close", 0, 200, this);
-    m_progressDialog->setWindowModality(Qt::WindowModal);
-    m_progressDialog->setAutoClose(true);
-    m_progressDialog->setAutoReset(true);
-    m_progressDialog->setCancelButton(nullptr);
-    m_progressDialog->setRange(0,0);
-    m_progressDialog->setMinimumDuration(0);
+    {
+        m_progressDialog = new QProgressDialog(this);
+        m_progressDialog->setLabelText("Loading log from files...");
+        m_progressDialog->setWindowModality(Qt::WindowModal);
+        m_progressDialog->setAutoClose(true);
+        m_progressDialog->setAutoReset(true);
+        m_progressDialog->setCancelButton(nullptr);
+        m_progressDialog->setRange(0,0);
+        m_progressDialog->setMinimumDuration(0);
+    }
     m_progressDialog->show();
     qApp->processEvents();
 
