@@ -595,7 +595,7 @@ bool LogModel::parseLine(const QByteArray& line, QStringList& results)
     if (endPos <= startPos)
         return false;
     endPos = line.indexOf(' ', endPos + 1);
-    if (endPos <= startPos)
+    if (endPos - startPos != 23) // yyyy-MM-dd hh:mm:ss,zzz  23 characters
         return false;
     results.append(line.mid(startPos, endPos - startPos)); // date time
 
