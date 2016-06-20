@@ -10,8 +10,8 @@
 #include <QSplitter>
 #include <QDomDocument>
 #include <QTextStream>
-#include <QXmlStreamReader>
-#include <QXmlStreamWriter>
+#include <QProgressDialog>
+#include <QTimer>
 #include <JlCompress.h>
 #include "ScintillaEdit.h"
 #include "settings.h"
@@ -28,6 +28,8 @@ public:
 
 LogView::LogView(QWidget *parent)
     : QWidget (parent)
+    , m_timer(nullptr)
+    , m_progressDialog(nullptr)
     , m_verticalSplitter(new QSplitter( Qt::Vertical, parent))
     , m_tableView(new QTableView(m_verticalSplitter))
     , m_codeEditor(new ScintillaEdit(m_verticalSplitter))
@@ -54,6 +56,8 @@ LogView::LogView(QWidget *parent)
 
     connect(this, &LogView::filter, m_model, &LogModel::onFilter);
     connect(m_tableView, &QAbstractItemView::doubleClicked, this, &LogView::onDoubleClicked);
+    connect(m_model, &LogModel::dataLoaded, this, &LogView::onDataLoaded);
+    connect(m_timer, &QTimer::timeout, this, &LogView::timeout);
 }
 
 LogView::~LogView()
@@ -90,6 +94,8 @@ void LogView::openRawLogFile(const QStringList &paths)
     QFileInfo fi(path);
     setWindowTitle(fi.fileName());
 
+    showProgressDialog();
+
     m_model->loadFromFiles(paths);
 }
 
@@ -112,6 +118,8 @@ void LogView::openFolder(const QString &path)
         QFileInfo fileInfo = list.at(i);
         fileNames << fileInfo.filePath();
     }
+
+    showProgressDialog();
 
     m_model->loadFromFiles(fileNames);
 }
@@ -230,6 +238,19 @@ void LogView::onDoubleClicked(const QModelIndex& index)
     }
 }
 
+void LogView::timeout()
+{
+    if (m_progressDialog)
+        m_progressDialog->setValue(m_progressDialog->value()+1);
+
+    qApp->processEvents();
+}
+
+void LogView::onDataLoaded()
+{
+    closeProgressDialog();
+}
+
 bool LogView::event(QEvent* e)
 {
     QMutexLocker lock(&m_mutex);
@@ -262,7 +283,45 @@ bool LogView::event(QEvent* e)
 
 void LogView::extract(LogView* v, const QString& fileName, const QString& dirName)
 {
+    showProgressDialog();
+
     ExtractedEvent* e = new ExtractedEvent;
     JlCompress::extractDir(fileName, dirName);
     QCoreApplication::postEvent(v, e);
+}
+
+void LogView::showProgressDialog()
+{
+    if (!m_progressDialog)
+        m_progressDialog = new QProgressDialog("Loading log from files...", "Close", 0, 200, this);
+    m_progressDialog->setWindowModality(Qt::WindowModal);
+    m_progressDialog->setAutoClose(true);
+    m_progressDialog->setAutoReset(true);
+    m_progressDialog->setCancelButton(nullptr);
+    m_progressDialog->setRange(0,0);
+    m_progressDialog->setMinimumDuration(0);
+    m_progressDialog->show();
+    qApp->processEvents();
+
+    if (!m_timer)
+    m_timer = new QTimer;
+    m_timer->start(1000);
+    qApp->processEvents();
+}
+
+void LogView::closeProgressDialog()
+{
+    if (m_timer)
+    {
+        m_timer->stop();
+        delete m_timer;
+        m_timer = nullptr;
+    }
+
+    if (m_progressDialog)
+    {
+        m_progressDialog->setValue(200);
+        m_progressDialog->deleteLater();
+        m_progressDialog=nullptr;
+    }
 }

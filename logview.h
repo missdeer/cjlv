@@ -11,6 +11,8 @@ class LogModel;
 QT_BEGIN_NAMESPACE
 class QTableView;
 class QSplitter;
+class QProgressDialog;
+class QTimer;
 QT_END_NAMESPACE
 
 
@@ -43,7 +45,11 @@ protected:
 
 private slots:
     void onDoubleClicked(const QModelIndex &index);
+    void timeout();
+    void onDataLoaded();
 private:
+    QTimer* m_timer;
+    QProgressDialog* m_progressDialog;
     QSplitter* m_verticalSplitter;
     QTableView *m_tableView;
     ScintillaEdit* m_codeEditor;
@@ -55,6 +61,8 @@ private:
     bool event(QEvent *e) Q_DECL_OVERRIDE;
 
     void extract(LogView* v, const QString& fileName, const QString& dirName);
+    void showProgressDialog();
+    void closeProgressDialog();
 };
 
 #endif // LOGVIEW_H

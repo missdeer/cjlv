@@ -429,6 +429,7 @@ void LogModel::doReload()
     createDatabaseIndex();
     qDebug() << "loaded elapsed " << q << " s";
     QCoreApplication::postEvent(this, e);
+    emit dataLoaded();
 }
 
 void LogModel::doQuery(int offset)
