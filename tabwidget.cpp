@@ -121,6 +121,16 @@ void TabWidget::onScrollToBottom()
     }
 }
 
+void TabWidget::onReload()
+{
+    QWidget* w = currentWidget();
+    if (w)
+    {
+        LogView* v = qobject_cast<LogView*>(w);
+        v->reload();
+    }
+}
+
 void TabWidget::onCloseAll()
 {
     for (int index = count() -1; index >=0; index--)

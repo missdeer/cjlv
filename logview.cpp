@@ -173,6 +173,11 @@ void LogView::scrollToBottom()
     m_tableView->scrollToBottom();
 }
 
+void LogView::reload()
+{
+    m_model->reload();
+}
+
 void LogView::onDoubleClicked(const QModelIndex& index)
 {
     if (index.column() == 7)// the content field

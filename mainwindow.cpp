@@ -41,6 +41,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionCopySelectedRows, &QAction::triggered, ui->tabWidget, &TabWidget::onCopySelectedRows);
     connect(ui->actionScrollToTop, &QAction::triggered, ui->tabWidget, &TabWidget::onScrollToTop);
     connect(ui->actionScrollToBottom, &QAction::triggered, ui->tabWidget, &TabWidget::onScrollToBottom);
+    connect(ui->actionReload, &QAction::triggered, ui->tabWidget, &TabWidget::onReload);
     connect(ui->actionExit, &QAction::triggered, qApp, &QApplication::quit);
 
     g_settings.setSearchField("content");

@@ -35,6 +35,8 @@ public:
 
     void scrollToTop();
     void scrollToBottom();
+
+    void reload();
 signals:
     void filter(const QString& keyword);
 protected:
