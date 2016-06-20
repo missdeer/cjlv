@@ -37,6 +37,7 @@ public:
 
     void scrollToTop();
     void scrollToBottom();
+    void gotoById(int i);
 
     void reload();
 signals:

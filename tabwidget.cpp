@@ -1,5 +1,5 @@
 #include <QtCore>
-
+#include <QInputDialog>
 #include "logview.h"
 #include "tabwidget.h"
 
@@ -128,6 +128,17 @@ void TabWidget::onReload()
     {
         LogView* v = qobject_cast<LogView*>(w);
         v->reload();
+    }
+}
+
+void TabWidget::onGotoById()
+{
+    QWidget* w = currentWidget();
+    if (w)
+    {
+        int i = QInputDialog::getInt(this, tr("Goto By Id"), tr("Input Id:"), 1, 1);
+        LogView* v = qobject_cast<LogView*>(w);
+        v->gotoById(i);
     }
 }
 

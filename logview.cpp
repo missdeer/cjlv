@@ -186,6 +186,11 @@ void LogView::scrollToBottom()
     m_tableView->scrollToBottom();
 }
 
+void LogView::gotoById(int i)
+{
+    m_tableView->scrollTo(m_model->index(i-1, 0));
+}
+
 void LogView::reload()
 {
     m_model->reload();

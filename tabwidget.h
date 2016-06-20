@@ -28,6 +28,7 @@ public slots:
     void onScrollToBottom();
 
     void onReload();
+    void onGotoById();
 private:
     int findTab(const QString& path);
     int findTab(const QStringList& paths);
