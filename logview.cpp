@@ -56,6 +56,8 @@ LogView::LogView(QWidget *parent)
     connect(this, &LogView::filter, m_model, &LogModel::onFilter);
     connect(m_tableView, &QAbstractItemView::doubleClicked, this, &LogView::onDoubleClicked);
     connect(m_model, &LogModel::dataLoaded, this, &LogView::onDataLoaded);
+    connect(m_codeEditor, &ScintillaEdit::linesAdded, this, &LogView::linesAdded);
+    connect(m_codeEditor, &ScintillaEdit::marginClicked, this, &LogView::marginClicked);
 }
 
 LogView::~LogView()
@@ -244,6 +246,30 @@ void LogView::onDoubleClicked(const QModelIndex& index)
 void LogView::onDataLoaded()
 {
     closeProgressDialog();
+}
+
+void LogView::linesAdded(int /*linesAdded*/)
+{
+    ScintillaEdit* sci = qobject_cast<ScintillaEdit*>(sender());
+    int line_count = sci->lineCount();
+    int left = sci->marginLeft() + 2;
+    int right = sci->marginRight() + 2;
+    int width = left + right + sci->textWidth(STYLE_LINENUMBER, QString("%1").arg(line_count).toStdString().c_str());
+    sci->setMarginWidthN(0, width);
+}
+
+void LogView::marginClicked(int position, int /*modifiers*/, int margin)
+{
+    ScintillaEdit* sci = qobject_cast<ScintillaEdit*>(sender());
+    if (sci->marginTypeN(margin) == SC_MARGIN_SYMBOL)
+    {
+        int line = sci->lineFromPosition(position);
+        int foldLevel = sci->foldLevel(line);
+        if (foldLevel & SC_FOLDLEVELHEADERFLAG)
+        {
+            sci->toggleFold(line);
+        }
+    }
 }
 
 bool LogView::event(QEvent* e)

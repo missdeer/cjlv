@@ -47,6 +47,9 @@ protected:
 private slots:
     void onDoubleClicked(const QModelIndex &index);
     void onDataLoaded();
+
+    void linesAdded(int linesAdded);
+    void marginClicked(int position, int modifiers, int margin);
 private:
     QProgressDialog* m_progressDialog;
     QSplitter* m_verticalSplitter;
