@@ -685,8 +685,12 @@ void LogModel::createDatabaseIndex()
 
 void LogModel::createDatabase()
 {
-    m_dbFile = QStandardPaths::writableLocation(QStandardPaths::TempLocation);
-    m_dbFile.append("/CiscoJabberLogs/database");
+    m_dbFile = g_settings.temporaryDirectory();
+    if (m_dbFile.isEmpty())
+    {
+        m_dbFile = QStandardPaths::writableLocation(QStandardPaths::TempLocation);
+        m_dbFile.append("/CiscoJabberLogs/database");
+    }
     QDir dir(m_dbFile);
     if (!dir.exists())
         dir.mkpath(m_dbFile);

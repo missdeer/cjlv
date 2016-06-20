@@ -14,6 +14,7 @@
 #include <QXmlStreamWriter>
 #include <JlCompress.h>
 #include "ScintillaEdit.h"
+#include "settings.h"
 #include "logmodel.h"
 #include "logview.h"
 
@@ -70,8 +71,12 @@ void LogView::openZipBundle(const QString &path)
     QFileInfo fi(path);
     setWindowTitle(fi.fileName());
 
-    m_extractDir = QStandardPaths::writableLocation(QStandardPaths::TempLocation);
-    m_extractDir.append("/CiscoJabberLogs/" + fi.completeBaseName());
+    m_extractDir = g_settings.temporaryDirectory();
+    if (m_extractDir.isEmpty())
+    {
+        m_extractDir = QStandardPaths::writableLocation(QStandardPaths::TempLocation) + "/CiscoJabberLogs";
+    }
+    m_extractDir.append("/" + fi.completeBaseName());
     QDir dir(m_extractDir);
     if (!dir.exists())
         dir.mkpath(m_extractDir);

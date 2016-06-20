@@ -26,3 +26,13 @@ void Settings::setSearchField(const QString& searchField)
 {
     m_searchField = searchField;
 }
+
+QString Settings::temporaryDirectory() const
+{
+    return m_temporaryDirectory;
+}
+
+void Settings::setTemporaryDirectory(const QString &temporaryDirectory)
+{
+    m_temporaryDirectory = temporaryDirectory;
+}
