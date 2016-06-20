@@ -1,0 +1,7 @@
+*.o
+moc_*.cpp
+*.cmake
+*.pyc
+CMakeCache.txt
+CMakeFiles
+.qmake.stash
