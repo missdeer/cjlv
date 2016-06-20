@@ -55,7 +55,7 @@ void ScintillaConfig::initScintilla(ScintillaEdit* sci)
     sci->setMarginLeft(4);
     //sci->setMarginRight(4);
     sci->setMarginTypeN(0, SC_MARGIN_NUMBER);
-    sci->setMarginWidthN(0, 24);
+    sci->setMarginWidthN(0, 32);
     sci->setMarginMaskN(0, 0);
     sci->setMarginSensitiveN(0, false);
     sci->setMarginTypeN(1, SC_MARGIN_SYMBOL);
