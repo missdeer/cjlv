@@ -32,8 +32,7 @@ void CodeEditor::gotoLine(const QString &fileName, int line)
 {
     m_fileName = fileName;
 
-    // change editor style by file type, xml style by default
-    QString lang = "xml";
+    QString lang = m_sc.matchPatternLanguage(fileName);
 
     QFile f(fileName);
     if (f.open(QIODevice::ReadOnly))

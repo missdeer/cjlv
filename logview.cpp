@@ -260,14 +260,20 @@ void LogView::openSource(const QModelIndex &index)
         Everything_SetSearchW(fileName.toStdWString().c_str());
         Everything_QueryW(TRUE);
 
+        QDir srcDir(g_settings.sourceDirectory());
         for(DWORD i=0;i<Everything_GetNumResults();i++)
         {
             WCHAR path[MAX_PATH] = {0};
             Everything_GetResultFullPathNameW(i, path, MAX_PATH);
-            QString p = QString::fromStdWString(path);
-            if (p.contains(s) && p.contains(g_settings.sourceDirectory()))
+            QString filePath = QString::fromStdWString(path);
+            QFileInfo fi(filePath);
+            QDir dir(fi.filePath());
+            while (dir != srcDir)
+                if (!dir.cdUp())
+                    break;
+            if (filePath.contains(s) && dir == srcDir)
             {
-                m_codeEditorTabWidget->gotoLine(p, m.captured(2).toInt());
+                m_codeEditorTabWidget->gotoLine(filePath, m.captured(2).toInt());
                 break;
             }
         }

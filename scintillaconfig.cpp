@@ -1,7 +1,9 @@
 #include <QApplication>
 #include <QtXml>
 #include <QFile>
-#include <QMessageBox>
+#include <QDomDocument>
+#include <QFileInfo>
+#include <QRegExp>
 #include "ScintillaEdit.h"
 #include "scintillaconfig.h"
 
@@ -160,7 +162,6 @@ void ScintillaConfig::initEditorStyle(ScintillaEdit *sci, const QString& lang)
 {
     sci->setLexerLanguage(lang.toStdString().c_str());
 
-
     QString appDirPath = QApplication::applicationDirPath();
     QDir configDir(appDirPath);
 #if defined(Q_OS_MAC)
@@ -269,4 +270,73 @@ void ScintillaConfig::applyThemeStyle(ScintillaEdit *sci, const QString &themePa
         if (!fontSize.isEmpty())
             sci->styleSetSize(id, fontSize.toInt());
     }
+}
+
+QString ScintillaConfig::matchPatternLanguage(const QString &filename)
+{
+    QString appDirPath = QApplication::applicationDirPath();
+    QDir configDir(appDirPath);
+#if defined(Q_OS_MAC)
+    configDir.cdUp();
+    configDir.cd("Resources");
+#endif
+    QString langMapPath = configDir.absolutePath() + "/langmap.xml";
+    QDomDocument doc;
+    QFile file(langMapPath);
+    if (!file.open(QIODevice::ReadOnly))
+        return "";
+    if (!doc.setContent(&file))
+    {
+        file.close();
+        return "";
+    }
+    file.close();
+
+    QDomElement docElem = doc.documentElement();
+
+    QDomElement langElem = docElem.firstChildElement("language");
+    while(!langElem.isNull())
+    {
+        QString pattern = langElem.attribute("pattern");
+        QString suffix = langElem.attribute("suffix");
+        if (matchSuffix(filename, suffix) || matchPattern(filename, pattern))
+        {
+            QString name = langElem.attribute("name");
+            return name;
+        }
+        langElem = langElem.nextSiblingElement("language");
+    }
+    return "";
+}
+
+bool ScintillaConfig::matchPattern(const QString &filename, const QString &pattern)
+{
+#if defined(Q_OS_WIN)
+    QRegExp regex(pattern, Qt::CaseInsensitive);
+#else
+    QRegExp regex(pattern, Qt::CaseSensitive);
+#endif
+    QFileInfo fi(filename);
+    if (regex.exactMatch(fi.fileName()))
+        return true;
+    return false;
+}
+
+bool ScintillaConfig::matchSuffix(const QString &filename, const QString &suffix)
+{
+    QStringList suffixes = suffix.split(' ');
+    QFileInfo fi(filename);
+    Q_FOREACH( QString ext, suffixes)
+    {
+#if defined(Q_OS_WIN)
+        if (QString::compare(ext, fi.suffix(), Qt::CaseInsensitive) == 0)
+#else
+        if (QString::compare(ext, fi.suffix(), Qt::CaseSensitive) == 0)
+#endif
+        {
+            return true;
+        }
+    }
+
+    return false;
 }
