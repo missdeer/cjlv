@@ -13,7 +13,9 @@
 #include <QTimer>
 #include <QRegularExpression>
 #include <JlCompress.h>
+#if defined(Q_OS_WIN)
 #include <Everything.h>
+#endif
 #include "settings.h"
 #include "logmodel.h"
 #include "logview.h"
