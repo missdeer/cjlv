@@ -58,3 +58,13 @@ void Settings::setLastOpenedDirectory(const QString &lastOpenedDirectory)
 {
     m_lastOpenedDirectory = lastOpenedDirectory;
 }
+
+QString Settings::sourceDirectory() const
+{
+    return m_sourceDirectory;
+}
+
+void Settings::setSourceDirectory(const QString &sourceDirectory)
+{
+    m_sourceDirectory = sourceDirectory;
+}

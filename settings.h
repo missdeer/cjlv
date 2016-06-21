@@ -20,11 +20,15 @@ public:
     QString lastOpenedDirectory() const;
     void setLastOpenedDirectory(const QString &lastOpenedDirectory);
 
+    QString sourceDirectory() const;
+    void setSourceDirectory(const QString &sourceDirectory);
+
 private:
     bool m_searchOrFitler;
     QString m_searchField;
     QString m_temporaryDirectory;
     QString m_lastOpenedDirectory;
+    QString m_sourceDirectory;
 };
 
 extern Settings g_settings;

@@ -15,12 +15,15 @@ int main(int argc, char *argv[])
 
     parser.addOptions({
         {{"t", "temporary-directory"}, "Save temporary files into <directory>.", "directory"},
+        {{"s", "source-directory"}, "Source code stored in <directory>.", "directory"},
+
     });
 
     // Process the actual command line arguments given by the user
     parser.process(a);
 
     g_settings.setTemporaryDirectory( parser.value("t"));
+    g_settings.setSourceDirectory( parser.value("s"));
 
     MainWindow w;
     w.showMaximized();
