@@ -13,11 +13,8 @@ int main(int argc, char *argv[])
     parser.addHelpOption();
     parser.addVersionOption();
 
-    parser.addOptions({
-        {{"t", "temporary-directory"}, "Save temporary files into <directory>.", "directory"},
-        {{"s", "source-directory"}, "Source code stored in <directory>.", "directory"},
-
-    });
+    parser.addOption(QCommandLineOption(QStringList() << "t" <<  "temporary-directory", "Save temporary files into <directory>.", "directory"));
+    parser.addOption(QCommandLineOption(QStringList() << "s" <<  "source-directory", "Source code stored in <directory>.", "directory"));
 
     // Process the actual command line arguments given by the user
     parser.process(a);

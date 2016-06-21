@@ -171,6 +171,7 @@ void MainWindow::on_cbKeyword_currentIndexChanged(const QString &text)
 void MainWindow::on_actionInputKeyword_triggered()
 {
     ui->cbKeyword->setFocus();
+    ui->cbKeyword->lineEdit()->selectAll();
 }
 
 void MainWindow::on_actionSearchFieldContent_triggered()

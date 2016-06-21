@@ -8,7 +8,7 @@ QT       += core gui concurrent widgets sql xml
 
 TARGET = "Cisco Jabber Log Viewer"
 TEMPLATE = app
-
+CONFIG += c++11
 include($$PWD/3rdparty/quazip-0.7.2/quazip.pri)
 
 INCLUDEPATH += $$PWD/3rdparty/scintilla/qt/ScintillaEditBase \
