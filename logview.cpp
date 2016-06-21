@@ -205,6 +205,8 @@ void LogView::showCodeEditorPane()
 
 void LogView::extractContent(const QModelIndex& index)
 {
+    showCodeEditorPane();
+
     const QString& text = m_model->getLogContent(index);
     // try to format XML document
     int startPos = text.indexOf(QChar('<'));
@@ -232,30 +234,28 @@ void LogView::extractContent(const QModelIndex& index)
     {
         m_codeEditorTabWidget->setContent(text);
     }
-
-    showCodeEditorPane();
 }
 
 void LogView::openSource(const QModelIndex &index)
 {
+    showCodeEditorPane();
     const QString& source = m_model->getLogSourceFile(index);
     m_codeEditorTabWidget->gotoLine(source);
-    showCodeEditorPane();
 }
 
 void LogView::openLog(const QModelIndex &index)
 {
+    showCodeEditorPane();
     const QString& logFile = m_model->getLogFileName(index);
     m_codeEditorTabWidget->gotoLine(logFile);
-    showCodeEditorPane();
 }
 
 void LogView::gotoLogLine(const QModelIndex &index)
 {
+    showCodeEditorPane();
     QString logFile;
     int line = m_model->getLogFileLine(index, logFile);
     m_codeEditorTabWidget->gotoLine(logFile, line);
-    showCodeEditorPane();
 }
 
 void LogView::onDoubleClicked(const QModelIndex& index)

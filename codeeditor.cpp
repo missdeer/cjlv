@@ -1,5 +1,6 @@
 #include <QFile>
 #include <QFileInfo>
+#include <QTextStream>
 #include "codeeditor.h"
 
 CodeEditor::CodeEditor(QWidget *parent)
@@ -37,25 +38,29 @@ void CodeEditor::gotoLine(const QString &fileName, int line)
     QFile f(fileName);
     if (f.open(QIODevice::ReadOnly))
     {
-        QByteArray c = f.readAll();
-        setText(c.data());
+        clear();
+        while (!f.atEnd())
+        {
+            QByteArray c = f.readAll();
+            appendText(c.length(), c.data());
+        }
+        f.close();
 
         emptyUndoBuffer();
         m_sc.initEditorStyle(this, lang);
         colourise(0, -1);
 
+        grabFocus();
         gotoPos(positionFromLine(line-1));
         setCurrentPos(positionFromLine(line-1));
-        grabFocus();
-        f.close();
     }
 }
 
 void CodeEditor::gotoLine(int line)
 {
+    grabFocus();
     gotoPos(positionFromLine(line-1));
     setCurrentPos(positionFromLine(line-1));
-    grabFocus();
 }
 
 bool CodeEditor::matched(const QString &fileName)

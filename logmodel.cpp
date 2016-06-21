@@ -781,8 +781,7 @@ int LogModel::copyFromFileToDatabase(const QString &fileName)
         qDebug() << "opening log file failed " << fileName;
         return 0;
     }
-    QTextStream ts(f.readAll(), QIODevice::ReadOnly);
-    f.close();
+    QTextStream ts(&f);
 
     QFileInfo fi(fileName);
     QString suffix = fi.suffix();
@@ -862,6 +861,7 @@ int LogModel::copyFromFileToDatabase(const QString &fileName)
         }
     }
     db.commit();
+    f.close();
 
     return recordCount;
 }

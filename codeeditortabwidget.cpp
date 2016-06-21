@@ -7,6 +7,8 @@ CodeEditorTabWidget::CodeEditorTabWidget(QWidget *parent)
 {
     setTabPosition(QTabWidget::South);
     setTabsClosable(true);
+    setTabBarAutoHide(true);
+    setDocumentMode(true);
     connect(this, &QTabWidget::tabCloseRequested, this, &CodeEditorTabWidget::onTabCloseRequested);
     connect(this, &QTabWidget::tabBarDoubleClicked, this, &CodeEditorTabWidget::onTabCloseRequested);
     connect(this, &QTabWidget::currentChanged, this, &CodeEditorTabWidget::onCurrentChanged);

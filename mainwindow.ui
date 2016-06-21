@@ -64,6 +64,9 @@
       <property name="currentIndex">
        <number>-1</number>
       </property>
+      <property name="elideMode">
+       <enum>Qt::ElideRight</enum>
+      </property>
       <property name="documentMode">
        <bool>false</bool>
       </property>
