@@ -383,12 +383,62 @@ void LogModel::copyRows(const QList<int>& rows)
     clipboard->setText(text);
 }
 
-const QString& LogModel::getText(const QModelIndex& index)
+const QString& LogModel::getLogContent(const QModelIndex& index)
 {
     auto it = m_logs.find(index.row());
     Q_ASSERT(m_logs.end() != it);
     QSharedPointer<LogItem> r = *it;
     return r->content;
+}
+
+const QString &LogModel::getLogSourceFile(const QModelIndex &index)
+{
+    auto it = m_logs.find(index.row());
+    Q_ASSERT(m_logs.end() != it);
+    QSharedPointer<LogItem> r = *it;
+    return r->source;
+}
+
+QString LogModel::getLogFileName(const QModelIndex &index)
+{
+    auto it = m_logs.find(index.row());
+    Q_ASSERT(m_logs.end() != it);
+    QSharedPointer<LogItem> r = *it;
+    QString fileName;
+    if (r->logFile == "log")
+        fileName = "jabber.log";
+    else
+        fileName = "jabber.log." + r->logFile;
+    Q_FOREACH(const QString& logFile, m_logFiles)
+    {
+        if (logFile.contains(fileName))
+        {
+            return logFile;
+        }
+    }
+    Q_ASSERT(0);
+    return fileName;
+}
+
+int LogModel::getLogFileLine(const QModelIndex &index, QString &fileName)
+{
+    auto it = m_logs.find(index.row());
+    Q_ASSERT(m_logs.end() != it);
+    QSharedPointer<LogItem> r = *it;
+    if (r->logFile == "log")
+        fileName = "jabber.log";
+    else
+        fileName = "jabber.log." + r->logFile;
+    Q_FOREACH(const QString& logFile, m_logFiles)
+    {
+        if (logFile.contains(fileName))
+        {
+            fileName = logFile;
+            break;
+        }
+    }
+
+    return r->line;
 }
 
 void LogModel::onLogItemReady(int i,  QSharedPointer<LogItem> log)

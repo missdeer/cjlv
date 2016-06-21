@@ -26,14 +26,18 @@ SOURCES += main.cpp\
     logmodel.cpp \
     tabwidget.cpp \
     settings.cpp \
-    scintillaconfig.cpp
+    scintillaconfig.cpp \
+    codeeditortabwidget.cpp \
+    codeeditor.cpp
 
 HEADERS  += mainwindow.h \
     logview.h \
     logmodel.h \
     tabwidget.h \
     settings.h \
-    scintillaconfig.h
+    scintillaconfig.h \
+    codeeditortabwidget.h \
+    codeeditor.h
 
 FORMS    += mainwindow.ui
 

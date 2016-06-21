@@ -7,6 +7,7 @@ TabWidget::TabWidget(QWidget *parent)
     : QTabWidget(parent)
 {
     connect(this, &QTabWidget::tabCloseRequested, this, &TabWidget::onTabCloseRequested);
+    connect(this, &QTabWidget::tabBarDoubleClicked, this, &TabWidget::onTabCloseRequested);
 }
 
 void TabWidget::openZipBundle(const QString &path)

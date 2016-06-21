@@ -156,9 +156,8 @@ void ScintillaConfig::initFolderStyle(ScintillaEdit *sci)
     sci->setProperty( "fold.quotes.python", "1");
 }
 
-void ScintillaConfig::initEditorStyle(ScintillaEdit *sci)
+void ScintillaConfig::initEditorStyle(ScintillaEdit *sci, const QString& lang)
 {
-    QString lang = "xml";
     sci->setLexerLanguage(lang.toStdString().c_str());
 
 

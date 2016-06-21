@@ -4,7 +4,7 @@
 #include <QWidget>
 #include <QStringList>
 #include <QMutex>
-#include "scintillaconfig.h"
+#include "codeeditortabwidget.h"
 
 class LogModel;
 
@@ -47,24 +47,25 @@ protected:
 private slots:
     void onDoubleClicked(const QModelIndex &index);
     void onDataLoaded();
-
-    void linesAdded(int linesAdded);
-    void marginClicked(int position, int modifiers, int margin);
 private:
     QProgressDialog* m_progressDialog;
     QSplitter* m_verticalSplitter;
     QTableView *m_tableView;
-    ScintillaEdit* m_codeEditor;
+    CodeEditorTabWidget* m_codeEditorTabWidget;
     LogModel* m_model;
     QString m_path;
     QString m_extractDir;
     QMutex m_mutex;
-    ScintillaConfig m_sc;
     bool event(QEvent *e) Q_DECL_OVERRIDE;
 
     void extract(LogView* v, const QString& fileName, const QString& dirName);
     void showProgressDialog();
     void closeProgressDialog();
+    void extractContent(const QModelIndex& index);
+    void openSource(const QModelIndex& index);
+    void openLog(const QModelIndex& index);
+    void gotoLogLine(const QModelIndex& index);
+    void showCodeEditorPane();
 };
 
 #endif // LOGVIEW_H

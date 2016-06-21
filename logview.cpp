@@ -13,7 +13,6 @@
 #include <QProgressDialog>
 #include <QTimer>
 #include <JlCompress.h>
-#include "ScintillaEdit.h"
 #include "settings.h"
 #include "logmodel.h"
 #include "logview.h"
@@ -31,11 +30,11 @@ LogView::LogView(QWidget *parent)
     , m_progressDialog(nullptr)
     , m_verticalSplitter(new QSplitter( Qt::Vertical, parent))
     , m_tableView(new QTableView(m_verticalSplitter))
-    , m_codeEditor(new ScintillaEdit(m_verticalSplitter))
+    , m_codeEditorTabWidget(new CodeEditorTabWidget(m_verticalSplitter))
     , m_model(new LogModel(m_tableView))
 {
     m_verticalSplitter->addWidget(m_tableView);
-    m_verticalSplitter->addWidget(m_codeEditor);
+    m_verticalSplitter->addWidget(m_codeEditorTabWidget);
 
     QList<int> sizes;
     sizes << 0x7FFFF << 0;
@@ -50,14 +49,9 @@ LogView::LogView(QWidget *parent)
     m_tableView->setModel(m_model);
     m_tableView->horizontalHeader()->setSectionResizeMode(7, QHeaderView::Stretch);
 
-    m_sc.initScintilla(m_codeEditor);
-    m_sc.initEditorStyle(m_codeEditor);
-
     connect(this, &LogView::filter, m_model, &LogModel::onFilter);
     connect(m_tableView, &QAbstractItemView::doubleClicked, this, &LogView::onDoubleClicked);
     connect(m_model, &LogModel::dataLoaded, this, &LogView::onDataLoaded);
-    connect(m_codeEditor, &ScintillaEdit::linesAdded, this, &LogView::linesAdded);
-    connect(m_codeEditor, &ScintillaEdit::marginClicked, this, &LogView::marginClicked);
 }
 
 LogView::~LogView()
@@ -198,78 +192,96 @@ void LogView::reload()
     m_model->reload();
 }
 
+void LogView::showCodeEditorPane()
+{
+    const QList<int>& sizes = m_verticalSplitter->sizes();
+    if (sizes.length() == 2 && sizes[1] < height()/10)
+    {
+        QList<int> resizes;
+        resizes << height()/2 <<  height()/2;
+        m_verticalSplitter->setSizes(resizes);
+    }
+}
+
+void LogView::extractContent(const QModelIndex& index)
+{
+    const QString& text = m_model->getLogContent(index);
+    // try to format XML document
+    int startPos = text.indexOf(QChar('<'));
+    int endPos = text.lastIndexOf(QChar('>'));
+    if (startPos > 0 && endPos > startPos)
+    {
+        QString header = text.mid(0, startPos);
+        QString xmlIn = text.mid(startPos, endPos - startPos + 1);
+#ifndef QT_NO_DEBUG
+        qDebug() << "raw text:" << text;
+        qDebug() << "xml in:" << xmlIn;
+#endif
+        QString xmlOut;
+
+        QDomDocument doc;
+        doc.setContent(xmlIn, false);
+        QTextStream writer(&xmlOut);
+        doc.save(writer, 4);
+
+        header.append("\n");
+        header.append(xmlOut);
+        m_codeEditorTabWidget->setContent(header);
+    }
+    else
+    {
+        m_codeEditorTabWidget->setContent(text);
+    }
+
+    showCodeEditorPane();
+}
+
+void LogView::openSource(const QModelIndex &index)
+{
+    const QString& source = m_model->getLogSourceFile(index);
+    m_codeEditorTabWidget->gotoLine(source);
+    showCodeEditorPane();
+}
+
+void LogView::openLog(const QModelIndex &index)
+{
+    const QString& logFile = m_model->getLogFileName(index);
+    m_codeEditorTabWidget->gotoLine(logFile);
+    showCodeEditorPane();
+}
+
+void LogView::gotoLogLine(const QModelIndex &index)
+{
+    QString logFile;
+    int line = m_model->getLogFileLine(index, logFile);
+    m_codeEditorTabWidget->gotoLine(logFile, line);
+    showCodeEditorPane();
+}
+
 void LogView::onDoubleClicked(const QModelIndex& index)
 {
-    if (index.column() == 7)// the content field
+    switch (index.column())// the content field
     {
-        const QString& text = m_model->getText(index);
-        // try to format XML document
-        int startPos = text.indexOf(QChar('<'));
-        int endPos = text.lastIndexOf(QChar('>'));
-        if (startPos > 0 && endPos > startPos)
-        {
-            QString header = text.mid(0, startPos);
-            QString xmlIn = text.mid(startPos, endPos - startPos + 1);
-#ifndef QT_NO_DEBUG
-            qDebug() << "raw text:" << text;
-            qDebug() << "xml in:" << xmlIn;
-#endif
-            QString xmlOut;
-
-            QDomDocument doc;
-            doc.setContent(xmlIn, false);
-            QTextStream writer(&xmlOut);
-            doc.save(writer, 4);
-
-            header.append("\n");
-            header.append(xmlOut);
-            m_codeEditor->setText(header.toLatin1().data());
-        }
-        else
-        {
-            m_codeEditor->setText(text.toLatin1().data());
-        }
-        m_codeEditor->emptyUndoBuffer();
-        m_sc.initEditorStyle(m_codeEditor);
-        m_codeEditor->colourise(0, -1);
-
-        const QList<int>& sizes = m_verticalSplitter->sizes();
-        if (sizes.length() == 2 && sizes[1] < height()/10)
-        {
-            QList<int> resizes;
-            resizes << height()/2 <<  height()/2;
-            m_verticalSplitter->setSizes(resizes);
-        }
+    case 4:
+        openSource(index);
+        break;
+    case 7:
+        extractContent(index);
+        break;
+    case 8:
+        openLog(index);
+        break;
+    case 9:
+        gotoLogLine(index);
+        break;
+    default:
+        break;
     }
 }
 
 void LogView::onDataLoaded()
 {
     closeProgressDialog();
-}
-
-void LogView::linesAdded(int /*linesAdded*/)
-{
-    ScintillaEdit* sci = qobject_cast<ScintillaEdit*>(sender());
-    int line_count = sci->lineCount();
-    int left = sci->marginLeft() + 2;
-    int right = sci->marginRight() + 2;
-    int width = left + right + sci->textWidth(STYLE_LINENUMBER, QString("%1").arg(line_count).toStdString().c_str());
-    sci->setMarginWidthN(0, width);
-}
-
-void LogView::marginClicked(int position, int /*modifiers*/, int margin)
-{
-    ScintillaEdit* sci = qobject_cast<ScintillaEdit*>(sender());
-    if (sci->marginTypeN(margin) == SC_MARGIN_SYMBOL)
-    {
-        int line = sci->lineFromPosition(position);
-        int foldLevel = sci->foldLevel(line);
-        if (foldLevel & SC_FOLDLEVELHEADERFLAG)
-        {
-            sci->toggleFold(line);
-        }
-    }
 }
 
 bool LogView::event(QEvent* e)

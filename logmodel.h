@@ -42,7 +42,10 @@ public:
     void copyRow(int row);
     void copyCells(const QModelIndexList& cells);
     void copyRows(const QList<int>& rows);
-    const QString& getText(const QModelIndex &index);
+    const QString& getLogContent(const QModelIndex &index);
+    const QString& getLogSourceFile(const QModelIndex &index);
+    QString getLogFileName(const QModelIndex &index);
+    int getLogFileLine(const QModelIndex &index, QString& fileName);
 signals:
     void logItemReady(int, QSharedPointer<LogItem>);
     void logItemsReady(QMap<int, QSharedPointer<LogItem>>);
