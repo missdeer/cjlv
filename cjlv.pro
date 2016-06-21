@@ -51,12 +51,15 @@ RC_FILE = cjlv.rc
 
 # Mac OS X icon
 macx: {
+    OBJECTIVE_SOURCES += \
+        mdfindwrapper.mm
+
     QMAKE_MAC_SDK = macosx10.11
     ICON = cjlv.icns
     icon.path = $$PWD
     #icon.files += cjlv.png
     INSTALLS += icon
-    LIBS+=-L$$PWD/3rdparty/zlib-1.2.8 -F $$PWD/3rdparty/scintilla/bin -framework ScintillaEdit  -lz
+    LIBS+=-L$$PWD/3rdparty/zlib-1.2.8 -F $$PWD/3rdparty/scintilla/bin -framework ScintillaEdit  -lz -framework CoreServices -lobjc
 
     copy_themes.commands = cp -R \"$$PWD/resource/MacOSX/themes\" \"$${INSTALLER_NAME}.app/Contents/Resources\"
     copy_language.commands = cp -R \"$$PWD/resource/language\" \"$${INSTALLER_NAME}.app/Contents/Resources\"
@@ -78,3 +81,4 @@ win32: {
     contains(QMAKE_HOST.arch, x86_64): LIBS += -lEverything64
     else: LIBS += -lEverything32
 }
+

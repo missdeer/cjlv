@@ -62,7 +62,7 @@ private:
     void showProgressDialog();
     void closeProgressDialog();
     void extractContent(const QModelIndex& index);
-    void openSource(const QModelIndex& index);
+    void openSourceFile(const QModelIndex& index);
     void openLog(const QModelIndex& index);
     void gotoLogLine(const QModelIndex& index);
     void showCodeEditorPane();
