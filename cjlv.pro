@@ -11,8 +11,7 @@ TEMPLATE = app
 
 include($$PWD/3rdparty/quazip-0.7.2/quazip.pri)
 
-INCLUDEPATH += $$PWD/3rdparty/rapidxml-1.13 \
-    $$PWD/3rdparty/scintilla/qt/ScintillaEditBase \
+INCLUDEPATH += $$PWD/3rdparty/scintilla/qt/ScintillaEditBase \
     $$PWD/3rdparty/scintilla/qt/ScintillaEdit \
     $$PWD/3rdparty/scintilla/include \
     $$PWD/3rdparty/scintilla/src \
@@ -69,7 +68,13 @@ macx: {
 }
 
 win32: {
+    INCLUDEPATH += $$PWD/3rdparty/Everything-SDK/include
+
     CONFIG(release, debug|release): LIBS += -L$$PWD/3rdparty/scintilla/bin/release
     else: LIBS += -L$$PWD/3rdparty/scintilla/bin/debug
-    LIBS+=-L$$PWD/3rdparty/zlib-1.2.8 -lScintillaEdit3 -lzlib
+
+    LIBS+=-L$$PWD/3rdparty/zlib-1.2.8 -lScintillaEdit3 -lzlib -L$$PWD/3rdparty/Everything-SDK/lib
+
+    contains(QMAKE_HOST.arch, x86_64): LIBS += -lEverything64
+    else: LIBS += -lEverything32
 }

@@ -9,10 +9,11 @@
 #include <QTableView>
 #include <QSplitter>
 #include <QDomDocument>
-#include <QTextStream>
 #include <QProgressDialog>
 #include <QTimer>
+#include <QRegularExpression>
 #include <JlCompress.h>
+#include <Everything.h>
 #include "settings.h"
 #include "logmodel.h"
 #include "logview.h"
@@ -240,7 +241,38 @@ void LogView::openSource(const QModelIndex &index)
 {
     showCodeEditorPane();
     const QString& source = m_model->getLogSourceFile(index);
-    m_codeEditorTabWidget->gotoLine(source);
+
+    QRegularExpression re("([^\\(]+)\\(([0-9]+)");
+    QRegularExpressionMatch m = re.match(source);
+    if (m.hasMatch())
+    {
+        QString s = m.captured(1);
+#if defined(Q_OS_WIN)
+        // find
+        QString fileName;
+        int i = s.lastIndexOf('/');
+        if (i >= 0)
+            fileName = s.mid(i + 1, -1);
+        i = s.lastIndexOf('\\');
+        if (i >= 0)
+            fileName = s.mid(i + 1, -1);
+
+        Everything_SetSearchW(fileName.toStdWString().c_str());
+        Everything_QueryW(TRUE);
+
+        for(DWORD i=0;i<Everything_GetNumResults();i++)
+        {
+            WCHAR path[MAX_PATH] = {0};
+            Everything_GetResultFullPathNameW(i, path, MAX_PATH);
+            QString p = QString::fromStdWString(path);
+            if (p.contains(s) && p.contains(g_settings.sourceDirectory()))
+            {
+                m_codeEditorTabWidget->gotoLine(p, m.captured(2).toInt());
+                break;
+            }
+        }
+#endif
+    }
 }
 
 void LogView::openLog(const QModelIndex &index)
