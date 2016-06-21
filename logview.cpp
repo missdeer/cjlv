@@ -247,15 +247,24 @@ void LogView::openSource(const QModelIndex &index)
     if (m.hasMatch())
     {
         QString s = m.captured(1);
+        //qDebug() << "find file by partial path " << s;
 #if defined(Q_OS_WIN)
         // find
         QString fileName;
+        QStringList fileDirs;
         int i = s.lastIndexOf('/');
         if (i >= 0)
+        {
+            fileDirs = s.split('/');
             fileName = s.mid(i + 1, -1);
+        }
         i = s.lastIndexOf('\\');
         if (i >= 0)
+        {
+            fileDirs = s.split('\\');
             fileName = s.mid(i + 1, -1);
+        }
+        //qDebug() << "short name " << fileName;
 
         Everything_SetSearchW(fileName.toStdWString().c_str());
         Everything_QueryW(TRUE);
@@ -268,15 +277,29 @@ void LogView::openSource(const QModelIndex &index)
             QString filePath = QString::fromStdWString(path);
             QFileInfo fi(filePath);
             QDir dir(fi.filePath());
-            while (dir != srcDir)
-                if (!dir.cdUp())
+            if (!g_settings.sourceDirectory().isEmpty())
+                while (dir != srcDir)
+                    if (!dir.cdUp())
+                        break;
+            bool matched = true;
+            Q_FOREACH(const QString& n, fileDirs)
+            {
+                if (!filePath.contains(n))
+                {
+                    matched = false;
+                    //qDebug() << s << "is not matched" << filePath;
                     break;
-            if (filePath.contains(s) && dir == srcDir)
+                }
+            }
+
+            //qDebug() << "got file " << filePath << dir << srcDir;
+            if (matched && (g_settings.sourceDirectory().isEmpty() || (!g_settings.sourceDirectory().isEmpty() && dir == srcDir)))
             {
                 m_codeEditorTabWidget->gotoLine(filePath, m.captured(2).toInt());
                 break;
             }
         }
+        Everything_Reset();
 #endif
     }
 }
