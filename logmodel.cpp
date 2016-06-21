@@ -34,6 +34,81 @@ public:
     int m_size;
 };
 
+class ReadLineFromFile
+{
+    QFile* m_file;
+    qint64 m_offset;
+    qint64 m_fileSize;
+    uchar* m_lineStartPos;
+    uchar* m_mapStartPos;
+    uchar* m_mapEndPos;
+    static const qint64 mapSize = 1024 * 1024; // 1M
+public:
+    ReadLineFromFile(const QString& fileName)
+        : m_offset(0)
+    {
+        m_file = new QFile(fileName);
+        if (!m_file->open(QIODevice::ReadOnly))
+        {
+            delete m_file;
+            m_file = nullptr;
+        }
+        else
+        {
+            m_fileSize = m_file->size();
+            if (m_fileSize)
+            {
+                m_lineStartPos = m_mapStartPos = m_file->map(m_offset, qMin(mapSize, m_fileSize - m_offset));
+                m_mapEndPos = m_mapStartPos + qMin(mapSize, m_fileSize - m_offset);
+            }
+        }
+    }
+
+    ~ReadLineFromFile()
+    {
+        if (m_file)
+        {
+            m_file->unmap(m_mapStartPos);
+            m_file->close();
+            delete m_file;
+            m_file = nullptr;
+        }
+    }
+
+    QByteArray readLine()
+    {
+start_read:
+        uchar * p = m_lineStartPos;
+        while (p != m_mapEndPos && *p != '\r' && *p != '\n')
+            p++;
+        if (p != m_mapEndPos)
+        {
+            if (*p == '\r' && (p+1) != m_mapEndPos && *(p+1) == '\n')
+                p++;
+            QByteArray b((const char *)m_lineStartPos, p - m_lineStartPos);
+
+            m_lineStartPos = p + 1;
+            return b;
+        }
+
+        // re-map
+        m_file->unmap(m_mapStartPos);
+        m_offset += m_lineStartPos - m_mapStartPos;
+        if (m_offset != m_fileSize)
+        {
+            m_lineStartPos = m_mapStartPos = m_file->map(m_offset, qMin(mapSize, m_fileSize - m_offset));
+            m_mapEndPos = m_mapStartPos + qMin(mapSize, m_fileSize - m_offset);
+            goto start_read;
+        }
+        return QByteArray();
+    }
+
+    bool atEnd()
+    {
+        return m_offset == m_fileSize;
+    }
+};
+
 LogModel::LogModel(QObject *parent)
     : QAbstractTableModel(parent)
     , m_rowCount(0)
@@ -775,18 +850,17 @@ int LogModel::copyFromFileToDatabase(const QString &fileName)
         return 0;
     }
 
-    QFile f(fileName);
-    if (!f.open(QIODevice::ReadOnly))
+    ReadLineFromFile f(fileName);
+    if (f.atEnd())
     {
         qDebug() << "opening log file failed " << fileName;
         return 0;
     }
-    QTextStream ts(&f);
 
     QFileInfo fi(fileName);
     QString suffix = fi.suffix();
     QStringList results;
-    QString line = ts.readLine();
+    QString line = f.readLine();
     int lineNo = 1;
     if (!parseLine(line, results))
     {
@@ -806,28 +880,26 @@ int LogModel::copyFromFileToDatabase(const QString &fileName)
 
     int recordCount = 0;
     int appendLine = 1;
+    bool pendingRecord = false;
     QSqlQuery query(db);
     query.exec("PRAGMA synchronous = OFF");
     query.exec("PRAGMA journal_mode = MEMORY");
     query.prepare("INSERT INTO logs (time, epoch, level, thread, source, category, method, content, log, line) "
         "VALUES (:time, :epoch, :level, :thread, :source, :category, :method, :content, :log, :line );");
     db.transaction();
-    while(!ts.atEnd())
+    while(!f.atEnd())
     {
-        QString lookAhead = ts.readLine();
+        QString lookAhead = f.readLine();
         lineNo++;
         results.clear();
         if (!parseLine(lookAhead, results))
         {
             // append to last line
-            content.append("\n");
             content.append(lookAhead);
-            //qDebug() << "append look ahead" << QString(lookAhead);
             appendLine++;
         }
         else
         {
-            //qDebug() << "save line";
             // save to database
             query.bindValue(":time", dateTime);
             query.bindValue(":epoch", QDateTime::fromString(dateTime, "yyyy-MM-dd hh:mm:ss,zzz").toMSecsSinceEpoch());
@@ -838,7 +910,7 @@ int LogModel::copyFromFileToDatabase(const QString &fileName)
             query.bindValue(":method", method);
             query.bindValue(":content", content);
             query.bindValue(":log", suffix);
-            query.bindValue(":line", lineNo-appendLine);
+            query.bindValue(":line", lineNo - appendLine);
             if (!query.exec()) {
         #ifndef QT_NO_DEBUG
                 qDebug() << dateTime << level << thread << source << category << method << content << " inserting log into database failed!" << query.lastError();
@@ -846,7 +918,6 @@ int LogModel::copyFromFileToDatabase(const QString &fileName)
             } else {
                 recordCount++;
             }
-            //query.clear();
 
             appendLine = 1;
             // parse lookAhead
@@ -857,11 +928,29 @@ int LogModel::copyFromFileToDatabase(const QString &fileName)
             category = results.at(4);
             method = results.at(5);
             content = results.at(6);
-            //qDebug() << "parse look ahead";
+            pendingRecord = true;
+        }
+    }
+    if (pendingRecord)
+    {
+        // save the last record to database
+        query.bindValue(":time", dateTime);
+        query.bindValue(":epoch", QDateTime::fromString(dateTime, "yyyy-MM-dd hh:mm:ss,zzz").toMSecsSinceEpoch());
+        query.bindValue(":level", level);
+        query.bindValue(":thread", thread);
+        query.bindValue(":source", source);
+        query.bindValue(":category", category);
+        query.bindValue(":method", method);
+        query.bindValue(":content", content);
+        query.bindValue(":log", suffix);
+        query.bindValue(":line", lineNo +1 - appendLine);
+        if (!query.exec()) {
+#ifndef QT_NO_DEBUG
+            qDebug() << dateTime << level << thread << source << category << method << content << " inserting log into database failed!" << query.lastError();
+#endif
         }
     }
     db.commit();
-    f.close();
 
     return recordCount;
 }
