@@ -302,6 +302,8 @@ QString ScintillaConfig::matchPatternLanguage(const QString &filename)
         if (matchSuffix(filename, suffix) || matchPattern(filename, pattern))
         {
             QString name = langElem.attribute("name");
+            if (name == "c")
+                name = "cpp";
             return name;
         }
         langElem = langElem.nextSiblingElement("language");
