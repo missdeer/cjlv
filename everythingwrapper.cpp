@@ -29,5 +29,5 @@ bool QuickGetFilesByFileName(const QString& fileName, QStringList& results)
     }
     Everything_Reset();
 
-    return true;
+    return !results.isEmpty();
 }
