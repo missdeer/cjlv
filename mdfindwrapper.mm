@@ -48,5 +48,5 @@ bool QuickGetFilesByFileName(const QString& fileName, QStringList& results)
     CFRelease(rawQuery);
     CFRelease(queryRef);
 
-    return true;
+    return !results.isEmpty();
 }

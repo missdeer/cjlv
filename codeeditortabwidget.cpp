@@ -7,6 +7,7 @@
 #include <QFileInfo>
 #include <QMenu>
 #include <QClipboard>
+#include <QDesktopServices>
 #include "codeeditor.h"
 #include "codeeditortabwidget.h"
 
@@ -85,13 +86,17 @@ void CodeEditorTabWidget::onOpenContainerFolder()
     QString fileFullPath = tabToolTip(currentIndex());
 #if defined(Q_OS_WIN)
     QString arg = QString("/select,\"%1\"").arg(fileFullPath.replace(QChar('/'), QChar('\\')));
-    qDebug() << arg;
     ::ShellExecuteW(NULL, L"open", L"explorer.exe", arg.toStdWString().c_str(), NULL, SW_SHOWNORMAL);
 #endif
 #if defined(Q_OS_MAC)
-//    QFileInfo fi(fileFullPath);
-//    QDesktopServices::openUrl(QString("open \"%1\"").arg(fi.filePath()));
-    QDesktopServices::openUrl(QUrl::fromLocalFile(fileFullPath));
+    QStringList scriptArgs;
+    scriptArgs << QLatin1String("-e")
+               << QString::fromLatin1("tell application \"Finder\" to reveal POSIX file \"%1\"").arg(fileFullPath);
+    QProcess::execute(QLatin1String("/usr/bin/osascript"), scriptArgs);
+    scriptArgs.clear();
+    scriptArgs << QLatin1String("-e")
+               << QLatin1String("tell application \"Finder\" to activate");
+    QProcess::execute("/usr/bin/osascript", scriptArgs);
 #endif
 }
 

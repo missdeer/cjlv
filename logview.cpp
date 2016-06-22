@@ -267,17 +267,37 @@ void LogView::openSourceFile(const QModelIndex &index)
         QStringList results;
         if (!QuickGetFilesByFileName(fileName, results))
         {
-            return;
+            qDebug() << fileDirs << fileName;
+            if (fileDirs.length() == 1 || fileDirs.isEmpty())
+            {
+                QString t(fileName);
+                while (t.at(0) < QChar('A') || t.at(0) > QChar('Z'))
+                    t = t.remove(0,1);
+
+                qDebug() << "try " << t;
+                if (!QuickGetFilesByFileName(t, results))
+                {
+                    return;
+                }
+            }
+            else
+            {
+                return;
+            }
         }
+        qDebug() << results << fileName;
 
         QDir srcDir(g_settings.sourceDirectory());
         Q_FOREACH(const QString& filePath, results)
         {
             QFileInfo fi(filePath);
-            if (fi.fileName() != fileName)
+            if (fileDirs.length() > 1)
             {
-                qDebug()<< fi.fileName() << fileName;
-                continue;
+                if (fi.fileName() != fileName)
+                {
+                    qDebug()<< fi.fileName() << fileName;
+                    continue;
+                }
             }
             QDir dir(fi.filePath());
             if (!g_settings.sourceDirectory().isEmpty())

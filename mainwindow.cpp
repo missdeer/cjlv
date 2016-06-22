@@ -207,7 +207,7 @@ void MainWindow::on_actionSearchFieldCategory_triggered()
 void MainWindow::on_actionSearchFieldSourceFile_triggered()
 {
     ui->cbKeyword->lineEdit()->setPlaceholderText(tr("Search Field Source File"));
-    g_settings.setSearchField("line");
+    g_settings.setSearchField("source");
 }
 
 void MainWindow::on_actionSearchFieldMethod_triggered()

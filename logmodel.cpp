@@ -612,6 +612,8 @@ void LogModel::doQuery(int offset)
     m_sqlCount = sqlCount;
     m_sqlFetch = sqlFetch;
 
+    //qDebug() << m_sqlCount << m_sqlFetch;
+
     m_stopQuerying = false;
 
     QSqlDatabase db = QSqlDatabase::database(m_dbFile, true);
