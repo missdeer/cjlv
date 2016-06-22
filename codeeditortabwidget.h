@@ -13,8 +13,17 @@ public:
     void setContent(const QString& content);
     void gotoLine(const QString& fileName, int line = -1);
 private slots:
+    void onCopyFileName();
+    void onCopyFileFullPath();
+    void onOpenContainerFolder();
+
+    void onCloseAll();
+    void onCloseAllButThis();
+    void onCloseCurrent();
+
     void onTabCloseRequested(int index);
     void onCurrentChanged(int index);
+    void onCustomContextMenuRequested(const QPoint &pos);
 private:
     CodeEditor *createCodeEditor(const QString& text, const QString& tooltip);
 };

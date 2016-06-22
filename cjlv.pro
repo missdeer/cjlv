@@ -77,7 +77,7 @@ win32: {
     CONFIG(release, debug|release): LIBS += -L$$PWD/3rdparty/scintilla/bin/release
     else: LIBS += -L$$PWD/3rdparty/scintilla/bin/debug
 
-    LIBS+=-L$$PWD/3rdparty/zlib-1.2.8 -lScintillaEdit3 -lzlib -L$$PWD/3rdparty/Everything-SDK/lib -lUser32
+    LIBS+=-L$$PWD/3rdparty/zlib-1.2.8 -lScintillaEdit3 -lzlib -L$$PWD/3rdparty/Everything-SDK/lib -lUser32 -lShell32
 
     contains(QMAKE_HOST.arch, x86_64): LIBS += -lEverything64
     else: LIBS += -lEverything32

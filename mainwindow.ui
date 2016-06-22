@@ -61,6 +61,9 @@
     </item>
     <item>
      <widget class="TabWidget" name="tabWidget">
+      <property name="contextMenuPolicy">
+       <enum>Qt::CustomContextMenu</enum>
+      </property>
       <property name="currentIndex">
        <number>-1</number>
       </property>
@@ -71,9 +74,6 @@
        <bool>false</bool>
       </property>
       <property name="tabsClosable">
-       <bool>true</bool>
-      </property>
-      <property name="tabBarAutoHide">
        <bool>true</bool>
       </property>
      </widget>

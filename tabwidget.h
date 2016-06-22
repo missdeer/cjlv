@@ -24,11 +24,18 @@ public slots:
     void onCopySelectedCells();
     void onCopySelectedRows();
 
+    void onCopyFileName();
+    void onCopyFileFullPath();
+    void onOpenContainerFolder();
+
     void onScrollToTop();
     void onScrollToBottom();
 
     void onReload();
     void onGotoById();
+
+private slots:
+    void onCustomContextMenuRequested(const QPoint &pos);
 private:
     int findTab(const QString& path);
     int findTab(const QStringList& paths);

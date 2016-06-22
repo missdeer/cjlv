@@ -1,5 +1,14 @@
 #include <QtCore>
+#if defined(Q_OS_WIN)
+#include <Windows.h>
+#include <Shellapi.h>
+#endif
+#include <QApplication>
 #include <QInputDialog>
+#include <QMenu>
+#include <QClipboard>
+#include <QDesktopServices>
+#include <QFileInfo>
 #include "logview.h"
 #include "tabwidget.h"
 
@@ -8,6 +17,7 @@ TabWidget::TabWidget(QWidget *parent)
 {
     connect(this, &QTabWidget::tabCloseRequested, this, &TabWidget::onTabCloseRequested);
     connect(this, &QTabWidget::tabBarDoubleClicked, this, &TabWidget::onTabCloseRequested);
+    connect(this, &QWidget::customContextMenuRequested, this, &TabWidget::onCustomContextMenuRequested);
 }
 
 void TabWidget::openZipBundle(const QString &path)
@@ -102,6 +112,37 @@ void TabWidget::onCopySelectedRows()
     }
 }
 
+void TabWidget::onCopyFileName()
+{
+    QClipboard *clipboard = QApplication::clipboard();
+    clipboard->setText(tabText(currentIndex()));
+}
+
+void TabWidget::onCopyFileFullPath()
+{
+    QClipboard *clipboard = QApplication::clipboard();
+#if defined(Q_OS_WIN)
+    clipboard->setText(tabToolTip(currentIndex()).replace(QChar('/'), QChar('\\')));
+#else
+    clipboard->setText(tabToolTip(currentIndex()));
+#endif
+}
+
+void TabWidget::onOpenContainerFolder()
+{
+    QString fileFullPath = tabToolTip(currentIndex());
+#if defined(Q_OS_WIN)
+    QString arg = QString("/select,\"%1\"").arg(fileFullPath.replace(QChar('/'), QChar('\\')));
+    qDebug() << arg;
+    ::ShellExecuteW(NULL, L"open", L"explorer.exe", arg.toStdWString().c_str(), NULL, SW_SHOWNORMAL);
+#endif
+#if defined(Q_OS_MAC)
+//    QFileInfo fi(fileFullPath);
+//    QDesktopServices::openUrl(QString("open \"%1\"").arg(fi.filePath()));
+    QDesktopServices::openUrl(QUrl::fromLocalFile(fileFullPath));
+#endif
+}
+
 void TabWidget::onScrollToTop()
 {
     QWidget* w = currentWidget();
@@ -141,6 +182,37 @@ void TabWidget::onGotoById()
         LogView* v = qobject_cast<LogView*>(w);
         v->gotoById(i);
     }
+}
+
+void TabWidget::onCustomContextMenuRequested(const QPoint &pos)
+{
+    QMenu menu(this);
+    QAction* pCloseAction = new QAction(QIcon(":/image/close.png"), "Close", this);
+    menu.addAction(pCloseAction);
+    connect(pCloseAction, &QAction::triggered, this, &TabWidget::onCloseCurrent);
+    QAction* pCloseAllAction = new QAction(QIcon(":/image/closeall.png"), "Close All", this);
+    menu.addAction(pCloseAllAction);
+    connect(pCloseAllAction, &QAction::triggered, this, &TabWidget::onCloseAll);
+    QAction* pCloseAllButThisAction = new QAction("Close All But This", this);
+    menu.addAction(pCloseAllButThisAction);
+    connect(pCloseAllButThisAction, &QAction::triggered, this, &TabWidget::onCloseAllButThis);
+
+    menu.addSeparator();
+
+    QAction* pCopyFileNameAction = new QAction("Copy File Name", this);
+    connect(pCopyFileNameAction, &QAction::triggered, this, &TabWidget::onCopyFileName);
+    menu.addAction(pCopyFileNameAction);
+    QAction* pCopyFileFullPathAction = new QAction("Copy File Full Path", this);
+    connect(pCopyFileFullPathAction, &QAction::triggered, this, &TabWidget::onCopyFileFullPath);
+    menu.addAction(pCopyFileFullPathAction);
+
+    menu.addSeparator();
+
+    QAction* pOpenContainerFolderAction = new QAction("Open Container Folder", this);
+    connect(pOpenContainerFolderAction, &QAction::triggered, this, &TabWidget::onOpenContainerFolder);
+    menu.addAction(pOpenContainerFolderAction);
+
+    menu.exec(mapToGlobal(pos));
 }
 
 void TabWidget::onCloseAll()
