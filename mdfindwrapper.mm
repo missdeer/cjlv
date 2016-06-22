@@ -5,7 +5,7 @@
 #import <QtCore/QtCore>
 #import <QString>
 
-bool MDFindWrapper(const QString& fileName, QStringList& results)
+bool QuickGetFilesByFileName(const QString& fileName, QStringList& results)
 {
     QString queryString = QString("* == \"%1\"wcd || kMDItemFSName = \"%1\"c").arg(fileName);
     CFStringRef rawQuery = CFStringCreateWithCString(kCFAllocatorDefault,

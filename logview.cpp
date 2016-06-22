@@ -13,20 +13,11 @@
 #include <QTimer>
 #include <QRegularExpression>
 #include <JlCompress.h>
-#if defined(Q_OS_WIN)
-#include <Everything.h>
-#endif
-#if defined(Q_OS_MAC)
-#include <unistd.h>
-#include <sys/stat.h>
-#include <CoreServices/CoreServices.h>
-#endif
 #include "settings.h"
 #include "logmodel.h"
 #include "logview.h"
 
-
-bool MDFindWrapper(const QString& fileName, QStringList& results);
+bool QuickGetFilesByFileName(const QString& fileName, QStringList& results);
 
 static const QEvent::Type EXTRACTED_EVENT = QEvent::Type(QEvent::User + 1);
 
@@ -274,30 +265,20 @@ void LogView::openSourceFile(const QModelIndex &index)
         }
 
         QStringList results;
-#if defined(Q_OS_MAC)
-        if (!MDFindWrapper(fileName, results))
+        if (!QuickGetFilesByFileName(fileName, results))
         {
             return;
         }
-#endif
-#if defined(Q_OS_WIN)
-        // find
-        Everything_SetSearchW(fileName.toStdWString().c_str());
-        Everything_QueryW(TRUE);
-
-        for(DWORD i=0;i<Everything_GetNumResults();i++)
-        {
-            WCHAR path[MAX_PATH] = {0};
-            Everything_GetResultFullPathNameW(i, path, MAX_PATH);
-            results.append(QString::fromStdWString(path));
-        }
-        Everything_Reset();
-#endif
 
         QDir srcDir(g_settings.sourceDirectory());
         Q_FOREACH(const QString& filePath, results)
         {
             QFileInfo fi(filePath);
+            if (fi.fileName() != fileName)
+            {
+                qDebug()<< fi.fileName() << fileName;
+                continue;
+            }
             QDir dir(fi.filePath());
             if (!g_settings.sourceDirectory().isEmpty())
                 while (dir != srcDir)
