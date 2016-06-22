@@ -80,6 +80,9 @@ void LogView::openZipBundle(const QString &path)
     QDir dir(m_extractDir);
     if (!dir.exists())
         dir.mkpath(m_extractDir);
+
+    showProgressDialog();
+
     QtConcurrent::run(this, &LogView::extract, this, path, m_extractDir);
 }
 
@@ -398,8 +401,6 @@ bool LogView::event(QEvent* e)
 
 void LogView::extract(LogView* v, const QString& fileName, const QString& dirName)
 {
-    showProgressDialog();
-
     ExtractedEvent* e = new ExtractedEvent;
     JlCompress::extractDir(fileName, dirName);
     QCoreApplication::postEvent(v, e);
