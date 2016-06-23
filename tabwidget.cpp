@@ -18,6 +18,7 @@ TabWidget::TabWidget(QWidget *parent)
     connect(this, &QTabWidget::tabCloseRequested, this, &TabWidget::onTabCloseRequested);
     connect(this, &QTabWidget::tabBarDoubleClicked, this, &TabWidget::onTabCloseRequested);
     connect(this, &QWidget::customContextMenuRequested, this, &TabWidget::onCustomContextMenuRequested);
+    connect(this, &QTabWidget::currentChanged, this, &TabWidget::onCurrentChanged);
 }
 
 void TabWidget::openZipBundle(const QString &path)
@@ -219,9 +220,9 @@ void TabWidget::onCustomContextMenuRequested(const QPoint &pos)
     menu.exec(mapToGlobal(pos));
 }
 
-void TabWidget::onCurrentChanged(int index)
+void TabWidget::onCurrentChanged(int /*index*/)
 {
-    QWidget* w = widget(index);
+    QWidget* w = currentWidget();
     LogView* v = qobject_cast<LogView*>(w);
     QString msg = QString("Row Count: %1").arg(v->rowCount());
     emit statusBarMessage(msg);
