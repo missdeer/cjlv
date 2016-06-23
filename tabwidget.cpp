@@ -223,9 +223,16 @@ void TabWidget::onCustomContextMenuRequested(const QPoint &pos)
 void TabWidget::onCurrentChanged(int /*index*/)
 {
     QWidget* w = currentWidget();
-    LogView* v = qobject_cast<LogView*>(w);
-    QString msg = QString("Row Count: %1").arg(v->rowCount());
-    emit statusBarMessage(msg);
+    if (w)
+    {
+        LogView* v = qobject_cast<LogView*>(w);
+        QString msg = QString("Row Count: %1").arg(v->rowCount());
+        emit statusBarMessage(msg);
+    }
+    else
+    {
+        emit statusBarMessage("");
+    }
 }
 
 void TabWidget::onLogViewRowCountChanged()
@@ -269,7 +276,7 @@ void TabWidget::onTabCloseRequested(int index)
     LogView* v = qobject_cast<LogView*>(w);
     disconnect(v, &LogView::rowCountChanged, this, &TabWidget::onLogViewRowCountChanged);
     removeTab(index);
-    delete v;
+    delete w;
 }
 
 int TabWidget::findTab(const QString &path)
