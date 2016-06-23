@@ -219,6 +219,24 @@ void TabWidget::onCustomContextMenuRequested(const QPoint &pos)
     menu.exec(mapToGlobal(pos));
 }
 
+void TabWidget::onCurrentChanged(int index)
+{
+    QWidget* w = widget(index);
+    LogView* v = qobject_cast<LogView*>(w);
+    QString msg = QString("Row Count: %1").arg(v->rowCount());
+    emit statusBarMessage(msg);
+}
+
+void TabWidget::onLogViewRowCountChanged()
+{
+    LogView *v = qobject_cast<LogView*>(sender());
+    if (v == currentWidget())
+    {
+        QString msg = QString("Row Count: %1").arg(v->rowCount());
+        emit statusBarMessage(msg);
+    }
+}
+
 void TabWidget::onCloseAll()
 {
     for (int index = count() -1; index >=0; index--)
@@ -247,8 +265,10 @@ void TabWidget::onCloseCurrent()
 void TabWidget::onTabCloseRequested(int index)
 {
     QWidget* w = widget(index);
+    LogView* v = qobject_cast<LogView*>(w);
+    disconnect(v, &LogView::rowCountChanged, this, &TabWidget::onLogViewRowCountChanged);
     removeTab(index);
-    delete w;
+    delete v;
 }
 
 int TabWidget::findTab(const QString &path)
@@ -277,8 +297,9 @@ int TabWidget::findTab(const QStringList &paths)
     return -1;
 }
 
-int TabWidget::addTab(QWidget *w, const QString &text, const QString &tooltip)
+int TabWidget::addTab(LogView *w, const QString &text, const QString &tooltip)
 {
+    connect(w, &LogView::rowCountChanged, this, &TabWidget::onLogViewRowCountChanged);
     int index = QTabWidget::addTab(w, text);
     setTabToolTip(index, tooltip);
     setCurrentIndex(index);

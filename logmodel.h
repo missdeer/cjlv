@@ -50,6 +50,7 @@ signals:
     void logItemReady(int, QSharedPointer<LogItem>);
     void logItemsReady(QMap<int, QSharedPointer<LogItem>>);
     void dataLoaded();
+    void rowCountChanged();
 public slots:
     void onLogItemReady(int i, QSharedPointer<LogItem> log);
     void onLogItemsReady(QMap<int, QSharedPointer<LogItem>> logs);

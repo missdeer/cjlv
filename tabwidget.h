@@ -3,8 +3,11 @@
 
 #include <QTableWidget>
 
+class LogView;
+
 class TabWidget : public QTabWidget
 {
+    Q_OBJECT
 public:
     explicit TabWidget(QWidget *parent = 0);
 
@@ -13,6 +16,10 @@ public:
     void openFolder(const QString& path, bool installed);
 
     void filter(const QString& keyword);
+
+signals:
+    void statusBarMessage(const QString&);
+
 public slots:
     void onCloseAll();
     void onCloseAllButThis();
@@ -36,10 +43,12 @@ public slots:
 
 private slots:
     void onCustomContextMenuRequested(const QPoint &pos);
+    void onCurrentChanged(int index);
+    void onLogViewRowCountChanged();
 private:
     int findTab(const QString& path);
     int findTab(const QStringList& paths);
-    int addTab(QWidget* w, const QString& text, const QString& tooltip);
+    int addTab(LogView *w, const QString& text, const QString& tooltip);
 };
 
 #endif // TABWIDGET_H

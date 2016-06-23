@@ -40,8 +40,10 @@ public:
     void gotoById(int i);
 
     void reload();
+    int rowCount();
 signals:
     void filter(const QString& keyword);
+    void rowCountChanged();
 protected:
 
 private slots:

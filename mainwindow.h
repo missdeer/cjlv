@@ -15,6 +15,8 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+public slots:
+    void onStatusBarMessageChanges(const QString& msg);
 private slots:
     void on_actionOpenZipLogBundle_triggered();
 

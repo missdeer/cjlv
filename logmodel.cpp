@@ -773,6 +773,7 @@ bool LogModel::event(QEvent *e)
             beginInsertRows(QModelIndex(), 0, m_rowCount-1);
             endInsertRows();
         }
+        emit rowCountChanged();
         return true;
     case FINISHEDQUERY_EVENT:
     {

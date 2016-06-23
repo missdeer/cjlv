@@ -32,6 +32,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->cbKeyword->lineEdit()->setPlaceholderText(tr("Search Field Content"));
 
+    connect(ui->tabWidget, &TabWidget::statusBarMessage, this, &MainWindow::onStatusBarMessageChanges);
     connect(ui->actionClose, &QAction::triggered, ui->tabWidget, &TabWidget::onCloseCurrent);
     connect(ui->actionCloseAll, &QAction::triggered, ui->tabWidget, &TabWidget::onCloseAll);
     connect(ui->actionCloseAllButThis, &QAction::triggered, ui->tabWidget, &TabWidget::onCloseAllButThis);
@@ -52,6 +53,11 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::onStatusBarMessageChanges(const QString &msg)
+{
+    ui->statusBar->showMessage(msg);
 }
 
 void MainWindow::on_actionOpenZipLogBundle_triggered()

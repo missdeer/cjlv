@@ -54,6 +54,7 @@ LogView::LogView(QWidget *parent)
     connect(this, &LogView::filter, m_model, &LogModel::onFilter);
     connect(m_tableView, &QAbstractItemView::doubleClicked, this, &LogView::onDoubleClicked);
     connect(m_model, &LogModel::dataLoaded, this, &LogView::onDataLoaded);
+    connect(m_model, &LogModel::rowCountChanged, this, &LogView::rowCountChanged);
 }
 
 LogView::~LogView()
@@ -195,6 +196,11 @@ void LogView::gotoById(int i)
 void LogView::reload()
 {
     m_model->reload();
+}
+
+int LogView::rowCount()
+{
+    return m_model->rowCount();
 }
 
 void LogView::showCodeEditorPane()
