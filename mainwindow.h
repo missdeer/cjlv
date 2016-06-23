@@ -66,6 +66,8 @@ private slots:
 
     void on_actionClearKeyword_triggered();
 
+    void on_actionEditExtensions_triggered();
+
 private:
     Ui::MainWindow *ui;
 };

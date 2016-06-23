@@ -144,7 +144,7 @@ void MainWindow::on_actionFilter_triggered()
 
 void MainWindow::on_actionPreference_triggered()
 {
-
+    QMessageBox::warning(this, tr("Warning"), tr("Not implemented yet."), QMessageBox::Ok);
 }
 
 void MainWindow::on_actionAbout_triggered()
@@ -244,4 +244,9 @@ void MainWindow::on_actionClearKeyword_triggered()
 {
     ui->cbKeyword->setFocus();
     ui->cbKeyword->clearEditText();
+}
+
+void MainWindow::on_actionEditExtensions_triggered()
+{
+    QMessageBox::warning(this, tr("Warning"), tr("Not implemented yet."), QMessageBox::Ok);
 }
