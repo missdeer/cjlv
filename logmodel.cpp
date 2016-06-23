@@ -516,6 +516,14 @@ int LogModel::getLogFileLine(const QModelIndex &index, QString &fileName)
     return r->line;
 }
 
+int LogModel::getId(const QModelIndex &index)
+{
+    auto it = m_logs.find(index.row());
+    Q_ASSERT(m_logs.end() != it);
+    QSharedPointer<LogItem> r = *it;
+    return r->id;
+}
+
 void LogModel::onLogItemReady(int i,  QSharedPointer<LogItem> log)
 {
 #ifndef QT_NO_DEBUG

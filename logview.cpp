@@ -34,6 +34,8 @@ LogView::LogView(QWidget *parent)
     , m_tableView(new QTableView(m_verticalSplitter))
     , m_codeEditorTabWidget(new CodeEditorTabWidget(m_verticalSplitter))
     , m_model(new LogModel(m_tableView))
+    , m_lastId(-1)
+    , m_lastColumn(-1)
 {
     m_verticalSplitter->addWidget(m_tableView);
     m_verticalSplitter->addWidget(m_codeEditorTabWidget);
@@ -51,10 +53,9 @@ LogView::LogView(QWidget *parent)
     m_tableView->setModel(m_model);
     m_tableView->horizontalHeader()->setSectionResizeMode(7, QHeaderView::Stretch);
 
-    connect(this, &LogView::filter, m_model, &LogModel::onFilter);
     connect(m_tableView, &QAbstractItemView::doubleClicked, this, &LogView::onDoubleClicked);
     connect(m_model, &LogModel::dataLoaded, this, &LogView::onDataLoaded);
-    connect(m_model, &LogModel::rowCountChanged, this, &LogView::rowCountChanged);
+    connect(m_model, &LogModel::rowCountChanged, this, &LogView::onRowCountChanged);
 }
 
 LogView::~LogView()
@@ -212,6 +213,26 @@ void LogView::showCodeEditorPane()
         resizes << height()/2 <<  height()/2;
         m_verticalSplitter->setSizes(resizes);
     }
+}
+
+void LogView::filter(const QString &keyword)
+{
+    if (keyword.isEmpty())
+    {
+        // record the selected cell
+        QItemSelectionModel* selected =  m_tableView->selectionModel();
+        if (!selected->hasSelection())
+            return;
+        QModelIndex i = selected->currentIndex();
+        m_lastId = m_model->getId(i);
+        m_lastColumn = i.column();
+    }
+    else
+    {
+        m_lastId = -1;
+        m_lastColumn = -1;
+    }
+    m_model->onFilter(keyword);
 }
 
 void LogView::extractContent(const QModelIndex& index)
@@ -373,6 +394,16 @@ void LogView::onDoubleClicked(const QModelIndex& index)
 void LogView::onDataLoaded()
 {
     closeProgressDialog();
+}
+
+void LogView::onRowCountChanged()
+{
+    if (m_lastId >= 0 && m_lastColumn >= 0)
+    {
+        m_tableView->scrollTo(m_model->index(m_lastId -1, m_lastColumn));
+        m_tableView->selectRow(m_lastId -1);
+    }
+    emit rowCountChanged();
 }
 
 bool LogView::event(QEvent* e)

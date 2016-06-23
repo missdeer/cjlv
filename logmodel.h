@@ -46,6 +46,7 @@ public:
     const QString& getLogSourceFile(const QModelIndex &index);
     QString getLogFileName(const QModelIndex &index);
     int getLogFileLine(const QModelIndex &index, QString& fileName);
+    int getId(const QModelIndex &index);
 signals:
     void logItemReady(int, QSharedPointer<LogItem>);
     void logItemsReady(QMap<int, QSharedPointer<LogItem>>);

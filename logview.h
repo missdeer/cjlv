@@ -41,14 +41,15 @@ public:
 
     void reload();
     int rowCount();
-signals:
     void filter(const QString& keyword);
+signals:
     void rowCountChanged();
 protected:
 
 private slots:
     void onDoubleClicked(const QModelIndex &index);
     void onDataLoaded();
+    void onRowCountChanged();
 private:
     QProgressDialog* m_progressDialog;
     QSplitter* m_verticalSplitter;
@@ -58,6 +59,8 @@ private:
     QString m_path;
     QString m_extractDir;
     QMutex m_mutex;
+    int m_lastId;
+    int m_lastColumn;
     bool event(QEvent *e) Q_DECL_OVERRIDE;
 
     void extract(LogView* v, const QString& fileName, const QString& dirName);

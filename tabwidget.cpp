@@ -69,7 +69,7 @@ void TabWidget::filter(const QString& keyword)
     if (w)
     {
         LogView* v = qobject_cast<LogView*>(w);
-        emit v->filter(keyword);
+        v->filter(keyword);
     }
 }
 
