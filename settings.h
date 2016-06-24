@@ -23,8 +23,12 @@ public:
     QString sourceDirectory() const;
     void setSourceDirectory(const QString &sourceDirectory);
 
+    bool regexMode() const;
+    void setRegexMode(bool regexMode);
+
 private:
     bool m_searchOrFitler;
+    bool m_regexMode;
     QString m_searchField;
     QString m_temporaryDirectory;
     QString m_lastOpenedDirectory;

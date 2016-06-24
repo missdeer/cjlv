@@ -129,6 +129,7 @@
     <addaction name="separator"/>
     <addaction name="actionInputKeyword"/>
     <addaction name="actionClearKeyword"/>
+    <addaction name="actionRegexpMode"/>
     <addaction name="menuSearchField"/>
     <addaction name="separator"/>
     <addaction name="actionScrollToTop"/>
@@ -628,6 +629,21 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+G</string>
+   </property>
+  </action>
+  <action name="actionRegexpMode">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="cjlv.qrc">
+     <normaloff>:/image/regexp.png</normaloff>:/image/regexp.png</iconset>
+   </property>
+   <property name="text">
+    <string>Regexp Mode</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+R</string>
    </property>
   </action>
  </widget>

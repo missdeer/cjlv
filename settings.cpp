@@ -68,3 +68,13 @@ void Settings::setSourceDirectory(const QString &sourceDirectory)
 {
     m_sourceDirectory = sourceDirectory;
 }
+
+bool Settings::regexMode() const
+{
+    return m_regexMode;
+}
+
+void Settings::setRegexMode(bool regexMode)
+{
+    m_regexMode = regexMode;
+}

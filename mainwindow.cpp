@@ -252,3 +252,8 @@ void MainWindow::on_actionEditExtensions_triggered()
 {
     QMessageBox::warning(this, tr("Warning"), tr("Not implemented yet."), QMessageBox::Ok);
 }
+
+void MainWindow::on_actionRegexpMode_triggered()
+{
+    g_settings.setRegexMode(ui->actionRegexpMode->isChecked());
+}

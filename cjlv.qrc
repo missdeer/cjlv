@@ -23,5 +23,6 @@
         <file>image/field/log.png</file>
         <file>image/field/source-file.png</file>
         <file>image/field/thread.png</file>
+        <file>image/regexp.png</file>
     </qresource>
 </RCC>

@@ -68,6 +68,8 @@ private slots:
 
     void on_actionEditExtensions_triggered();
 
+    void on_actionRegexpMode_triggered();
+
 private:
     Ui::MainWindow *ui;
 };
