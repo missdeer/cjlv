@@ -217,12 +217,10 @@ void LogView::showCodeEditorPane()
 
 void LogView::filter(const QString &keyword)
 {
-    if (keyword.isEmpty())
+    QItemSelectionModel* selected =  m_tableView->selectionModel();
+    if (keyword.isEmpty() && selected && selected->hasSelection())
     {
         // record the selected cell
-        QItemSelectionModel* selected =  m_tableView->selectionModel();
-        if (!selected->hasSelection())
-            return;
         QModelIndex i = selected->currentIndex();
         m_lastId = m_model->getId(i);
         m_lastColumn = i.column();

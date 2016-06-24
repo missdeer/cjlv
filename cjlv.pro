@@ -15,7 +15,8 @@ INCLUDEPATH += $$PWD/3rdparty/scintilla/qt/ScintillaEditBase \
     $$PWD/3rdparty/scintilla/qt/ScintillaEdit \
     $$PWD/3rdparty/scintilla/include \
     $$PWD/3rdparty/scintilla/src \
-    $$PWD/3rdparty/scintilla/lexlib
+    $$PWD/3rdparty/scintilla/lexlib \
+    $$PWD/3rdparty/sqlite3
 
 DEFINES += SCINTILLA_QT=1 SCI_LEXER=1 _CRT_SECURE_NO_DEPRECATE=1 SCI_STATIC_LINK=1 LOKI_FUNCTOR_IS_NOT_A_SMALLOBJECT
 
@@ -27,7 +28,8 @@ SOURCES += main.cpp\
     settings.cpp \
     scintillaconfig.cpp \
     codeeditortabwidget.cpp \
-    codeeditor.cpp
+    codeeditor.cpp \
+    3rdparty/sqlite3/sqlite3.c
 
 HEADERS  += mainwindow.h \
     logview.h \

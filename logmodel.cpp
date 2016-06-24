@@ -4,6 +4,7 @@
 #include <QSqlQuery>
 #include <QSqlRecord>
 #include <QSqlError>
+#include <QSqlDriver>
 #include <QStandardPaths>
 #include <QFile>
 #include <QDir>
@@ -13,6 +14,7 @@
 #include <QClipboard>
 #include <QTextStream>
 #include "settings.h"
+#include "sqlite3.h"
 #include "logmodel.h"
 
 static const QEvent::Type ROWCOUNT_EVENT = QEvent::Type(QEvent::User + 1);
@@ -109,6 +111,28 @@ start_read:
     }
 };
 
+
+static void qtregexp(sqlite3_context* ctx, int /*argc*/, sqlite3_value** argv)
+{
+    QRegExp regex;
+    QString pattern((const char*)sqlite3_value_text(argv[0]));
+    QString text((const char*)sqlite3_value_text(argv[1]));
+
+    regex.setPattern(pattern);
+    regex.setCaseSensitivity(Qt::CaseInsensitive);
+
+    bool b = text.contains(regex);
+
+    if (b)
+    {
+        sqlite3_result_int(ctx, 1);
+    }
+    else
+    {
+        sqlite3_result_int(ctx, 0);
+    }
+}
+
 LogModel::LogModel(QObject *parent)
     : QAbstractTableModel(parent)
     , m_rowCount(0)
@@ -124,7 +148,18 @@ LogModel::~LogModel()
 {
     QSqlDatabase db = QSqlDatabase::database(m_dbFile, false);
     if (db.isValid() && db.isOpen())
+    {
+//        QVariant v = db.driver()->handle();
+//        if (v.isValid() && qstrcmp(v.typeName(), "sqlite3*")==0)
+//        {
+//            sqlite3 *db_handle = *static_cast<sqlite3 **>(v.data());
+//            if (db_handle != 0)
+//            {
+//                sqlite3_close_v2(db_handle);
+//            }
+//        }
         db.close();
+    }
 
     QFile::remove(m_dbFile);
 }
@@ -630,7 +665,10 @@ void LogModel::doQuery(int offset)
         db.setDatabaseName(m_dbFile);
     }
 
-    if (db.open())
+    if (!db.isOpen())
+        db.open();
+
+    if (db.isOpen())
     {
         if (m_stopQuerying)
             return;
@@ -808,7 +846,10 @@ void LogModel::createDatabaseIndex()
         db.setDatabaseName(m_dbFile);
     }
 
-    if (db.open())
+    if (!db.isOpen())
+        db.open();
+
+    if (db.isOpen())
     {
         QSqlQuery query(db);
         query.exec("CREATE INDEX itime ON logs (epoch);");
@@ -845,7 +886,24 @@ void LogModel::createDatabase()
         db.setDatabaseName(m_dbFile);
     }
 
-    if (db.open())
+    if (!db.isOpen())
+    {
+        if (db.open())
+        {
+//            QVariant v = db.driver()->handle();
+//            if (v.isValid() && qstrcmp(v.typeName(), "sqlite3*")==0)
+//            {
+//                sqlite3 *db_handle = *static_cast<sqlite3 **>(v.data());
+//                if (db_handle != 0)
+//                {
+//                    sqlite3_initialize();
+//                    sqlite3_create_function_v2(db_handle, "regexp", 2, SQLITE_UTF8 | SQLITE_DETERMINISTIC, NULL, &qtregexp, NULL, NULL, NULL);
+//                }
+//            }
+        }
+    }
+
+    if (db.isOpen())
     {
         QSqlQuery query(db);
         query.exec("CREATE TABLE logs(id INTEGER PRIMARY KEY AUTOINCREMENT,epoch INTEGER, time DATETIME,level TEXT,thread TEXT,source TEXT,category TEXT,method TEXT, content TEXT, log TEXT, line INTEGER);");
