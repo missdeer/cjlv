@@ -890,16 +890,18 @@ void LogModel::createDatabase()
     {
         if (db.open())
         {
-//            QVariant v = db.driver()->handle();
-//            if (v.isValid() && qstrcmp(v.typeName(), "sqlite3*")==0)
-//            {
-//                sqlite3 *db_handle = *static_cast<sqlite3 **>(v.data());
-//                if (db_handle != 0)
-//                {
-//                    sqlite3_initialize();
-//                    sqlite3_create_function_v2(db_handle, "regexp", 2, SQLITE_UTF8 | SQLITE_DETERMINISTIC, NULL, &qtregexp, NULL, NULL, NULL);
-//                }
-//            }
+            QVariant v = db.driver()->handle();
+            if (v.isValid() && qstrcmp(v.typeName(), "sqlite3*")==0)
+            {
+                sqlite3 *db_handle = *static_cast<sqlite3 **>(v.data());
+                if (db_handle != 0)
+                {
+                    sqlite3_initialize();
+                    // must use the same sqlite3 version with the one Qt ships, aka. Qt 5.7 uses sqlite3 3.11.1.0
+                    // http://www.sqlite.org/2016/sqlite-amalgamation-3110100.zip
+                    sqlite3_create_function_v2(db_handle, "regexp", 2, SQLITE_UTF8 | SQLITE_DETERMINISTIC, NULL, &qtregexp, NULL, NULL, NULL);
+                }
+            }
         }
     }
 
