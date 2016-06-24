@@ -134,6 +134,7 @@ void MainWindow::on_actionSearch_triggered()
 {
     ui->radioSearch->setChecked(ui->actionSearch->isChecked());
     g_settings.setSearchOrFitler(ui->radioSearch->isChecked());
+    QMessageBox::warning(this, tr("Warning"), tr("Not implemented yet."), QMessageBox::Ok);
 }
 
 void MainWindow::on_actionFilter_triggered()
@@ -156,6 +157,7 @@ void MainWindow::on_radioSearch_clicked()
 {
     ui->actionSearch->setChecked(ui->radioSearch->isChecked());
     g_settings.setSearchOrFitler(ui->radioSearch->isChecked());
+    QMessageBox::warning(this, tr("Warning"), tr("Not implemented yet."), QMessageBox::Ok);
 }
 
 void MainWindow::on_radioFilter_clicked()
