@@ -77,7 +77,6 @@ macx: {
 
         dmg_installer.depends = copy_scintilla copy_themes copy_language copy_langmap
         dmg_installer.commands = $$MACDEPLOYQT \"$${OUT_PWD}/$${TARGET}.app\" -dmg
-        //dmg_installer.commands = hdiutil create -srcfolder \"$${TARGET}.app\" -volname \"$${TARGET}\" -format UDBZ "CiscoJabberLogViewer-installer.dmg" -ov -scrub -stretch 2g
         QMAKE_EXTRA_TARGETS +=  mkdir_framework clean_scintilla copy_scintilla copy_themes copy_language copy_langmap dmg_installer
         POST_TARGETDEPS += mkdir_framework clean_scintilla copy_scintilla copy_themes copy_language copy_langmap
         QMAKE_POST_LINK += $$quote($$MACDEPLOYQT \"$${OUT_PWD}/$${TARGET}.app\" -dmg -appstore-compliant)
@@ -88,12 +87,34 @@ win32: {
     INCLUDEPATH += $$PWD/3rdparty/Everything-SDK/include $$PWD/3rdparty/Everything-SDK/ipc
     SOURCES += everythingwrapper.cpp
 
-    CONFIG(release, debug|release): LIBS += -L$$PWD/3rdparty/scintilla/bin/release
-    else: LIBS += -L$$PWD/3rdparty/scintilla/bin/debug
-
     LIBS+=-L$$PWD/3rdparty/zlib-1.2.8 -lScintillaEdit3 -lzlib -L$$PWD/3rdparty/Everything-SDK/lib -lUser32 -lShell32
 
     contains(QMAKE_HOST.arch, x86_64): LIBS += -lEverything64
     else: LIBS += -lEverything32
+
+    CONFIG(release, debug|release): {
+        LIBS += -L$$PWD/3rdparty/scintilla/bin/release
+
+        WINDEPLOYQT = $$[QT_INSTALL_BINS]/windeployqt.exe
+        copy_themes.commands = '$(COPY_DIR) $$shell_path($$PWD/resource/Windows/themes) $$shell_path($$OUT_PWD/Release/themes/)'
+        copy_language.commands = '$(COPY_DIR) $$shell_path($$PWD/resource/language) $$shell_path($$OUT_PWD/Release/language/)'
+        copy_langmap.commands = '$(COPY_FILE) $$shell_path($$PWD/resource/langmap.xml) $$shell_path($$OUT_PWD/Release/langmap.xml)'
+        copy_scintilla.commands = '$(COPY_FILE) $$shell_path($$PWD/3rdparty/scintilla/bin/release/ScintillaEdit3.dll) $$shell_path($$OUT_PWD/Release/ScintillaEdit3.dll)'
+        copy_everything.commands = '$(COPY_FILE) $$shell_path($$PWD/3rdparty/Everything-SDK/dll/Everything64.dll) $$shell_path($$OUT_PWD/Release/Everything.dll)'
+
+        contains(QMAKE_HOST.arch, x86_64): {
+            copy_everything.commands = '$(COPY_FILE) $$shell_path($$PWD/3rdparty/Everything-SDK/dll/Everything64.dll) $$shell_path($$OUT_PWD/Release/Everything.dll)'
+            copy_iss.commands = '$(COPY_FILE) $$shell_path($$PWD/cjlv-win64.iss) $$shell_path($$OUT_PWD/Release/cjlv-win64.iss)'
+        }
+        else: {
+            copy_everything.commands = '$(COPY_FILE) $$shell_path($$PWD/3rdparty/Everything-SDK/dll/Everything32.dll) $$shell_path($$OUT_PWD/Release/Everything.dll)'
+            copy_iss.commands = '$(COPY_FILE) $$shell_path($$PWD/cjlv-win32.iss) $$shell_path($$OUT_PWD/Release/cjlv-win32.iss)'
+        }
+
+        QMAKE_EXTRA_TARGETS +=  copy_scintilla copy_iss copy_themes copy_language copy_langmap copy_everything
+        POST_TARGETDEPS += copy_scintilla copy_iss copy_themes copy_language copy_langmap copy_everything
+        QMAKE_POST_LINK += $$quote($$WINDEPLOYQT --release --force \"$${OUT_PWD}/Release/$${TARGET}.exe\")
+    }
+    else: LIBS += -L$$PWD/3rdparty/scintilla/bin/debug
 }
 

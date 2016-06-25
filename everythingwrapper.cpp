@@ -1,7 +1,11 @@
+#include <Windows.h>
+#include <Shellapi.h>
 #include <QApplication>
 #include <QStringList>
 #include <QString>
 #include <QMessageBox>
+#include <QFile>
+#include <QDesktopWidget>
 #include <Everything.h>
 #include <everything_ipc.h>
 
@@ -10,11 +14,23 @@ bool QuickGetFilesByFileName(const QString& fileName, QStringList& results)
     HWND everything_hwnd = FindWindow(EVERYTHING_IPC_WNDCLASS,0);
     if (!everything_hwnd)
     {
-        QWidgetList wl = QApplication::topLevelWidgets();
-        QMessageBox::warning(wl.isEmpty() ? NULL : wl.at(0),
-                             "Warning",
-                             "Everything is not running, thus Cisco Jabber Log Viewer can't find files.",
-                             QMessageBox::Ok);
+        QWidget* p =  QApplication::desktop()->screen();
+
+        if (QMessageBox::question(p,
+                             "Notice",
+                             "Everything is not running, thus Cisco Jabber Log Viewer can't find files. Do you want to launch the Everything application shipped with Cisco Jabber Log Viewer?") == QMessageBox::Yes)
+        {
+            QString everythingFilePath = QApplication::applicationDirPath() + "/Everything.exe";
+            if (!QFile::exists(everythingFilePath))
+            {
+                QMessageBox::warning(p,
+                                     "Warning",
+                                     "Can't find the Everything executable, please re-install Cisco Jabber Log Viewer.",
+                                     QMessageBox::Ok);
+                return false;
+            }
+            ::ShellExecuteW(NULL, L"open", everythingFilePath.toStdWString().c_str(), NULL, NULL, SW_SHOWNORMAL);
+        }
         return false;
     }
     // find
