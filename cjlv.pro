@@ -64,6 +64,7 @@ macx: {
     LIBS+=-L$$PWD/3rdparty/zlib-1.2.8 -F $$PWD/3rdparty/scintilla/bin -framework ScintillaEdit  -lz -framework CoreServices -lobjc
 
     CONFIG(release, debug|release) : {
+        QMAKE_INFO_PLIST = osxInfo.plist
         MACDEPLOYQT = $$[QT_INSTALL_BINS]/macdeployqt
         copy_themes.commands = cp -R \"$$PWD/resource/MacOSX/themes\" \"$${TARGET}.app/Contents/Resources\"
         copy_language.commands = cp -R \"$$PWD/resource/language\" \"$${TARGET}.app/Contents/Resources\"
