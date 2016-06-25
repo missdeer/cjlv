@@ -12,6 +12,7 @@
 #include <QProgressDialog>
 #include <QTimer>
 #include <QRegularExpression>
+#include <QMessageBox>
 #include <JlCompress.h>
 #include "settings.h"
 #include "logmodel.h"
@@ -295,25 +296,24 @@ void LogView::openSourceFile(const QModelIndex &index)
         QStringList results;
         if (!QuickGetFilesByFileName(fileName, results))
         {
-            //qDebug() << fileDirs << fileName;
             if (fileDirs.length() == 1 || fileDirs.isEmpty())
             {
                 QString t(fileName);
                 while (t.at(0) < QChar('A') || t.at(0) > QChar('Z'))
                     t = t.remove(0,1);
 
-                //qDebug() << "try " << t;
                 if (!QuickGetFilesByFileName(t, results))
                 {
+                    QMessageBox::warning(this, "Warning", QString("Can't find the file named %1.").arg(fileName), QMessageBox::Ok);
                     return;
                 }
             }
             else
             {
+                QMessageBox::warning(this, "Warning", QString("Can't find the file named %1.").arg(fileName), QMessageBox::Ok);
                 return;
             }
         }
-        //qDebug() << results << fileName;
 
         QDir srcDir(g_settings.sourceDirectory());
         Q_FOREACH(const QString& filePath, results)
@@ -338,18 +338,21 @@ void LogView::openSourceFile(const QModelIndex &index)
                 if (!filePath.contains(n))
                 {
                     matched = false;
-                    //qDebug() << s << "is not matched" << filePath;
                     break;
                 }
             }
 
-            //qDebug() << "got file " << filePath << dir << srcDir;
             if (matched && (g_settings.sourceDirectory().isEmpty() || (!g_settings.sourceDirectory().isEmpty() && dir == srcDir)))
             {
                 m_codeEditorTabWidget->gotoLine(filePath, m.captured(2).toInt());
-                break;
+                return;
             }
         }
+
+        QMessageBox::warning(this,
+                             "Warning",
+                             QString("Can't find the file named %1 in path %2.").arg(fileName).arg(source),
+                             QMessageBox::Ok);
     }
 }
 
