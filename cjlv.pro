@@ -63,13 +63,24 @@ macx: {
     INSTALLS += icon
     LIBS+=-L$$PWD/3rdparty/zlib-1.2.8 -F $$PWD/3rdparty/scintilla/bin -framework ScintillaEdit  -lz -framework CoreServices -lobjc
 
-    copy_themes.commands = cp -R \"$$PWD/resource/MacOSX/themes\" \"$${INSTALLER_NAME}.app/Contents/Resources\"
-    copy_language.commands = cp -R \"$$PWD/resource/language\" \"$${INSTALLER_NAME}.app/Contents/Resources\"
-    copy_scintilla.commands = cp -R \"$$PWD/3rdparty/scintilla/bin/ScintillaEdit.framework\" \"$${INSTALLER_NAME}.app/Contents/Resources\"
+    CONFIG(release, debug|release) : {
+        MACDEPLOYQT = $$[QT_INSTALL_BINS]/macdeployqt
+        copy_themes.commands = cp -R \"$$PWD/resource/MacOSX/themes\" \"$${TARGET}.app/Contents/Resources\"
+        copy_language.commands = cp -R \"$$PWD/resource/language\" \"$${TARGET}.app/Contents/Resources\"
+        copy_langmap.commands = cp \"$$PWD/resource/langmap.xml\" \"$${TARGET}.app/Contents/Resources/\"
+        mkdir_framework.commands = mkdir -p \"$${TARGET}.app/Contents/Frameworks\"
+        clean_scintilla.depends = mkdir_framework
+        clean_scintilla.commands = rm -rf \"$${TARGET}.app/Contents/Frameworks/ScintillaEdit.framework\"
+        copy_scintilla.depends = clean_scintilla
+        copy_scintilla.commands = cp -R \"$$PWD/3rdparty/scintilla/bin/ScintillaEdit.framework\" \"$${TARGET}.app/Contents/Frameworks\"
 
-    codesign_installer.commands = codesign -s \"$(SIGNING_IDENTITY)\" $(SIGNING_FLAGS) \"$${INSTALLER_NAME}.app\"
-    dmg_installer.commands = hdiutil create -srcfolder "$${INSTALLER_NAME}.app" -volname \"Cisco Jabber Log Viewer\" -format UDBZ "CiscoJabberLogViewer-installer.dmg" -ov -scrub -stretch 2g
-    QMAKE_EXTRA_TARGETS +=  copy_scintilla copy_themes copy_language codesign_installer dmg_installer
+        dmg_installer.depends = copy_scintilla copy_themes copy_language copy_langmap
+        dmg_installer.commands = $$MACDEPLOYQT \"$${OUT_PWD}/$${TARGET}.app\" -dmg
+        //dmg_installer.commands = hdiutil create -srcfolder \"$${TARGET}.app\" -volname \"$${TARGET}\" -format UDBZ "CiscoJabberLogViewer-installer.dmg" -ov -scrub -stretch 2g
+        QMAKE_EXTRA_TARGETS +=  mkdir_framework clean_scintilla copy_scintilla copy_themes copy_language copy_langmap dmg_installer
+        POST_TARGETDEPS += mkdir_framework clean_scintilla copy_scintilla copy_themes copy_language copy_langmap
+        QMAKE_POST_LINK += $$quote($$MACDEPLOYQT \"$${OUT_PWD}/$${TARGET}.app\" -dmg -appstore-compliant)
+    }
 }
 
 win32: {
