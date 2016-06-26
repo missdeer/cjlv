@@ -86,7 +86,7 @@
      <x>0</x>
      <y>0</y>
      <width>1156</width>
-     <height>18</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -350,6 +350,9 @@
    <property name="toolTip">
     <string>Edit extensions</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+F9</string>
+   </property>
   </action>
   <action name="actionInputKeyword">
    <property name="icon">
@@ -539,6 +542,9 @@
    <property name="text">
     <string>Copy Current Cell</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+C</string>
+   </property>
   </action>
   <action name="actionCopyCurrentRow">
    <property name="icon">
@@ -560,6 +566,9 @@
    <property name="text">
     <string>Copy Selected Cells</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+R, Ctrl+C</string>
+   </property>
   </action>
   <action name="actionCopySelectedRows">
    <property name="icon">
@@ -568,6 +577,9 @@
    </property>
    <property name="text">
     <string>Copy Selected Rows</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+R, Ctrl+R</string>
    </property>
   </action>
   <action name="actionSearchFieldLevel">
@@ -643,7 +655,7 @@
     <string>Regexp Mode</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+R</string>
+    <string>Alt+R</string>
    </property>
   </action>
  </widget>
