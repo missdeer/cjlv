@@ -150,7 +150,9 @@ void MainWindow::on_actionPreference_triggered()
 
 void MainWindow::on_actionAbout_triggered()
 {
-    QMessageBox::about(this, this->windowTitle(), tr("Easy to use tool for Cisco Jabber log reading.\r\nContact me at fyang3@cisco.com if you have any problem about this application."));
+    QMessageBox::about(this,
+                       this->windowTitle(),
+                       tr("Easy to use tool for Cisco Jabber log reading.\r\nContact me at fyang3@cisco.com if you have any problem about this application.\r\nBuilt at " __DATE__ " " __TIME__));
 }
 
 void MainWindow::on_radioSearch_clicked()
