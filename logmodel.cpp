@@ -149,15 +149,6 @@ LogModel::~LogModel()
     QSqlDatabase db = QSqlDatabase::database(m_dbFile, false);
     if (db.isValid() && db.isOpen())
     {
-//        QVariant v = db.driver()->handle();
-//        if (v.isValid() && qstrcmp(v.typeName(), "sqlite3*")==0)
-//        {
-//            sqlite3 *db_handle = *static_cast<sqlite3 **>(v.data());
-//            if (db_handle != 0)
-//            {
-//                sqlite3_close_v2(db_handle);
-//            }
-//        }
         db.close();
     }
 

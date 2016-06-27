@@ -11,7 +11,6 @@ class LogModel;
 QT_BEGIN_NAMESPACE
 class QTableView;
 class QSplitter;
-class QProgressDialog;
 class QTimer;
 QT_END_NAMESPACE
 
@@ -51,7 +50,6 @@ private slots:
     void onDataLoaded();
     void onRowCountChanged();
 private:
-    QProgressDialog* m_progressDialog;
     QSplitter* m_verticalSplitter;
     QTableView *m_tableView;
     CodeEditorTabWidget* m_codeEditorTabWidget;

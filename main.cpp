@@ -10,6 +10,8 @@
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
+    QCoreApplication::setApplicationName("Cisco Jabber Log Viewer");
+    QCoreApplication::setApplicationVersion("1.0");
 
     QDate d =  QLocale(QLocale::C).toDate(QString(__DATE__).simplified(), QLatin1String("MMM d yyyy"));
     if (d.daysTo(QDate::currentDate()) > 365)

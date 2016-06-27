@@ -7,6 +7,11 @@ namespace Ui {
 class MainWindow;
 }
 
+QT_BEGIN_NAMESPACE
+class QDragEnterEvent;
+class QDropEvent;
+QT_END_NAMESPACE
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -72,6 +77,10 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
+
+    void dragEnterEvent(QDragEnterEvent *e);
+
+    void dropEvent(QDropEvent *e);
 };
 
 #endif // MAINWINDOW_H

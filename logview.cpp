@@ -13,6 +13,7 @@
 #include <QTimer>
 #include <QRegularExpression>
 #include <QMessageBox>
+#include <QAtomicInt>
 #include <JlCompress.h>
 #include "settings.h"
 #include "logmodel.h"
@@ -20,6 +21,8 @@
 
 bool QuickGetFilesByFileName(const QString& fileName, QStringList& results);
 
+static QProgressDialog* g_progressDialog = nullptr;
+static QAtomicInt g_loadingReferenceCount;
 static const QEvent::Type EXTRACTED_EVENT = QEvent::Type(QEvent::User + 1);
 
 class ExtractedEvent : public QEvent
@@ -30,7 +33,6 @@ public:
 
 LogView::LogView(QWidget *parent)
     : QWidget (parent)
-    , m_progressDialog(nullptr)
     , m_verticalSplitter(new QSplitter( Qt::Vertical, parent))
     , m_tableView(new QTableView(m_verticalSplitter))
     , m_codeEditorTabWidget(new CodeEditorTabWidget(m_verticalSplitter))
@@ -450,27 +452,30 @@ void LogView::extract(LogView* v, const QString& fileName, const QString& dirNam
 
 void LogView::showProgressDialog()
 {
-    if (!m_progressDialog)
+    g_loadingReferenceCount.ref();
+    if (!g_progressDialog)
     {
-        m_progressDialog = new QProgressDialog(this);
-        m_progressDialog->setLabelText("Loading log from files...");
-        m_progressDialog->setWindowModality(Qt::WindowModal);
-        m_progressDialog->setAutoClose(true);
-        m_progressDialog->setAutoReset(true);
-        m_progressDialog->setCancelButton(nullptr);
-        m_progressDialog->setRange(0,0);
-        m_progressDialog->setMinimumDuration(0);
+        qDebug() << __func__;
+        g_progressDialog = new QProgressDialog(this);
+        g_progressDialog->setLabelText("Loading log from files...");
+        g_progressDialog->setWindowModality(Qt::WindowModal);
+        g_progressDialog->setAutoClose(true);
+        g_progressDialog->setAutoReset(true);
+        g_progressDialog->setCancelButton(nullptr);
+        g_progressDialog->setRange(0,0);
+        g_progressDialog->setMinimumDuration(0);
     }
-    m_progressDialog->show();
+    g_progressDialog->show();
     qApp->processEvents();
 }
 
 void LogView::closeProgressDialog()
 {
-    if (m_progressDialog)
+    if (!g_loadingReferenceCount.deref() && g_progressDialog)
     {
-        m_progressDialog->setValue(200);
-        m_progressDialog->deleteLater();
-        m_progressDialog=nullptr;
+        qDebug() << __func__;
+        g_progressDialog->setValue(200);
+        g_progressDialog->deleteLater();
+        g_progressDialog=nullptr;
     }
 }

@@ -51,15 +51,19 @@ void TabWidget::openRawLogFile(const QStringList &paths)
 
 void TabWidget::openFolder(const QString &path, bool installed)
 {
-    int index = findTab(path);
+    QString p = path;
+
+    while(p.at(p.length()-1) == QChar('/') || p.at(p.length()-1) == QChar('\\'))
+        p.remove(p.length() -1, 1);
+    int index = findTab(p);
     if (index >= 0)
     {
         setCurrentIndex(index);
         return;
     }
     LogView* v = new LogView(this);
-    v->openFolder(path);
-    index = addTab(v, v->windowTitle(), path);
+    v->openFolder(p);
+    index = addTab(v, v->windowTitle(), p);
     setTabIcon(index, QIcon(installed ? ":/image/open-installed-folder.png" : ":/image/open-folder.png"));
 }
 

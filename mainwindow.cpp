@@ -6,6 +6,8 @@
 #include <QMessageBox>
 #include <QDir>
 #include <QLineEdit>
+#include <QDropEvent>
+#include <QDragEnterEvent>
 #include "settings.h"
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
@@ -258,4 +260,36 @@ void MainWindow::on_actionEditExtensions_triggered()
 void MainWindow::on_actionRegexpMode_triggered()
 {
     g_settings.setRegexMode(ui->actionRegexpMode->isChecked());
+}
+
+void MainWindow::dragEnterEvent(QDragEnterEvent *e)
+{
+    if (e->mimeData()->hasUrls()) {
+        e->acceptProposedAction();
+    }
+}
+
+void MainWindow::dropEvent(QDropEvent *e)
+{
+    foreach (const QUrl &url, e->mimeData()->urls())
+    {
+        QString fileName = url.toLocalFile();
+        QFileInfo fi(fileName);
+        if (fi.isFile())
+        {
+            if (fi.suffix().toLower() == "zip")
+            {
+                ui->tabWidget->openZipBundle(fileName);
+            }
+            else
+            {
+                ui->tabWidget->openRawLogFile(QStringList() << fileName);
+            }
+        }
+
+        if (fi.isDir())
+        {
+            ui->tabWidget->openFolder(fileName, false);
+        }
+    }
 }
