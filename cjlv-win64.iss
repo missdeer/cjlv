@@ -49,12 +49,12 @@ Name: desktopicon; Description: {cm:CreateDesktopIcon}; GroupDescription: {cm:Ad
 [Files]
 Source: "Cisco Jabber Log Viewer.exe"; DestDir: "{app}"
 Source: "ScintillaEdit3.dll"; DestDir: "{app}"
-Source: "iconengines\*"; DestDir: "{app}\iconengines"       
-Source: "imageformats\*"; DestDir: "{app}\imageformats"
-Source: "language\*"; DestDir: "{app}\language"
-Source: "platforms\*"; DestDir: "{app}\platforms"
-Source: "sqldrivers\qsqlite.dll"; DestDir: "{app}\sqldrivers"
-Source: "themes\*"; DestDir: "{app}\themes"      
+Source: "iconengines\*"; DestDir: "{app}\iconengines"; Flags: recursesubdirs       
+Source: "imageformats\*"; DestDir: "{app}\imageformats"; Flags: recursesubdirs
+Source: "language\*"; DestDir: "{app}\language"; Flags: recursesubdirs
+Source: "platforms\*"; DestDir: "{app}\platforms"; Flags: recursesubdirs
+Source: "sqldrivers\qsqlite.dll"; DestDir: "{app}\sqldrivers"; Flags: recursesubdirs
+Source: "themes\*"; DestDir: "{app}\themes"; Flags: recursesubdirs      
 Source: "langmap.xml"; DestDir: "{app}"
 Source: "d3dcompiler_47.dll"; DestDir: "{app}"
 Source: "Everything.dll"; DestDir: "{app}"
