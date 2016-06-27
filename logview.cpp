@@ -321,10 +321,14 @@ void LogView::openSourceFile(const QModelIndex &index)
             QFileInfo fi(filePath);
             if (fileDirs.length() > 1)
             {
-                if (fi.fileName() != fileName)
+                if (fi.fileName().compare(fileName, Qt::CaseInsensitive) != 0)
                 {
-                    qDebug()<< fi.fileName() << fileName;
                     continue;
+                }
+
+                if (!filePath.toLower().contains(fileDirs.at(0).toLower()))
+                {
+                    fileDirs.removeFirst();
                 }
             }
             QDir dir(fi.filePath());
@@ -335,7 +339,7 @@ void LogView::openSourceFile(const QModelIndex &index)
             bool matched = true;
             Q_FOREACH(const QString& n, fileDirs)
             {
-                if (!filePath.contains(n))
+                if (!filePath.toLower().contains(n.toLower()))
                 {
                     matched = false;
                     break;
