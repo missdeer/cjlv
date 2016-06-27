@@ -57,6 +57,30 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+void MainWindow::openLogs(const QStringList &logs)
+{
+    Q_FOREACH(const QString& fileName, logs)
+    {
+        QFileInfo fi(fileName);
+        if (fi.isFile())
+        {
+            if (fi.suffix().toLower() == "zip")
+            {
+                ui->tabWidget->openZipBundle(fileName);
+            }
+            else
+            {
+                ui->tabWidget->openRawLogFile(QStringList() << fileName);
+            }
+        }
+
+        if (fi.isDir())
+        {
+            ui->tabWidget->openFolder(fileName, false);
+        }
+    }
+}
+
 void MainWindow::onStatusBarMessageChanges(const QString &msg)
 {
     ui->statusBar->showMessage(msg);
@@ -271,25 +295,11 @@ void MainWindow::dragEnterEvent(QDragEnterEvent *e)
 
 void MainWindow::dropEvent(QDropEvent *e)
 {
+    QStringList logs;
     foreach (const QUrl &url, e->mimeData()->urls())
     {
         QString fileName = url.toLocalFile();
-        QFileInfo fi(fileName);
-        if (fi.isFile())
-        {
-            if (fi.suffix().toLower() == "zip")
-            {
-                ui->tabWidget->openZipBundle(fileName);
-            }
-            else
-            {
-                ui->tabWidget->openRawLogFile(QStringList() << fileName);
-            }
-        }
-
-        if (fi.isDir())
-        {
-            ui->tabWidget->openFolder(fileName, false);
-        }
+        logs << fileName;
     }
+    openLogs(logs);
 }

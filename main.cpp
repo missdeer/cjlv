@@ -27,15 +27,18 @@ int main(int argc, char *argv[])
 
     parser.addOption(QCommandLineOption(QStringList() << "t" <<  "temporary-directory", "Save temporary files into <directory>.", "directory"));
     parser.addOption(QCommandLineOption(QStringList() << "s" <<  "source-directory", "Source code stored in <directory>.", "directory"));
-
+    parser.addPositionalArgument("logs", "logs files, zip packages or folders.");
     // Process the actual command line arguments given by the user
     parser.process(a);
 
     g_settings.setTemporaryDirectory( parser.value("t"));
     g_settings.setSourceDirectory( parser.value("s"));
 
+    const QStringList logs = parser.positionalArguments();
+
     MainWindow w;
     w.showMaximized();
+    w.openLogs(logs);
 
     return a.exec();
 }

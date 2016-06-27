@@ -19,7 +19,7 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
-
+    void openLogs(const QStringList& logs);
 public slots:
     void onStatusBarMessageChanges(const QString& msg);
 private slots:
