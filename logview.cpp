@@ -455,9 +455,8 @@ void LogView::showProgressDialog()
     g_loadingReferenceCount.ref();
     if (!g_progressDialog)
     {
-        qDebug() << __func__;
         g_progressDialog = new QProgressDialog(this);
-        g_progressDialog->setLabelText("Loading log from files...");
+        g_progressDialog->setLabelText("Loading logs from files...");
         g_progressDialog->setWindowModality(Qt::WindowModal);
         g_progressDialog->setAutoClose(true);
         g_progressDialog->setAutoReset(true);
@@ -473,7 +472,6 @@ void LogView::closeProgressDialog()
 {
     if (!g_loadingReferenceCount.deref() && g_progressDialog)
     {
-        qDebug() << __func__;
         g_progressDialog->setValue(200);
         g_progressDialog->deleteLater();
         g_progressDialog=nullptr;
