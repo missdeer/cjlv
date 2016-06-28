@@ -8,6 +8,7 @@ PreferenceDialog::PreferenceDialog(QWidget *parent) :
     ui(new Ui::PreferenceDialog)
 {
     ui->setupUi(this);
+    adjustSize();
     setFixedSize( size() );
     ui->edtTemporaryDirectory->setText(g_settings.temporaryDirectory());
     ui->edtSourceCodeDirectory->setText(g_settings.sourceDirectory());
@@ -26,9 +27,12 @@ void PreferenceDialog::accept()
 
 void PreferenceDialog::on_btnSelectTemporaryDirectory_clicked()
 {
+    QString t = ui->edtTemporaryDirectory->text();
+    if (t.isEmpty())
+        t = g_settings.temporaryDirectory();
     QString dir = QFileDialog::getExistingDirectory(this,
-                                                    tr("Open Cisco Jabber Log Folder"),
-                                                    g_settings.lastOpenedDirectory(),
+                                                    tr("Select Temporary Directory"),
+                                                    t,
                                                     QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
 
     if (dir.isEmpty())
@@ -39,9 +43,12 @@ void PreferenceDialog::on_btnSelectTemporaryDirectory_clicked()
 
 void PreferenceDialog::on_btnSelectSourceCodeDirectory_clicked()
 {
+    QString s = ui->edtSourceCodeDirectory->text();
+    if (s.isEmpty())
+        s = g_settings.sourceDirectory();
     QString dir = QFileDialog::getExistingDirectory(this,
-                                                    tr("Open Cisco Jabber Log Folder"),
-                                                    g_settings.lastOpenedDirectory(),
+                                                    tr("Select Cisco Jabber Source Code Directory"),
+                                                    s,
                                                     QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
 
     if (dir.isEmpty())
