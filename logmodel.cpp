@@ -621,8 +621,8 @@ void LogModel::doQuery(int offset)
         }
         else
         {
-        sqlCount = QString("SELECT COUNT(*) FROM logs WHERE %1 LIKE '%'||?||'%'").arg(field);
-        sqlFetch = QString("SELECT * FROM logs WHERE %1 LIKE '%'||?||'%' ORDER BY epoch LIMIT %2, 200;").arg(field).arg(offset);
+            sqlCount = QString("SELECT COUNT(*) FROM logs WHERE %1 LIKE '%'||?||'%'").arg(field);
+            sqlFetch = QString("SELECT * FROM logs WHERE %1 LIKE '%'||?||'%' ORDER BY epoch LIMIT %2, 200;").arg(field).arg(offset);
         }
     }
 
@@ -746,22 +746,6 @@ void LogModel::doQuery(int offset)
 
 bool LogModel::parseLine(const QString& line, QStringList& results)
 {
-    //QRegularExpression re("^([0-9]{4}\\-[0-9]{2}\\-[0-9]{2}\\s[0-9]{2}:[0-9]{2}:[0-9]{2},[0-9]{3})\\s+([A-Z]{4,5})\\s+\\[(0x[0-9a-f]{8,16})\\]\\s+\\[([0-9a-zA-Z:\\s\\-\\_\\/\\\\\\(\\)\\.]+)\\]\\s+\\[([0-9a-zA-Z\\-\\_\\.]+)\\]\\s+\\[([0-9a-zA-Z:~<>\\-\\_\\.]+)\\]\\s+\\-\\s+(.+)$");
-//    QRegularExpression re("^([^A-Z]+)([^\\s]+)\\s+(\\[[^\\]]+\\])\\s+(\\[[^\\]]+\\])\\s+(\\[[^\\]]+\\])\\s+(\\[[^\\]]+\\])\\s+\\-\\s+(.+)$");
-//    QRegularExpressionMatch m = re.match(line);
-//    if (m.hasMatch())
-//    {
-//        results.append( m.captured(1).trimmed());
-//        results.append( m.captured(2));
-//        results.append( m.captured(3));
-//        results.append( m.captured(4));
-//        results.append( m.captured(5));
-//        results.append( m.captured(6));
-//        results.append( m.captured(7));
-//        return true;
-//    }
-//    return false;
-
     // manual parse
     int startPos = 0;
     int endPos = line.indexOf(' ');
