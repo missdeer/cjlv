@@ -12,6 +12,9 @@ public:
 
     void setContent(const QString& content);
     void gotoLine(const QString& fileName, int line = -1);
+
+    bool copyable();
+    void copy();
 private slots:
     void onCopyFileName();
     void onCopyFileFullPath();

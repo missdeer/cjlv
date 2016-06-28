@@ -65,6 +65,27 @@ void CodeEditorTabWidget::gotoLine(const QString &fileName, int line)
     v->gotoLine(fileName, line);
 }
 
+bool CodeEditorTabWidget::copyable()
+{
+    QWidget* w = currentWidget();
+    if (w)
+    {
+        CodeEditor* v = qobject_cast<CodeEditor*>(w);
+        return !v->selectionEmpty();
+    }
+    return false;
+}
+
+void CodeEditorTabWidget::copy()
+{
+    QWidget* w = currentWidget();
+    if (w)
+    {
+        CodeEditor* v = qobject_cast<CodeEditor*>(w);
+        v->copy();
+    }
+}
+
 void CodeEditorTabWidget::onCopyFileName()
 {
     QClipboard *clipboard = QApplication::clipboard();

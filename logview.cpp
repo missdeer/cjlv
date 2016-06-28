@@ -149,11 +149,16 @@ void LogView::copyCurrentCell()
 
 void LogView::copyCurrentRow()
 {
-    QItemSelectionModel* selected =  m_tableView->selectionModel();
-    if (!selected->hasSelection())
-        return;
-    int row = selected->currentIndex().row();
-    m_model->copyRow(row);
+    if (m_codeEditorTabWidget->copyable())
+        m_codeEditorTabWidget->copy();
+    else
+    {
+        QItemSelectionModel* selected =  m_tableView->selectionModel();
+        if (!selected->hasSelection())
+            return;
+        int row = selected->currentIndex().row();
+        m_model->copyRow(row);
+    }
 }
 
 void LogView::copySelectedCells()
