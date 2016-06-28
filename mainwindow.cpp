@@ -9,6 +9,7 @@
 #include <QDropEvent>
 #include <QDragEnterEvent>
 #include "settings.h"
+#include "preferencedialog.h"
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
@@ -171,7 +172,8 @@ void MainWindow::on_actionFilter_triggered()
 
 void MainWindow::on_actionPreference_triggered()
 {
-    QMessageBox::warning(this, tr("Warning"), tr("Not implemented yet."), QMessageBox::Ok);
+    PreferenceDialog dlg(this);
+    dlg.exec();
 }
 
 void MainWindow::on_actionAbout_triggered()

@@ -31,7 +31,13 @@ int main(int argc, char *argv[])
     // Process the actual command line arguments given by the user
     parser.process(a);
 
-    g_settings.setTemporaryDirectory( parser.value("t"));
+    QString t = parser.value("t");
+    if (t.isEmpty())
+    {
+        t = QStandardPaths::writableLocation(QStandardPaths::TempLocation);
+        t.append("/CiscoJabberLogs/database");
+    }
+    g_settings.setTemporaryDirectory( t );
     g_settings.setSourceDirectory( parser.value("s"));
 
     const QStringList logs = parser.positionalArguments();
