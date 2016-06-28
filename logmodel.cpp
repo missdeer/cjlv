@@ -114,12 +114,10 @@ start_read:
 
 static void qtregexp(sqlite3_context* ctx, int /*argc*/, sqlite3_value** argv)
 {
-    QRegExp regex;
     QString pattern((const char*)sqlite3_value_text(argv[0]));
     QString text((const char*)sqlite3_value_text(argv[1]));
 
-    regex.setPattern(pattern);
-    regex.setCaseSensitivity(Qt::CaseInsensitive);
+    QRegularExpression regex(pattern, QRegularExpression::CaseInsensitiveOption);
 
     bool b = text.contains(regex);
 
