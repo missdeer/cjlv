@@ -25,6 +25,7 @@ int main(int argc, char *argv[])
     parser.addHelpOption();
     parser.addVersionOption();
 
+    parser.addOption(QCommandLineOption(QStringList() << "f" << "file", "Save temporary database into local file system."));
     parser.addOption(QCommandLineOption(QStringList() << "t" <<  "temporary-directory", "Save temporary files into <directory>.", "directory"));
     parser.addOption(QCommandLineOption(QStringList() << "s" <<  "source-directory", "Source code stored in <directory>.", "directory"));
     parser.addPositionalArgument("logs", "logs files, zip packages or folders.");
@@ -44,6 +45,8 @@ int main(int argc, char *argv[])
 
     if (!parser.value("s").isEmpty())
         g_settings.setSourceDirectory( parser.value("s"));
+
+    g_settings.setInMemoryDatabase(!parser.isSet("f"));
 
     const QStringList logs = parser.positionalArguments();
 

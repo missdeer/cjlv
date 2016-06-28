@@ -9,6 +9,9 @@ public:
     Settings();
     ~Settings();
 
+    void save();
+    void load();
+
     bool searchOrFitler() const;
     void setSearchOrFitler(bool searchOrFitler);
 
@@ -27,9 +30,11 @@ public:
     bool regexMode() const;
     void setRegexMode(bool regexMode);
 
-    void save();
-    void load();
+    bool inMemoryDatabase() const;
+    void setInMemoryDatabase(bool inMemoryDatabase);
+
 private:
+    bool m_inMemoryDatabase;
     bool m_searchOrFitler;
     bool m_regexMode;
     QString m_searchField;

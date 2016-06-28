@@ -6,6 +6,9 @@
 Settings g_settings;
 
 Settings::Settings()
+    : m_inMemoryDatabase(true)
+    , m_searchOrFitler(false)
+    , m_regexMode(false)
 {
     load();
 
@@ -111,4 +114,14 @@ void Settings::load()
     m_temporaryDirectory = settings.value("temporaryDirectory").toString();
     m_sourceDirectory = settings.value("sourceDirectory").toString();
     m_lastOpenedDirectory = settings.value("lastOpenedDirectory").toString();
+}
+
+bool Settings::inMemoryDatabase() const
+{
+    return m_inMemoryDatabase;
+}
+
+void Settings::setInMemoryDatabase(bool inMemoryDatabase)
+{
+    m_inMemoryDatabase = inMemoryDatabase;
 }

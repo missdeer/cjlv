@@ -864,8 +864,11 @@ void LogModel::createDatabase()
     QSqlDatabase db = QSqlDatabase::database(m_dbFile, true);
     if (!db.isValid()) {
         db = QSqlDatabase::addDatabase("QSQLITE", m_dbFile);
-        db.setDatabaseName(m_dbFile);
     }
+    if (g_settings.inMemoryDatabase())
+        db.setDatabaseName(":memory:");
+    else
+        db.setDatabaseName(m_dbFile);
 
     if (!db.isOpen())
     {
