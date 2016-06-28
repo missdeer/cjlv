@@ -12,6 +12,9 @@ PreferenceDialog::PreferenceDialog(QWidget *parent) :
     setFixedSize( size() );
     ui->edtTemporaryDirectory->setText(g_settings.temporaryDirectory());
     ui->edtSourceCodeDirectory->setText(g_settings.sourceDirectory());
+#if defined(Q_OS_MAC)
+    ui->buttonBox->setVisible(false);
+#endif
 }
 
 PreferenceDialog::~PreferenceDialog()
@@ -40,6 +43,10 @@ void PreferenceDialog::on_btnSelectTemporaryDirectory_clicked()
         return;
     g_settings.setLastOpenedDirectory(dir);
     ui->edtTemporaryDirectory->setText(dir);
+#if defined(Q_OS_MAC)
+    g_settings.setTemporaryDirectory(ui->edtTemporaryDirectory->text());
+    g_settings.save();
+#endif
 }
 
 void PreferenceDialog::on_btnSelectSourceCodeDirectory_clicked()
@@ -56,6 +63,10 @@ void PreferenceDialog::on_btnSelectSourceCodeDirectory_clicked()
         return;
     g_settings.setLastOpenedDirectory(dir);
     ui->edtSourceCodeDirectory->setText(dir);
+#if defined(Q_OS_MAC)
+    g_settings.setSourceDirectory(ui->edtSourceCodeDirectory->text());
+    g_settings.save();
+#endif
 }
 
 void PreferenceDialog::on_buttonBox_accepted()
