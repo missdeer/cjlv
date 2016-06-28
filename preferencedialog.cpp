@@ -23,6 +23,7 @@ void PreferenceDialog::accept()
 {
     g_settings.setTemporaryDirectory(ui->edtTemporaryDirectory->text());
     g_settings.setSourceDirectory(ui->edtSourceCodeDirectory->text());
+    g_settings.save();
 }
 
 void PreferenceDialog::on_btnSelectTemporaryDirectory_clicked()

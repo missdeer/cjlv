@@ -50,7 +50,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionExit, &QAction::triggered, qApp, &QApplication::quit);
 
     g_settings.setSearchField("content");
-    g_settings.setSearchOrFitler(false);
+
+    ui->actionSearch->setChecked(g_settings.searchOrFitler());
 }
 
 MainWindow::~MainWindow()

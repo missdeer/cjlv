@@ -32,13 +32,18 @@ int main(int argc, char *argv[])
     parser.process(a);
 
     QString t = parser.value("t");
-    if (t.isEmpty())
+    if (!t.isEmpty())
+        g_settings.setTemporaryDirectory( t );
+
+    if (g_settings.temporaryDirectory().isEmpty())
     {
         t = QStandardPaths::writableLocation(QStandardPaths::TempLocation);
         t.append("/CiscoJabberLogs/database");
+        g_settings.setTemporaryDirectory( t );
     }
-    g_settings.setTemporaryDirectory( t );
-    g_settings.setSourceDirectory( parser.value("s"));
+
+    if (!parser.value("s").isEmpty())
+        g_settings.setSourceDirectory( parser.value("s"));
 
     const QStringList logs = parser.positionalArguments();
 

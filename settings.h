@@ -7,6 +7,7 @@ class Settings
 {
 public:
     Settings();
+    ~Settings();
 
     bool searchOrFitler() const;
     void setSearchOrFitler(bool searchOrFitler);
@@ -26,6 +27,8 @@ public:
     bool regexMode() const;
     void setRegexMode(bool regexMode);
 
+    void save();
+    void load();
 private:
     bool m_searchOrFitler;
     bool m_regexMode;
