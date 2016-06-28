@@ -8,13 +8,13 @@ PreferenceDialog::PreferenceDialog(QWidget *parent) :
     ui(new Ui::PreferenceDialog)
 {
     ui->setupUi(this);
+#if defined(Q_OS_MAC)
+    ui->buttonBox->setVisible(false);
+#endif
     adjustSize();
     setFixedSize( size() );
     ui->edtTemporaryDirectory->setText(g_settings.temporaryDirectory());
     ui->edtSourceCodeDirectory->setText(g_settings.sourceDirectory());
-#if defined(Q_OS_MAC)
-    ui->buttonBox->setVisible(false);
-#endif
 }
 
 PreferenceDialog::~PreferenceDialog()
