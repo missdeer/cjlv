@@ -195,33 +195,36 @@ void TabWidget::onGotoById()
 
 void TabWidget::onCustomContextMenuRequested(const QPoint &pos)
 {
-    QMenu menu(this);
-    QAction* pCloseAction = new QAction(QIcon(":/image/close.png"), "Close", this);
-    menu.addAction(pCloseAction);
-    connect(pCloseAction, &QAction::triggered, this, &TabWidget::onCloseCurrent);
-    QAction* pCloseAllAction = new QAction(QIcon(":/image/closeall.png"), "Close All", this);
-    menu.addAction(pCloseAllAction);
-    connect(pCloseAllAction, &QAction::triggered, this, &TabWidget::onCloseAll);
-    QAction* pCloseAllButThisAction = new QAction("Close All But This", this);
-    menu.addAction(pCloseAllButThisAction);
-    connect(pCloseAllButThisAction, &QAction::triggered, this, &TabWidget::onCloseAllButThis);
+    if (count())
+    {
+        QMenu menu(this);
+        QAction* pCloseAction = new QAction(QIcon(":/image/close.png"), "Close", this);
+        menu.addAction(pCloseAction);
+        connect(pCloseAction, &QAction::triggered, this, &TabWidget::onCloseCurrent);
+        QAction* pCloseAllAction = new QAction(QIcon(":/image/closeall.png"), "Close All", this);
+        menu.addAction(pCloseAllAction);
+        connect(pCloseAllAction, &QAction::triggered, this, &TabWidget::onCloseAll);
+        QAction* pCloseAllButThisAction = new QAction("Close All But This", this);
+        menu.addAction(pCloseAllButThisAction);
+        connect(pCloseAllButThisAction, &QAction::triggered, this, &TabWidget::onCloseAllButThis);
 
-    menu.addSeparator();
+        menu.addSeparator();
 
-    QAction* pCopyFileNameAction = new QAction("Copy File Name", this);
-    connect(pCopyFileNameAction, &QAction::triggered, this, &TabWidget::onCopyFileName);
-    menu.addAction(pCopyFileNameAction);
-    QAction* pCopyFileFullPathAction = new QAction("Copy File Full Path", this);
-    connect(pCopyFileFullPathAction, &QAction::triggered, this, &TabWidget::onCopyFileFullPath);
-    menu.addAction(pCopyFileFullPathAction);
+        QAction* pCopyFileNameAction = new QAction("Copy File Name", this);
+        connect(pCopyFileNameAction, &QAction::triggered, this, &TabWidget::onCopyFileName);
+        menu.addAction(pCopyFileNameAction);
+        QAction* pCopyFileFullPathAction = new QAction("Copy File Full Path", this);
+        connect(pCopyFileFullPathAction, &QAction::triggered, this, &TabWidget::onCopyFileFullPath);
+        menu.addAction(pCopyFileFullPathAction);
 
-    menu.addSeparator();
+        menu.addSeparator();
 
-    QAction* pOpenContainerFolderAction = new QAction("Open Container Folder", this);
-    connect(pOpenContainerFolderAction, &QAction::triggered, this, &TabWidget::onOpenContainerFolder);
-    menu.addAction(pOpenContainerFolderAction);
+        QAction* pOpenContainerFolderAction = new QAction("Open Container Folder", this);
+        connect(pOpenContainerFolderAction, &QAction::triggered, this, &TabWidget::onOpenContainerFolder);
+        menu.addAction(pOpenContainerFolderAction);
 
-    menu.exec(mapToGlobal(pos));
+        menu.exec(mapToGlobal(pos));
+    }
 }
 
 void TabWidget::onCurrentChanged(int /*index*/)
