@@ -20,21 +20,21 @@
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="0,0,0,1,0">
      <item>
-      <widget class="QPushButton" name="pushButton_2">
+      <widget class="QPushButton" name="btnNewExtension">
        <property name="text">
         <string>New</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="pushButton">
+      <widget class="QPushButton" name="btnDeleteExtension">
        <property name="text">
         <string>Delete</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="pushButton_3">
+      <widget class="QPushButton" name="btnApplyModification">
        <property name="text">
         <string>Apply</string>
        </property>
@@ -44,7 +44,7 @@
       <widget class="QWidget" name="widget_2" native="true"/>
      </item>
      <item>
-      <widget class="QPushButton" name="pushButton_4">
+      <widget class="QPushButton" name="btnTestExtension">
        <property name="text">
         <string>Test</string>
        </property>
@@ -62,7 +62,7 @@
       </widget>
      </item>
      <item row="0" column="1">
-      <widget class="QLineEdit" name="lineEdit_2"/>
+      <widget class="QLineEdit" name="edtTitle"/>
      </item>
      <item row="1" column="0">
       <widget class="QLabel" name="label">
@@ -72,7 +72,7 @@
       </widget>
      </item>
      <item row="1" column="1">
-      <widget class="QLineEdit" name="lineEdit"/>
+      <widget class="QLineEdit" name="edtAuthor"/>
      </item>
      <item row="2" column="0">
       <widget class="QLabel" name="label_2">
@@ -82,7 +82,7 @@
       </widget>
      </item>
      <item row="2" column="1">
-      <widget class="QComboBox" name="comboBox">
+      <widget class="QComboBox" name="cbField">
        <item>
         <property name="text">
          <string>Date Time</string>
@@ -133,7 +133,7 @@
       </widget>
      </item>
      <item row="3" column="1">
-      <widget class="QComboBox" name="comboBox_2">
+      <widget class="QComboBox" name="cbMethod">
        <item>
         <property name="text">
          <string>SQL WHERE LIKE</string>

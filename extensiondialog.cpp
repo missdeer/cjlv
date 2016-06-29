@@ -24,3 +24,23 @@ ExtensionDialog::~ExtensionDialog()
 {
     delete ui;
 }
+
+void ExtensionDialog::on_btnNewExtension_clicked()
+{
+
+}
+
+void ExtensionDialog::on_btnDeleteExtension_clicked()
+{
+
+}
+
+void ExtensionDialog::on_btnApplyModification_clicked()
+{
+
+}
+
+void ExtensionDialog::on_btnTestExtension_clicked()
+{
+
+}
