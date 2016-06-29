@@ -30,7 +30,8 @@ SOURCES += main.cpp\
     codeeditortabwidget.cpp \
     codeeditor.cpp \
     3rdparty/sqlite3/sqlite3.c \
-    preferencedialog.cpp
+    preferencedialog.cpp \
+    extensiondialog.cpp
 
 HEADERS  += mainwindow.h \
     logview.h \
@@ -40,10 +41,12 @@ HEADERS  += mainwindow.h \
     scintillaconfig.h \
     codeeditortabwidget.h \
     codeeditor.h \
-    preferencedialog.h
+    preferencedialog.h \
+    extensiondialog.h
 
 FORMS    += mainwindow.ui \
-    preferencedialog.ui
+    preferencedialog.ui \
+    extensiondialog.ui
 
 DISTFILES += \
     cjlv.png

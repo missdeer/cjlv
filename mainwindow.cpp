@@ -10,6 +10,7 @@
 #include <QDragEnterEvent>
 #include "settings.h"
 #include "preferencedialog.h"
+#include "extensiondialog.h"
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
@@ -281,7 +282,9 @@ void MainWindow::on_actionClearKeyword_triggered()
 
 void MainWindow::on_actionEditExtensions_triggered()
 {
-    QMessageBox::warning(this, tr("Warning"), tr("Not implemented yet."), QMessageBox::Ok);
+    if (!g_extensionDialog)
+        g_extensionDialog = new ExtensionDialog(this);
+    g_extensionDialog->show();
 }
 
 void MainWindow::on_actionRegexpMode_triggered()
