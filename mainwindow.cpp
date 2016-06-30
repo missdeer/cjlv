@@ -20,7 +20,9 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-
+#if defined(Q_OS_WIN)
+    ui->tabbarTopPlaceholder->setVisible(false);
+#endif
     QWidget* searchBar = new QWidget(ui->mainToolBar);
     searchBar->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     QHBoxLayout * searchLayout = new QHBoxLayout(searchBar);
