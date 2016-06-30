@@ -58,6 +58,7 @@ Source: "themes\*"; DestDir: "{app}\themes"; Flags: recursesubdirs
 Source: "langmap.xml"; DestDir: "{app}"
 Source: "d3dcompiler_47.dll"; DestDir: "{app}"
 Source: "Everything.dll"; DestDir: "{app}"
+Source: "Everything.exe"; DestDir: "{app}"
 Source: "libEGL.dll"; DestDir: "{app}"
 Source: "libGLESV2.dll"; DestDir: "{app}"
 Source: "opengl32sw.dll"; DestDir: "{app}"

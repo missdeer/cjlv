@@ -109,16 +109,18 @@ win32: {
         copy_everything.commands = '$(COPY_FILE) $$shell_path($$PWD/3rdparty/Everything-SDK/dll/Everything64.dll) $$shell_path($$OUT_PWD/Release/Everything.dll)'
 
         contains(QMAKE_HOST.arch, x86_64): {
-            copy_everything.commands = '$(COPY_FILE) $$shell_path($$PWD/3rdparty/Everything-SDK/dll/Everything64.dll) $$shell_path($$OUT_PWD/Release/Everything.dll)'
+            copy_everything_dll.commands = '$(COPY_FILE) $$shell_path($$PWD/3rdparty/Everything-SDK/dll/Everything64.dll) $$shell_path($$OUT_PWD/Release/Everything.dll)'
+            copy_everything_exe.commands = '$(COPY_FILE) $$shell_path($$PWD/3rdparty/Everything-SDK/exe/Everything64.exe) $$shell_path($$OUT_PWD/Release/Everything.exe)'
             copy_iss.commands = '$(COPY_FILE) $$shell_path($$PWD/cjlv-win64.iss) $$shell_path($$OUT_PWD/Release/cjlv-win64.iss)'
         }
         else: {
-            copy_everything.commands = '$(COPY_FILE) $$shell_path($$PWD/3rdparty/Everything-SDK/dll/Everything32.dll) $$shell_path($$OUT_PWD/Release/Everything.dll)'
+            copy_everything_dll.commands = '$(COPY_FILE) $$shell_path($$PWD/3rdparty/Everything-SDK/dll/Everything32.dll) $$shell_path($$OUT_PWD/Release/Everything.dll)'
+            copy_everything_exe.commands = '$(COPY_FILE) $$shell_path($$PWD/3rdparty/Everything-SDK/exe/Everything32.exe) $$shell_path($$OUT_PWD/Release/Everything.exe)'
             copy_iss.commands = '$(COPY_FILE) $$shell_path($$PWD/cjlv-win32.iss) $$shell_path($$OUT_PWD/Release/cjlv-win32.iss)'
         }
 
-        QMAKE_EXTRA_TARGETS +=  copy_scintilla copy_iss copy_themes copy_language copy_langmap copy_everything
-        POST_TARGETDEPS += copy_scintilla copy_iss copy_themes copy_language copy_langmap copy_everything
+        QMAKE_EXTRA_TARGETS +=  copy_scintilla copy_iss copy_themes copy_language copy_langmap copy_everything_dll copy_everything_exe
+        POST_TARGETDEPS += copy_scintilla copy_iss copy_themes copy_language copy_langmap copy_everything_dll copy_everything_exe
         QMAKE_POST_LINK += $$quote($$WINDEPLOYQT --release --force \"$${OUT_PWD}/Release/$${TARGET}.exe\")
     }
     else: LIBS += -L$$PWD/3rdparty/scintilla/bin/debug
