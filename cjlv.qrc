@@ -24,5 +24,14 @@
         <file>image/field/source-file.png</file>
         <file>image/field/thread.png</file>
         <file>image/regexp.png</file>
+        <file>image/extension.png</file>
+        <file>image/go_to_bottom.png</file>
+        <file>image/go_to_top.png</file>
+        <file>image/reload.png</file>
+        <file>image/goto.png</file>
+        <file>image/filter.png</file>
+        <file>image/clear-keyword.png</file>
+        <file>image/search.png</file>
+        <file>image/exit.png</file>
     </qresource>
 </RCC>

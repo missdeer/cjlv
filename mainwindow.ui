@@ -202,6 +202,7 @@
    <addaction name="actionOpenCurrentInstalledJabberLogFolder"/>
    <addaction name="separator"/>
    <addaction name="actionPreference"/>
+   <addaction name="actionEditExtensions"/>
    <addaction name="separator"/>
    <addaction name="actionAbout"/>
    <addaction name="separator"/>
@@ -288,6 +289,10 @@
    </property>
   </action>
   <action name="actionExit">
+   <property name="icon">
+    <iconset resource="cjlv.qrc">
+     <normaloff>:/image/exit.png</normaloff>:/image/exit.png</iconset>
+   </property>
    <property name="text">
     <string>Exit</string>
    </property>
@@ -301,6 +306,10 @@
   <action name="actionSearch">
    <property name="checkable">
     <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="cjlv.qrc">
+     <normaloff>:/image/search.png</normaloff>:/image/search.png</iconset>
    </property>
    <property name="text">
     <string>&amp;Search Mode</string>
@@ -318,6 +327,10 @@
    </property>
    <property name="checked">
     <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="cjlv.qrc">
+     <normaloff>:/image/filter.png</normaloff>:/image/filter.png</iconset>
    </property>
    <property name="text">
     <string>&amp;Filter Mode</string>
@@ -354,6 +367,10 @@
    </property>
   </action>
   <action name="actionEditExtensions">
+   <property name="icon">
+    <iconset resource="cjlv.qrc">
+     <normaloff>:/image/extension.png</normaloff>:/image/extension.png</iconset>
+   </property>
    <property name="text">
     <string>Edit...</string>
    </property>
@@ -611,6 +628,10 @@
    </property>
   </action>
   <action name="actionClearKeyword">
+   <property name="icon">
+    <iconset resource="cjlv.qrc">
+     <normaloff>:/image/clear-keyword.png</normaloff>:/image/clear-keyword.png</iconset>
+   </property>
    <property name="text">
     <string>Clear Keyword</string>
    </property>
@@ -619,6 +640,10 @@
    </property>
   </action>
   <action name="actionScrollToTop">
+   <property name="icon">
+    <iconset resource="cjlv.qrc">
+     <normaloff>:/image/go_to_top.png</normaloff>:/image/go_to_top.png</iconset>
+   </property>
    <property name="text">
     <string>Scroll To Top</string>
    </property>
@@ -627,6 +652,10 @@
    </property>
   </action>
   <action name="actionScrollToBottom">
+   <property name="icon">
+    <iconset resource="cjlv.qrc">
+     <normaloff>:/image/go_to_bottom.png</normaloff>:/image/go_to_bottom.png</iconset>
+   </property>
    <property name="text">
     <string>Scroll To Bottom</string>
    </property>
@@ -635,6 +664,10 @@
    </property>
   </action>
   <action name="actionReload">
+   <property name="icon">
+    <iconset resource="cjlv.qrc">
+     <normaloff>:/image/reload.png</normaloff>:/image/reload.png</iconset>
+   </property>
    <property name="text">
     <string>Reload</string>
    </property>
@@ -643,6 +676,10 @@
    </property>
   </action>
   <action name="actionGotoById">
+   <property name="icon">
+    <iconset resource="cjlv.qrc">
+     <normaloff>:/image/goto.png</normaloff>:/image/goto.png</iconset>
+   </property>
    <property name="text">
     <string>Goto...</string>
    </property>
