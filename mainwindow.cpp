@@ -8,6 +8,7 @@
 #include <QLineEdit>
 #include <QDropEvent>
 #include <QDragEnterEvent>
+#include <QHBoxLayout>
 #include "settings.h"
 #include "preferencedialog.h"
 #include "extensiondialog.h"
@@ -19,6 +20,16 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+    QWidget* searchBar = new QWidget(ui->mainToolBar);
+    searchBar->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    QHBoxLayout * searchLayout = new QHBoxLayout(searchBar);
+    searchLayout->addWidget(ui->radioSearch);
+    searchLayout->addWidget(ui->radioFilter);
+    searchLayout->addWidget(ui->cbKeyword);
+    searchLayout->setStretch(2, 1);
+    ui->mainToolBar->addWidget(searchBar);
+
     QActionGroup *searchModeGroup = new QActionGroup(this);
     searchModeGroup->addAction(ui->actionFilter);
     searchModeGroup->addAction(ui->actionSearch);

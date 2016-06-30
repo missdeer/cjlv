@@ -35,7 +35,7 @@
      <number>0</number>
     </property>
     <item>
-     <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,0,1">
+     <layout class="QHBoxLayout" name="searchlLayout" stretch="0,0,1">
       <item>
        <widget class="QRadioButton" name="radioSearch">
         <property name="text">
@@ -201,6 +201,7 @@
    <addaction name="actionPreference"/>
    <addaction name="separator"/>
    <addaction name="actionAbout"/>
+   <addaction name="separator"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionOpenZipLogBundle">
