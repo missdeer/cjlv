@@ -9,7 +9,7 @@ ExtensionDialog::ExtensionDialog(QWidget *parent) :
     ui(new Ui::ExtensionDialog)
 {
     ui->setupUi(this);
-
+    setWindowFlags(Qt::Window);
     CodeEditor* v = new CodeEditor(ui->codeEditorPlaceholder);
     v->initialize();
 
