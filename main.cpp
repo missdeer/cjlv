@@ -7,6 +7,10 @@
 #include "mainwindow.h"
 #include "settings.h"
 
+#if defined(Q_OS_WIN)
+void launchEverything();
+#endif
+
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
@@ -53,6 +57,10 @@ int main(int argc, char *argv[])
     MainWindow w;
     w.showMaximized();
     w.openLogs(logs);
+
+#if defined(Q_OS_WIN)
+    launchEverything();
+#endif
 
     return a.exec();
 }
