@@ -9,6 +9,19 @@
 #include <Everything.h>
 #include <everything_ipc.h>
 
+void launchEverything()
+{
+    HWND everything_hwnd = FindWindow(EVERYTHING_IPC_WNDCLASS,0);
+    if (!everything_hwnd)
+    {
+        QString everythingFilePath = QApplication::applicationDirPath() + "/Everything.exe";
+        if (QFile::exists(everythingFilePath))
+        {
+            ::ShellExecuteW(NULL, L"open", everythingFilePath.toStdWString().c_str(), NULL, NULL, SW_SHOWMINIMIZED);
+        }
+    }
+}
+
 bool QuickGetFilesByFileName(const QString& fileName, QStringList& results)
 {
     HWND everything_hwnd = FindWindow(EVERYTHING_IPC_WNDCLASS,0);
@@ -29,7 +42,7 @@ bool QuickGetFilesByFileName(const QString& fileName, QStringList& results)
                                      QMessageBox::Ok);
                 return false;
             }
-            ::ShellExecuteW(NULL, L"open", everythingFilePath.toStdWString().c_str(), NULL, NULL, SW_SHOWNORMAL);
+            ::ShellExecuteW(NULL, L"open", everythingFilePath.toStdWString().c_str(), NULL, NULL, SW_SHOWMINIMIZED);
         }
         return false;
     }

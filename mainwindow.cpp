@@ -8,6 +8,7 @@
 #include <QLineEdit>
 #include <QDropEvent>
 #include <QDragEnterEvent>
+#include <QHBoxLayout>
 #include "settings.h"
 #include "preferencedialog.h"
 #include "extensiondialog.h"
@@ -19,6 +20,16 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+#if defined(Q_OS_WIN)
+    ui->tabbarTopPlaceholder->setVisible(false);
+#endif
+    QWidget* searchBar = new QWidget(ui->mainToolBar);
+    searchBar->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    QHBoxLayout * searchLayout = new QHBoxLayout(searchBar);
+    searchLayout->addWidget(ui->cbKeyword);
+    searchLayout->setStretch(0, 1);
+    ui->mainToolBar->insertWidget(ui->actionRegexpMode, searchBar);
+
     QActionGroup *searchModeGroup = new QActionGroup(this);
     searchModeGroup->addAction(ui->actionFilter);
     searchModeGroup->addAction(ui->actionSearch);
@@ -35,6 +46,8 @@ MainWindow::MainWindow(QWidget *parent) :
     searchFieldGroup->addAction(ui->actionSearchFieldDateTime);
 
     ui->cbKeyword->lineEdit()->setPlaceholderText(tr("Search Field Content"));
+    ui->cbKeyword->lineEdit()->addAction(ui->actionInputKeyword, QLineEdit::ActionPosition::LeadingPosition);
+    ui->cbKeyword->lineEdit()->addAction(ui->actionClearKeyword, QLineEdit::ActionPosition::TrailingPosition);
 
     connect(ui->tabWidget, &TabWidget::statusBarMessage, this, &MainWindow::onStatusBarMessageChanges);
     connect(ui->actionClose, &QAction::triggered, ui->tabWidget, &TabWidget::onCloseCurrent);
@@ -161,15 +174,15 @@ void MainWindow::on_actionOpenCurrentInstalledJabberLogFolder_triggered()
 
 void MainWindow::on_actionSearch_triggered()
 {
-    ui->radioSearch->setChecked(ui->actionSearch->isChecked());
-    g_settings.setSearchOrFitler(ui->radioSearch->isChecked());
+    g_settings.setSearchOrFitler(ui->actionSearch->isChecked());
+    g_settings.save();
     QMessageBox::warning(this, tr("Warning"), tr("Not implemented yet."), QMessageBox::Ok);
 }
 
 void MainWindow::on_actionFilter_triggered()
 {
-    ui->radioFilter->setChecked(ui->actionFilter->isChecked());
-    g_settings.setSearchOrFitler(ui->radioSearch->isChecked());
+    g_settings.setSearchOrFitler(ui->actionSearch->isChecked());
+    g_settings.save();
 }
 
 void MainWindow::on_actionPreference_triggered()
@@ -183,19 +196,6 @@ void MainWindow::on_actionAbout_triggered()
     QMessageBox::about(this,
                        this->windowTitle(),
                        tr("Easy to use tool for Cisco Jabber log reading.\r\nContact me at fyang3@cisco.com if you have any problem about this application.\r\nBuilt at " __DATE__ " " __TIME__));
-}
-
-void MainWindow::on_radioSearch_clicked()
-{
-    ui->actionSearch->setChecked(ui->radioSearch->isChecked());
-    g_settings.setSearchOrFitler(ui->radioSearch->isChecked());
-    QMessageBox::warning(this, tr("Warning"), tr("Not implemented yet."), QMessageBox::Ok);
-}
-
-void MainWindow::on_radioFilter_clicked()
-{
-    ui->actionFilter->setChecked(ui->radioFilter->isChecked());
-    g_settings.setSearchOrFitler(ui->radioSearch->isChecked());
 }
 
 void MainWindow::on_cbKeyword_editTextChanged(const QString &text)

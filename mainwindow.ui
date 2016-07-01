@@ -21,7 +21,7 @@
     <normaloff>:/cjlv.png</normaloff>:/cjlv.png</iconset>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <layout class="QVBoxLayout" name="verticalLayout">
+   <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,1">
     <property name="leftMargin">
      <number>0</number>
     </property>
@@ -35,24 +35,7 @@
      <number>0</number>
     </property>
     <item>
-     <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,0,1">
-      <item>
-       <widget class="QRadioButton" name="radioSearch">
-        <property name="text">
-         <string>Search</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QRadioButton" name="radioFilter">
-        <property name="text">
-         <string>Filter</string>
-        </property>
-        <property name="checked">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
+     <layout class="QHBoxLayout" name="searchlLayout" stretch="1">
       <item>
        <widget class="QComboBox" name="cbKeyword">
         <property name="editable">
@@ -63,6 +46,9 @@
      </layout>
     </item>
     <item>
+     <widget class="QWidget" name="tabbarTopPlaceholder" native="true"/>
+    </item>
+    <item>
      <widget class="TabWidget" name="tabWidget">
       <property name="contextMenuPolicy">
        <enum>Qt::CustomContextMenu</enum>
@@ -71,7 +57,10 @@
        <number>-1</number>
       </property>
       <property name="elideMode">
-       <enum>Qt::ElideRight</enum>
+       <enum>Qt::ElideNone</enum>
+      </property>
+      <property name="usesScrollButtons">
+       <bool>true</bool>
       </property>
       <property name="documentMode">
        <bool>false</bool>
@@ -89,7 +78,7 @@
      <x>0</x>
      <y>0</y>
      <width>1156</width>
-     <height>22</height>
+     <height>18</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -178,10 +167,16 @@
    <addaction name="menuHelp"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
+   <property name="windowTitle">
+    <string>Standard</string>
+   </property>
+   <property name="allowedAreas">
+    <set>Qt::BottomToolBarArea|Qt::TopToolBarArea</set>
+   </property>
    <property name="iconSize">
     <size>
-     <width>32</width>
-     <height>32</height>
+     <width>24</width>
+     <height>24</height>
     </size>
    </property>
    <attribute name="toolBarArea">
@@ -195,7 +190,15 @@
    <addaction name="actionOpenLogFolder"/>
    <addaction name="actionOpenCurrentInstalledJabberLogFolder"/>
    <addaction name="separator"/>
+   <addaction name="actionScrollToTop"/>
+   <addaction name="actionScrollToBottom"/>
+   <addaction name="actionGotoById"/>
+   <addaction name="separator"/>
+   <addaction name="actionSearch"/>
+   <addaction name="actionFilter"/>
+   <addaction name="actionRegexpMode"/>
    <addaction name="actionPreference"/>
+   <addaction name="actionEditExtensions"/>
    <addaction name="separator"/>
    <addaction name="actionAbout"/>
   </widget>
@@ -281,6 +284,10 @@
    </property>
   </action>
   <action name="actionExit">
+   <property name="icon">
+    <iconset resource="cjlv.qrc">
+     <normaloff>:/image/exit.png</normaloff>:/image/exit.png</iconset>
+   </property>
    <property name="text">
     <string>Exit</string>
    </property>
@@ -294,6 +301,10 @@
   <action name="actionSearch">
    <property name="checkable">
     <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="cjlv.qrc">
+     <normaloff>:/image/search.png</normaloff>:/image/search.png</iconset>
    </property>
    <property name="text">
     <string>&amp;Search Mode</string>
@@ -311,6 +322,10 @@
    </property>
    <property name="checked">
     <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="cjlv.qrc">
+     <normaloff>:/image/filter.png</normaloff>:/image/filter.png</iconset>
    </property>
    <property name="text">
     <string>&amp;Filter Mode</string>
@@ -347,6 +362,10 @@
    </property>
   </action>
   <action name="actionEditExtensions">
+   <property name="icon">
+    <iconset resource="cjlv.qrc">
+     <normaloff>:/image/extension.png</normaloff>:/image/extension.png</iconset>
+   </property>
    <property name="text">
     <string>Edit...</string>
    </property>
@@ -604,6 +623,10 @@
    </property>
   </action>
   <action name="actionClearKeyword">
+   <property name="icon">
+    <iconset resource="cjlv.qrc">
+     <normaloff>:/image/clear-keyword.png</normaloff>:/image/clear-keyword.png</iconset>
+   </property>
    <property name="text">
     <string>Clear Keyword</string>
    </property>
@@ -612,6 +635,10 @@
    </property>
   </action>
   <action name="actionScrollToTop">
+   <property name="icon">
+    <iconset resource="cjlv.qrc">
+     <normaloff>:/image/go_to_top.png</normaloff>:/image/go_to_top.png</iconset>
+   </property>
    <property name="text">
     <string>Scroll To Top</string>
    </property>
@@ -620,6 +647,10 @@
    </property>
   </action>
   <action name="actionScrollToBottom">
+   <property name="icon">
+    <iconset resource="cjlv.qrc">
+     <normaloff>:/image/go_to_bottom.png</normaloff>:/image/go_to_bottom.png</iconset>
+   </property>
    <property name="text">
     <string>Scroll To Bottom</string>
    </property>
@@ -628,6 +659,10 @@
    </property>
   </action>
   <action name="actionReload">
+   <property name="icon">
+    <iconset resource="cjlv.qrc">
+     <normaloff>:/image/reload.png</normaloff>:/image/reload.png</iconset>
+   </property>
    <property name="text">
     <string>Reload</string>
    </property>
@@ -636,6 +671,10 @@
    </property>
   </action>
   <action name="actionGotoById">
+   <property name="icon">
+    <iconset resource="cjlv.qrc">
+     <normaloff>:/image/goto.png</normaloff>:/image/goto.png</iconset>
+   </property>
    <property name="text">
     <string>Goto...</string>
    </property>
