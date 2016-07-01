@@ -46,7 +46,7 @@ MainWindow::MainWindow(QWidget *parent) :
     searchFieldGroup->addAction(ui->actionSearchFieldDateTime);
 
     ui->cbKeyword->lineEdit()->setPlaceholderText(tr("Search Field Content"));
-    ui->cbKeyword->lineEdit()->setClearButtonEnabled(true);
+    ui->cbKeyword->lineEdit()->addAction(ui->actionClearKeyword, QLineEdit::ActionPosition::TrailingPosition);
 
     connect(ui->tabWidget, &TabWidget::statusBarMessage, this, &MainWindow::onStatusBarMessageChanges);
     connect(ui->actionClose, &QAction::triggered, ui->tabWidget, &TabWidget::onCloseCurrent);
