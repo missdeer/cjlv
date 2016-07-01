@@ -62,7 +62,14 @@
       </widget>
      </item>
      <item row="0" column="1">
-      <widget class="QLineEdit" name="edtTitle"/>
+      <widget class="QLineEdit" name="edtTitle">
+       <property name="placeholderText">
+        <string>Extension title, only a-z A-Z 0-9 and _ are allowed</string>
+       </property>
+       <property name="clearButtonEnabled">
+        <bool>true</bool>
+       </property>
+      </widget>
      </item>
      <item row="1" column="0">
       <widget class="QLabel" name="label">
@@ -72,7 +79,17 @@
       </widget>
      </item>
      <item row="1" column="1">
-      <widget class="QLineEdit" name="edtAuthor"/>
+      <widget class="QLineEdit" name="edtAuthor">
+       <property name="maxLength">
+        <number>50</number>
+       </property>
+       <property name="placeholderText">
+        <string>Extension author, short name is recommended</string>
+       </property>
+       <property name="clearButtonEnabled">
+        <bool>true</bool>
+       </property>
+      </widget>
      </item>
      <item row="2" column="0">
       <widget class="QLabel" name="label_2">

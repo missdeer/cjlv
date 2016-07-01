@@ -35,24 +35,7 @@
      <number>0</number>
     </property>
     <item>
-     <layout class="QHBoxLayout" name="searchlLayout" stretch="0,0,1">
-      <item>
-       <widget class="QRadioButton" name="radioSearch">
-        <property name="text">
-         <string>Search</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QRadioButton" name="radioFilter">
-        <property name="text">
-         <string>Filter</string>
-        </property>
-        <property name="checked">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
+     <layout class="QHBoxLayout" name="searchlLayout" stretch="1">
       <item>
        <widget class="QComboBox" name="cbKeyword">
         <property name="editable">
@@ -95,7 +78,7 @@
      <x>0</x>
      <y>0</y>
      <width>1156</width>
-     <height>22</height>
+     <height>18</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -207,11 +190,17 @@
    <addaction name="actionOpenLogFolder"/>
    <addaction name="actionOpenCurrentInstalledJabberLogFolder"/>
    <addaction name="separator"/>
+   <addaction name="actionScrollToTop"/>
+   <addaction name="actionScrollToBottom"/>
+   <addaction name="actionGotoById"/>
+   <addaction name="separator"/>
+   <addaction name="actionSearch"/>
+   <addaction name="actionFilter"/>
+   <addaction name="actionRegexpMode"/>
    <addaction name="actionPreference"/>
    <addaction name="actionEditExtensions"/>
    <addaction name="separator"/>
    <addaction name="actionAbout"/>
-   <addaction name="separator"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionOpenZipLogBundle">
