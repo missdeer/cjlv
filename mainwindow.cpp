@@ -63,9 +63,9 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionGotoById, &QAction::triggered, ui->tabWidget, &TabWidget::onGotoById);
     connect(ui->actionExit, &QAction::triggered, qApp, &QApplication::quit);
 
-    g_settings.setSearchField("content");
+    g_settings->setSearchField("content");
 
-    ui->actionSearch->setChecked(g_settings.searchOrFitler());
+    ui->actionSearch->setChecked(g_settings->searchOrFitler());
 }
 
 MainWindow::~MainWindow()
@@ -106,13 +106,13 @@ void MainWindow::on_actionOpenZipLogBundle_triggered()
 {
     QStringList fileNames = QFileDialog::getOpenFileNames(this,
                                                     tr("Open Cisco Jabber Log Zip Bundles"),
-                                                    g_settings.lastOpenedDirectory(),
+                                                    g_settings->lastOpenedDirectory(),
                                                     tr("Cisco Jabber Log Zip Bundle (*.zip);;All files (*.*)"));
     if (fileNames.isEmpty())
         return;
 
     QFileInfo fi(fileNames.at(0));
-    g_settings.setLastOpenedDirectory(fi.absolutePath());
+    g_settings->setLastOpenedDirectory(fi.absolutePath());
 
     Q_FOREACH(const QString& fileName, fileNames)
     {
@@ -124,14 +124,14 @@ void MainWindow::on_actionOpenRawLogFile_triggered()
 {
     QStringList fileNames = QFileDialog::getOpenFileNames(this,
                                                           tr("Open Cisco Jabber Log Files"),
-                                                          g_settings.lastOpenedDirectory(),
+                                                          g_settings->lastOpenedDirectory(),
                                                           tr("Cisco Jabber Log Files (jabber.log*);;All files (*.*)"));
 
     if (fileNames.isEmpty())
         return;
 
     QFileInfo fi(fileNames.at(0));
-    g_settings.setLastOpenedDirectory(fi.absolutePath());
+    g_settings->setLastOpenedDirectory(fi.absolutePath());
 
     ui->tabWidget->openRawLogFile(fileNames);
 }
@@ -140,13 +140,13 @@ void MainWindow::on_actionOpenLogFolder_triggered()
 {
     QString dir = QFileDialog::getExistingDirectory(this,
                                                     tr("Open Cisco Jabber Log Folder"),
-                                                    g_settings.lastOpenedDirectory(),
+                                                    g_settings->lastOpenedDirectory(),
                                                     QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
 
     if (dir.isEmpty())
         return;
 
-    g_settings.setLastOpenedDirectory(dir);
+    g_settings->setLastOpenedDirectory(dir);
     ui->tabWidget->openFolder(dir, false);
 }
 
@@ -174,15 +174,15 @@ void MainWindow::on_actionOpenCurrentInstalledJabberLogFolder_triggered()
 
 void MainWindow::on_actionSearch_triggered()
 {
-    g_settings.setSearchOrFitler(ui->actionSearch->isChecked());
-    g_settings.save();
+    g_settings->setSearchOrFitler(ui->actionSearch->isChecked());
+    g_settings->save();
     QMessageBox::warning(this, tr("Warning"), tr("Not implemented yet."), QMessageBox::Ok);
 }
 
 void MainWindow::on_actionFilter_triggered()
 {
-    g_settings.setSearchOrFitler(ui->actionSearch->isChecked());
-    g_settings.save();
+    g_settings->setSearchOrFitler(ui->actionSearch->isChecked());
+    g_settings->save();
 }
 
 void MainWindow::on_actionPreference_triggered()
@@ -217,61 +217,61 @@ void MainWindow::on_actionInputKeyword_triggered()
 void MainWindow::on_actionSearchFieldContent_triggered()
 {
     ui->cbKeyword->lineEdit()->setPlaceholderText(tr("Search Field Content"));
-    g_settings.setSearchField("content");
+    g_settings->setSearchField("content");
 }
 
 void MainWindow::on_actionSearchFieldID_triggered()
 {
     ui->cbKeyword->lineEdit()->setPlaceholderText(tr("Search Field ID"));
-    g_settings.setSearchField("id");
+    g_settings->setSearchField("id");
 }
 
 void MainWindow::on_actionSearchFieldDateTime_triggered()
 {
     ui->cbKeyword->lineEdit()->setPlaceholderText(tr("Search Field Date Time"));
-    g_settings.setSearchField("time");
+    g_settings->setSearchField("time");
 }
 
 void MainWindow::on_actionSearchFieldThread_triggered()
 {
     ui->cbKeyword->lineEdit()->setPlaceholderText(tr("Search Field Thread"));
-    g_settings.setSearchField("thread");
+    g_settings->setSearchField("thread");
 }
 
 void MainWindow::on_actionSearchFieldCategory_triggered()
 {
     ui->cbKeyword->lineEdit()->setPlaceholderText(tr("Search Field Category"));
-    g_settings.setSearchField("category");
+    g_settings->setSearchField("category");
 }
 
 void MainWindow::on_actionSearchFieldSourceFile_triggered()
 {
     ui->cbKeyword->lineEdit()->setPlaceholderText(tr("Search Field Source File"));
-    g_settings.setSearchField("source");
+    g_settings->setSearchField("source");
 }
 
 void MainWindow::on_actionSearchFieldMethod_triggered()
 {
     ui->cbKeyword->lineEdit()->setPlaceholderText(tr("Search Field Method"));
-    g_settings.setSearchField("method");
+    g_settings->setSearchField("method");
 }
 
 void MainWindow::on_actionSearchFieldLogFile_triggered()
 {
     ui->cbKeyword->lineEdit()->setPlaceholderText(tr("Search Field Log File"));
-    g_settings.setSearchField("log");
+    g_settings->setSearchField("log");
 }
 
 void MainWindow::on_actionSearchFieldLine_triggered()
 {
     ui->cbKeyword->lineEdit()->setPlaceholderText(tr("Search Field Line"));
-    g_settings.setSearchField("line");
+    g_settings->setSearchField("line");
 }
 
 void MainWindow::on_actionSearchFieldLevel_triggered()
 {
     ui->cbKeyword->lineEdit()->setPlaceholderText(tr("Search Field Level"));
-    g_settings.setSearchField("level");
+    g_settings->setSearchField("level");
 }
 
 void MainWindow::on_actionClearKeyword_triggered()
@@ -289,7 +289,7 @@ void MainWindow::on_actionEditExtensions_triggered()
 
 void MainWindow::on_actionRegexpMode_triggered()
 {
-    g_settings.setRegexMode(ui->actionRegexpMode->isChecked());
+    g_settings->setRegexMode(ui->actionRegexpMode->isChecked());
 }
 
 void MainWindow::dragEnterEvent(QDragEnterEvent *e)

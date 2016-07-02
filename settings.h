@@ -33,6 +33,8 @@ public:
     bool inMemoryDatabase() const;
     void setInMemoryDatabase(bool inMemoryDatabase);
 
+    void initialize();
+
 private:
     bool m_inMemoryDatabase;
     bool m_searchOrFitler;
@@ -43,6 +45,6 @@ private:
     QString m_sourceDirectory;
 };
 
-extern Settings g_settings;
+extern Settings *g_settings;
 
 #endif // SETTINGS_H

@@ -280,7 +280,7 @@ void LogModel::reload()
 
 void LogModel::onFilter(const QString &keyword)
 {
-    if (g_settings.searchOrFitler())
+    if (g_settings->searchOrFitler())
     {
         // search
     }
@@ -613,8 +613,8 @@ void LogModel::doQuery(int offset)
     }
     else
     {
-        QString field = g_settings.searchField();
-        if (g_settings.regexMode())
+        QString field = g_settings->searchField();
+        if (g_settings->regexMode())
         {
             sqlCount = QString("SELECT COUNT(*) FROM logs WHERE %1 REGEXP ?").arg(field);
             sqlFetch = QString("SELECT * FROM logs WHERE %1 REGEXP ? ORDER BY epoch LIMIT %2, 200;").arg(field).arg(offset);
@@ -846,7 +846,7 @@ void LogModel::createDatabaseIndex()
 
 void LogModel::createDatabase()
 {
-    m_dbFile = g_settings.temporaryDirectory();
+    m_dbFile = g_settings->temporaryDirectory();
     if (m_dbFile.isEmpty())
     {
         m_dbFile = QStandardPaths::writableLocation(QStandardPaths::TempLocation);
@@ -865,7 +865,7 @@ void LogModel::createDatabase()
     if (!db.isValid()) {
         db = QSqlDatabase::addDatabase("QSQLITE", m_dbFile);
     }
-    if (g_settings.inMemoryDatabase())
+    if (g_settings->inMemoryDatabase())
         db.setDatabaseName(":memory:");
     else
         db.setDatabaseName(m_dbFile);

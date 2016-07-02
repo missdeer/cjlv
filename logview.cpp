@@ -76,7 +76,7 @@ void LogView::openZipBundle(const QString &path)
     QFileInfo fi(path);
     setWindowTitle(fi.fileName());
 
-    m_extractDir = g_settings.temporaryDirectory();
+    m_extractDir = g_settings->temporaryDirectory();
     if (m_extractDir.isEmpty())
     {
         m_extractDir = QStandardPaths::writableLocation(QStandardPaths::TempLocation) + "/CiscoJabberLogs";
@@ -322,7 +322,7 @@ void LogView::openSourceFile(const QModelIndex &index)
             }
         }
 
-        QDir srcDir(g_settings.sourceDirectory());
+        QDir srcDir(g_settings->sourceDirectory());
         Q_FOREACH(const QString& filePath, results)
         {
             QFileInfo fi(filePath);
@@ -339,7 +339,7 @@ void LogView::openSourceFile(const QModelIndex &index)
                 }
             }
             QDir dir(fi.filePath());
-            if (!g_settings.sourceDirectory().isEmpty())
+            if (!g_settings->sourceDirectory().isEmpty())
                 while (dir != srcDir)
                     if (!dir.cdUp())
                         break;
@@ -353,7 +353,7 @@ void LogView::openSourceFile(const QModelIndex &index)
                 }
             }
 
-            if (matched && (g_settings.sourceDirectory().isEmpty() || (!g_settings.sourceDirectory().isEmpty() && dir == srcDir)))
+            if (matched && (g_settings->sourceDirectory().isEmpty() || (!g_settings->sourceDirectory().isEmpty() && dir == srcDir)))
             {
                 m_codeEditorTabWidget->gotoLine(filePath, m.captured(2).toInt());
                 return;

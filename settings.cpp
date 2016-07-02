@@ -3,12 +3,22 @@
 #include <QSettings>
 #include "settings.h"
 
-Settings g_settings;
+Settings* g_settings = nullptr;
 
 Settings::Settings()
     : m_inMemoryDatabase(true)
     , m_searchOrFitler(false)
     , m_regexMode(false)
+{
+
+}
+
+Settings::~Settings()
+{
+    save();
+}
+
+void Settings::initialize()
 {
     load();
 
@@ -26,11 +36,6 @@ Settings::Settings()
             m_lastOpenedDirectory = QStandardPaths::writableLocation(QStandardPaths::DownloadLocation);
         }
     }
-}
-
-Settings::~Settings()
-{
-    save();
 }
 
 bool Settings::searchOrFitler() const
