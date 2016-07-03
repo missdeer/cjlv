@@ -20,6 +20,14 @@ public:
                         int role = Qt::DisplayRole) const Q_DECL_OVERRIDE;
 
     void scanExtensions();
+
+    void runByUuid(const QString& uuid);
+
+    QList<ExtensionPtr>& extensions()
+    {
+        return m_extensions;
+    }
+
 private:
     static ExtensionModel* m_instance;
 

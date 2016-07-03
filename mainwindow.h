@@ -20,9 +20,12 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
     void openLogs(const QStringList& logs);
+    void loadExtensions();
 public slots:
     void onStatusBarMessageChanges(const QString& msg);
 private slots:
+    void onExtensionActionTriggered();
+
     void on_actionOpenZipLogBundle_triggered();
 
     void on_actionOpenRawLogFile_triggered();

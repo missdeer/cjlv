@@ -12,6 +12,7 @@
 #include "settings.h"
 #include "preferencedialog.h"
 #include "extensiondialog.h"
+#include "extensionmodel.h"
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
@@ -97,9 +98,30 @@ void MainWindow::openLogs(const QStringList &logs)
     }
 }
 
+void MainWindow::loadExtensions()
+{
+    ExtensionModel::instance(this)->scanExtensions();
+    ui->menuExtension->addSeparator();
+    QList<ExtensionPtr>& extensions = ExtensionModel::instance(this)->extensions();
+    Q_FOREACH(ExtensionPtr e, extensions)
+    {
+        QAction* action = new QAction(QString("%1 by %2").arg(e->title()).arg(e->author()), this);
+        connect(action, &QAction::triggered, this, &MainWindow::onExtensionActionTriggered);
+        action->setData(e->uuid());
+        ui->menuExtension->addAction(action);
+    }
+}
+
 void MainWindow::onStatusBarMessageChanges(const QString &msg)
 {
     ui->statusBar->showMessage(msg);
+}
+
+void MainWindow::onExtensionActionTriggered()
+{
+    QAction* extensionAction = qobject_cast<QAction*>(sender());
+    QString uuid = extensionAction->data().toString();
+    ExtensionModel::instance(this)->runByUuid(uuid);
 }
 
 void MainWindow::on_actionOpenZipLogBundle_triggered()

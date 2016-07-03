@@ -10,6 +10,11 @@ class Extension : public QObject
 public:
     explicit Extension(QObject *parent = 0);
 
+    bool load(const QString& path);
+    void save();
+
+    bool run();
+
     const QString& title() const;
     void setTitle(const QString& title);
 

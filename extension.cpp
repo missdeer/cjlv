@@ -1,8 +1,73 @@
+#include <QDomDocument>
+#include <QStandardPaths>
+#include <QTextStream>
+#include <QFile>
 #include "extension.h"
 
 Extension::Extension(QObject *parent) : QObject(parent)
 {
 
+}
+
+bool Extension::load(const QString& path)
+{
+    QDomDocument doc;
+    QFile file(path);
+    if (!file.open(QIODevice::ReadOnly))
+        return false;
+    if (!doc.setContent(&file))
+    {
+        file.close();
+        return false;
+    }
+    file.close();
+
+    QDomElement docElem = doc.documentElement();
+    setUuid( docElem.attribute("uuid"));
+    setField( docElem.attribute("field"));
+    setAuthor( docElem.attribute("author"));
+    setTitle( docElem.attribute("title"));
+    setCategory( docElem.attribute("category"));
+    setCreatedAt( docElem.attribute("createAt"));
+    setLastModifiedAt( docElem.attribute("lastModifiedAt"));
+
+    QDomElement contentElem = docElem.firstChildElement("content");
+    if (!contentElem.isNull())
+        setContent(contentElem.text());
+
+    return true;
+}
+
+void Extension::save()
+{
+    QDomDocument doc("extension");
+    QDomElement root = doc.createElement("extension");
+    doc.appendChild(root);
+    root.setAttribute("uuid", m_uuid);
+    root.setAttribute("field", m_field);
+    root.setAttribute("author", m_author);
+    root.setAttribute("title", m_title);
+    root.setAttribute("category", m_category);
+    root.setAttribute("createAt", m_createdAt);
+    root.setAttribute("lastModifiedAt", m_lastModifiedAt);
+
+    QDomElement contentElem = doc.createElement("content");
+    contentElem.setNodeValue(m_content);
+    root.appendChild(contentElem);
+
+    QString path = QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation) + "/extensionos/" + m_title + ".xml";
+    QFile file(path);
+    if (!file.open(QIODevice::WriteOnly))
+        return ;
+    QTextStream out(&file);
+    const int IndentSize = 4;
+    doc.save(out, IndentSize);
+    file.close();
+}
+
+bool Extension::run()
+{
+    return false;
 }
 
 const QString& Extension::title() const
