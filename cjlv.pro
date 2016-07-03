@@ -31,7 +31,9 @@ SOURCES += main.cpp\
     codeeditor.cpp \
     3rdparty/sqlite3/sqlite3.c \
     preferencedialog.cpp \
-    extensiondialog.cpp
+    extensiondialog.cpp \
+    extensionmodel.cpp \
+    extension.cpp
 
 HEADERS  += mainwindow.h \
     logview.h \
@@ -42,7 +44,9 @@ HEADERS  += mainwindow.h \
     codeeditortabwidget.h \
     codeeditor.h \
     preferencedialog.h \
-    extensiondialog.h
+    extensiondialog.h \
+    extensionmodel.h \
+    extension.h
 
 FORMS    += mainwindow.ui \
     preferencedialog.ui \
