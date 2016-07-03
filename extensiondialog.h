@@ -2,7 +2,9 @@
 #define EXTENSIONDIALOG_H
 
 #include <QDialog>
+#include "extension.h"
 
+class CodeEditor;
 namespace Ui {
 class ExtensionDialog;
 }
@@ -26,6 +28,8 @@ private slots:
 
 private:
     Ui::ExtensionDialog *ui;
+    ExtensionPtr m_currentExtension;
+    CodeEditor* m_contentEditor;
 };
 
 extern ExtensionDialog* g_extensionDialog;

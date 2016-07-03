@@ -113,6 +113,10 @@ void ExtensionModel::scanExtensions()
         dir.mkpath(path);
     else
         scanExtensionsFromDirectory(path, "Custom");
+
+    beginInsertRows(QModelIndex(), 0, m_extensions.length());
+    // has inserted already
+    endInsertRows();
 }
 
 void ExtensionModel::runByUuid(const QString& uuid)
@@ -122,6 +126,21 @@ void ExtensionModel::runByUuid(const QString& uuid)
         if (e->uuid() == uuid)
         {
             e->run();
+            break;
+        }
+    }
+}
+
+void ExtensionModel::removeExtension(ExtensionPtr e)
+{
+    for (int i = 0; i < m_extensions.length(); i++)
+    {
+        ExtensionPtr ie = m_extensions.at(i);
+        if (ie->uuid() == e->uuid())
+        {
+            beginRemoveRows(QModelIndex(), i, i);
+            m_extensions.removeAt(i);
+            endRemoveRows();
             break;
         }
     }

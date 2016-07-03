@@ -22,6 +22,7 @@ public:
     void scanExtensions();
 
     void runByUuid(const QString& uuid);
+    void removeExtension(ExtensionPtr e);
 
     QList<ExtensionPtr>& extensions()
     {
