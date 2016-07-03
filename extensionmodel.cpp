@@ -1,3 +1,7 @@
+#include <QApplication>
+#include <QStandardPaths>
+#include <QDir>
+#include <QDomDocument>
 #include "extensionmodel.h"
 
 ExtensionModel* ExtensionModel::m_instance = nullptr;
@@ -95,8 +99,59 @@ QVariant ExtensionModel::headerData(int section, Qt::Orientation orientation, in
     return QVariant();
 }
 
+void ExtensionModel::scanExtensions()
+{
+#if defined(Q_OS_WIN)
+    QString path = QApplication::applicationDirPath() + "/extensions";
+#elif defined(Q_OS_MAC)
+    QString path = QApplication::applicationDirPath() + "/../PlugIns/extensions";
+#endif
+    scanExtensionsFromDirectory(path, "Built-in");
+
+    path = QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation) + "/extensionos";
+    scanExtensionsFromDirectory(path, "Custom");
+}
+
 ExtensionModel::ExtensionModel(QObject* parent)
     :QAbstractTableModel (parent)
 {
 
+}
+
+void ExtensionModel::scanExtensionsFromDirectory(const QString& path, const QString& from)
+{
+    QDir dir(path);
+    QStringList nameFilters = QStringList() << "*.xml";
+    QFileInfoList fil = dir.entryInfoList(nameFilters, QDir::Files | QDir::NoDotAndDotDot);
+    Q_FOREACH(const QFileInfo& fi, fil)
+    {
+        QDomDocument doc;
+        QFile file(fi.absoluteFilePath());
+        if (!file.open(QIODevice::ReadOnly))
+            continue;
+        if (!doc.setContent(&file))
+        {
+            file.close();
+            continue;
+        }
+        ExtensionPtr e(new Extension);
+        e->setFrom(from);
+
+        QDomElement docElem = doc.documentElement();
+        e->setUuid( docElem.attribute("uuid"));
+        e->setField( docElem.attribute("field"));
+        e->setAuthor( docElem.attribute("author"));
+        e->setTitle( docElem.attribute("title"));
+        e->setCategory( docElem.attribute("category"));
+        e->setCreatedAt( docElem.attribute("createAt"));
+        e->setLastModifiedAt( docElem.attribute("lastModifiedAt"));
+
+        QDomElement contentElem = docElem.firstChildElement("content");
+        if (!contentElem.isNull())
+            e->setContent(contentElem.text());
+
+        file.close();
+
+        m_extensions.push_back(e);
+    }
 }

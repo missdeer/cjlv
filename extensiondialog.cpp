@@ -1,4 +1,5 @@
 #include "codeeditor.h"
+#include "extensionmodel.h"
 #include "extensiondialog.h"
 #include "ui_extensiondialog.h"
 
@@ -18,6 +19,9 @@ ExtensionDialog::ExtensionDialog(QWidget *parent) :
     m_mainLayout->setMargin(0);
     m_mainLayout->addWidget(v);
     ui->codeEditorPlaceholder->setLayout(m_mainLayout);
+
+    ui->tableView->setModel(ExtensionModel::instance());
+    ui->tableView->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
 }
 
 ExtensionDialog::~ExtensionDialog()

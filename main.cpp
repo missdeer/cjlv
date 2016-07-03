@@ -6,6 +6,7 @@
 #include <QMessageBox>
 #include "mainwindow.h"
 #include "settings.h"
+#include "extensionmodel.h"
 
 #if defined(Q_OS_WIN)
 void launchEverything();
@@ -63,6 +64,8 @@ int main(int argc, char *argv[])
 #if defined(Q_OS_WIN)
     launchEverything();
 #endif
+
+    ExtensionModel::instance(&w)->scanExtensions();
 
     return a.exec();
 }
