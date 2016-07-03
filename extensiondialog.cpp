@@ -1,4 +1,5 @@
 #include <QUuid>
+#include <QDateTime>
 #include <QMessageBox>
 #include "codeeditor.h"
 #include "extensionmodel.h"
@@ -35,6 +36,7 @@ void ExtensionDialog::on_btnNewExtension_clicked()
 {
     m_currentExtension.reset(new Extension);
     m_currentExtension->setUuid(QUuid::createUuid().toString());
+    m_currentExtension->setCreatedAt(QDateTime::currentDateTime().toString());
     ui->edtAuthor->clear();
     ui->edtTitle->clear();
     m_contentEditor->clear();
@@ -55,6 +57,12 @@ void ExtensionDialog::on_btnApplyModification_clicked()
 {
     if (QMessageBox::question(this, tr("Confirm"), tr("Save changes?"), QMessageBox::Ok | QMessageBox::Cancel) == QMessageBox::Ok)
     {
+        m_currentExtension->setAuthor(ui->edtAuthor->text());
+        m_currentExtension->setTitle(ui->edtTitle->text());
+        m_currentExtension->setField(ui->cbField->currentText());
+        m_currentExtension->setCategory(ui->cbMethod->currentText());
+        m_currentExtension->setContent(m_contentEditor->getText(m_contentEditor->textLength()));
+        m_currentExtension->setLastModifiedAt(QDateTime::currentDateTime().toString());
         m_currentExtension->save();
     }
 }
