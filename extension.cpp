@@ -40,7 +40,7 @@ bool Extension::load(const QString& path)
 
 void Extension::save()
 {
-    QDomDocument doc("extension");
+    QDomDocument doc;
     QDomElement root = doc.createElement("extension");
     doc.appendChild(root);
     root.setAttribute("uuid", m_uuid);
@@ -52,7 +52,8 @@ void Extension::save()
     root.setAttribute("lastModifiedAt", m_lastModifiedAt);
 
     QDomElement contentElem = doc.createElement("content");
-    contentElem.setNodeValue(m_content);
+    QDomCDATASection contentCData = doc.createCDATASection(m_content);
+    contentElem.appendChild(contentCData);
     root.appendChild(contentElem);
 
     QString path = QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation) + "/extensionos/" + m_title + ".xml";
@@ -63,6 +64,13 @@ void Extension::save()
     const int IndentSize = 4;
     doc.save(out, IndentSize);
     file.close();
+}
+
+void Extension::destroy()
+{
+    QString path = QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation) + "/extensionos/" + m_title + ".xml";
+    QFile file(path);
+    file.remove();
 }
 
 bool Extension::run()

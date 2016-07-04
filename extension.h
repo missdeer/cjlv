@@ -12,6 +12,7 @@ public:
 
     bool load(const QString& path);
     void save();
+    void destroy();
 
     bool run();
 

@@ -2,6 +2,7 @@
 #define EXTENSIONDIALOG_H
 
 #include <QDialog>
+#include <QItemSelection>
 #include "extension.h"
 
 class CodeEditor;
@@ -18,6 +19,8 @@ public:
     ~ExtensionDialog();
 
 private slots:
+    void on_tableView_selectionChanged(const QItemSelection &selected, const QItemSelection &deselected);
+
     void on_btnNewExtension_clicked();
 
     void on_btnDeleteExtension_clicked();

@@ -26,11 +26,31 @@ ExtensionDialog::ExtensionDialog(QWidget *parent) :
 
     ui->tableView->setModel(ExtensionModel::instance());
     ui->tableView->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
+    connect(ui->tableView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &ExtensionDialog::on_tableView_selectionChanged);
 }
 
 ExtensionDialog::~ExtensionDialog()
 {
     delete ui;
+}
+
+void ExtensionDialog::on_tableView_selectionChanged(const QItemSelection &selected, const QItemSelection &/*deselected*/)
+{
+    QModelIndexList list = selected.indexes();
+    Q_FOREACH(const QModelIndex& index, list)
+    {
+        m_currentExtension = ExtensionModel::instance()->extension(index);
+        if (!m_currentExtension)
+            continue;
+        ui->edtAuthor->setText(m_currentExtension->author());
+        ui->edtTitle->setText(m_currentExtension->title());
+        ui->cbField->setCurrentText(m_currentExtension->field());
+        ui->cbMethod->setCurrentText(m_currentExtension->category());
+        m_contentEditor->setText(m_currentExtension->content().toStdString().c_str());
+        m_contentEditor->setSavePoint();
+        m_modified = false;
+        break;
+    }
 }
 
 void ExtensionDialog::on_btnNewExtension_clicked()
@@ -42,7 +62,7 @@ void ExtensionDialog::on_btnNewExtension_clicked()
     }
     m_currentExtension.reset(new Extension);
     m_currentExtension->setUuid(QUuid::createUuid().toString());
-    m_currentExtension->setCreatedAt(QDateTime::currentDateTime().toString());
+    m_currentExtension->setCreatedAt(QDateTime::currentDateTime().toString(Qt::ISODate));
     ui->edtAuthor->clear();
     ui->edtTitle->clear();
     m_contentEditor->clear();
@@ -62,10 +82,11 @@ void ExtensionDialog::on_btnDeleteExtension_clicked()
                 return;
         }
         ExtensionModel::instance()->removeExtension(m_currentExtension);
+        m_currentExtension->destroy();
         m_currentExtension.reset();
         ui->edtAuthor->clear();
         ui->edtTitle->clear();
-        m_contentEditor->clear();
+        m_contentEditor->setText("");
         m_contentEditor->setSavePoint();
         ui->cbField->setCurrentIndex(0);
         ui->cbMethod->setCurrentIndex(0);
@@ -82,8 +103,9 @@ void ExtensionDialog::on_btnApplyModification_clicked()
         m_currentExtension->setField(ui->cbField->currentText());
         m_currentExtension->setCategory(ui->cbMethod->currentText());
         m_currentExtension->setContent(m_contentEditor->getText(m_contentEditor->textLength()));
-        m_currentExtension->setLastModifiedAt(QDateTime::currentDateTime().toString());
+        m_currentExtension->setLastModifiedAt(QDateTime::currentDateTime().toString(Qt::ISODate));
         m_currentExtension->save();
+        ExtensionModel::instance()->updateExtension(m_currentExtension);
         m_modified = false;
         m_contentEditor->setSavePoint();
     }

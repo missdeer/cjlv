@@ -146,6 +146,33 @@ void ExtensionModel::removeExtension(ExtensionPtr e)
     }
 }
 
+void ExtensionModel::updateExtension(ExtensionPtr e)
+{
+    for (int i = 0; i < m_extensions.length(); i++)
+    {
+        ExtensionPtr ie = m_extensions.at(i);
+        if (ie->uuid() == e->uuid())
+        {
+            // modify
+            ie = e;
+            emit dataChanged(index(i, 0), index(i, 0));
+            return;
+        }
+    }
+    // append
+    beginInsertRows(QModelIndex(),  m_extensions.size(), m_extensions.size());
+    m_extensions.push_back(e);
+    endInsertRows();
+}
+
+ExtensionPtr ExtensionModel::extension(const QModelIndex &index)
+{
+    if (index.row() < 0 || index.row() >= m_extensions.length())
+        return ExtensionPtr();
+
+    return m_extensions.at(index.row());
+}
+
 ExtensionModel::ExtensionModel(QObject* parent)
     :QAbstractTableModel (parent)
 {

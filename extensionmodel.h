@@ -23,6 +23,8 @@ public:
 
     void runByUuid(const QString& uuid);
     void removeExtension(ExtensionPtr e);
+    void updateExtension(ExtensionPtr e);
+    ExtensionPtr extension(const QModelIndex& index);
 
     QList<ExtensionPtr>& extensions()
     {

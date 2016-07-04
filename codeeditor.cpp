@@ -74,7 +74,8 @@ void CodeEditor::linesAdded(int /*linesAdded*/)
     sptr_t left = sci->marginLeft() + 2;
     sptr_t right = sci->marginRight() + 2;
     sptr_t width = left + right + sci->textWidth(STYLE_LINENUMBER, QString("%1").arg(line_count).toStdString().c_str());
-    sci->setMarginWidthN(0, width);
+    if (width > sci->marginWidthN(0))
+        sci->setMarginWidthN(0, width);
 }
 
 void CodeEditor::marginClicked(int position, int /*modifiers*/, int margin)
