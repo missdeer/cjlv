@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include "extension.h"
 
 namespace Ui {
 class MainWindow;
@@ -23,6 +24,9 @@ public:
     void loadExtensions();
 public slots:
     void onStatusBarMessageChanges(const QString& msg);
+    void onExtensionRemoved(ExtensionPtr e);
+    void onExtensionCreated(ExtensionPtr e);
+    void onExtensionModified(ExtensionPtr e);
 private slots:
     void onExtensionActionTriggered();
 

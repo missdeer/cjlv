@@ -64,6 +64,11 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionGotoById, &QAction::triggered, ui->tabWidget, &TabWidget::onGotoById);
     connect(ui->actionExit, &QAction::triggered, qApp, &QApplication::quit);
 
+    ExtensionModel* em = ExtensionModel::instance(this);
+    connect(em, &ExtensionModel::extensionCreated, this, &MainWindow::onExtensionCreated);
+    connect(em, &ExtensionModel::extensionModified, this, &MainWindow::onExtensionModified);
+    connect(em, &ExtensionModel::extensionRemoved, this, &MainWindow::onExtensionRemoved);
+
     g_settings->setSearchField("content");
 
     ui->actionSearch->setChecked(g_settings->searchOrFitler());
@@ -115,6 +120,21 @@ void MainWindow::loadExtensions()
 void MainWindow::onStatusBarMessageChanges(const QString &msg)
 {
     ui->statusBar->showMessage(msg);
+}
+
+void MainWindow::onExtensionRemoved(ExtensionPtr e)
+{
+
+}
+
+void MainWindow::onExtensionCreated(ExtensionPtr e)
+{
+
+}
+
+void MainWindow::onExtensionModified(ExtensionPtr e)
+{
+
 }
 
 void MainWindow::onExtensionActionTriggered()

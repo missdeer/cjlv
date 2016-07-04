@@ -31,6 +31,10 @@ public:
         return m_extensions;
     }
 
+signals:
+    void extensionRemoved(ExtensionPtr);
+    void extensionCreated(ExtensionPtr);
+    void extensionModified(ExtensionPtr);
 private:
     static ExtensionModel* m_instance;
 

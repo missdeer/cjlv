@@ -138,6 +138,7 @@ void ExtensionModel::removeExtension(ExtensionPtr e)
         ExtensionPtr ie = m_extensions.at(i);
         if (ie->uuid() == e->uuid())
         {
+            emit extensionRemoved(e);
             beginRemoveRows(QModelIndex(), i, i);
             m_extensions.removeAt(i);
             endRemoveRows();
@@ -156,6 +157,7 @@ void ExtensionModel::updateExtension(ExtensionPtr e)
             // modify
             ie = e;
             emit dataChanged(index(i, 0), index(i, 0));
+            emit extensionModified(e);
             return;
         }
     }
@@ -163,6 +165,7 @@ void ExtensionModel::updateExtension(ExtensionPtr e)
     beginInsertRows(QModelIndex(),  m_extensions.size(), m_extensions.size());
     m_extensions.push_back(e);
     endInsertRows();
+    emit extensionCreated(e);
 }
 
 ExtensionPtr ExtensionModel::extension(const QModelIndex &index)
