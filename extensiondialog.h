@@ -26,10 +26,19 @@ private slots:
 
     void on_btnTestExtension_clicked();
 
+    void on_edtTitle_textChanged(const QString &arg1);
+
+    void on_edtAuthor_textChanged(const QString &arg1);
+
+    void on_cbField_currentIndexChanged(int index);
+
+    void on_cbMethod_currentIndexChanged(int index);
+
 private:
     Ui::ExtensionDialog *ui;
-    ExtensionPtr m_currentExtension;
     CodeEditor* m_contentEditor;
+    ExtensionPtr m_currentExtension;
+    bool m_modified;
 };
 
 extern ExtensionDialog* g_extensionDialog;
