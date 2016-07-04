@@ -8,7 +8,7 @@
 #include "settings.h"
 
 #if defined(Q_OS_WIN)
-void launchEverything();
+#include "everythingwrapper.h"
 #endif
 
 int main(int argc, char *argv[])
@@ -62,7 +62,16 @@ int main(int argc, char *argv[])
     w.openLogs(logs);
 
 #if defined(Q_OS_WIN)
-    launchEverything();
+    if (isEverythingRunning())
+    {
+        QString path = GetEverythingPath();
+        g_settings->setEverythingPath(path);
+        g_settings->save();
+    }
+    else
+    {
+        launchEverything(g_settings->everythingPath());
+    }
 #endif
 
     return a.exec();

@@ -46,7 +46,8 @@ HEADERS  += mainwindow.h \
     preferencedialog.h \
     extensiondialog.h \
     extensionmodel.h \
-    extension.h
+    extension.h \
+    everythingwrapper.h
 
 FORMS    += mainwindow.ui \
     preferencedialog.ui \
@@ -97,7 +98,7 @@ win32: {
     INCLUDEPATH += $$PWD/3rdparty/Everything-SDK/include $$PWD/3rdparty/Everything-SDK/ipc
     SOURCES += everythingwrapper.cpp
 
-    LIBS+=-L$$PWD/3rdparty/zlib-1.2.8 -lScintillaEdit3 -lzlib -L$$PWD/3rdparty/Everything-SDK/lib -lUser32 -lShell32
+    LIBS+=-L$$PWD/3rdparty/zlib-1.2.8 -lScintillaEdit3 -lzlib -L$$PWD/3rdparty/Everything-SDK/lib -lUser32 -lShell32 -lpsapi -lOle32
 
     contains(QMAKE_HOST.arch, x86_64): LIBS += -lEverything64
     else: LIBS += -lEverything32

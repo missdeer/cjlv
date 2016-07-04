@@ -35,6 +35,9 @@ public:
 
     void initialize();
 
+    QString everythingPath() const;
+    void setEverythingPath(const QString& everythingPath);
+
 private:
     bool m_inMemoryDatabase;
     bool m_searchOrFitler;
@@ -43,6 +46,7 @@ private:
     QString m_temporaryDirectory;
     QString m_lastOpenedDirectory;
     QString m_sourceDirectory;
+    QString m_everythingPath;
 };
 
 extern Settings *g_settings;

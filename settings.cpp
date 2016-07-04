@@ -1,3 +1,4 @@
+#include <QApplication>
 #include <QStandardPaths>
 #include <QDir>
 #include <QSettings>
@@ -36,6 +37,16 @@ void Settings::initialize()
             m_lastOpenedDirectory = QStandardPaths::writableLocation(QStandardPaths::DownloadLocation);
         }
     }
+}
+
+QString Settings::everythingPath() const
+{
+    return m_everythingPath;
+}
+
+void Settings::setEverythingPath(const QString& everythingPath)
+{
+    m_everythingPath = everythingPath;
 }
 
 bool Settings::searchOrFitler() const
@@ -107,6 +118,8 @@ void Settings::save()
     settings.setValue("temporaryDirectory", m_temporaryDirectory);
     settings.setValue("sourceDirectory", m_sourceDirectory);
     settings.setValue("lastOpenedDirectory", m_lastOpenedDirectory);
+    if (!m_everythingPath.isEmpty())
+        settings.setValue("everythingPath", m_everythingPath);
     settings.sync();
 }
 
@@ -119,6 +132,9 @@ void Settings::load()
     m_temporaryDirectory = settings.value("temporaryDirectory").toString();
     m_sourceDirectory = settings.value("sourceDirectory").toString();
     m_lastOpenedDirectory = settings.value("lastOpenedDirectory").toString();
+    m_everythingPath = settings.value("everythingPath").toString();
+    if (m_everythingPath.isEmpty())
+        m_everythingPath = QApplication::applicationDirPath() + "/Everything.exe";
 }
 
 bool Settings::inMemoryDatabase() const

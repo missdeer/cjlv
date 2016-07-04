@@ -1,25 +1,142 @@
 #include <Windows.h>
 #include <Shellapi.h>
+#include <shobjidl.h>
+#include <shlguid.h>
+#include <strsafe.h>
+#include <PSapi.h>
+#include <QtCore>
 #include <QApplication>
 #include <QStringList>
 #include <QString>
 #include <QMessageBox>
 #include <QFile>
+#include <QFileInfo>
 #include <QDesktopWidget>
 #include <Everything.h>
 #include <everything_ipc.h>
+#include "everythingwrapper.h"
 
-void launchEverything()
+
+HRESULT ResolveIt(HWND hwnd, LPCSTR lpszLinkFile, LPWSTR lpszPath, int iPathBufferSize)
+{
+    HRESULT hres;
+    IShellLink* psl;
+    WCHAR szGotPath[MAX_PATH];
+    WCHAR szDescription[MAX_PATH];
+    WIN32_FIND_DATA wfd;
+
+    *lpszPath = 0; // Assume failure
+
+    CoInitialize(NULL);
+    // Get a pointer to the IShellLink interface. It is assumed that CoInitialize
+    // has already been called.
+    hres = CoCreateInstance(CLSID_ShellLink, NULL, CLSCTX_INPROC_SERVER, IID_IShellLink, (LPVOID*)&psl);
+    if (SUCCEEDED(hres))
+    {
+        IPersistFile* ppf;
+
+        // Get a pointer to the IPersistFile interface.
+        hres = psl->QueryInterface(IID_IPersistFile, (void**)&ppf);
+
+        if (SUCCEEDED(hres))
+        {
+            WCHAR wsz[MAX_PATH] = {0};
+
+            // Ensure that the string is Unicode.
+            MultiByteToWideChar(CP_ACP, 0, lpszLinkFile, -1, wsz, MAX_PATH);
+            // Add code here to check return value from MultiByteWideChar
+            // for success.
+
+            // Load the shortcut.
+            hres = ppf->Load(wsz, STGM_READ);
+
+            if (SUCCEEDED(hres))
+            {
+                // Resolve the link.
+                hres = psl->Resolve(hwnd, 0);
+
+                if (SUCCEEDED(hres))
+                {
+                    // Get the path to the link target.
+                    hres = psl->GetPath(szGotPath, MAX_PATH, (WIN32_FIND_DATA*)&wfd, SLGP_RAWPATH);
+
+                    if (SUCCEEDED(hres))
+                    {
+                        // Get the description of the target.
+                        hres = psl->GetDescription(szDescription, MAX_PATH);
+
+                        if (SUCCEEDED(hres))
+                        {
+                            hres = StringCbCopy(lpszPath, iPathBufferSize, szGotPath);
+                            if (SUCCEEDED(hres))
+                            {
+                                // Handle success
+                            }
+                            else
+                            {
+                                // Handle the error
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Release the pointer to the IPersistFile interface.
+            ppf->Release();
+        }
+
+        // Release the pointer to the IShellLink interface.
+        psl->Release();
+    }
+    return hres;
+}
+
+bool isEverythingRunning()
 {
     HWND everything_hwnd = FindWindow(EVERYTHING_IPC_WNDCLASS,0);
-    if (!everything_hwnd)
+    return everything_hwnd != NULL;
+}
+
+void launchEverything(const QString& everythingFilePath)
+{
+    if (QFile::exists(everythingFilePath))
     {
-        QString everythingFilePath = QApplication::applicationDirPath() + "/Everything.exe";
-        if (QFile::exists(everythingFilePath))
+        QString path = everythingFilePath;
+        path = path.replace(QChar('/'), QChar('\\'));
+        ::ShellExecuteW(NULL, L"open", path.toStdWString().c_str(), NULL, NULL, SW_SHOWMINIMIZED);
+    }
+}
+
+QString GetEverythingPath()
+{
+    HWND hWnd = FindWindow(EVERYTHING_IPC_WNDCLASS,0);
+    if (hWnd)
+    {
+        int ret = (int)SendMessage(hWnd,EVERYTHING_WM_IPC,EVERYTHING_IPC_IS_DESKTOP_SHORTCUT,0);
+        if (!ret)
         {
-            ::ShellExecuteW(NULL, L"open", everythingFilePath.toStdWString().c_str(), NULL, NULL, SW_SHOWMINIMIZED);
+            // create one
+            SendMessage(hWnd,EVERYTHING_WM_IPC,EVERYTHING_IPC_CREATE_DESKTOP_SHORTCUT,0);
+        }
+
+        QString path = QStandardPaths::writableLocation(QStandardPaths::DesktopLocation) + "/Search Everything.lnk";
+        path = path.replace(QChar('/'), QChar('\\'));
+
+        WCHAR szTarget[MAX_PATH] = {0};
+        HRESULT hr = ResolveIt(hWnd, path.toStdString().c_str(), szTarget, sizeof(szTarget)/sizeof(szTarget[0]));
+        if (!ret)
+        {
+            // remove the one created right now
+            SendMessage(hWnd,EVERYTHING_WM_IPC,EVERYTHING_IPC_DELETE_DESKTOP_SHORTCUT,0);
+        }
+        if (hr == S_OK)
+        {
+            QFileInfo f(QString::fromWCharArray(szTarget));
+            return f.absoluteFilePath();
         }
     }
+
+    return QString();
 }
 
 bool QuickGetFilesByFileName(const QString& fileName, QStringList& results)
