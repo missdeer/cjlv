@@ -11,6 +11,7 @@ ExtensionDialog* g_extensionDialog = nullptr;
 ExtensionDialog::ExtensionDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::ExtensionDialog),
+    m_currentExtension(new Extension),
     m_modified(false)
 {
     ui->setupUi(this);
@@ -27,6 +28,10 @@ ExtensionDialog::ExtensionDialog(QWidget *parent) :
     ui->tableView->setModel(ExtensionModel::instance());
     ui->tableView->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
     connect(ui->tableView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &ExtensionDialog::on_tableView_selectionChanged);
+
+    m_currentExtension->setFrom("Custom");
+    m_currentExtension->setUuid(QUuid::createUuid().toString());
+    m_currentExtension->setCreatedAt(QDateTime::currentDateTime().toString(Qt::ISODate));
 }
 
 ExtensionDialog::~ExtensionDialog()
@@ -61,6 +66,7 @@ void ExtensionDialog::on_btnNewExtension_clicked()
             return;
     }
     m_currentExtension.reset(new Extension);
+    m_currentExtension->setFrom("Custom");
     m_currentExtension->setUuid(QUuid::createUuid().toString());
     m_currentExtension->setCreatedAt(QDateTime::currentDateTime().toString(Qt::ISODate));
     ui->edtAuthor->clear();
@@ -81,6 +87,8 @@ void ExtensionDialog::on_btnDeleteExtension_clicked()
             if (QMessageBox::question(this, tr("Confirm"), tr("Discard modification?"), QMessageBox::Ok | QMessageBox::Cancel) == QMessageBox::Cancel)
                 return;
         }
+        if (QMessageBox::question(this, tr("Confirm"), tr("Delete the selected extension?"), QMessageBox::Ok | QMessageBox::Cancel) == QMessageBox::Cancel)
+            return;
         ExtensionModel::instance()->removeExtension(m_currentExtension);
         m_currentExtension->destroy();
         m_currentExtension.reset();
