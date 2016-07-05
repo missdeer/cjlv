@@ -96,3 +96,8 @@ bool CodeEditor::isContent() const
 {
     return m_isContent;
 }
+
+void CodeEditor::setLanguage(const QString &lang)
+{
+    m_sc.initEditorStyle(this, lang);
+}

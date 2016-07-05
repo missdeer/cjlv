@@ -16,7 +16,7 @@ public:
     void gotoLine(int line);
     bool matched(const QString& fileName);
     bool isContent() const;
-
+    void setLanguage(const QString& lang);
 private slots:
     void linesAdded(int linesAdded);
     void marginClicked(int position, int modifiers, int margin);

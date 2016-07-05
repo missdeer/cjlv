@@ -145,4 +145,10 @@ void ExtensionDialog::on_cbField_currentIndexChanged(int /*index*/)
 void ExtensionDialog::on_cbMethod_currentIndexChanged(int /*index*/)
 {
     m_modified = true;
+    if (ui->cbMethod->currentText() == "Lua")
+        m_contentEditor->setLanguage("lua");
+    else if (ui->cbMethod->currentText() == "Regexp")
+        m_contentEditor->setLanguage("null");
+    else
+        m_contentEditor->setLanguage("sql");
 }
