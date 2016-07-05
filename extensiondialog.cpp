@@ -80,6 +80,10 @@ void ExtensionDialog::on_btnNewExtension_clicked()
 
 void ExtensionDialog::on_btnDeleteExtension_clicked()
 {
+    QItemSelectionModel* selection = ui->tableView->selectionModel();
+    if (!selection || !selection->hasSelection())
+        return;
+
     if (m_currentExtension)
     {
         if (m_modified || m_contentEditor->modify())
