@@ -1,14 +1,12 @@
 #ifndef EXTENSION_H
 #define EXTENSION_H
 
-#include <QObject>
 #include <QSharedPointer>
 
-class Extension : public QObject
+class Extension
 {
-    Q_OBJECT
 public:
-    explicit Extension(QObject *parent = 0);
+    Extension();
 
     bool load(const QString& path);
     void save();
@@ -42,11 +40,6 @@ public:
 
     const QString& from() const;
     void setFrom(const QString& from);
-
-signals:
-
-public slots:
-
 private:
     QString m_title;
     QString m_author;
