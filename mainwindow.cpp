@@ -110,10 +110,7 @@ void MainWindow::loadExtensions()
     QList<ExtensionPtr>& extensions = ExtensionModel::instance(this)->extensions();
     Q_FOREACH(ExtensionPtr e, extensions)
     {
-        QAction* action = new QAction(QString("%1 by %2").arg(e->title()).arg(e->author()), this);
-        connect(action, &QAction::triggered, this, &MainWindow::onExtensionActionTriggered);
-        action->setData(e->uuid());
-        ui->menuExtension->addAction(action);
+        onExtensionCreated(e);
     }
 }
 
@@ -124,17 +121,37 @@ void MainWindow::onStatusBarMessageChanges(const QString &msg)
 
 void MainWindow::onExtensionRemoved(ExtensionPtr e)
 {
-
+    QList<QAction*> actions = ui->menuExtension->actions();
+    Q_FOREACH(QAction* action, actions)
+    {
+        if (action->data().toString() == e->uuid())
+        {
+            ui->menuExtension->removeAction(action);
+            action->deleteLater();
+            break;
+        }
+    }
 }
 
 void MainWindow::onExtensionCreated(ExtensionPtr e)
 {
-
+    QAction* action = new QAction(QString("%1 by %2").arg(e->title()).arg(e->author()), this);
+    connect(action, &QAction::triggered, this, &MainWindow::onExtensionActionTriggered);
+    action->setData(e->uuid());
+    ui->menuExtension->addAction(action);
 }
 
 void MainWindow::onExtensionModified(ExtensionPtr e)
 {
-
+    QList<QAction*> actions = ui->menuExtension->actions();
+    Q_FOREACH(QAction* action, actions)
+    {
+        if (action->data().toString() == e->uuid())
+        {
+            action->setText(QString("%1 by %2").arg(e->title()).arg(e->author()));
+            break;
+        }
+    }
 }
 
 void MainWindow::onExtensionActionTriggered()
