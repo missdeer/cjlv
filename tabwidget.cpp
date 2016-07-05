@@ -9,6 +9,7 @@
 #include <QClipboard>
 #include <QDesktopServices>
 #include <QFileInfo>
+#include "extensionmodel.h"
 #include "logview.h"
 #include "tabwidget.h"
 
@@ -190,6 +191,19 @@ void TabWidget::onGotoById()
         int i = QInputDialog::getInt(this, tr("Goto By Id"), tr("Input Id:"), 1, 1);
         LogView* v = qobject_cast<LogView*>(w);
         v->gotoById(i);
+    }
+}
+
+void TabWidget::onExtensionActionTriggered()
+{
+    QWidget* w = currentWidget();
+    if (w)
+    {
+        QAction* extensionAction = qobject_cast<QAction*>(sender());
+        QString uuid = extensionAction->data().toString();
+        ExtensionPtr e = ExtensionModel::instance(this)->extensionByUuid(uuid);
+        LogView* v = qobject_cast<LogView*>(w);
+        emit v->runExtension(e);
     }
 }
 

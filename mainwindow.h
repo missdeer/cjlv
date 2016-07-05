@@ -28,7 +28,6 @@ private slots:
     void onExtensionRemoved(ExtensionPtr e);
     void onExtensionCreated(ExtensionPtr e);
     void onExtensionModified(ExtensionPtr e);
-    void onExtensionActionTriggered();
 
     void on_actionOpenZipLogBundle_triggered();
 

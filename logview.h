@@ -5,6 +5,7 @@
 #include <QStringList>
 #include <QMutex>
 #include "codeeditortabwidget.h"
+#include "extension.h"
 
 class LogModel;
 
@@ -43,6 +44,7 @@ public:
     void filter(const QString& keyword);
 signals:
     void rowCountChanged();
+    void runExtension(ExtensionPtr e);
 protected:
 
 private slots:

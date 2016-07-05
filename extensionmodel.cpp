@@ -119,14 +119,13 @@ void ExtensionModel::scanExtensions()
     endInsertRows();
 }
 
-void ExtensionModel::runByUuid(const QString& uuid)
+ExtensionPtr ExtensionModel::extensionByUuid(const QString& uuid)
 {
     Q_FOREACH(ExtensionPtr e, m_extensions)
     {
         if (e->uuid() == uuid)
         {
-            e->run();
-            break;
+            return e;
         }
     }
 }

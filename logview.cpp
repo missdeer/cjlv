@@ -59,6 +59,7 @@ LogView::LogView(QWidget *parent)
     connect(m_tableView, &QAbstractItemView::doubleClicked, this, &LogView::onDoubleClicked);
     connect(m_model, &LogModel::dataLoaded, this, &LogView::onDataLoaded);
     connect(m_model, &LogModel::rowCountChanged, this, &LogView::onRowCountChanged);
+    connect(this, &LogView::runExtension, m_model, &LogModel::runExtension);
 }
 
 LogView::~LogView()

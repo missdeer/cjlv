@@ -136,7 +136,7 @@ void MainWindow::onExtensionRemoved(ExtensionPtr e)
 void MainWindow::onExtensionCreated(ExtensionPtr e)
 {
     QAction* action = new QAction(QString("%1 by %2").arg(e->title()).arg(e->author()), this);
-    connect(action, &QAction::triggered, this, &MainWindow::onExtensionActionTriggered);
+    connect(action, &QAction::triggered, ui->tabWidget, &TabWidget::onExtensionActionTriggered);
     action->setData(e->uuid());
     ui->menuExtension->addAction(action);
 }
@@ -152,13 +152,6 @@ void MainWindow::onExtensionModified(ExtensionPtr e)
             break;
         }
     }
-}
-
-void MainWindow::onExtensionActionTriggered()
-{
-    QAction* extensionAction = qobject_cast<QAction*>(sender());
-    QString uuid = extensionAction->data().toString();
-    ExtensionModel::instance(this)->runByUuid(uuid);
 }
 
 void MainWindow::on_actionOpenZipLogBundle_triggered()

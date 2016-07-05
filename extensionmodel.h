@@ -21,7 +21,7 @@ public:
 
     void scanExtensions();
 
-    void runByUuid(const QString& uuid);
+    ExtensionPtr extensionByUuid(const QString& uuid);
     void removeExtension(ExtensionPtr e);
     void updateExtension(ExtensionPtr e);
     ExtensionPtr extension(const QModelIndex& index);

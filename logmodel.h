@@ -6,6 +6,7 @@
 #include <QMap>
 #include <QSharedPointer>
 #include <QFuture>
+#include "extension.h"
 
 struct LogItem {
     int id;
@@ -47,6 +48,7 @@ public:
     QString getLogFileName(const QModelIndex &index);
     int getLogFileLine(const QModelIndex &index, QString& fileName);
     int getId(const QModelIndex &index);
+    void runExtension(ExtensionPtr e);
 signals:
     void logItemReady(int, QSharedPointer<LogItem>);
     void logItemsReady(QMap<int, QSharedPointer<LogItem>>);

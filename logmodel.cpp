@@ -548,6 +548,11 @@ int LogModel::getId(const QModelIndex &index)
     return r->id;
 }
 
+void LogModel::runExtension(ExtensionPtr e)
+{
+
+}
+
 void LogModel::onLogItemReady(int i,  QSharedPointer<LogItem> log)
 {
 #ifndef QT_NO_DEBUG

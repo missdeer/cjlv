@@ -41,6 +41,7 @@ public slots:
     void onReload();
     void onGotoById();
 
+    void onExtensionActionTriggered();
 private slots:
     void onCustomContextMenuRequested(const QPoint &pos);
     void onCurrentChanged(int index);
