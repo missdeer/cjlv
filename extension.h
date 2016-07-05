@@ -23,8 +23,8 @@ public:
     const QString& field() const;
     void setField(const QString& field);
 
-    const QString& category() const;
-    void setCategory(const QString& category);
+    const QString& method() const;
+    void setMethod(const QString& method);
 
     const QString& content() const;
     void setContent(const QString& content);
@@ -44,7 +44,7 @@ private:
     QString m_title;
     QString m_author;
     QString m_field;
-    QString m_category;
+    QString m_method;
     QString m_content;
     QString m_createdAt;
     QString m_lastModifiedAt;

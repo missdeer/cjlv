@@ -27,7 +27,7 @@ bool Extension::load(const QString& path)
     setField( docElem.attribute("field"));
     setAuthor( docElem.attribute("author"));
     setTitle( docElem.attribute("title"));
-    setCategory( docElem.attribute("category"));
+    setMethod( docElem.attribute("method"));
     setCreatedAt( docElem.attribute("createAt"));
     setLastModifiedAt( docElem.attribute("lastModifiedAt"));
 
@@ -47,7 +47,7 @@ void Extension::save()
     root.setAttribute("field", m_field);
     root.setAttribute("author", m_author);
     root.setAttribute("title", m_title);
-    root.setAttribute("category", m_category);
+    root.setAttribute("method", m_method);
     root.setAttribute("createAt", m_createdAt);
     root.setAttribute("lastModifiedAt", m_lastModifiedAt);
 
@@ -108,14 +108,14 @@ void Extension::setField(const QString& field)
     m_field = field;
 }
 
-const QString& Extension::category() const
+const QString& Extension::method() const
 {
-    return m_category;
+    return m_method;
 }
 
-void Extension::setCategory(const QString& category)
+void Extension::setMethod(const QString& category)
 {
-    m_category = category;
+    m_method = category;
 }
 
 const QString& Extension::content() const

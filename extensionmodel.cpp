@@ -54,7 +54,7 @@ QVariant ExtensionModel::data(const QModelIndex& index, int role) const
     case 2:
         return QVariant(r->field());
     case 3:
-        return QVariant(r->category());
+        return QVariant(r->method());
     case 4:
         return QVariant(r->from());
     default:

@@ -50,7 +50,7 @@ void ExtensionDialog::on_tableView_selectionChanged(const QItemSelection &select
         ui->edtAuthor->setText(m_currentExtension->author());
         ui->edtTitle->setText(m_currentExtension->title());
         ui->cbField->setCurrentText(m_currentExtension->field());
-        ui->cbMethod->setCurrentText(m_currentExtension->category());
+        ui->cbMethod->setCurrentText(m_currentExtension->method());
         m_contentEditor->setText(m_currentExtension->content().toStdString().c_str());
         m_contentEditor->setSavePoint();
         m_modified = false;
@@ -113,7 +113,7 @@ void ExtensionDialog::on_btnApplyModification_clicked()
         m_currentExtension->setAuthor(ui->edtAuthor->text());
         m_currentExtension->setTitle(ui->edtTitle->text());
         m_currentExtension->setField(ui->cbField->currentText());
-        m_currentExtension->setCategory(ui->cbMethod->currentText());
+        m_currentExtension->setMethod(ui->cbMethod->currentText());
         m_currentExtension->setContent(m_contentEditor->getText(m_contentEditor->textLength()));
         m_currentExtension->setLastModifiedAt(QDateTime::currentDateTime().toString(Qt::ISODate));
         m_currentExtension->save();
