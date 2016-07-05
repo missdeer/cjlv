@@ -24,10 +24,10 @@ public:
     void loadExtensions();
 public slots:
     void onStatusBarMessageChanges(const QString& msg);
+private slots:
     void onExtensionRemoved(ExtensionPtr e);
     void onExtensionCreated(ExtensionPtr e);
     void onExtensionModified(ExtensionPtr e);
-private slots:
     void onExtensionActionTriggered();
 
     void on_actionOpenZipLogBundle_triggered();
