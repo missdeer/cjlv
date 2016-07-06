@@ -26,7 +26,7 @@ ExtensionDialog::ExtensionDialog(QWidget *parent) :
     ui->codeEditorPlaceholder->setLayout(m_mainLayout);
 
     ui->tableView->setModel(ExtensionModel::instance());
-    ui->tableView->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
+    ui->tableView->horizontalHeader()->setSectionResizeMode(5, QHeaderView::Stretch);
     connect(ui->tableView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &ExtensionDialog::on_tableView_selectionChanged);
 
     m_currentExtension->setFrom("Custom");
@@ -151,7 +151,7 @@ void ExtensionDialog::on_cbMethod_currentIndexChanged(int /*index*/)
     m_modified = true;
     if (ui->cbMethod->currentText() == "Lua")
         m_contentEditor->setLanguage("lua");
-    else if (ui->cbMethod->currentText() == "Regexp")
+    else if (ui->cbMethod->currentText() == "Regexp" || ui->cbMethod->currentText() == "Keyword")
         m_contentEditor->setLanguage("null");
     else
         m_contentEditor->setLanguage("sql");
