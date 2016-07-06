@@ -108,19 +108,37 @@ void ExtensionDialog::on_btnDeleteExtension_clicked()
 
 void ExtensionDialog::on_btnApplyModification_clicked()
 {
-    if (QMessageBox::question(this, tr("Confirm"), tr("Save changes?"), QMessageBox::Ok | QMessageBox::Cancel) == QMessageBox::Ok)
+    if (m_currentExtension->from() != "Custom")
     {
-        m_currentExtension->setAuthor(ui->edtAuthor->text());
-        m_currentExtension->setTitle(ui->edtTitle->text());
-        m_currentExtension->setField(ui->cbField->currentText());
-        m_currentExtension->setMethod(ui->cbMethod->currentText());
-        m_currentExtension->setContent(m_contentEditor->getText(m_contentEditor->textLength()));
-        m_currentExtension->setLastModifiedAt(QDateTime::currentDateTime().toString(Qt::ISODate));
-        m_currentExtension->save();
-        ExtensionModel::instance()->updateExtension(m_currentExtension);
-        m_modified = false;
-        m_contentEditor->setSavePoint();
+        if (QMessageBox::question(this,
+                                  tr("Confirm"),
+                                  tr("Current selected extension is built-in extension, do you want to fork a custom one?"),
+                                  QMessageBox::Ok | QMessageBox::Cancel) == QMessageBox::Cancel)
+            return;
+        m_currentExtension->setCreatedAt(QDateTime::currentDateTime().toString(Qt::ISODate));
+        m_currentExtension->setUuid(QUuid::createUuid().toString());
+        m_currentExtension->setFrom("Custom");
     }
+    else
+    {
+        if (QMessageBox::question(this,
+                                  tr("Confirm"),
+                                  tr("Save changes?"),
+                                  QMessageBox::Ok | QMessageBox::Cancel) == QMessageBox::Cancel)
+            return;
+    }
+
+    m_currentExtension->setAuthor(ui->edtAuthor->text());
+    m_currentExtension->setTitle(ui->edtTitle->text());
+    m_currentExtension->setField(ui->cbField->currentText());
+    m_currentExtension->setMethod(ui->cbMethod->currentText());
+    m_currentExtension->setContent(m_contentEditor->getText(m_contentEditor->textLength()));
+    m_currentExtension->setLastModifiedAt(QDateTime::currentDateTime().toString(Qt::ISODate));
+    m_currentExtension->save();
+    ExtensionModel::instance()->updateExtension(m_currentExtension);
+    m_modified = false;
+    m_contentEditor->setSavePoint();
+
 }
 
 void ExtensionDialog::on_btnTestExtension_clicked()
