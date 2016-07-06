@@ -35,6 +35,9 @@ signals:
     void extensionRemoved(ExtensionPtr);
     void extensionCreated(ExtensionPtr);
     void extensionModified(ExtensionPtr);
+    void extensionScanned();
+private slots:
+    void onExtensionScanned();
 private:
     static ExtensionModel* m_instance;
 
@@ -42,6 +45,7 @@ private:
 
     explicit ExtensionModel(QObject *parent = 0);
 
+    void doScanExtensions();
     void scanExtensionsFromDirectory(const QString& path, const QString& from);
 };
 

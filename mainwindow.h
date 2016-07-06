@@ -21,10 +21,10 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
     void openLogs(const QStringList& logs);
-    void loadExtensions();
 public slots:
     void onStatusBarMessageChanges(const QString& msg);
 private slots:
+    void onExtensionScanned();
     void onExtensionRemoved(ExtensionPtr e);
     void onExtensionCreated(ExtensionPtr e);
     void onExtensionModified(ExtensionPtr e);

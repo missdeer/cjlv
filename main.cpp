@@ -58,7 +58,6 @@ int main(int argc, char *argv[])
 
     MainWindow w;
     w.showMaximized();
-    w.loadExtensions();
     w.openLogs(logs);
 
 #if defined(Q_OS_WIN)

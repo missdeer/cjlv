@@ -65,9 +65,11 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionExit, &QAction::triggered, qApp, &QApplication::quit);
 
     ExtensionModel* em = ExtensionModel::instance(this);
+    em->scanExtensions();;
     connect(em, &ExtensionModel::extensionCreated, this, &MainWindow::onExtensionCreated);
     connect(em, &ExtensionModel::extensionModified, this, &MainWindow::onExtensionModified);
     connect(em, &ExtensionModel::extensionRemoved, this, &MainWindow::onExtensionRemoved);
+    connect(em, &ExtensionModel::extensionScanned, this, &MainWindow::onExtensionScanned);
 
     g_settings->setSearchField("content");
 
@@ -103,9 +105,8 @@ void MainWindow::openLogs(const QStringList &logs)
     }
 }
 
-void MainWindow::loadExtensions()
+void MainWindow::onExtensionScanned()
 {
-    ExtensionModel::instance(this)->scanExtensions();
     ui->menuExtension->addSeparator();
     QList<ExtensionPtr>& extensions = ExtensionModel::instance(this)->extensions();
     Q_FOREACH(ExtensionPtr e, extensions)

@@ -1,6 +1,7 @@
 #include <QApplication>
 #include <QStandardPaths>
 #include <QDir>
+#include <QtConcurrent>
 #include "extensionmodel.h"
 
 ExtensionModel* ExtensionModel::m_instance = nullptr;
@@ -100,6 +101,11 @@ QVariant ExtensionModel::headerData(int section, Qt::Orientation orientation, in
 
 void ExtensionModel::scanExtensions()
 {
+    QtConcurrent::run(this, &ExtensionModel::doScanExtensions);
+}
+
+void ExtensionModel::doScanExtensions()
+{
 #if defined(Q_OS_WIN)
     QString path = QApplication::applicationDirPath() + "/extensions";
 #elif defined(Q_OS_MAC)
@@ -114,9 +120,7 @@ void ExtensionModel::scanExtensions()
     else
         scanExtensionsFromDirectory(path, "Custom");
 
-    beginInsertRows(QModelIndex(), 0, m_extensions.length());
-    // has inserted already
-    endInsertRows();
+    emit extensionScanned();
 }
 
 ExtensionPtr ExtensionModel::extensionByUuid(const QString& uuid)
@@ -128,6 +132,8 @@ ExtensionPtr ExtensionModel::extensionByUuid(const QString& uuid)
             return e;
         }
     }
+
+    return ExtensionPtr();
 }
 
 void ExtensionModel::removeExtension(ExtensionPtr e)
@@ -175,10 +181,17 @@ ExtensionPtr ExtensionModel::extension(const QModelIndex &index)
     return m_extensions.at(index.row());
 }
 
+void ExtensionModel::onExtensionScanned()
+{
+    beginInsertRows(QModelIndex(), 0, m_extensions.length());
+    // has inserted already
+    endInsertRows();
+}
+
 ExtensionModel::ExtensionModel(QObject* parent)
     :QAbstractTableModel (parent)
 {
-
+    connect(this, &ExtensionModel::extensionScanned, this, &ExtensionModel::onExtensionScanned);
 }
 
 void ExtensionModel::scanExtensionsFromDirectory(const QString& path, const QString& from)
