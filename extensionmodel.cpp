@@ -187,9 +187,7 @@ ExtensionPtr ExtensionModel::extension(const QModelIndex &index)
 
 void ExtensionModel::onExtensionScanned()
 {
-    beginInsertRows(QModelIndex(), 0, m_extensions.length());
-    // has inserted already
-    endInsertRows();
+    emit dataChanged(index(0, 0), index(m_extensions.length() -1, 0));
 }
 
 ExtensionModel::ExtensionModel(QObject* parent)
