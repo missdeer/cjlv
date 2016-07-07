@@ -169,9 +169,20 @@ void ExtensionDialog::on_cbMethod_currentIndexChanged(int /*index*/)
 {
     m_modified = true;
     if (ui->cbMethod->currentText() == "Lua")
+    {
+        if (ui->cbField->currentIndex() == 0)
+            ui->cbField->setCurrentIndex(7); // content
         m_contentEditor->setLanguage("lua");
+    }
     else if (ui->cbMethod->currentText() == "Regexp" || ui->cbMethod->currentText() == "Keyword")
+    {
+        if (ui->cbField->currentIndex() == 0)
+            ui->cbField->setCurrentIndex(7); // content
         m_contentEditor->setLanguage("null");
+    }
     else
+    {
+        ui->cbField->setCurrentIndex(0);
         m_contentEditor->setLanguage("sql");
+    }
 }
