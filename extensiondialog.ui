@@ -110,44 +110,52 @@
      </item>
      <item row="2" column="1">
       <widget class="QComboBox" name="cbField">
+       <property name="currentIndex">
+        <number>7</number>
+       </property>
        <item>
         <property name="text">
-         <string>Date Time</string>
+         <string/>
         </property>
        </item>
        <item>
         <property name="text">
-         <string>Level</string>
+         <string>time</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string>Thread</string>
+         <string>level</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string>Source File</string>
+         <string>thread</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string>Category</string>
+         <string>source</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string>Method</string>
+         <string>category</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string>Content</string>
+         <string>method</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string>Log File</string>
+         <string>content</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>log</string>
         </property>
        </item>
       </widget>

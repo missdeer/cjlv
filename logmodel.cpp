@@ -530,7 +530,8 @@ void LogModel::runExtension(ExtensionPtr e)
     }
     else if (e->method() == "SQL WHERE clause")
     {
-
+        // empty field, and regexp mode is ignored
+        doFilter(e->content(), e->field(), false);
     }
     else // Lua
     {
@@ -576,22 +577,31 @@ void LogModel::generateSQLStatements(int offset, QString &sqlFetch, QString &sql
 {
     if (m_keyword.isEmpty())
     {
-         sqlCount = "SELECT COUNT(*) FROM logs";
-         sqlFetch = QString("SELECT * FROM logs ORDER BY epoch LIMIT %1, 200;").arg(offset);
+        // no search, no filter
+        sqlCount = "SELECT COUNT(*) FROM logs";
+        sqlFetch = QString("SELECT * FROM logs ORDER BY epoch LIMIT %1, 200;").arg(offset);
+        return;
     }
-    else
+
+    if (m_searchField.isEmpty())
     {
-        if (m_regexpMode)
-        {
-            sqlCount = QString("SELECT COUNT(*) FROM logs WHERE %1 REGEXP ?").arg(m_searchField);
-            sqlFetch = QString("SELECT * FROM logs WHERE %1 REGEXP ? ORDER BY epoch LIMIT %2, 200;").arg(m_searchField).arg(offset);
-        }
-        else
-        {
-            sqlCount = QString("SELECT COUNT(*) FROM logs WHERE %1 LIKE '%'||?||'%'").arg(m_searchField);
-            sqlFetch = QString("SELECT * FROM logs WHERE %1 LIKE '%'||?||'%' ORDER BY epoch LIMIT %2, 200;").arg(m_searchField).arg(offset);
-        }
+        // SQL WHERE clause extension
+        sqlCount = QString("SELECT COUNT(*) FROM logs WHERE %1").arg(m_keyword);
+        sqlFetch = QString("SELECT * FROM logs WHERE %1 ORDER BY epoch LIMIT %2, 200;").arg(m_keyword).arg(offset);
+        return;
     }
+
+    if (m_regexpMode)
+    {
+        // regexp filter
+        sqlCount = QString("SELECT COUNT(*) FROM logs WHERE %1 REGEXP ?").arg(m_searchField);
+        sqlFetch = QString("SELECT * FROM logs WHERE %1 REGEXP ? ORDER BY epoch LIMIT %2, 200;").arg(m_searchField).arg(offset);
+        return;
+    }
+
+    // simple keyword, SQL LIKE fitler
+    sqlCount = QString("SELECT COUNT(*) FROM logs WHERE %1 LIKE '%'||?||'%'").arg(m_searchField);
+    sqlFetch = QString("SELECT * FROM logs WHERE %1 LIKE '%'||?||'%' ORDER BY epoch LIMIT %2, 200;").arg(m_searchField).arg(offset);
 }
 
 void LogModel::doFilter(const QString &content, const QString &field, bool regexpMode)
@@ -696,7 +706,7 @@ void LogModel::doQuery(int offset)
             return;
         QSqlQuery q(db);
         q.prepare(m_sqlCount);
-        if (!m_keyword.isEmpty())
+        if (!m_keyword.isEmpty() && m_sqlCount.contains(QChar('?')))
             q.addBindValue(m_keyword);
         if (q.exec()) {
             RowCountEvent* erc = new RowCountEvent;
@@ -714,7 +724,7 @@ void LogModel::doQuery(int offset)
         if (m_stopQuerying)
             return;
         q.prepare(m_sqlFetch);
-        if (!m_keyword.isEmpty())
+        if (!m_keyword.isEmpty() && m_sqlFetch.contains(QChar('?')))
             q.addBindValue(m_keyword);
         if (q.exec()) {
             if (m_stopQuerying)
