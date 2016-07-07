@@ -1,3 +1,4 @@
+#include <QtCore>
 #include <QUuid>
 #include <QDateTime>
 #include <QMessageBox>
@@ -132,7 +133,7 @@ void ExtensionDialog::on_btnApplyModification_clicked()
     m_currentExtension->setTitle(ui->edtTitle->text());
     m_currentExtension->setField(ui->cbField->currentText());
     m_currentExtension->setMethod(ui->cbMethod->currentText());
-    m_currentExtension->setContent(m_contentEditor->getText(m_contentEditor->textLength()));
+    m_currentExtension->setContent(m_contentEditor->getText(m_contentEditor->textLength() + 1));
     m_currentExtension->setLastModifiedAt(QDateTime::currentDateTime().toString(Qt::ISODate));
     m_currentExtension->save();
     ExtensionModel::instance()->updateExtension(m_currentExtension);
