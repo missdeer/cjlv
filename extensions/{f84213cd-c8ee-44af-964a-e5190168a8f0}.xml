@@ -1,0 +1,3 @@
+<extension author="fyang3" lastModifiedAt="2016-07-07T14:14:30" field="content" createAt="2016-07-04T16:41:57" method="Regexp" title="sendrecvpresence" uuid="{f84213cd-c8ee-44af-964a-e5190168a8f0}">
+    <content><![CDATA[Send:<presence|Recv:<presence]]></content>
+</extension>
