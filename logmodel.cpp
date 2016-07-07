@@ -135,6 +135,7 @@ LogModel::LogModel(QObject *parent)
     : QAbstractTableModel(parent)
     , m_rowCount(0)
     , m_totalRowCount(0)
+    , m_regexpMode(false)
 {
     qRegisterMetaType<QSharedPointer<LogItem>>("QSharedPointer<LogItem>");
     connect(this, &LogModel::logItemReady, this, &LogModel::onLogItemReady);
@@ -280,38 +281,7 @@ void LogModel::reload()
 
 void LogModel::onFilter(const QString &keyword)
 {
-    if (g_settings->searchOrFitler())
-    {
-        // search
-    }
-    else
-    {
-        // filter
-        if (m_keyword == keyword)
-            return;
-
-        // stop other query thread first
-        m_stopQuerying = true;
-
-        if (!m_queryFuture.isFinished())
-        {
-            qDebug() << "wait for finished";
-            m_queryFuture.waitForFinished();
-            m_inQuery.clear();
-        }
-
-        // then start new query
-        if (m_rowCount > 0)
-        {
-            beginRemoveRows(QModelIndex(), 0, m_rowCount-1);
-            m_logs.clear();
-            m_rowCount = 0;
-            endRemoveRows();
-        }
-
-        m_keyword = keyword;
-        query(0);
-    }
+    doFilter(keyword, g_settings->searchField(), g_settings->regexMode());
 }
 
 void LogModel::query(int offset)
@@ -550,7 +520,22 @@ int LogModel::getId(const QModelIndex &index)
 
 void LogModel::runExtension(ExtensionPtr e)
 {
+    if (e->method() == "Regexp")
+    {
+        doFilter(e->content(), e->field(), true);
+    }
+    else if (e->method() == "Keyword")
+    {
+        doFilter(e->content(), e->field(), false);
+    }
+    else if (e->method() == "SQL WHERE clause")
+    {
 
+    }
+    else // Lua
+    {
+
+    }
 }
 
 void LogModel::onLogItemReady(int i,  QSharedPointer<LogItem> log)
@@ -587,6 +572,59 @@ void LogModel::doReload()
     emit dataLoaded();
 }
 
+void LogModel::generateSQLStatements(int offset, QString &sqlFetch, QString &sqlCount)
+{
+    if (m_keyword.isEmpty())
+    {
+         sqlCount = "SELECT COUNT(*) FROM logs";
+         sqlFetch = QString("SELECT * FROM logs ORDER BY epoch LIMIT %1, 200;").arg(offset);
+    }
+    else
+    {
+        if (m_regexpMode)
+        {
+            sqlCount = QString("SELECT COUNT(*) FROM logs WHERE %1 REGEXP ?").arg(m_searchField);
+            sqlFetch = QString("SELECT * FROM logs WHERE %1 REGEXP ? ORDER BY epoch LIMIT %2, 200;").arg(m_searchField).arg(offset);
+        }
+        else
+        {
+            sqlCount = QString("SELECT COUNT(*) FROM logs WHERE %1 LIKE '%'||?||'%'").arg(m_searchField);
+            sqlFetch = QString("SELECT * FROM logs WHERE %1 LIKE '%'||?||'%' ORDER BY epoch LIMIT %2, 200;").arg(m_searchField).arg(offset);
+        }
+    }
+}
+
+void LogModel::doFilter(const QString &content, const QString &field, bool regexpMode)
+{
+    if (m_keyword == content)
+        return;
+
+    // stop other query thread first
+    m_stopQuerying = true;
+
+    if (!m_queryFuture.isFinished())
+    {
+        qDebug() << "wait for finished";
+        m_queryFuture.waitForFinished();
+        m_inQuery.clear();
+    }
+
+    // then start new query
+    if (m_rowCount > 0)
+    {
+        beginRemoveRows(QModelIndex(), 0, m_rowCount-1);
+        m_logs.clear();
+        m_rowCount = 0;
+        endRemoveRows();
+    }
+
+    //qDebug() << __FUNCTION__ << content << field << regexpMode;
+    m_regexpMode = regexpMode;
+    m_searchField = field;
+    m_keyword = content;
+    query(0);
+}
+
 void LogModel::doQuery(int offset)
 {
     if (!m_queryMutex.tryLock())
@@ -611,25 +649,7 @@ void LogModel::doQuery(int offset)
 
     QString sqlCount;
     QString sqlFetch ;
-    if (m_keyword.isEmpty())
-    {
-         sqlCount = "SELECT COUNT(*) FROM logs";
-         sqlFetch = QString("SELECT * FROM logs ORDER BY epoch LIMIT %1, 200;").arg(offset);
-    }
-    else
-    {
-        QString field = g_settings->searchField();
-        if (g_settings->regexMode())
-        {
-            sqlCount = QString("SELECT COUNT(*) FROM logs WHERE %1 REGEXP ?").arg(field);
-            sqlFetch = QString("SELECT * FROM logs WHERE %1 REGEXP ? ORDER BY epoch LIMIT %2, 200;").arg(field).arg(offset);
-        }
-        else
-        {
-            sqlCount = QString("SELECT COUNT(*) FROM logs WHERE %1 LIKE '%'||?||'%'").arg(field);
-            sqlFetch = QString("SELECT * FROM logs WHERE %1 LIKE '%'||?||'%' ORDER BY epoch LIMIT %2, 200;").arg(field).arg(offset);
-        }
-    }
+    generateSQLStatements(offset, sqlFetch, sqlCount);
 
     FinishedQueryEvent* e = new FinishedQueryEvent;
     e->m_offset = offset;
@@ -657,7 +677,7 @@ void LogModel::doQuery(int offset)
     m_sqlCount = sqlCount;
     m_sqlFetch = sqlFetch;
 
-    //qDebug() << m_sqlCount << m_sqlFetch;
+    //qDebug() << __FUNCTION__ <<  m_sqlCount << m_sqlFetch << m_keyword;
 
     m_stopQuerying = false;
 

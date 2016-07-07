@@ -59,6 +59,7 @@ public slots:
     void onLogItemsReady(QMap<int, QSharedPointer<LogItem>> logs);
     void onFilter(const QString& keyword);
 private:
+    QString m_searchField;
     QString m_sqlCount;
     QString m_sqlFetch ;
     QString m_keyword;
@@ -72,6 +73,7 @@ private:
     int m_rowCount;
     int m_totalRowCount;
     bool m_stopQuerying;
+    bool m_regexpMode;
 
     QString dateTime;
     QString level ;
@@ -87,6 +89,8 @@ private:
     bool parseLine(const QString &line, QStringList& results);
     bool event(QEvent *e) Q_DECL_OVERRIDE;
     void createDatabaseIndex();
+    void generateSQLStatements(int offset, QString& sqlFetch, QString& sqlCount);
+    void doFilter(const QString& content, const QString& field, bool regexpMode);
 };
 
 #endif // LOGMODEL_H
