@@ -121,6 +121,7 @@
     <addaction name="separator"/>
     <addaction name="actionInputKeyword"/>
     <addaction name="actionClearKeyword"/>
+    <addaction name="actionRefreshKeyword"/>
     <addaction name="actionRegexpMode"/>
     <addaction name="menuSearchField"/>
     <addaction name="separator"/>
@@ -666,8 +667,11 @@
    <property name="text">
     <string>Reload</string>
    </property>
+   <property name="toolTip">
+    <string>Reload Current Active Opened Logs</string>
+   </property>
    <property name="shortcut">
-    <string>F5</string>
+    <string>Ctrl+F5</string>
    </property>
   </action>
   <action name="actionGotoById">
@@ -698,6 +702,21 @@
    </property>
    <property name="shortcut">
     <string>Alt+R</string>
+   </property>
+  </action>
+  <action name="actionRefreshKeyword">
+   <property name="icon">
+    <iconset resource="cjlv.qrc">
+     <normaloff>:/image/reload.png</normaloff>:/image/reload.png</iconset>
+   </property>
+   <property name="text">
+    <string>Refresh Keyword</string>
+   </property>
+   <property name="toolTip">
+    <string>Refresh Keyword</string>
+   </property>
+   <property name="shortcut">
+    <string>F5</string>
    </property>
   </action>
  </widget>
