@@ -13,6 +13,8 @@
 #include <QtConcurrent>
 #include <QClipboard>
 #include <QTextStream>
+#include <QMessageBox>
+#include <QDesktopWidget>
 #include <sqlite3.h>
 extern "C" {
     #include <lua.h>
@@ -158,6 +160,7 @@ static void qt_regexp(sqlite3_context* ctx, int /*argc*/, sqlite3_value** argv)
 
 LogModel::LogModel(QObject *parent)
     : QAbstractTableModel(parent)
+    , m_L(nullptr)
     , m_rowCount(0)
     , m_totalRowCount(0)
     , m_regexpMode(false)
@@ -171,6 +174,10 @@ LogModel::LogModel(QObject *parent)
 
 LogModel::~LogModel()
 {
+    if (m_L)
+    {
+        lua_close(m_L);
+    }
     QSqlDatabase db = QSqlDatabase::database(m_dbFile, false);
     if (db.isValid() && db.isOpen())
     {
@@ -561,6 +568,23 @@ void LogModel::runExtension(ExtensionPtr e)
     }
     else // Lua
     {
+        // load lua script
+        if (!m_L)
+        {
+            m_L = luaL_newstate();
+            luaL_openlibs(m_L);
+        }
+        int error = luaL_loadbuffer(m_L, e->content().toStdString().c_str(), e->content().toStdString().size(), "match") ||
+                lua_pcall(m_L, 0, 0, 0);
+        if (error)
+        {
+            QString msg(lua_tostring(m_L, -1));
+            lua_pop(m_L, 1);  /* pop error message from the stack */
+            QWidget* p = QApplication::desktop()->screen();
+            QMessageBox::warning(p, tr("Warning"), msg, QMessageBox::Ok);
+            return;
+        }
+        g_L = m_L;
         // regexp mode is ignored
         doFilter(e->content(), e->field(), false, true);
     }

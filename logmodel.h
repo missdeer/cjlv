@@ -8,6 +8,8 @@
 #include <QFuture>
 #include "extension.h"
 
+struct lua_State;
+
 struct LogItem {
     int id;
     QDateTime time;
@@ -59,6 +61,7 @@ public slots:
     void onLogItemsReady(QMap<int, QSharedPointer<LogItem>> logs);
     void onFilter(const QString& keyword);
 private:
+    lua_State* m_L;
     QString m_searchField;
     QString m_sqlCount;
     QString m_sqlFetch ;
