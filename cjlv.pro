@@ -76,6 +76,7 @@ macx: {
     CONFIG(release, debug|release) : {
         QMAKE_INFO_PLIST = osxInfo.plist
         MACDEPLOYQT = $$[QT_INSTALL_BINS]/macdeployqt
+        copy_extensions.commands = 'cp -R \"$$PWD/extensions\" \"$${TARGET}.app/Contents/PlugIns\"'
         copy_themes.commands = cp -R \"$$PWD/resource/MacOSX/themes\" \"$${TARGET}.app/Contents/Resources\"
         copy_language.commands = cp -R \"$$PWD/resource/language\" \"$${TARGET}.app/Contents/Resources\"
         copy_langmap.commands = cp \"$$PWD/resource/langmap.xml\" \"$${TARGET}.app/Contents/Resources/\"
@@ -85,10 +86,10 @@ macx: {
         copy_scintilla.depends = clean_scintilla
         copy_scintilla.commands = cp -R \"$$PWD/3rdparty/scintilla/bin/ScintillaEdit.framework\" \"$${TARGET}.app/Contents/Frameworks\"
 
-        dmg_installer.depends = copy_scintilla copy_themes copy_language copy_langmap
+        dmg_installer.depends = copy_extensions copy_scintilla copy_themes copy_language copy_langmap
         dmg_installer.commands = $$MACDEPLOYQT \"$${OUT_PWD}/$${TARGET}.app\" -dmg
-        QMAKE_EXTRA_TARGETS +=  mkdir_framework clean_scintilla copy_scintilla copy_themes copy_language copy_langmap dmg_installer
-        POST_TARGETDEPS += mkdir_framework clean_scintilla copy_scintilla copy_themes copy_language copy_langmap
+        QMAKE_EXTRA_TARGETS +=  mkdir_framework copy_extensions clean_scintilla copy_scintilla copy_themes copy_language copy_langmap dmg_installer
+        POST_TARGETDEPS += mkdir_framework copy_extensions clean_scintilla copy_scintilla copy_themes copy_language copy_langmap
         QMAKE_POST_LINK += $$quote($$MACDEPLOYQT \"$${OUT_PWD}/$${TARGET}.app\" -dmg -appstore-compliant)
     }
 }
@@ -107,6 +108,7 @@ win32: {
         LIBS += -L$$PWD/3rdparty/scintilla/bin/release
 
         WINDEPLOYQT = $$[QT_INSTALL_BINS]/windeployqt.exe
+        copy_extensions.commands = '$(COPY_DIR) $$shell_path($$PWD/extensions) $$shell_path($$OUT_PWD/Release/extensions/)'
         copy_themes.commands = '$(COPY_DIR) $$shell_path($$PWD/resource/Windows/themes) $$shell_path($$OUT_PWD/Release/themes/)'
         copy_language.commands = '$(COPY_DIR) $$shell_path($$PWD/resource/language) $$shell_path($$OUT_PWD/Release/language/)'
         copy_langmap.commands = '$(COPY_FILE) $$shell_path($$PWD/resource/langmap.xml) $$shell_path($$OUT_PWD/Release/langmap.xml)'
@@ -124,8 +126,8 @@ win32: {
             copy_iss.commands = '$(COPY_FILE) $$shell_path($$PWD/cjlv-win32.iss) $$shell_path($$OUT_PWD/Release/cjlv-win32.iss)'
         }
 
-        QMAKE_EXTRA_TARGETS +=  copy_scintilla copy_iss copy_themes copy_language copy_langmap copy_everything_dll copy_everything_exe
-        POST_TARGETDEPS += copy_scintilla copy_iss copy_themes copy_language copy_langmap copy_everything_dll copy_everything_exe
+        QMAKE_EXTRA_TARGETS +=  copy_extensions copy_scintilla copy_iss copy_themes copy_language copy_langmap copy_everything_dll copy_everything_exe
+        POST_TARGETDEPS += copy_extensions copy_scintilla copy_iss copy_themes copy_language copy_langmap copy_everything_dll copy_everything_exe
         QMAKE_POST_LINK += $$quote($$WINDEPLOYQT --release --force \"$${OUT_PWD}/Release/$${TARGET}.exe\")
     }
     else: LIBS += -L$$PWD/3rdparty/scintilla/bin/debug

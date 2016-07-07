@@ -54,7 +54,8 @@ Source: "imageformats\*"; DestDir: "{app}\imageformats"; Flags: recursesubdirs
 Source: "language\*"; DestDir: "{app}\language"; Flags: recursesubdirs
 Source: "platforms\*"; DestDir: "{app}\platforms"; Flags: recursesubdirs
 Source: "sqldrivers\qsqlite.dll"; DestDir: "{app}\sqldrivers"; Flags: recursesubdirs
-Source: "themes\*"; DestDir: "{app}\themes"; Flags: recursesubdirs      
+Source: "themes\*"; DestDir: "{app}\themes"; Flags: recursesubdirs
+Source: "extensions\*"; DestDir: "{app}\extensions"; Flags: recursesubdirs
 Source: "langmap.xml"; DestDir: "{app}"
 Source: "d3dcompiler_47.dll"; DestDir: "{app}"
 Source: "Everything.dll"; DestDir: "{app}"
