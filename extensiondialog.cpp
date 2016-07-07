@@ -129,6 +129,15 @@ void ExtensionDialog::on_btnApplyModification_clicked()
             return;
     }
 
+    if (ui->cbMethod->currentIndex() == 1 && ui->cbField->currentIndex() != 0)
+    {
+        QMessageBox::information(this,
+                                 tr("Notice"),
+                                 tr("Field must be empty when method is SQL WHERE clause."),
+                                 QMessageBox::Ok);
+        return;
+    }
+
     m_currentExtension->setAuthor(ui->edtAuthor->text());
     m_currentExtension->setTitle(ui->edtTitle->text());
     m_currentExtension->setField(ui->cbField->currentText());
