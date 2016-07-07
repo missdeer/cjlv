@@ -117,7 +117,7 @@ void ExtensionModel::doScanExtensions()
 #endif
     scanExtensionsFromDirectory(path, "Built-in");
 
-    path = QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation) + "/extensionos";
+    path = QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation) + "/extensions";
     QDir dir(path);
     if (!dir.exists())
         dir.mkpath(path);
