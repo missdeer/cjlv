@@ -16,7 +16,10 @@ INCLUDEPATH += $$PWD/3rdparty/scintilla/qt/ScintillaEditBase \
     $$PWD/3rdparty/scintilla/include \
     $$PWD/3rdparty/scintilla/src \
     $$PWD/3rdparty/scintilla/lexlib \
-    $$PWD/3rdparty/sqlite3
+    $$PWD/3rdparty/sqlite3 \
+    $$PWD/3rdparty/lua-5.3.3/src
+
+LIBS += -L$$PWD/3rdparty/lua-5.3.3/src
 
 DEFINES += SCINTILLA_QT=1 SCI_LEXER=1 _CRT_SECURE_NO_DEPRECATE=1 SCI_STATIC_LINK=1 LOKI_FUNCTOR_IS_NOT_A_SMALLOBJECT
 
@@ -99,7 +102,7 @@ win32: {
     SOURCES += everythingwrapper.cpp
     HEADERS += everythingwrapper.h
 
-    LIBS+=-L$$PWD/3rdparty/zlib-1.2.8 -lScintillaEdit3 -lzlib -L$$PWD/3rdparty/Everything-SDK/lib -lUser32 -lShell32 -lpsapi -lOle32
+    LIBS+=-L$$PWD/3rdparty/zlib-1.2.8 -lScintillaEdit3 -lzlib -L$$PWD/3rdparty/Everything-SDK/lib -lUser32 -lShell32 -lpsapi -lOle32 -llua5.3
 
     contains(QMAKE_HOST.arch, x86_64): LIBS += -lEverything64
     else: LIBS += -lEverything32
@@ -112,6 +115,7 @@ win32: {
         copy_themes.commands = '$(COPY_DIR) $$shell_path($$PWD/resource/Windows/themes) $$shell_path($$OUT_PWD/Release/themes/)'
         copy_language.commands = '$(COPY_DIR) $$shell_path($$PWD/resource/language) $$shell_path($$OUT_PWD/Release/language/)'
         copy_langmap.commands = '$(COPY_FILE) $$shell_path($$PWD/resource/langmap.xml) $$shell_path($$OUT_PWD/Release/langmap.xml)'
+        copy_lua.commands = '$(COPY_FILE) $$shell_path($$PWD/3rdparty/lua-5.3.3/src/lua5.3.dll) $$shell_path($$OUT_PWD/Release/lua5.3.dll)'
         copy_scintilla.commands = '$(COPY_FILE) $$shell_path($$PWD/3rdparty/scintilla/bin/release/ScintillaEdit3.dll) $$shell_path($$OUT_PWD/Release/ScintillaEdit3.dll)'
         copy_everything.commands = '$(COPY_FILE) $$shell_path($$PWD/3rdparty/Everything-SDK/dll/Everything64.dll) $$shell_path($$OUT_PWD/Release/Everything.dll)'
 
@@ -126,8 +130,8 @@ win32: {
             copy_iss.commands = '$(COPY_FILE) $$shell_path($$PWD/cjlv-win32.iss) $$shell_path($$OUT_PWD/Release/cjlv-win32.iss)'
         }
 
-        QMAKE_EXTRA_TARGETS +=  copy_extensions copy_scintilla copy_iss copy_themes copy_language copy_langmap copy_everything_dll copy_everything_exe
-        POST_TARGETDEPS += copy_extensions copy_scintilla copy_iss copy_themes copy_language copy_langmap copy_everything_dll copy_everything_exe
+        QMAKE_EXTRA_TARGETS +=  copy_extensions copy_scintilla copy_lua copy_iss copy_themes copy_language copy_langmap copy_everything_dll copy_everything_exe
+        POST_TARGETDEPS += copy_extensions copy_scintilla copy_lua copy_iss copy_themes copy_language copy_langmap copy_everything_dll copy_everything_exe
         QMAKE_POST_LINK += $$quote($$WINDEPLOYQT --release --force \"$${OUT_PWD}/Release/$${TARGET}.exe\")
     }
     else: LIBS += -L$$PWD/3rdparty/scintilla/bin/debug

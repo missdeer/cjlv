@@ -13,10 +13,16 @@
 #include <QtConcurrent>
 #include <QClipboard>
 #include <QTextStream>
+#include <sqlite3.h>
+extern "C" {
+    #include <lua.h>
+    #include <lualib.h>
+    #include <lauxlib.h>
+}
 #include "settings.h"
-#include "sqlite3.h"
 #include "logmodel.h"
 
+static lua_State* g_L;
 static const QEvent::Type ROWCOUNT_EVENT = QEvent::Type(QEvent::User + 1);
 static const QEvent::Type FINISHEDQUERY_EVENT = QEvent::Type(QEvent::User + 2);
 static const int align = 0x3F;
@@ -111,8 +117,27 @@ start_read:
     }
 };
 
+static void lua_match(sqlite3_context* ctx, int /*argc*/, sqlite3_value** argv)
+{
+    const char * pattern = (const char*)sqlite3_value_text(argv[0]);
+    const char * text = (const char*)sqlite3_value_text(argv[1]);
 
-static void qtregexp(sqlite3_context* ctx, int /*argc*/, sqlite3_value** argv)
+    lua_getglobal(g_L, "match");
+
+    lua_pushstring(g_L, pattern);
+
+    lua_pushstring(g_L, text);
+
+    /* call the function with 2 arguments, return 1 result */
+    lua_call(g_L, 2, 1);
+
+    /* get the result */
+    int res = (int)lua_tointeger(g_L, -1);
+    lua_pop(g_L, 1);
+    sqlite3_result_int(ctx, res);
+}
+
+static void qt_regexp(sqlite3_context* ctx, int /*argc*/, sqlite3_value** argv)
 {
     QString pattern((const char*)sqlite3_value_text(argv[0]));
     QString text((const char*)sqlite3_value_text(argv[1]));
@@ -136,6 +161,7 @@ LogModel::LogModel(QObject *parent)
     , m_rowCount(0)
     , m_totalRowCount(0)
     , m_regexpMode(false)
+    , m_luaMode(false)
 {
     qRegisterMetaType<QSharedPointer<LogItem>>("QSharedPointer<LogItem>");
     connect(this, &LogModel::logItemReady, this, &LogModel::onLogItemReady);
@@ -281,7 +307,7 @@ void LogModel::reload()
 
 void LogModel::onFilter(const QString &keyword)
 {
-    doFilter(keyword, g_settings->searchField(), g_settings->regexMode());
+    doFilter(keyword, g_settings->searchField(), g_settings->regexMode(), false);
 }
 
 void LogModel::query(int offset)
@@ -522,20 +548,21 @@ void LogModel::runExtension(ExtensionPtr e)
 {
     if (e->method() == "Regexp")
     {
-        doFilter(e->content(), e->field(), true);
+        doFilter(e->content(), e->field(), true, false);
     }
     else if (e->method() == "Keyword")
     {
-        doFilter(e->content(), e->field(), false);
+        doFilter(e->content(), e->field(), false, false);
     }
     else if (e->method() == "SQL WHERE clause")
     {
         // empty field, and regexp mode is ignored
-        doFilter(e->content(), e->field(), false);
+        doFilter(e->content(), e->field(), false, false);
     }
     else // Lua
     {
-
+        // regexp mode is ignored
+        doFilter(e->content(), e->field(), false, true);
     }
 }
 
@@ -583,6 +610,14 @@ void LogModel::generateSQLStatements(int offset, QString &sqlFetch, QString &sql
         return;
     }
 
+    if (m_luaMode)
+    {
+        // lua match
+        sqlCount = QString("SELECT COUNT(*) FROM logs WHERE %1 MATCH ?").arg(m_searchField);
+        sqlFetch = QString("SELECT * FROM logs WHERE %1 MATCH ? ORDER BY epoch LIMIT %2, 200;").arg(m_searchField).arg(offset);
+        return;
+    }
+
     if (m_searchField.isEmpty())
     {
         // SQL WHERE clause extension
@@ -604,7 +639,7 @@ void LogModel::generateSQLStatements(int offset, QString &sqlFetch, QString &sql
     sqlFetch = QString("SELECT * FROM logs WHERE %1 LIKE '%'||?||'%' ORDER BY epoch LIMIT %2, 200;").arg(m_searchField).arg(offset);
 }
 
-void LogModel::doFilter(const QString &content, const QString &field, bool regexpMode)
+void LogModel::doFilter(const QString &content, const QString &field, bool regexpMode, bool luaMode)
 {
     if (m_keyword == content)
         return;
@@ -629,6 +664,7 @@ void LogModel::doFilter(const QString &content, const QString &field, bool regex
     }
 
     //qDebug() << __FUNCTION__ << content << field << regexpMode;
+    m_luaMode = luaMode;
     m_regexpMode = regexpMode;
     m_searchField = field;
     m_keyword = content;
@@ -918,7 +954,8 @@ void LogModel::createDatabase()
                     sqlite3_initialize();
                     // must use the same sqlite3 version with the one Qt ships, aka. Qt 5.7 uses sqlite3 3.11.1.0
                     // http://www.sqlite.org/2016/sqlite-amalgamation-3110100.zip
-                    sqlite3_create_function_v2(db_handle, "regexp", 2, SQLITE_UTF8 | SQLITE_DETERMINISTIC, NULL, &qtregexp, NULL, NULL, NULL);
+                    sqlite3_create_function_v2(db_handle, "regexp", 2, SQLITE_UTF8 | SQLITE_DETERMINISTIC, NULL, &qt_regexp, NULL, NULL, NULL);
+                    sqlite3_create_function_v2(db_handle, "match", 2, SQLITE_UTF8 | SQLITE_DETERMINISTIC, NULL, &lua_match, NULL, NULL, NULL);
                 }
             }
         }

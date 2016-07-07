@@ -74,6 +74,7 @@ private:
     int m_totalRowCount;
     bool m_stopQuerying;
     bool m_regexpMode;
+    bool m_luaMode;
 
     QString dateTime;
     QString level ;
@@ -90,7 +91,7 @@ private:
     bool event(QEvent *e) Q_DECL_OVERRIDE;
     void createDatabaseIndex();
     void generateSQLStatements(int offset, QString& sqlFetch, QString& sqlCount);
-    void doFilter(const QString& content, const QString& field, bool regexpMode);
+    void doFilter(const QString& content, const QString& field, bool regexpMode, bool luaMode);
 };
 
 #endif // LOGMODEL_H
