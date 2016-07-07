@@ -22,7 +22,7 @@ extern "C" {
 #include "settings.h"
 #include "logmodel.h"
 
-static lua_State* g_L;
+static lua_State* g_L = nullptr;
 static const QEvent::Type ROWCOUNT_EVENT = QEvent::Type(QEvent::User + 1);
 static const QEvent::Type FINISHEDQUERY_EVENT = QEvent::Type(QEvent::User + 2);
 static const int align = 0x3F;
