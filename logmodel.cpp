@@ -95,7 +95,7 @@ start_read:
         {
             if (*p == '\r' && (p+1) != m_mapEndPos && *(p+1) == '\n')
                 p++;
-            QByteArray b((const char *)m_lineStartPos, p - m_lineStartPos);
+            QByteArray b(reinterpret_cast<const char*>(m_lineStartPos), p - m_lineStartPos);
 
             m_lineStartPos = p + 1;
             return b;
@@ -121,8 +121,7 @@ start_read:
 
 static void lua_match(sqlite3_context* ctx, int /*argc*/, sqlite3_value** argv)
 {
-    const char * pattern = (const char*)sqlite3_value_text(argv[0]);
-    const char * text = (const char*)sqlite3_value_text(argv[1]);
+    const char * text = reinterpret_cast<const char*>(sqlite3_value_text(argv[1]));
     lua_getglobal(g_L, "match");
     lua_pushstring(g_L, text);
 
@@ -135,15 +134,15 @@ static void lua_match(sqlite3_context* ctx, int /*argc*/, sqlite3_value** argv)
         return;
     }
 
-    int res = (int)lua_tointeger(g_L, -1);
+    int res = static_cast<int>(lua_tointeger(g_L, -1));
     lua_pop(g_L, 1);
     sqlite3_result_int(ctx, res);
 }
 
 static void qt_regexp(sqlite3_context* ctx, int /*argc*/, sqlite3_value** argv)
 {
-    QString pattern((const char*)sqlite3_value_text(argv[0]));
-    QString text((const char*)sqlite3_value_text(argv[1]));
+    QString pattern(reinterpret_cast<const char*>(sqlite3_value_text(argv[0])));
+    QString text(reinterpret_cast<const char*>(sqlite3_value_text(argv[1])));
 
     QRegularExpression regex(pattern, QRegularExpression::CaseInsensitiveOption);
 
@@ -887,7 +886,7 @@ bool LogModel::event(QEvent *e)
             beginRemoveRows(QModelIndex(), 0, m_rowCount-1);
             endRemoveRows();
         }
-        m_rowCount = ((RowCountEvent*)e)->m_rowCount;
+        m_rowCount = dynamic_cast<RowCountEvent*>(e)->m_rowCount;
         if (m_rowCount > m_totalRowCount)
             m_totalRowCount = m_rowCount;
         qDebug() << "row count event:" << m_rowCount;
@@ -900,11 +899,11 @@ bool LogModel::event(QEvent *e)
         return true;
     case FINISHEDQUERY_EVENT:
     {
-        int offset = ((FinishedQueryEvent*)e)->m_offset;
+        int offset = dynamic_cast<FinishedQueryEvent*>(e)->m_offset;
         qDebug() << "remove offset " << offset;
         m_inQuery.removeAll(offset);
 
-        int size = ((FinishedQueryEvent*)e)->m_size;
+        int size = dynamic_cast<FinishedQueryEvent*>(e)->m_size;
         emit dataChanged(index(offset,0), index(offset+size, 0));
     }
         return true;
