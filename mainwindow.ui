@@ -316,6 +316,9 @@
    <property name="shortcut">
     <string>Alt+S</string>
    </property>
+   <property name="visible">
+    <bool>false</bool>
+   </property>
   </action>
   <action name="actionFilter">
    <property name="checkable">
