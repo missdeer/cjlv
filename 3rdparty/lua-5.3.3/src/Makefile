@@ -195,3 +195,5 @@ lzio.o: lzio.c lprefix.h lua.h luaconf.h llimits.h lmem.h lstate.h \
  lobject.h ltm.h lzio.h
 
 # (end of Makefile)
+liblua.dylib: $(CORE_O) $(LIB_O)
+	$(CC) -dynamiclib -o $@ $^ $(LIBS) -arch i386 -arch x86_64 -compatibility_version 5.3.0 -current_version 5.3.0 -install_name @rpath/$@
