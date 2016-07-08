@@ -121,14 +121,20 @@ start_read:
 
 static void lua_match(sqlite3_context* ctx, int /*argc*/, sqlite3_value** argv)
 {
-    const char * text = (const char*)sqlite3_value_text(argv[0]);
+    const char * pattern = (const char*)sqlite3_value_text(argv[0]);
+    const char * text = (const char*)sqlite3_value_text(argv[1]);
     lua_getglobal(g_L, "match");
     lua_pushstring(g_L, text);
 
     /* call the function with 1 arguments, return 1 result */
-    lua_call(g_L, 1, 1);
+    if (lua_pcall(g_L, 1, 1, 0) != 0)
+    {
+        qDebug() << QString(lua_tostring(g_L, -1));
+        lua_pop(g_L, 1);  /* pop error message from the stack */
+        sqlite3_result_int(ctx, 0);
+        return;
+    }
 
-    /* get the result */
     int res = (int)lua_tointeger(g_L, -1);
     lua_pop(g_L, 1);
     sqlite3_result_int(ctx, res);
@@ -620,20 +626,20 @@ void LogModel::doReload()
 }
 
 void LogModel::generateSQLStatements(int offset, QString &sqlFetch, QString &sqlCount)
-{
+{    
+    if (m_luaMode)
+    {
+        // lua match
+        sqlCount = QString("SELECT COUNT(*) FROM logs WHERE %1 MATCH 'dummy'").arg(m_searchField);
+        sqlFetch = QString("SELECT * FROM logs WHERE %1 MATCH 'dummy' ORDER BY epoch LIMIT %2, 200;").arg(m_searchField).arg(offset);
+        return;
+    }
+
     if (m_keyword.isEmpty())
     {
         // no search, no filter
         sqlCount = "SELECT COUNT(*) FROM logs";
         sqlFetch = QString("SELECT * FROM logs ORDER BY epoch LIMIT %1, 200;").arg(offset);
-        return;
-    }
-
-    if (m_luaMode)
-    {
-        // lua match
-        sqlCount = QString("SELECT COUNT(*) FROM logs WHERE %1 MATCH ?").arg(m_searchField);
-        sqlFetch = QString("SELECT * FROM logs WHERE %1 MATCH ? ORDER BY epoch LIMIT %2, 200;").arg(m_searchField).arg(offset);
         return;
     }
 
@@ -742,7 +748,7 @@ void LogModel::doQuery(int offset)
     m_sqlCount = sqlCount;
     m_sqlFetch = sqlFetch;
 
-    //qDebug() << __FUNCTION__ <<  m_sqlCount << m_sqlFetch << m_keyword;
+    qDebug() << __FUNCTION__ <<  m_sqlCount << m_sqlFetch << m_keyword;
 
     m_stopQuerying = false;
 
@@ -974,7 +980,7 @@ void LogModel::createDatabase()
                     // must use the same sqlite3 version with the one Qt ships, aka. Qt 5.7 uses sqlite3 3.11.1.0
                     // http://www.sqlite.org/2016/sqlite-amalgamation-3110100.zip
                     sqlite3_create_function_v2(db_handle, "regexp", 2, SQLITE_UTF8 | SQLITE_DETERMINISTIC, NULL, &qt_regexp, NULL, NULL, NULL);
-                    sqlite3_create_function_v2(db_handle, "match", 1, SQLITE_UTF8 | SQLITE_DETERMINISTIC, NULL, &lua_match, NULL, NULL, NULL);
+                    sqlite3_create_function_v2(db_handle, "match", 2, SQLITE_UTF8 | SQLITE_DETERMINISTIC, NULL, &lua_match, NULL, NULL, NULL);
                 }
             }
         }
