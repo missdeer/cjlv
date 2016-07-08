@@ -121,17 +121,12 @@ start_read:
 
 static void lua_match(sqlite3_context* ctx, int /*argc*/, sqlite3_value** argv)
 {
-    const char * pattern = (const char*)sqlite3_value_text(argv[0]);
-    const char * text = (const char*)sqlite3_value_text(argv[1]);
-
+    const char * text = (const char*)sqlite3_value_text(argv[0]);
     lua_getglobal(g_L, "match");
-
-    lua_pushstring(g_L, pattern);
-
     lua_pushstring(g_L, text);
 
-    /* call the function with 2 arguments, return 1 result */
-    lua_call(g_L, 2, 1);
+    /* call the function with 1 arguments, return 1 result */
+    lua_call(g_L, 1, 1);
 
     /* get the result */
     int res = (int)lua_tointeger(g_L, -1);
@@ -979,7 +974,7 @@ void LogModel::createDatabase()
                     // must use the same sqlite3 version with the one Qt ships, aka. Qt 5.7 uses sqlite3 3.11.1.0
                     // http://www.sqlite.org/2016/sqlite-amalgamation-3110100.zip
                     sqlite3_create_function_v2(db_handle, "regexp", 2, SQLITE_UTF8 | SQLITE_DETERMINISTIC, NULL, &qt_regexp, NULL, NULL, NULL);
-                    sqlite3_create_function_v2(db_handle, "match", 2, SQLITE_UTF8 | SQLITE_DETERMINISTIC, NULL, &lua_match, NULL, NULL, NULL);
+                    sqlite3_create_function_v2(db_handle, "match", 1, SQLITE_UTF8 | SQLITE_DETERMINISTIC, NULL, &lua_match, NULL, NULL, NULL);
                 }
             }
         }
