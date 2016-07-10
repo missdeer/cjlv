@@ -17,9 +17,9 @@ INCLUDEPATH += $$PWD/3rdparty/scintilla/qt/ScintillaEditBase \
     $$PWD/3rdparty/scintilla/src \
     $$PWD/3rdparty/scintilla/lexlib \
     $$PWD/3rdparty/sqlite3 \
-    $$PWD/3rdparty/lua-5.1.5/src
+    $$PWD/3rdparty/LuaJIT-2.0.4/src
 
-LIBS += -L$$PWD/3rdparty/lua-5.1.5/src
+LIBS += -L$$PWD/3rdparty/LuaJIT-2.0.4/src
 
 DEFINES += SCINTILLA_QT=1 SCI_LEXER=1 _CRT_SECURE_NO_DEPRECATE=1 SCI_STATIC_LINK=1 LOKI_FUNCTOR_IS_NOT_A_SMALLOBJECT
 
@@ -74,7 +74,7 @@ macx: {
     icon.path = $$PWD
     #icon.files += cjlv.png
     INSTALLS += icon
-    LIBS+=-L$$PWD/3rdparty/zlib-1.2.8 -F $$PWD/3rdparty/scintilla/bin -framework ScintillaEdit  -lz -framework CoreServices -lobjc -llua
+    LIBS+=-L$$PWD/3rdparty/zlib-1.2.8 -F $$PWD/3rdparty/scintilla/bin -framework ScintillaEdit  -lz -framework CoreServices -lobjc -lluajit
 
     CONFIG(release, debug|release) : {
         QMAKE_INFO_PLIST = osxInfo.plist
@@ -115,7 +115,7 @@ win32: {
         copy_themes.commands = '$(COPY_DIR) $$shell_path($$PWD/resource/Windows/themes) $$shell_path($$OUT_PWD/Release/themes/)'
         copy_language.commands = '$(COPY_DIR) $$shell_path($$PWD/resource/language) $$shell_path($$OUT_PWD/Release/language/)'
         copy_langmap.commands = '$(COPY_FILE) $$shell_path($$PWD/resource/langmap.xml) $$shell_path($$OUT_PWD/Release/langmap.xml)'
-        copy_lua.commands = '$(COPY_FILE) $$shell_path($$PWD/3rdparty/lua-5.1.5/src/lua.dll) $$shell_path($$OUT_PWD/Release/lua.dll)'
+        copy_lua.commands = '$(COPY_FILE) $$shell_path($$PWD/3rdparty/LuaJIT-2.0.4/src/lua.dll) $$shell_path($$OUT_PWD/Release/lua.dll)'
         copy_scintilla.commands = '$(COPY_FILE) $$shell_path($$PWD/3rdparty/scintilla/bin/release/ScintillaEdit3.dll) $$shell_path($$OUT_PWD/Release/ScintillaEdit3.dll)'
         copy_everything.commands = '$(COPY_FILE) $$shell_path($$PWD/3rdparty/Everything-SDK/dll/Everything64.dll) $$shell_path($$OUT_PWD/Release/Everything.dll)'
 
