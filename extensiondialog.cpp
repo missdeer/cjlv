@@ -155,7 +155,7 @@ void ExtensionDialog::on_btnTestExtension_clicked()
 {
     if (m_currentExtension)
     {
-        m_currentExtension->run();
+        emit runExtension(m_currentExtension);
     }
 }
 

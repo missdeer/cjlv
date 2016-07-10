@@ -2,6 +2,7 @@
 #define TABWIDGET_H
 
 #include <QTableWidget>
+#include "extension.h"
 
 class LogView;
 
@@ -41,11 +42,13 @@ public slots:
     void onReload();
     void onGotoById();
 
+    void onRunExtension(ExtensionPtr e);
     void onExtensionActionTriggered();
 private slots:
     void onCustomContextMenuRequested(const QPoint &pos);
     void onCurrentChanged(int index);
     void onLogViewRowCountChanged();
+    
 private:
     int findTab(const QString& path);
     int findTab(const QStringList& paths);

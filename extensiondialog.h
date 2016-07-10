@@ -17,7 +17,8 @@ class ExtensionDialog : public QDialog
 public:
     explicit ExtensionDialog(QWidget *parent = 0);
     ~ExtensionDialog();
-
+signals:
+    void runExtension(ExtensionPtr);
 private slots:
     void on_tableView_selectionChanged(const QItemSelection &selected, const QItemSelection &deselected);
 

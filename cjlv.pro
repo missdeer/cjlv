@@ -102,7 +102,7 @@ win32: {
     SOURCES += everythingwrapper.cpp
     HEADERS += everythingwrapper.h
 
-    LIBS+=-L$$PWD/3rdparty/zlib-1.2.8 -lScintillaEdit3 -lzlib -L$$PWD/3rdparty/Everything-SDK/lib -lUser32 -lShell32 -lpsapi -lOle32 -llua
+    LIBS+=-L$$PWD/3rdparty/zlib-1.2.8 -lScintillaEdit3 -lzlib -L$$PWD/3rdparty/Everything-SDK/lib -lUser32 -lShell32 -lpsapi -lOle32 -llua51
 
     contains(QMAKE_HOST.arch, x86_64): LIBS += -lEverything64
     else: LIBS += -lEverything32
@@ -115,7 +115,7 @@ win32: {
         copy_themes.commands = '$(COPY_DIR) $$shell_path($$PWD/resource/Windows/themes) $$shell_path($$OUT_PWD/Release/themes/)'
         copy_language.commands = '$(COPY_DIR) $$shell_path($$PWD/resource/language) $$shell_path($$OUT_PWD/Release/language/)'
         copy_langmap.commands = '$(COPY_FILE) $$shell_path($$PWD/resource/langmap.xml) $$shell_path($$OUT_PWD/Release/langmap.xml)'
-        copy_lua.commands = '$(COPY_FILE) $$shell_path($$PWD/3rdparty/LuaJIT-2.0.4/src/lua.dll) $$shell_path($$OUT_PWD/Release/lua.dll)'
+        copy_lua.commands = '$(COPY_FILE) $$shell_path($$PWD/3rdparty/LuaJIT-2.0.4/src/lua51.dll) $$shell_path($$OUT_PWD/Release/lua51.dll)'
         copy_scintilla.commands = '$(COPY_FILE) $$shell_path($$PWD/3rdparty/scintilla/bin/release/ScintillaEdit3.dll) $$shell_path($$OUT_PWD/Release/ScintillaEdit3.dll)'
         copy_everything.commands = '$(COPY_FILE) $$shell_path($$PWD/3rdparty/Everything-SDK/dll/Everything64.dll) $$shell_path($$OUT_PWD/Release/Everything.dll)'
 

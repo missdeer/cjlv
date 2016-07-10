@@ -336,7 +336,10 @@ void MainWindow::on_actionClearKeyword_triggered()
 void MainWindow::on_actionEditExtensions_triggered()
 {
     if (!g_extensionDialog)
+    {
         g_extensionDialog = new ExtensionDialog(this);
+        connect(g_extensionDialog, &ExtensionDialog::runExtension, ui->tabWidget, &TabWidget::onRunExtension);
+    }
     g_extensionDialog->show();
 }
 

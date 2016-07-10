@@ -194,17 +194,23 @@ void TabWidget::onGotoById()
     }
 }
 
-void TabWidget::onExtensionActionTriggered()
+void TabWidget::onRunExtension(ExtensionPtr e)
 {
     QWidget* w = currentWidget();
     if (w)
     {
-        QAction* extensionAction = qobject_cast<QAction*>(sender());
-        QString uuid = extensionAction->data().toString();
-        ExtensionPtr e = ExtensionModel::instance(this)->extensionByUuid(uuid);
         LogView* v = qobject_cast<LogView*>(w);
         emit v->runExtension(e);
     }
+}
+
+void TabWidget::onExtensionActionTriggered()
+{
+    QAction* extensionAction = qobject_cast<QAction*>(sender());
+    QString uuid = extensionAction->data().toString();
+    ExtensionPtr e = ExtensionModel::instance(this)->extensionByUuid(uuid);
+    if (e)
+        onRunExtension(e);
 }
 
 void TabWidget::onCustomContextMenuRequested(const QPoint &pos)
