@@ -16,10 +16,7 @@ INCLUDEPATH += $$PWD/3rdparty/scintilla/qt/ScintillaEditBase \
     $$PWD/3rdparty/scintilla/include \
     $$PWD/3rdparty/scintilla/src \
     $$PWD/3rdparty/scintilla/lexlib \
-    $$PWD/3rdparty/sqlite3 \
-    $$PWD/3rdparty/LuaJIT-2.0.4/src
-
-LIBS += -L$$PWD/3rdparty/LuaJIT-2.0.4/src
+    $$PWD/3rdparty/sqlite3
 
 DEFINES += SCINTILLA_QT=1 SCI_LEXER=1 _CRT_SECURE_NO_DEPRECATE=1 SCI_STATIC_LINK=1 LOKI_FUNCTOR_IS_NOT_A_SMALLOBJECT
 
@@ -74,7 +71,8 @@ macx: {
     icon.path = $$PWD
     #icon.files += cjlv.png
     INSTALLS += icon
-    LIBS+=-L$$PWD/3rdparty/zlib-1.2.8 -F $$PWD/3rdparty/scintilla/bin -framework ScintillaEdit  -lz -framework CoreServices -lobjc -lluajit
+    INCLUDEPATH += /usr/local/include
+    LIBS+=-L$$PWD/3rdparty/zlib-1.2.8 -F $$PWD/3rdparty/scintilla/bin -framework ScintillaEdit  -lz -framework CoreServices -lobjc -L/usr/local/lib -llua
 
     CONFIG(release, debug|release) : {
         QMAKE_INFO_PLIST = osxInfo.plist
@@ -98,11 +96,12 @@ macx: {
 }
 
 win32: {
-    INCLUDEPATH += $$PWD/3rdparty/Everything-SDK/include $$PWD/3rdparty/Everything-SDK/ipc
+    INCLUDEPATH += $$PWD/3rdparty/Everything-SDK/include $$PWD/3rdparty/Everything-SDK/ipc $$PWD/3rdparty/LuaJIT-2.0.4/src
+
     SOURCES += everythingwrapper.cpp
     HEADERS += everythingwrapper.h
 
-    LIBS+=-L$$PWD/3rdparty/zlib-1.2.8 -lScintillaEdit3 -lzlib -L$$PWD/3rdparty/Everything-SDK/lib -lUser32 -lShell32 -lpsapi -lOle32 -llua51
+    LIBS+=-L$$PWD/3rdparty/zlib-1.2.8 -lScintillaEdit3 -lzlib -L$$PWD/3rdparty/Everything-SDK/lib -lUser32 -lShell32 -lpsapi -lOle32 -L$$PWD/3rdparty/LuaJIT-2.0.4/src -llua51
 
     contains(QMAKE_HOST.arch, x86_64): LIBS += -lEverything64
     else: LIBS += -lEverything32

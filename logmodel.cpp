@@ -16,11 +16,7 @@
 #include <QMessageBox>
 #include <QDesktopWidget>
 #include <sqlite3.h>
-extern "C" {
-    #include <lua.h>
-    #include <lualib.h>
-    #include <lauxlib.h>
-}
+#include <lua.hpp>
 #include "settings.h"
 #include "logmodel.h"
 
