@@ -9,6 +9,7 @@
 #include <QDropEvent>
 #include <QDragEnterEvent>
 #include <QHBoxLayout>
+#include <QDesktopServices>
 #include "settings.h"
 #include "preferencedialog.h"
 #include "extensiondialog.h"
@@ -369,4 +370,9 @@ void MainWindow::dropEvent(QDropEvent *e)
 void MainWindow::on_actionRefreshKeyword_triggered()
 {
     ui->tabWidget->filter(ui->cbKeyword->lineEdit()->text().trimmed());
+}
+
+void MainWindow::on_actionHelpContent_triggered()
+{
+    QDesktopServices::openUrl(QUrl::fromUserInput("https://wiki.cisco.com/display/CUCBU/Cisco+Jabber+Log+Viewer"));
 }

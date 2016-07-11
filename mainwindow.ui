@@ -133,6 +133,7 @@
     <property name="title">
      <string>&amp;Help</string>
     </property>
+    <addaction name="actionHelpContent"/>
     <addaction name="actionAbout"/>
    </widget>
    <widget class="QMenu" name="menuExtension">
@@ -720,6 +721,14 @@
    </property>
    <property name="shortcut">
     <string>F5</string>
+   </property>
+  </action>
+  <action name="actionHelpContent">
+   <property name="text">
+    <string>Content...</string>
+   </property>
+   <property name="toolTip">
+    <string>Help content</string>
    </property>
   </action>
  </widget>
