@@ -77,7 +77,9 @@ macx: {
     CONFIG(release, debug|release) : {
         QMAKE_INFO_PLIST = osxInfo.plist
         MACDEPLOYQT = $$[QT_INSTALL_BINS]/macdeployqt
+        mkdir_extensions.commands = mkdir -p \"$${TARGET}.app/Contents/PlugIns/extensions\"
         copy_extensions.commands = 'cp -R \"$$PWD/extensions\" \"$${TARGET}.app/Contents/PlugIns\"'
+        copy_extensions.depends = mkdir_extensions
         copy_themes.commands = cp -R \"$$PWD/resource/MacOSX/themes\" \"$${TARGET}.app/Contents/Resources\"
         copy_language.commands = cp -R \"$$PWD/resource/language\" \"$${TARGET}.app/Contents/Resources\"
         copy_langmap.commands = cp \"$$PWD/resource/langmap.xml\" \"$${TARGET}.app/Contents/Resources/\"
@@ -87,10 +89,10 @@ macx: {
         copy_scintilla.depends = clean_scintilla
         copy_scintilla.commands = cp -R \"$$PWD/3rdparty/scintilla/bin/ScintillaEdit.framework\" \"$${TARGET}.app/Contents/Frameworks\"
 
-        dmg_installer.depends = copy_extensions copy_scintilla copy_themes copy_language copy_langmap
+        dmg_installer.depends =  copy_scintilla copy_themes copy_language copy_langmap copy_extensions
         dmg_installer.commands = $$MACDEPLOYQT \"$${OUT_PWD}/$${TARGET}.app\" -dmg
-        QMAKE_EXTRA_TARGETS +=  mkdir_framework copy_extensions clean_scintilla copy_scintilla copy_themes copy_language copy_langmap dmg_installer
-        POST_TARGETDEPS += mkdir_framework copy_extensions clean_scintilla copy_scintilla copy_themes copy_language copy_langmap
+        QMAKE_EXTRA_TARGETS +=  mkdir_framework clean_scintilla copy_scintilla copy_themes copy_language copy_langmap mkdir_extensions copy_extensions dmg_installer
+        POST_TARGETDEPS += mkdir_framework clean_scintilla copy_scintilla copy_themes copy_language copy_langmap mkdir_extensions copy_extensions
         QMAKE_POST_LINK += $$quote($$MACDEPLOYQT \"$${OUT_PWD}/$${TARGET}.app\" -dmg -appstore-compliant)
     }
 }
