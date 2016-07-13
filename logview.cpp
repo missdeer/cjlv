@@ -14,6 +14,7 @@
 #include <QRegularExpression>
 #include <QMessageBox>
 #include <QAtomicInt>
+#include <QMenu>
 #include <JlCompress.h>
 #include "settings.h"
 #include "logmodel.h"
@@ -55,8 +56,10 @@ LogView::LogView(QWidget *parent)
 
     m_tableView->setModel(m_model);
     m_tableView->horizontalHeader()->setSectionResizeMode(7, QHeaderView::Stretch);
+    m_tableView->setContextMenuPolicy(Qt::CustomContextMenu);
 
     connect(m_tableView, &QAbstractItemView::doubleClicked, this, &LogView::onDoubleClicked);
+    connect(m_tableView, &QWidget::customContextMenuRequested, this, &LogView::onCustomContextMenuRequested);
     connect(m_model, &LogModel::dataLoaded, this, &LogView::onDataLoaded);
     connect(m_model, &LogModel::rowCountChanged, this, &LogView::onRowCountChanged);
     connect(this, &LogView::runExtension, m_model, &LogModel::runExtension);
@@ -417,6 +420,56 @@ void LogView::onRowCountChanged()
         m_tableView->selectRow(m_lastId -1);
     }
     emit rowCountChanged();
+}
+
+void LogView::onCustomContextMenuRequested(const QPoint &pos)
+{
+    QItemSelectionModel* model = m_tableView->selectionModel();
+    if (model && model->hasSelection())
+    {
+        QMenu menu(this);
+
+        QAction* pSourceFilePreviewAction = new QAction("Source File Preview", this);
+        connect(pSourceFilePreviewAction, &QAction::triggered, this, &LogView::onSourceFilePreview);
+        menu.addAction(pSourceFilePreviewAction);
+
+        QAction* pContentPreviewAction = new QAction("Content Preview", this);
+        connect(pContentPreviewAction, &QAction::triggered, this, &LogView::onContentPreview);
+        menu.addAction(pContentPreviewAction);
+
+        QAction* pLogFilePreviewAction = new QAction("Log File Preview", this);
+        connect(pLogFilePreviewAction, &QAction::triggered, this, &LogView::onLogFilePreview);
+        menu.addAction(pLogFilePreviewAction);
+
+        menu.exec(m_tableView->viewport()->mapToGlobal(pos));
+    }
+}
+
+void LogView::onSourceFilePreview()
+{
+    QItemSelectionModel* selected = m_tableView->selectionModel();
+    if (selected && selected->hasSelection())
+    {
+        openSourceFile(selected->currentIndex());
+    }
+}
+
+void LogView::onContentPreview()
+{
+    QItemSelectionModel* selected = m_tableView->selectionModel();
+    if (selected && selected->hasSelection())
+    {
+        extractContent(selected->currentIndex());
+    }
+}
+
+void LogView::onLogFilePreview()
+{
+    QItemSelectionModel* selected = m_tableView->selectionModel();
+    if (selected && selected->hasSelection())
+    {
+        gotoLogLine(selected->currentIndex());
+    }
 }
 
 bool LogView::event(QEvent* e)

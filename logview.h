@@ -51,6 +51,10 @@ private slots:
     void onDoubleClicked(const QModelIndex &index);
     void onDataLoaded();
     void onRowCountChanged();
+    void onCustomContextMenuRequested(const QPoint &pos);
+    void onSourceFilePreview();
+    void onContentPreview();
+    void onLogFilePreview();
 private:
     QSplitter* m_verticalSplitter;
     QTableView *m_tableView;

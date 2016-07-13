@@ -215,8 +215,23 @@ void TabWidget::onExtensionActionTriggered()
 
 void TabWidget::onCustomContextMenuRequested(const QPoint &pos)
 {
-    if (count())
+    int c = count();
+    if (c)
     {
+        bool onTabbar = false;
+
+        for (int i=0; i<c; i++)
+        {
+            if ( tabBar()->tabRect(i).contains( pos ) )
+            {
+                onTabbar = true;
+                break;
+            }
+        }
+
+        if (!onTabbar)
+            return;
+
         QMenu menu(this);
         QAction* pCloseAction = new QAction(QIcon(":/image/close.png"), "Close", this);
         menu.addAction(pCloseAction);
