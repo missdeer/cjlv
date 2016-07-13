@@ -100,8 +100,8 @@ macx: {
 win32: {
     INCLUDEPATH += $$PWD/3rdparty/Everything-SDK/include $$PWD/3rdparty/Everything-SDK/ipc $$PWD/3rdparty/LuaJIT-2.0.4/src
 
-    SOURCES += everythingwrapper.cpp
-    HEADERS += everythingwrapper.h
+    SOURCES += everythingwrapper.cpp ShellContextMenu.cpp
+    HEADERS += everythingwrapper.h ShellContextMenu.h
 
     LIBS+=-L$$PWD/3rdparty/zlib-1.2.8 -lScintillaEdit3 -lzlib -L$$PWD/3rdparty/Everything-SDK/lib -lUser32 -lShell32 -lpsapi -lOle32 -L$$PWD/3rdparty/LuaJIT-2.0.4/src -llua51
 
