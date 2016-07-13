@@ -1,4 +1,5 @@
 #include <Windows.h>
+#include <QtCore>
 #include "ShellContextMenu.h"
 
 
@@ -120,7 +121,7 @@ UINT CShellContextMenu::ShowContextMenu(QMenu *pWnd, const QPoint &pt)
 	WNDPROC OldWndProc;
 	if (iMenuType > 1)	// only subclass if its version 2 or 3
 	{
-        OldWndProc = (WNDPROC) SetWindowLongPtr ((HWND)pWnd->winId(), GWLP_WNDPROC, (LONG)HookWndProc);
+        OldWndProc = (WNDPROC) SetWindowLongPtr ((HWND)m_Menu->winId(), GWLP_WNDPROC, (LONG)HookWndProc);
 		if (iMenuType == 2)
 			g_IContext2 = (LPCONTEXTMENU2) pContextMenu;
 		else	// version 3
@@ -129,10 +130,16 @@ UINT CShellContextMenu::ShowContextMenu(QMenu *pWnd, const QPoint &pt)
 	else
 		OldWndProc = NULL;
 
-    UINT idCommand;// = m_Menu->TrackPopupMenu (TPM_RETURNCMD | TPM_LEFTALIGN, pt.x, pt.y, pWnd);
+    pWnd->addMenu(m_Menu);
+    QAction* triggeredAction = pWnd->exec(pt);
+    if (triggeredAction)
+    {
+        qDebug() << __FUNCTION__ << " triggered";
+    }
+    UINT idCommand = 0;// = m_Menu->TrackPopupMenu (TPM_RETURNCMD | TPM_LEFTALIGN, pt.x, pt.y, pWnd);
 
 	if (OldWndProc) // unsubclass
-        SetWindowLongPtr ((HWND)pWnd->winId(), GWLP_WNDPROC, (LONG) OldWndProc);
+        SetWindowLongPtr ((HWND)m_Menu->winId(), GWLP_WNDPROC, (LONG) OldWndProc);
 
 	if (idCommand >= MIN_ID && idCommand <= MAX_ID)	// see if returned idCommand belongs to shell menu entries
 	{

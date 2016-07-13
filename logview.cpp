@@ -16,6 +16,9 @@
 #include <QAtomicInt>
 #include <QMenu>
 #include <JlCompress.h>
+#if defined(Q_OS_WIN)
+#include "ShellContextMenu.h"
+#endif
 #include "settings.h"
 #include "logmodel.h"
 #include "logview.h"
@@ -441,6 +444,9 @@ void LogView::onCustomContextMenuRequested(const QPoint &pos)
         connect(pLogFilePreviewAction, &QAction::triggered, this, &LogView::onLogFilePreview);
         menu.addAction(pLogFilePreviewAction);
 
+//        CShellContextMenu scm;
+//        scm.SetObjects(m_path.replace(QChar('/'), QChar('\\')));
+//        scm.ShowContextMenu(&menu, m_tableView->viewport()->mapToGlobal(pos));
         menu.exec(m_tableView->viewport()->mapToGlobal(pos));
     }
 }
