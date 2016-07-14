@@ -214,7 +214,7 @@
     <string>Open &amp;Zip Log Bundle...</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+Shift+Z</string>
+    <string>F6</string>
    </property>
   </action>
   <action name="actionOpenRawLogFile">
@@ -226,7 +226,7 @@
     <string>Open &amp;Raw Log File...</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+Shift+R</string>
+    <string>F7</string>
    </property>
   </action>
   <action name="actionOpenLogFolder">
@@ -238,7 +238,7 @@
     <string>Open Log &amp;Folder...</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+Shift+F</string>
+    <string>F8</string>
    </property>
   </action>
   <action name="actionOpenCurrentInstalledJabberLogFolder">
