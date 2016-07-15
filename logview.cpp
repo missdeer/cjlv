@@ -27,8 +27,10 @@
 
 bool QuickGetFilesByFileName(const QString& fileName, QStringList& results);
 
+#if defined(Q_OS_WIN)
 extern QWinTaskbarButton *g_winTaskbarButton;
 extern QWinTaskbarProgress *g_winTaskbarProgress;
+#endif
 static QProgressDialog* g_progressDialog = nullptr;
 static QAtomicInt g_loadingReferenceCount;
 static const QEvent::Type EXTRACTED_EVENT = QEvent::Type(QEvent::User + 1);
@@ -554,10 +556,12 @@ void LogView::closeProgressDialog()
         g_progressDialog->deleteLater();
         g_progressDialog=nullptr;
 
+#if defined(Q_OS_WIN)
         if (g_winTaskbarButton)
             g_winTaskbarButton->clearOverlayIcon();
 
         if (g_winTaskbarProgress)
             g_winTaskbarProgress->setVisible(false);
+#endif
     }
 }

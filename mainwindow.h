@@ -12,8 +12,10 @@ QT_BEGIN_NAMESPACE
 class QDragEnterEvent;
 class QDropEvent;
 class QWinThumbnailToolBar;
+#if defined(Q_OS_WIN)
 class QWinTaskbarButton;
 class QWinTaskbarProgress;
+#endif
 QT_END_NAMESPACE
 
 class MainWindow : public QMainWindow
@@ -94,6 +96,8 @@ private:
     void showEvent(QShowEvent *e);
 };
 
+#if defined(Q_OS_WIN)
 extern QWinTaskbarButton *g_winTaskbarButton;
 extern QWinTaskbarProgress *g_winTaskbarProgress;
+#endif
 #endif // MAINWINDOW_H

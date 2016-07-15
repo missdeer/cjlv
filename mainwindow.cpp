@@ -23,8 +23,10 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+#if defined(Q_OS_WIN)
 QWinTaskbarButton *g_winTaskbarButton = nullptr;
 QWinTaskbarProgress *g_winTaskbarProgress = nullptr;
+#endif
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
