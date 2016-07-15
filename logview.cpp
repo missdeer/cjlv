@@ -27,9 +27,9 @@
 
 bool QuickGetFilesByFileName(const QString& fileName, QStringList& results);
 
+extern QWinTaskbarButton *g_winTaskbarButton;
+extern QWinTaskbarProgress *g_winTaskbarProgress;
 static QProgressDialog* g_progressDialog = nullptr;
-static QWinTaskbarButton *g_winTaskbarButton = nullptr;
-static QWinTaskbarProgress *g_winTaskbarProgress = nullptr;
 static QAtomicInt g_loadingReferenceCount;
 static const QEvent::Type EXTRACTED_EVENT = QEvent::Type(QEvent::User + 1);
 
@@ -525,22 +525,9 @@ void LogView::showProgressDialog()
 {
     g_loadingReferenceCount.ref();
 #if defined(Q_OS_WIN)
-    if (!g_winTaskbarButton)
-    {
-        qDebug() << "create win taskbar button";
-        g_winTaskbarButton = new QWinTaskbarButton(this);
-        QWidgetList widgets = QApplication::topLevelWidgets ();
-        g_winTaskbarButton->setWindow(windowHandle());
-        g_winTaskbarButton->setOverlayIcon(QIcon(":/loading.png"));
-    }
+    g_winTaskbarButton->setOverlayIcon(QIcon(":/image/loading.png"));
 
-    if (!g_winTaskbarProgress)
-    {
-        qDebug() << "create win taskbar progress";
-        g_winTaskbarProgress = g_winTaskbarButton->progress();
-    }
-    g_winTaskbarProgress->setRange(0, 100);
-    g_winTaskbarProgress->setValue(50);
+    g_winTaskbarProgress->setRange(0, 0);
     g_winTaskbarProgress->setVisible(true);
     qApp->processEvents();
 #endif
@@ -566,6 +553,9 @@ void LogView::closeProgressDialog()
         g_progressDialog->setValue(200);
         g_progressDialog->deleteLater();
         g_progressDialog=nullptr;
+
+        if (g_winTaskbarButton)
+            g_winTaskbarButton->clearOverlayIcon();
 
         if (g_winTaskbarProgress)
             g_winTaskbarProgress->setVisible(false);

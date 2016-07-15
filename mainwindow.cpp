@@ -10,6 +10,12 @@
 #include <QDragEnterEvent>
 #include <QHBoxLayout>
 #include <QDesktopServices>
+#if defined(Q_OS_WIN)
+#include <QWinThumbnailToolBar>
+#include <QWinThumbnailToolButton>
+#include <QWinTaskbarButton>
+#include <QWinTaskbarProgress>
+#endif
 #include "settings.h"
 #include "preferencedialog.h"
 #include "extensiondialog.h"
@@ -17,9 +23,13 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+QWinTaskbarButton *g_winTaskbarButton = nullptr;
+QWinTaskbarProgress *g_winTaskbarProgress = nullptr;
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow)
+    ui(new Ui::MainWindow),
+    thumbbar(nullptr)
 {
     ui->setupUi(this);
 #if defined(Q_OS_WIN)
@@ -365,6 +375,59 @@ void MainWindow::dropEvent(QDropEvent *e)
         logs << fileName;
     }
     openLogs(logs);
+}
+
+void MainWindow::showEvent(QShowEvent *e)
+{
+#if defined(Q_OS_WIN)
+    if (!thumbbar)
+    {
+        thumbbar = new QWinThumbnailToolBar(this);
+        thumbbar->setWindow(windowHandle());
+
+        QWinThumbnailToolButton *openZipButton = new QWinThumbnailToolButton(thumbbar);
+        openZipButton->setToolTip("Open Zip Log Bundle");
+        openZipButton->setIcon(QIcon(":/image/open-zip-file.png"));
+        openZipButton->setDismissOnClick(true);
+        connect(openZipButton, SIGNAL(clicked()), ui->actionOpenZipLogBundle, SIGNAL(triggered()));
+
+        QWinThumbnailToolButton *openRawLogFileButton = new QWinThumbnailToolButton(thumbbar);
+        openRawLogFileButton->setToolTip("Open Raw Log File");
+        openRawLogFileButton->setIcon(QIcon(":/image/open-file.png"));
+        openRawLogFileButton->setDismissOnClick(true);
+        connect(openRawLogFileButton, SIGNAL(clicked()), ui->actionOpenRawLogFile, SIGNAL(triggered()));
+
+        QWinThumbnailToolButton *openLogFolderButton = new QWinThumbnailToolButton(thumbbar);
+        openLogFolderButton->setToolTip("Open Log Folder");
+        openLogFolderButton->setIcon(QIcon(":/image/open-folder.png"));
+        openLogFolderButton->setDismissOnClick(true);
+        connect(openLogFolderButton, SIGNAL(clicked()), ui->actionOpenLogFolder, SIGNAL(triggered()));
+
+        QWinThumbnailToolButton *openCurrentInstalledJabberLogFolderButton = new QWinThumbnailToolButton(thumbbar);
+        openCurrentInstalledJabberLogFolderButton->setToolTip("Open Current Installed Jabber Log Folder");
+        openCurrentInstalledJabberLogFolderButton->setIcon(QIcon(":/image/open-installed-folder.png"));
+        openCurrentInstalledJabberLogFolderButton->setDismissOnClick(true);
+        connect(openCurrentInstalledJabberLogFolderButton, SIGNAL(clicked()), ui->actionOpenCurrentInstalledJabberLogFolder, SIGNAL(triggered()));
+
+        thumbbar->addButton(openZipButton);
+        thumbbar->addButton(openRawLogFileButton);
+        thumbbar->addButton(openLogFolderButton);
+        thumbbar->addButton(openCurrentInstalledJabberLogFolderButton);
+    }
+
+    if (!g_winTaskbarButton)
+    {
+        g_winTaskbarButton = new QWinTaskbarButton(this);
+        g_winTaskbarButton->setWindow(windowHandle());
+    }
+
+    if (!g_winTaskbarProgress)
+    {
+        g_winTaskbarProgress = g_winTaskbarButton->progress();
+    }
+#endif
+
+    e->accept();
 }
 
 void MainWindow::on_actionRefreshKeyword_triggered()

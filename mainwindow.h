@@ -11,6 +11,9 @@ class MainWindow;
 QT_BEGIN_NAMESPACE
 class QDragEnterEvent;
 class QDropEvent;
+class QWinThumbnailToolBar;
+class QWinTaskbarButton;
+class QWinTaskbarProgress;
 QT_END_NAMESPACE
 
 class MainWindow : public QMainWindow
@@ -83,10 +86,14 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
-
+    QWinThumbnailToolBar *thumbbar;
     void dragEnterEvent(QDragEnterEvent *e);
 
     void dropEvent(QDropEvent *e);
+
+    void showEvent(QShowEvent *e);
 };
 
+extern QWinTaskbarButton *g_winTaskbarButton;
+extern QWinTaskbarProgress *g_winTaskbarProgress;
 #endif // MAINWINDOW_H
