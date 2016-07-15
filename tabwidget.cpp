@@ -262,12 +262,12 @@ void TabWidget::onCustomContextMenuRequested(const QPoint &pos)
         connect(pOpenContainerFolderAction, &QAction::triggered, this, &TabWidget::onOpenContainerFolder);
         menu.addAction(pOpenContainerFolderAction);
 
-		#if defined(Q_OS_WIN)
-		CShellContextMenu scm;
-		scm.ShowContextMenu(&menu, this, mapToGlobal(pos), tabToolTip(currentIndex()).replace(QChar('/'), QChar('\\')));
-		#else
+#if defined(Q_OS_WIN)
+        CShellContextMenu scm;
+        scm.ShowContextMenu(&menu, this, mapToGlobal(pos), tabToolTip(currentIndex()).replace(QChar('/'), QChar('\\')));
+#else
         menu.exec(mapToGlobal(pos));
-		#endif		
+#endif
     }
 }
 
