@@ -75,6 +75,8 @@ int main(int argc, char *argv[])
         }
         return 0;
     }
+
+    a.setAttribute(Qt::AA_UseHighDpiPixmaps);
 	
     MainWindow w;
     w.showMaximized();
