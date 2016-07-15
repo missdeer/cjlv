@@ -70,6 +70,7 @@ Source: "Qt5Sql.dll"; DestDir: "{app}"
 Source: "Qt5Svg.dll"; DestDir: "{app}"
 Source: "Qt5Widgets.dll"; DestDir: "{app}"
 Source: "Qt5Xml.dll"; DestDir: "{app}"
+Source: "Qt5WinExtras.dll"; DestDir: "{app}"
 
 [Icons]
 Name: {commondesktop}\Cisco Jabber Log Viewer; Filename: {app}\Cisco Jabber Log Viewer.exe; WorkingDir: {app}; Tasks: desktopicon; Comment: Launch Cisco Jabber Log Viewer
