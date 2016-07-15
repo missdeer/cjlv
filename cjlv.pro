@@ -10,6 +10,7 @@ TARGET = "Cisco Jabber Log Viewer"
 TEMPLATE = app
 CONFIG += c++11
 include($$PWD/3rdparty/quazip-0.7.2/quazip.pri)
+include($$PWD/3rdparty/qtsingleapplication/qtsingleapplication.pri)
 
 INCLUDEPATH += $$PWD/3rdparty/scintilla/qt/ScintillaEditBase \
     $$PWD/3rdparty/scintilla/qt/ScintillaEdit \

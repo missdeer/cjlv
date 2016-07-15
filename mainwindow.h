@@ -29,6 +29,7 @@ public:
 public slots:
     void onStatusBarMessageChanges(const QString& msg);
 private slots:
+    void onIPCMessageReceived(const QString &message, QObject *socket);
     void onExtensionScanned();
     void onExtensionRemoved(ExtensionPtr e);
     void onExtensionCreated(ExtensionPtr e);

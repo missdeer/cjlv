@@ -133,6 +133,14 @@ void MainWindow::onStatusBarMessageChanges(const QString &msg)
     ui->statusBar->showMessage(msg);
 }
 
+void MainWindow::onIPCMessageReceived(const QString &message, QObject* /*socket*/)
+{
+    QStringList logs = message.split('\n');
+    openLogs(logs);
+    raise();
+    activateWindow();
+}
+
 void MainWindow::onExtensionRemoved(ExtensionPtr e)
 {
     QList<QAction*> actions = ui->menuExtension->actions();

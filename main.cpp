@@ -1,3 +1,4 @@
+#include "qtsingleapplication.h"
 #include <QtCore>
 #include <QApplication>
 #include <QCommandLineOption>
@@ -13,9 +14,19 @@
 
 int main(int argc, char *argv[])
 {
-    QApplication a(argc, argv);
+#if !defined(Q_OS_WIN)
+    // increase the number of file that can be opened in Qt Creator.
+    struct rlimit rl;
+    getrlimit(RLIMIT_NOFILE, &rl);
+
+    rl.rlim_cur = qMin((rlim_t)OPEN_MAX, rl.rlim_max);
+    setrlimit(RLIMIT_NOFILE, &rl);
+#endif
+
+    SharedTools::QtSingleApplication a("Cisco Jabber Log Viewer", argc, argv);
+	
     QCoreApplication::setApplicationName("Cisco Jabber Log Viewer");
-    QCoreApplication::setApplicationVersion("1.0");
+    QCoreApplication::setApplicationVersion("1.1");
 
     QDate d =  QLocale(QLocale::C).toDate(QString(__DATE__).simplified(), QLatin1String("MMM d yyyy"));
     if (d.daysTo(QDate::currentDate()) > 365)
@@ -56,6 +67,15 @@ int main(int argc, char *argv[])
 
     const QStringList logs = parser.positionalArguments();
 
+    if (a.isRunning())
+    {
+        if (!logs.isEmpty())
+        {
+            a.sendMessage(logs.join("\n"));
+        }
+        return 0;
+    }
+	
     MainWindow w;
     w.showMaximized();
     w.openLogs(logs);
@@ -72,6 +92,8 @@ int main(int argc, char *argv[])
         launchEverything(g_settings->everythingPath());
     }
 #endif
+
+    QObject::connect(&a, SIGNAL(messageReceived(QString,QObject*)), &w, SLOT(onIPCMessageReceived(QString,QObject*)));
 
     return a.exec();
 }
