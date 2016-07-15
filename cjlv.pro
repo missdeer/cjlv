@@ -98,6 +98,7 @@ macx: {
 }
 
 win32: {
+    QT += winextras
     INCLUDEPATH += $$PWD/3rdparty/Everything-SDK/include $$PWD/3rdparty/Everything-SDK/ipc $$PWD/3rdparty/LuaJIT-2.0.4/src
 
     SOURCES += everythingwrapper.cpp ShellContextMenu.cpp

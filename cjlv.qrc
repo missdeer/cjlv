@@ -33,5 +33,6 @@
         <file>image/clear-keyword.png</file>
         <file>image/search.png</file>
         <file>image/exit.png</file>
+        <file>image/loading.png</file>
     </qresource>
 </RCC>
