@@ -444,10 +444,12 @@ void LogView::onCustomContextMenuRequested(const QPoint &pos)
         connect(pLogFilePreviewAction, &QAction::triggered, this, &LogView::onLogFilePreview);
         menu.addAction(pLogFilePreviewAction);
 
-//        CShellContextMenu scm;
-//        scm.SetObjects(m_path.replace(QChar('/'), QChar('\\')));
-//        scm.ShowContextMenu(&menu, m_tableView->viewport()->mapToGlobal(pos));
+		#if defined(Q_OS_WIN)
+        CShellContextMenu scm;
+        scm.ShowContextMenu(&menu, this, m_tableView->viewport()->mapToGlobal(pos), m_path.replace(QChar('/'), QChar('\\')));
+		#else		
         menu.exec(m_tableView->viewport()->mapToGlobal(pos));
+		#endif
     }
 }
 

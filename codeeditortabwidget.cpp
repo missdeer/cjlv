@@ -8,6 +8,9 @@
 #include <QMenu>
 #include <QClipboard>
 #include <QDesktopServices>
+#if defined(Q_OS_WIN)
+#include "ShellContextMenu.h"
+#endif
 #include "codeeditor.h"
 #include "codeeditortabwidget.h"
 
@@ -192,6 +195,11 @@ void CodeEditorTabWidget::onCustomContextMenuRequested(const QPoint &pos)
         QAction* pOpenContainerFolderAction = new QAction("Open Container Folder", this);
         connect(pOpenContainerFolderAction, &QAction::triggered, this, &CodeEditorTabWidget::onOpenContainerFolder);
         menu.addAction(pOpenContainerFolderAction);
+		#if defined(Q_OS_WIN)
+		CShellContextMenu scm;
+		scm.ShowContextMenu(&menu, this, mapToGlobal(pos), tabToolTip(currentIndex()).replace(QChar('/'), QChar('\\')));
+		return;
+		#endif		
     }
     menu.exec(mapToGlobal(pos));
 }
