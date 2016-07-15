@@ -228,6 +228,7 @@ void TabWidget::onCustomContextMenuRequested(const QPoint &pos)
             if ( tabBar()->tabRect(i).contains( pos ) )
             {
                 onTabbar = true;
+                tabBar()->setCurrentIndex(i);
                 break;
             }
         }

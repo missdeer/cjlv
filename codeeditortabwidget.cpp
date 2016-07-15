@@ -167,7 +167,19 @@ void CodeEditorTabWidget::onCurrentChanged(int index)
 }
 
 void CodeEditorTabWidget::onCustomContextMenuRequested(const QPoint &pos)
-{
+{    
+    for (int i=0; i<count(); i++)
+    {
+        //! stupid!
+        QRect rc = tabBar()->tabRect(i);
+        QPoint pt =  mapToGlobal(pos);
+        if ( pt.x() >= mapToGlobal(rc.topLeft()).x() && pt.x() <= mapToGlobal(rc.bottomRight()).x() )
+        {
+            qDebug() << "found tab " << i;
+            tabBar()->setCurrentIndex(i);
+            break;
+        }
+    }
     QMenu menu(this);
     QAction* pCloseAction = new QAction(QIcon(":/image/close.png"), "Close", this);
     menu.addAction(pCloseAction);
