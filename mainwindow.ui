@@ -250,7 +250,7 @@
     <string>Open Current &amp;Installed Jabber Log Folder</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+Shift+I</string>
+    <string>F9</string>
    </property>
   </action>
   <action name="actionClose">
