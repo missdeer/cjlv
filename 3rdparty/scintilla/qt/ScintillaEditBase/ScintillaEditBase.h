@@ -39,7 +39,7 @@ struct SCNotification;
 #define EXPORT_IMPORT_API
 #endif
 
-class EXPORT_IMPORT_API ScintillaEditBase : public QAbstractScrollArea {
+class ScintillaEditBase : public QAbstractScrollArea {
 	Q_OBJECT
 
 public:

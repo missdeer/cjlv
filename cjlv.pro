@@ -6,11 +6,12 @@
 
 QT       += core gui concurrent widgets sql xml
 
-TARGET = "Cisco Jabber Log Viewer"
+TARGET = "CJLV"
 TEMPLATE = app
 CONFIG += c++11
 include($$PWD/3rdparty/quazip-0.7.2/quazip.pri)
 include($$PWD/3rdparty/qtsingleapplication/qtsingleapplication.pri)
+include($$PWD/3rdparty/lua-5.3.3/src/lua.pri)
 
 INCLUDEPATH += $$PWD/3rdparty/scintilla/qt/ScintillaEditBase \
     $$PWD/3rdparty/scintilla/qt/ScintillaEdit \
@@ -105,7 +106,7 @@ win32: {
     SOURCES += everythingwrapper.cpp ShellContextMenu.cpp
     HEADERS += everythingwrapper.h ShellContextMenu.h
 
-    LIBS+=-L$$PWD/3rdparty/zlib-1.2.8 -lScintillaEdit3 -lzlib -L$$PWD/3rdparty/Everything-SDK/lib -lUser32 -lShell32 -lpsapi -lOle32 -L$$PWD/3rdparty/LuaJIT-2.0.4/src -llua51
+    LIBS+=-L$$PWD/3rdparty/zlib-1.2.8 -lScintillaEdit -lzlib -L$$PWD/3rdparty/Everything-SDK/lib -lUser32 -lShell32 -lpsapi -lOle32
 
     contains(QMAKE_HOST.arch, x86_64): LIBS += -lEverything64
     else: LIBS += -lEverything32

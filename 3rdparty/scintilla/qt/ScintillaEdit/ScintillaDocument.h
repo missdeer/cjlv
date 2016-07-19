@@ -27,7 +27,7 @@ namespace Scintilla {
 #endif
 #endif
 
-class EXPORT_IMPORT_API ScintillaDocument : public QObject
+class ScintillaDocument : public QObject
 {
     Q_OBJECT
 
