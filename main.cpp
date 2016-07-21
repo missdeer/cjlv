@@ -23,6 +23,10 @@ int main(int argc, char *argv[])
     setrlimit(RLIMIT_NOFILE, &rl);
 #endif
 
+#if !defined(Q_OS_MAC)
+    QCoreApplication::setAttribute(Qt::AA_DisableHighDpiScaling, true);
+#endif
+
     SharedTools::QtSingleApplication a("Cisco Jabber Log Viewer", argc, argv);
 	
     QCoreApplication::setApplicationName("Cisco Jabber Log Viewer");
@@ -75,8 +79,6 @@ int main(int argc, char *argv[])
         }
         return 0;
     }
-
-    a.setAttribute(Qt::AA_UseHighDpiPixmaps);
 	
     MainWindow w;
     w.showMaximized();

@@ -6,7 +6,7 @@
 
 QT       += core gui concurrent widgets sql xml
 
-TARGET = "CJLV"
+TARGET = "Cisco Jabber Log Viewer"
 TEMPLATE = app
 CONFIG += c++11
 include($$PWD/3rdparty/quazip-0.7.2/quazip.pri)
@@ -100,7 +100,9 @@ macx: {
 }
 
 win32: {
+    TARGET = CJLV
     QT += winextras
+    QMAKE_LFLAGS += "/LTCG"
     INCLUDEPATH += $$PWD/3rdparty/Everything-SDK/include $$PWD/3rdparty/Everything-SDK/ipc $$PWD/3rdparty/LuaJIT-2.0.4/src
 
     SOURCES += everythingwrapper.cpp ShellContextMenu.cpp
