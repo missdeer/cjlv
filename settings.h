@@ -15,16 +15,16 @@ public:
     bool searchOrFitler() const;
     void setSearchOrFitler(bool searchOrFitler);
 
-    QString searchField() const;
+    const QString & searchField() const;
     void setSearchField(const QString& searchField);
 
-    QString temporaryDirectory() const;
+    const QString & temporaryDirectory() const;
     void setTemporaryDirectory(const QString &temporaryDirectory);
 
-    QString lastOpenedDirectory() const;
+    const QString & lastOpenedDirectory() const;
     void setLastOpenedDirectory(const QString &lastOpenedDirectory);
 
-    QString sourceDirectory() const;
+    const QString & sourceDirectory() const;
     void setSourceDirectory(const QString &sourceDirectory);
 
     bool regexMode() const;
@@ -35,7 +35,7 @@ public:
 
     void initialize();
 
-    QString everythingPath() const;
+    const QString & everythingPath() const;
     void setEverythingPath(const QString& everythingPath);
 
 private:

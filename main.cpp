@@ -87,7 +87,7 @@ int main(int argc, char *argv[])
 #if defined(Q_OS_WIN)
     if (isEverythingRunning())
     {
-        QString path = GetEverythingPath();
+        const QString& path = GetEverythingPath();
         g_settings->setEverythingPath(path);
         g_settings->save();
     }

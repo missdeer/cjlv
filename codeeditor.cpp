@@ -32,7 +32,7 @@ void CodeEditor::gotoLine(const QString &fileName, int line)
 {
     m_fileName = fileName;
 
-    QString lang = m_sc.matchPatternLanguage(fileName);
+    const QString& lang = m_sc.matchPatternLanguage(fileName);
 
     QFile f(fileName);
     if (f.open(QIODevice::ReadOnly))

@@ -39,7 +39,7 @@ void Settings::initialize()
     }
 }
 
-QString Settings::everythingPath() const
+const QString &Settings::everythingPath() const
 {
     return m_everythingPath;
 }
@@ -59,7 +59,7 @@ void Settings::setSearchOrFitler(bool searchOrFitler)
     m_searchOrFitler = searchOrFitler;
 }
 
-QString Settings::searchField() const
+const QString &Settings::searchField() const
 {
     return m_searchField;
 }
@@ -69,7 +69,7 @@ void Settings::setSearchField(const QString& searchField)
     m_searchField = searchField;
 }
 
-QString Settings::temporaryDirectory() const
+const QString &Settings::temporaryDirectory() const
 {
     return m_temporaryDirectory;
 }
@@ -79,7 +79,7 @@ void Settings::setTemporaryDirectory(const QString &temporaryDirectory)
     m_temporaryDirectory = temporaryDirectory;
 }
 
-QString Settings::lastOpenedDirectory() const
+const QString &Settings::lastOpenedDirectory() const
 {
     return m_lastOpenedDirectory;
 }
@@ -89,7 +89,7 @@ void Settings::setLastOpenedDirectory(const QString &lastOpenedDirectory)
     m_lastOpenedDirectory = lastOpenedDirectory;
 }
 
-QString Settings::sourceDirectory() const
+const QString &Settings::sourceDirectory() const
 {
     return m_sourceDirectory;
 }
