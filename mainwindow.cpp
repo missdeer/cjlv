@@ -1,3 +1,4 @@
+#include <functional>
 #include <QtCore>
 #include <QApplication>
 #include <QActionGroup>
@@ -122,10 +123,8 @@ void MainWindow::onExtensionScanned()
 {
     ui->menuExtension->addSeparator();
     QList<ExtensionPtr>& extensions = ExtensionModel::instance(this)->extensions();
-    Q_FOREACH(ExtensionPtr e, extensions)
-    {
-        onExtensionCreated(e);
-    }
+    std::for_each(extensions.begin(), extensions.end(),
+                  std::bind(&MainWindow::onExtensionCreated, this, std::placeholders::_1));
 }
 
 void MainWindow::onStatusBarMessageChanges(const QString &msg)
@@ -144,14 +143,13 @@ void MainWindow::onIPCMessageReceived(const QString &message, QObject* /*socket*
 void MainWindow::onExtensionRemoved(ExtensionPtr e)
 {
     QList<QAction*> actions = ui->menuExtension->actions();
-    Q_FOREACH(QAction* action, actions)
+    auto it = std::find_if(actions.begin(), actions.end(),
+                 [e](QAction* action) { return (action->data().toString() == e->uuid());});
+
+    if (actions.end() != it)
     {
-        if (action->data().toString() == e->uuid())
-        {
-            ui->menuExtension->removeAction(action);
-            action->deleteLater();
-            break;
-        }
+        ui->menuExtension->removeAction(*it);
+        (*it)->deleteLater();
     }
 }
 
@@ -166,13 +164,12 @@ void MainWindow::onExtensionCreated(ExtensionPtr e)
 void MainWindow::onExtensionModified(ExtensionPtr e)
 {
     QList<QAction*> actions = ui->menuExtension->actions();
-    Q_FOREACH(QAction* action, actions)
+    auto it = std::find_if(actions.begin(), actions.end(),
+                 [e](QAction* action) { return (action->data().toString() == e->uuid());});
+
+    if (actions.end() != it)
     {
-        if (action->data().toString() == e->uuid())
-        {
-            action->setText(QString("%1 by %2").arg(e->title()).arg(e->author()));
-            break;
-        }
+        (*it)->setText(QString("%1 by %2").arg(e->title()).arg(e->author()));
     }
 }
 
@@ -188,10 +185,8 @@ void MainWindow::on_actionOpenZipLogBundle_triggered()
     QFileInfo fi(fileNames.at(0));
     g_settings->setLastOpenedDirectory(fi.absolutePath());
 
-    Q_FOREACH(const QString& fileName, fileNames)
-    {
-        ui->tabWidget->openZipBundle(fileName);
-    }
+    std::for_each(fileNames.begin(), fileNames.end(),
+                  std::bind(&TabWidget::openZipBundle, ui->tabWidget, std::placeholders::_1));
 }
 
 void MainWindow::on_actionOpenRawLogFile_triggered()
@@ -379,11 +374,9 @@ void MainWindow::dragEnterEvent(QDragEnterEvent *e)
 void MainWindow::dropEvent(QDropEvent *e)
 {
     QStringList logs;
-    foreach (const QUrl &url, e->mimeData()->urls())
-    {
-        QString fileName = url.toLocalFile();
-        logs << fileName;
-    }
+
+    std::for_each(e->mimeData()->urls().begin(), e->mimeData()->urls().end(),
+                  [&logs](const QUrl& url) { logs << url.toLocalFile(); });
     openLogs(logs);
 }
 

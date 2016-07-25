@@ -315,15 +315,15 @@ void LogModel::onFilter(const QString &keyword)
 
 void LogModel::query(int offset)
 {
-    Q_FOREACH(int i, m_inQuery)
+    auto it = std::find_if(m_inQuery.begin(), m_inQuery.end(),
+                           [offset](int i){ return (offset >= i && offset < i + 200); });
+
+    if (m_inQuery.end() != it)
     {
-        if (offset >= i && offset < i + 200)
-        {
 #ifndef QT_NO_DEBUG
-            qDebug() << __FUNCTION__ << "offset:" << offset << ", i:" << i;
+        qDebug() << __FUNCTION__ << "offset:" << offset << ", i:" << i;
 #endif
-            return;
-        }
+        return;
     }
 
     m_inQuery.push_back(offset);
@@ -507,13 +507,11 @@ QString LogModel::getLogFileName(const QModelIndex &index)
         fileName = "jabber.log";
     else
         fileName = "jabber.log." + r->logFile;
-    Q_FOREACH(const QString& logFile, m_logFiles)
-    {
-        if (logFile.contains(fileName))
-        {
-            return logFile;
-        }
-    }
+
+    auto itLog = std::find_if(m_logFiles.begin(), m_logFiles.end(),
+                           [&fileName](const QString& logFile) { return logFile.contains(fileName); });
+    if (m_logFiles.end() != itLog)
+        return *itLog;
     Q_ASSERT(0);
     return fileName;
 }
@@ -527,15 +525,11 @@ int LogModel::getLogFileLine(const QModelIndex &index, QString &fileName)
         fileName = "jabber.log";
     else
         fileName = "jabber.log." + r->logFile;
-    Q_FOREACH(const QString& logFile, m_logFiles)
-    {
-        if (logFile.contains(fileName))
-        {
-            fileName = logFile;
-            break;
-        }
-    }
 
+    auto itLog = std::find_if(m_logFiles.begin(), m_logFiles.end(),
+                           [&fileName](const QString& logFile) { return logFile.contains(fileName); });
+    if (m_logFiles.end() != itLog)
+        fileName = *itLog;
     return r->line;
 }
 
@@ -609,10 +603,9 @@ void LogModel::doReload()
     e->m_rowCount = 0;
     createDatabase();
     QDateTime t = QDateTime::currentDateTime();
-    for (auto it = m_logFiles.rbegin(); m_logFiles.rend() != it; ++it)
-    {
-        e->m_rowCount += copyFromFileToDatabase(*it);
-    }
+
+    std::for_each(m_logFiles.rbegin(), m_logFiles.rend(),
+                  [=](const QString& log) { e->m_rowCount += copyFromFileToDatabase(log); });
     qint64 q = t.secsTo(QDateTime::currentDateTime());
     createDatabaseIndex();
     qDebug() << "loaded elapsed " << q << " s";

@@ -328,17 +328,13 @@ bool ScintillaConfig::matchSuffix(const QString &filename, const QString &suffix
 {
     QStringList suffixes = suffix.split(' ');
     QFileInfo fi(filename);
-    Q_FOREACH( QString ext, suffixes)
-    {
-#if defined(Q_OS_WIN)
-        if (QString::compare(ext, fi.suffix(), Qt::CaseInsensitive) == 0)
-#else
-        if (QString::compare(ext, fi.suffix(), Qt::CaseSensitive) == 0)
-#endif
-        {
-            return true;
-        }
-    }
 
-    return false;
+    return (suffixes.end() != std::find_if(suffixes.begin(), suffixes.end(),
+                 [&fi](const QString& ext) {
+#if defined(Q_OS_WIN)
+        return (QString::compare(ext, fi.suffix(), Qt::CaseInsensitive) == 0);
+#else
+        return (QString::compare(ext, fi.suffix(), Qt::CaseSensitive) == 0);
+#endif
+    }));
 }

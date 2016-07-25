@@ -131,10 +131,8 @@ void LogView::openFolder(const QString &path)
 
     QStringList fileNames;
     QFileInfoList list = dir.entryInfoList();
-    for (int i = 0; i < list.size(); ++i) {
-        QFileInfo fileInfo = list.at(i);
-        fileNames << fileInfo.filePath();
-    }
+    std::for_each(list.begin(), list.end(),
+                  [&fileNames](const QFileInfo& fileInfo){fileNames << fileInfo.filePath();});
 
     showProgressDialog();
 
@@ -356,15 +354,8 @@ void LogView::openSourceFile(const QModelIndex &index)
                 while (dir != srcDir)
                     if (!dir.cdUp())
                         break;
-            bool matched = true;
-            Q_FOREACH(const QString& n, fileDirs)
-            {
-                if (!filePath.toLower().contains(n.toLower()))
-                {
-                    matched = false;
-                    break;
-                }
-            }
+            bool matched = (fileDirs.end() == std::find_if(fileDirs.begin(), fileDirs.end(),
+                                      [&filePath](const QString& n) {return (!filePath.toLower().contains(n.toLower()));}));
 
             if (matched && (g_settings->sourceDirectory().isEmpty() || (!g_settings->sourceDirectory().isEmpty() && dir == srcDir)))
             {
@@ -503,10 +494,9 @@ bool LogView::event(QEvent* e)
 
             QStringList fileNames;
             QFileInfoList list = dir.entryInfoList();
-            for (int i = 0; i < list.size(); ++i) {
-                QFileInfo fileInfo = list.at(i);
-                fileNames << fileInfo.filePath();
-            }
+
+            std::for_each(list.begin(), list.end(),
+                          [&fileNames](const QFileInfo& fileInfo){fileNames << fileInfo.filePath();});
 
             m_model->loadFromFiles(fileNames);
         }

@@ -129,46 +129,41 @@ void ExtensionModel::doScanExtensions()
 
 ExtensionPtr ExtensionModel::extensionByUuid(const QString& uuid)
 {
-    Q_FOREACH(ExtensionPtr e, m_extensions)
-    {
-        if (e->uuid() == uuid)
-        {
-            return e;
-        }
-    }
+    auto it = std::find_if(m_extensions.begin(),
+                 m_extensions.end(),
+                 [=](ExtensionPtr e){return e->uuid() == uuid;});
 
-    return ExtensionPtr();
+    return m_extensions.end() != it ? *it : ExtensionPtr();
 }
 
 void ExtensionModel::removeExtension(ExtensionPtr e)
 {
-    for (int i = 0; i < m_extensions.length(); i++)
+    auto it = std::find_if(m_extensions.begin(),
+                 m_extensions.end(),
+                 [e](ExtensionPtr ie){return ie->uuid() == e->uuid();});
+    if (m_extensions.end() != it)
     {
-        ExtensionPtr ie = m_extensions.at(i);
-        if (ie->uuid() == e->uuid())
-        {
-            emit extensionRemoved(e);
-            beginRemoveRows(QModelIndex(), i, i);
-            m_extensions.removeAt(i);
-            endRemoveRows();
-            break;
-        }
+        emit extensionRemoved(e);
+        auto i = std::distance(m_extensions.begin(), it);
+        beginRemoveRows(QModelIndex(), i, i);
+        m_extensions.removeAt(i);
+        endRemoveRows();
     }
 }
 
 void ExtensionModel::updateExtension(ExtensionPtr e)
 {
-    for (int i = 0; i < m_extensions.length(); i++)
+    auto it = std::find_if(m_extensions.begin(),
+                 m_extensions.end(),
+                 [e](ExtensionPtr ie){return ie->uuid() == e->uuid();});
+    if (m_extensions.end() != it)
     {
-        ExtensionPtr ie = m_extensions.at(i);
-        if (ie->uuid() == e->uuid())
-        {
-            // modify
-            ie = e;
-            emit dataChanged(index(i, 0), index(i, 0));
-            emit extensionModified(e);
-            return;
-        }
+        // modify
+        *it = e;
+        auto i = std::distance(m_extensions.begin(), it);
+        emit dataChanged(index(i, 0), index(i, 0));
+        emit extensionModified(e);
+        return;
     }
     // append
     beginInsertRows(QModelIndex(),  m_extensions.size(), m_extensions.size());
