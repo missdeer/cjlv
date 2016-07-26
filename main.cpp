@@ -25,6 +25,8 @@ int main(int argc, char *argv[])
 
 #if !defined(Q_OS_MAC)
     QCoreApplication::setAttribute(Qt::AA_DisableHighDpiScaling, true);
+#else
+    QCoreApplication::setAttribute(Qt::AA_DontShowIconsInMenus, true);
 #endif
 
     SharedTools::QtSingleApplication a("Cisco Jabber Log Viewer", argc, argv);
