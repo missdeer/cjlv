@@ -357,7 +357,16 @@ void MainWindow::on_actionEditExtensions_triggered()
         g_extensionDialog = new ExtensionDialog(this);
         connect(g_extensionDialog, &ExtensionDialog::runExtension, ui->tabWidget, &TabWidget::onRunExtension);
     }
-    g_extensionDialog->show();
+
+#if defined(Q_OS_MAC)
+    if (g_extensionDialog->isVisible())
+    {
+        g_extensionDialog->activateWindow();
+        g_extensionDialog->raise();
+    }
+    else
+#endif
+        g_extensionDialog->show();
 }
 
 void MainWindow::on_actionRegexpMode_triggered()
