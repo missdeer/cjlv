@@ -2,8 +2,6 @@
 #if defined(Q_OS_WIN)
 #include <Windows.h>
 #include <Shellapi.h>
-#endif
-#if defined(Q_OS_WIN)
 #include "ShellContextMenu.h"
 #endif
 #include "codeeditor.h"
