@@ -12,51 +12,138 @@ public:
     void save();
     void load();
 
-    bool searchOrFitler() const;
-    void setSearchOrFitler(bool searchOrFitler);
+    bool searchOrFitler() const
+    {
+        return m_searchOrFitler;
+    }
+    void setSearchOrFitler(bool searchOrFitler)
+    {
+        m_searchOrFitler = searchOrFitler;
+    }
 
-    const QString & searchField() const;
-    void setSearchField(const QString& searchField);
+    const QString & searchField() const
+    {
+        return m_searchField;
+    }
+    void setSearchField(const QString& searchField)
+    {
+        m_searchField = searchField;
+    }
 
-    const QString & temporaryDirectory() const;
-    void setTemporaryDirectory(const QString &temporaryDirectory);
+    const QString & temporaryDirectory() const
+    {
+        return m_temporaryDirectory;
+    }
+    void setTemporaryDirectory(const QString &temporaryDirectory)
+    {
+        m_temporaryDirectory = temporaryDirectory;
+    }
 
-    const QString & lastOpenedDirectory() const;
-    void setLastOpenedDirectory(const QString &lastOpenedDirectory);
+    const QString & lastOpenedDirectory() const
+    {
+        return m_lastOpenedDirectory;
+    }
+    void setLastOpenedDirectory(const QString &lastOpenedDirectory)
+    {
+        m_lastOpenedDirectory = lastOpenedDirectory;
+    }
 
-    const QString & sourceDirectory() const;
-    void setSourceDirectory(const QString &sourceDirectory);
+    const QString & sourceDirectory() const
+    {
+        return m_sourceDirectory;
+    }
+    void setSourceDirectory(const QString &sourceDirectory)
+    {
+        m_sourceDirectory = sourceDirectory;
+    }
 
-    bool regexMode() const;
-    void setRegexMode(bool regexMode);
+    bool regexMode() const
+    {
+        return m_regexMode;
+    }
+    void setRegexMode(bool regexMode)
+    {
+        m_regexMode = regexMode;
+    }
 
-    bool inMemoryDatabase() const;
-    void setInMemoryDatabase(bool inMemoryDatabase);
+    bool inMemoryDatabase() const
+    {
+        return m_inMemoryDatabase;
+    }
+    void setInMemoryDatabase(bool inMemoryDatabase)
+    {
+        m_inMemoryDatabase = inMemoryDatabase;
+    }
 
     void initialize();
 
-    const QString & everythingPath() const;
-    void setEverythingPath(const QString& everythingPath);
+    const QString & everythingPath() const
+    {
+        return m_everythingPath;
+    }
+    void setEverythingPath(const QString& everythingPath)
+    {
+        m_everythingPath = everythingPath;
+    }
 
-    bool fatalEnabled() const;
-    void setFatalEnabled(bool fatalEnabled);
+    bool fatalEnabled() const
+    {
+        return m_fatalEnabled;
+    }
+    void setFatalEnabled(bool fatalEnabled)
+    {
+        m_fatalEnabled = fatalEnabled;
+    }
 
-    bool errorEnabled() const;
-    void setErrorEnabled(bool errorEnabled);
+    bool errorEnabled() const
+    {
+        return m_errorEnabled;
+    }
+    void setErrorEnabled(bool errorEnabled)
+    {
+        m_errorEnabled = errorEnabled;
+    }
 
-    bool warnEnabled() const;
-    void setWarnEnabled(bool warnEnabled);
+    bool warnEnabled() const
+    {
+        return m_warnEnabled;
+    }
+    void setWarnEnabled(bool warnEnabled)
+    {
+        m_warnEnabled = warnEnabled;
+    }
 
-    bool infoEnabled() const;
-    void setInfoEnabled(bool infoEnabled);
+    bool infoEnabled() const
+    {
+        return m_infoEnabled;
+    }
+    void setInfoEnabled(bool infoEnabled)
+    {
+        m_infoEnabled = infoEnabled;
+    }
 
-    bool debugEnabled() const;
-    void setDebugEnabled(bool debugEnabled);
+    bool debugEnabled() const
+    {
+        return m_debugEnabled;
+    }
+    void setDebugEnabled(bool debugEnabled)
+    {
+        m_debugEnabled = debugEnabled;
+    }
 
-    bool traceEnabled() const;
-    void setTraceEnabled(bool traceEnabled);
+    bool traceEnabled() const
+    {
+        return m_traceEnabled;
+    }
+    void setTraceEnabled(bool traceEnabled)
+    {
+        m_traceEnabled = traceEnabled;
+    }
 
-    bool allLogLevelEnabled() const;
+    bool allLogLevelEnabled() const
+    {
+        return m_fatalEnabled && m_errorEnabled && m_warnEnabled && m_infoEnabled && m_debugEnabled && m_traceEnabled;
+    }
 private:
     bool m_inMemoryDatabase;
     bool m_searchOrFitler;
