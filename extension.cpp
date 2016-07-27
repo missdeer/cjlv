@@ -2,6 +2,7 @@
 #include <QStandardPaths>
 #include <QTextStream>
 #include <QFile>
+#include <QStringBuilder>
 #include "extension.h"
 
 Extension::Extension()
@@ -56,7 +57,7 @@ void Extension::save()
     contentElem.appendChild(contentCData);
     root.appendChild(contentElem);
 
-    QString path = QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation) + "/extensions/" + m_uuid + ".xml";
+    QString path = QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation) % "/extensions/" % m_uuid % ".xml";
     QFile file(path);
     if (!file.open(QIODevice::WriteOnly))
         return ;
@@ -68,7 +69,7 @@ void Extension::save()
 
 void Extension::destroy()
 {
-    QString path = QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation) + "/extensions/" + m_uuid + ".xml";
+    QString path = QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation) % "/extensions/" % m_uuid % ".xml";
     QFile file(path);
     file.remove();
 }

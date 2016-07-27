@@ -2,6 +2,7 @@
 #include <QStandardPaths>
 #include <QDir>
 #include <QtConcurrent>
+#include <QStringBuilder>
 #include "extensionmodel.h"
 
 ExtensionModel* ExtensionModel::m_instance = nullptr;
@@ -111,13 +112,13 @@ void ExtensionModel::scanExtensions()
 void ExtensionModel::doScanExtensions()
 {
 #if defined(Q_OS_WIN)
-    QString path = QApplication::applicationDirPath() + "/extensions";
+    QString path = QApplication::applicationDirPath() % "/extensions";
 #elif defined(Q_OS_MAC)
-    QString path = QApplication::applicationDirPath() + "/../PlugIns/extensions";
+    QString path = QApplication::applicationDirPath() % "/../PlugIns/extensions";
 #endif
     scanExtensionsFromDirectory(path, "Built-in");
 
-    path = QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation) + "/extensions";
+    path = QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation) % "/extensions";
     QDir dir(path);
     if (!dir.exists())
         dir.mkpath(path);

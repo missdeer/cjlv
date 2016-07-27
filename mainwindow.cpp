@@ -11,6 +11,7 @@
 #include <QDragEnterEvent>
 #include <QHBoxLayout>
 #include <QDesktopServices>
+#include <QStringBuilder>
 #if defined(Q_OS_WIN)
 #include <QWinThumbnailToolBar>
 #include <QWinThumbnailToolButton>
@@ -222,10 +223,10 @@ void MainWindow::on_actionOpenLogFolder_triggered()
 void MainWindow::on_actionOpenCurrentInstalledJabberLogFolder_triggered()
 {
 #if defined(Q_OS_WIN)
-    QString dir = QStandardPaths::writableLocation(QStandardPaths::HomeLocation) + "/AppData/Local/Cisco/Unified Communications/Jabber/CSF/Logs";
+    QString dir = QStandardPaths::writableLocation(QStandardPaths::HomeLocation) % "/AppData/Local/Cisco/Unified Communications/Jabber/CSF/Logs";
 #endif
 #if defined(Q_OS_MAC)
-    QString dir = QStandardPaths::writableLocation(QStandardPaths::HomeLocation) + "/Library/Logs/Jabber";
+    QString dir = QStandardPaths::writableLocation(QStandardPaths::HomeLocation) % "/Library/Logs/Jabber";
 #endif
 
     QDir d(dir);

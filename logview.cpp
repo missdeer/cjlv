@@ -15,6 +15,7 @@
 #include <QMessageBox>
 #include <QAtomicInt>
 #include <QMenu>
+#include <QStringBuilder>
 #include <JlCompress.h>
 #if defined(Q_OS_WIN)
 #include <QWinTaskbarButton>
@@ -92,9 +93,9 @@ void LogView::openZipBundle(const QString &path)
     m_extractDir = g_settings->temporaryDirectory();
     if (m_extractDir.isEmpty())
     {
-        m_extractDir = QStandardPaths::writableLocation(QStandardPaths::TempLocation) + "/CiscoJabberLogs";
+        m_extractDir = QStandardPaths::writableLocation(QStandardPaths::TempLocation) % "/CiscoJabberLogs";
     }
-    m_extractDir.append("/" + fi.completeBaseName());
+    m_extractDir.append("/" % fi.completeBaseName());
     QDir dir(m_extractDir);
     if (!dir.exists())
         dir.mkpath(m_extractDir);

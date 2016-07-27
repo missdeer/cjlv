@@ -12,6 +12,7 @@
 #include <QFile>
 #include <QFileInfo>
 #include <QDesktopWidget>
+#include <QStringBuilder>
 #include <Everything.h>
 #include <everything_ipc.h>
 #include "everythingwrapper.h"
@@ -119,7 +120,7 @@ QString GetEverythingPath()
             SendMessage(hWnd,EVERYTHING_WM_IPC,EVERYTHING_IPC_CREATE_DESKTOP_SHORTCUT,0);
         }
 
-        QString path = QStandardPaths::writableLocation(QStandardPaths::DesktopLocation) + "/Search Everything.lnk";
+        QString path = QStandardPaths::writableLocation(QStandardPaths::DesktopLocation) % "/Search Everything.lnk";
         path = path.replace(QChar('/'), QChar('\\'));
 
         WCHAR szTarget[MAX_PATH] = {0};
@@ -150,7 +151,7 @@ bool QuickGetFilesByFileName(const QString& fileName, QStringList& results)
                              "Notice",
                              "Everything is not running, thus Cisco Jabber Log Viewer can't find files. Do you want to launch the Everything application shipped with Cisco Jabber Log Viewer?") == QMessageBox::Yes)
         {
-            QString everythingFilePath = QApplication::applicationDirPath() + "/Everything.exe";
+            QString everythingFilePath = QApplication::applicationDirPath() % "/Everything.exe";
             if (!QFile::exists(everythingFilePath))
             {
                 QMessageBox::warning(p,

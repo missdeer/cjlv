@@ -2,6 +2,7 @@
 #include <QStandardPaths>
 #include <QDir>
 #include <QSettings>
+#include <QStringBuilder>
 #include "settings.h"
 
 Settings* g_settings = nullptr;
@@ -32,10 +33,10 @@ void Settings::initialize()
     if (m_lastOpenedDirectory.isEmpty())
     {
 #if defined(Q_OS_WIN)
-        m_lastOpenedDirectory = QStandardPaths::writableLocation(QStandardPaths::HomeLocation) + "/AppData/Local/Cisco/Unified Communications/Jabber/CSF/Logs";
+        m_lastOpenedDirectory = QStandardPaths::writableLocation(QStandardPaths::HomeLocation) % "/AppData/Local/Cisco/Unified Communications/Jabber/CSF/Logs";
 #endif
 #if defined(Q_OS_MAC)
-        m_lastOpenedDirectory = QStandardPaths::writableLocation(QStandardPaths::HomeLocation) + "/Library/Logs/Jabber";
+        m_lastOpenedDirectory = QStandardPaths::writableLocation(QStandardPaths::HomeLocation) % "/Library/Logs/Jabber";
 #endif
         QDir dir(m_lastOpenedDirectory);
         if (!dir.exists())
@@ -70,7 +71,7 @@ void Settings::load()
     m_lastOpenedDirectory = settings.value("lastOpenedDirectory").toString();
     m_everythingPath = settings.value("everythingPath").toString();
     if (m_everythingPath.isEmpty())
-        m_everythingPath = QApplication::applicationDirPath() + "/Everything.exe";
+        m_everythingPath = QApplication::applicationDirPath() % "/Everything.exe";
 }
 
 

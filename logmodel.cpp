@@ -6,6 +6,7 @@
 #include <QSqlError>
 #include <QSqlDriver>
 #include <QStandardPaths>
+#include <QStringBuilder>
 #include <QFile>
 #include <QDir>
 #include <QMap>
@@ -268,7 +269,7 @@ QVariant LogModel::data(const QModelIndex &index, int role) const
     case 7:
         return QVariant(r->content);
     case 8:
-        return QVariant("." + r->logFile);
+        return QVariant("." % r->logFile);
     case 9:
         return QVariant(r->line);
     default:
@@ -393,7 +394,7 @@ void LogModel::copyCell(const QModelIndex& cell)
         clipboard->setText(r->content);
         break;
     case 8:
-        clipboard->setText("." + r->logFile);
+        clipboard->setText("." % r->logFile);
         break;
     case 9:
         clipboard->setText(QString("%1").arg(r->line));
@@ -531,7 +532,7 @@ QString LogModel::getLogFileName(const QModelIndex &index)
     if (r->logFile == "log")
         fileName = "jabber.log";
     else
-        fileName = "jabber.log." + r->logFile;
+        fileName = "jabber.log." % r->logFile;
 
     auto itLog = std::find_if(m_logFiles.begin(), m_logFiles.end(),
                            [&fileName](const QString& logFile) { return logFile.contains(fileName); });
@@ -549,7 +550,7 @@ int LogModel::getLogFileLine(const QModelIndex &index, QString &fileName)
     if (r->logFile == "log")
         fileName = "jabber.log";
     else
-        fileName = "jabber.log." + r->logFile;
+        fileName = "jabber.log." % r->logFile;
 
     auto itLog = std::find_if(m_logFiles.begin(), m_logFiles.end(),
                            [&fileName](const QString& logFile) { return logFile.contains(fileName); });
