@@ -1,8 +1,6 @@
 #ifndef EXTENSIONDIALOG_H
 #define EXTENSIONDIALOG_H
 
-#include <QDialog>
-#include <QItemSelection>
 #include "extension.h"
 
 class CodeEditor;

@@ -1,11 +1,6 @@
 #ifndef LOGMODEL_H
 #define LOGMODEL_H
 
-#include <QAbstractTableModel>
-#include <QDateTime>
-#include <QMap>
-#include <QSharedPointer>
-#include <QFuture>
 #include "extension.h"
 
 struct lua_State;

@@ -1,6 +1,4 @@
-#include <QFile>
-#include <QFileInfo>
-#include <QTextStream>
+#include "stdafx.h"
 #include "codeeditor.h"
 
 CodeEditor::CodeEditor(QWidget *parent)

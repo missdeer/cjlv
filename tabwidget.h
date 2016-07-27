@@ -1,7 +1,6 @@
 #ifndef TABWIDGET_H
 #define TABWIDGET_H
 
-#include <QTableWidget>
 #include "extension.h"
 
 class LogView;

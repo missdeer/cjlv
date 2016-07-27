@@ -1,4 +1,4 @@
-#include <QFileDialog>
+#include "stdafx.h"
 #include "settings.h"
 #include "preferencedialog.h"
 #include "ui_preferencedialog.h"

@@ -4,15 +4,7 @@
 #include <shlguid.h>
 #include <strsafe.h>
 #include <PSapi.h>
-#include <QtCore>
-#include <QApplication>
-#include <QStringList>
-#include <QString>
-#include <QMessageBox>
-#include <QFile>
-#include <QFileInfo>
-#include <QDesktopWidget>
-#include <QStringBuilder>
+#include "stdafx.h"
 #include <Everything.h>
 #include <everything_ipc.h>
 #include "everythingwrapper.h"

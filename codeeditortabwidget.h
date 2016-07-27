@@ -1,7 +1,6 @@
 #ifndef CODEEDITORTABWIDGET_H
 #define CODEEDITORTABWIDGET_H
 
-#include <QTableWidget>
 
 class CodeEditor;
 

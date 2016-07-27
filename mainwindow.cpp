@@ -1,23 +1,4 @@
-#include <functional>
-#include <QtCore>
-#include <QApplication>
-#include <QActionGroup>
-#include <QFileDialog>
-#include <QStandardPaths>
-#include <QMessageBox>
-#include <QDir>
-#include <QLineEdit>
-#include <QDropEvent>
-#include <QDragEnterEvent>
-#include <QHBoxLayout>
-#include <QDesktopServices>
-#include <QStringBuilder>
-#if defined(Q_OS_WIN)
-#include <QWinThumbnailToolBar>
-#include <QWinThumbnailToolButton>
-#include <QWinTaskbarButton>
-#include <QWinTaskbarProgress>
-#endif
+#include "stdafx.h"
 #include "settings.h"
 #include "preferencedialog.h"
 #include "extensiondialog.h"

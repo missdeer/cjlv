@@ -1,25 +1,6 @@
-#include <QtCore>
-#include <QApplication>
-#include <QHeaderView>
-#include <QFileInfo>
-#include <QDir>
-#include <QStandardPaths>
-#include <QtConcurrent>
-#include <QVBoxLayout>
-#include <QTableView>
-#include <QSplitter>
-#include <QDomDocument>
-#include <QProgressDialog>
-#include <QTimer>
-#include <QRegularExpression>
-#include <QMessageBox>
-#include <QAtomicInt>
-#include <QMenu>
-#include <QStringBuilder>
+#include "stdafx.h"
 #include <JlCompress.h>
 #if defined(Q_OS_WIN)
-#include <QWinTaskbarButton>
-#include <QWinTaskbarProgress>
 #include "ShellContextMenu.h"
 #endif
 #include "settings.h"

@@ -1,10 +1,4 @@
-#include <QApplication>
-#include <QtXml>
-#include <QFile>
-#include <QDomDocument>
-#include <QFileInfo>
-#include <QRegExp>
-#include <QStringBuilder>
+#include "stdafx.h"
 #include "ScintillaEdit.h"
 #include "scintillaconfig.h"
 

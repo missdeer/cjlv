@@ -1,8 +1,6 @@
 #ifndef SCINTILLACONFIG_H
 #define SCINTILLACONFIG_H
 
-#include <QString>
-
 class ScintillaEdit;
 
 class ScintillaConfig

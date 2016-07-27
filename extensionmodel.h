@@ -1,8 +1,6 @@
 #ifndef EXTENSIONMODEL_H
 #define EXTENSIONMODEL_H
 
-#include <QAbstractTableModel>
-#include <QList>
 #include "extension.h"
 
 class ExtensionModel : public QAbstractTableModel

@@ -1,6 +1,5 @@
 #include <Windows.h>
-#include <QtCore>
-#include <QList>
+#include "stdafx.h"
 #include <Shobjidl.h>
 #include <Shlobj.h>
 #include "ShellContextMenu.h"

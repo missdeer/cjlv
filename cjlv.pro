@@ -8,7 +8,9 @@ QT       += core gui concurrent widgets sql xml
 
 TARGET = "Cisco Jabber Log Viewer"
 TEMPLATE = app
-CONFIG += c++11
+CONFIG += c++11 precompile_header
+PRECOMPILED_HEADER = stdafx.h
+
 include($$PWD/3rdparty/quazip-0.7.2/quazip.pri)
 include($$PWD/3rdparty/qtsingleapplication/qtsingleapplication.pri)
 include($$PWD/3rdparty/lua-5.3.3/src/lua.pri)
@@ -48,7 +50,8 @@ HEADERS  += mainwindow.h \
     preferencedialog.h \
     extensiondialog.h \
     extensionmodel.h \
-    extension.h
+    extension.h \
+    stdafx.h
 
 FORMS    += mainwindow.ui \
     preferencedialog.ui \

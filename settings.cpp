@@ -1,8 +1,4 @@
-#include <QApplication>
-#include <QStandardPaths>
-#include <QDir>
-#include <QSettings>
-#include <QStringBuilder>
+#include "stdafx.h"
 #include "settings.h"
 
 Settings* g_settings = nullptr;

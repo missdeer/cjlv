@@ -5,11 +5,6 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-#include <QWidget>
-#include <QPoint>
-#include <QStringList>
-#include <QMenu>
-
 class CShellContextMenu  
 {
 public:

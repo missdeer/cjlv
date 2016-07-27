@@ -1,8 +1,4 @@
-#include <QApplication>
-#include <QStandardPaths>
-#include <QDir>
-#include <QtConcurrent>
-#include <QStringBuilder>
+#include "stdafx.h"
 #include "extensionmodel.h"
 
 ExtensionModel* ExtensionModel::m_instance = nullptr;

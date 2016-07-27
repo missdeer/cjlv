@@ -1,7 +1,4 @@
-#include <QtCore>
-#include <QUuid>
-#include <QDateTime>
-#include <QMessageBox>
+#include "stdafx.h"
 #include "codeeditor.h"
 #include "extensionmodel.h"
 #include "extensiondialog.h"
@@ -94,8 +91,9 @@ void ExtensionDialog::on_btnDeleteExtension_clicked()
         }
         if (QMessageBox::question(this, tr("Confirm"), tr("Delete the selected extension?"), QMessageBox::Ok | QMessageBox::Cancel) == QMessageBox::Cancel)
             return;
-        ExtensionModel::instance()->removeExtension(m_currentExtension);
+
         m_currentExtension->destroy();
+        ExtensionModel::instance()->removeExtension(m_currentExtension);
         m_currentExtension.reset();
         ui->edtAuthor->clear();
         ui->edtTitle->clear();
@@ -116,9 +114,12 @@ void ExtensionDialog::on_btnApplyModification_clicked()
                                   tr("Current selected extension is built-in extension, do you want to fork a custom one?"),
                                   QMessageBox::Ok | QMessageBox::Cancel) == QMessageBox::Cancel)
             return;
+        ExtensionPtr e(new Extension( *m_currentExtension.data()));
+        m_currentExtension.swap(e);
         m_currentExtension->setCreatedAt(QDateTime::currentDateTime().toString(Qt::ISODate));
         m_currentExtension->setUuid(QUuid::createUuid().toString());
         m_currentExtension->setFrom("Custom");
+        m_currentExtension->changePathToCustomExtensionDirectory();
     }
     else
     {

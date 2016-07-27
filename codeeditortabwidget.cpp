@@ -1,13 +1,8 @@
-#include <QtCore>
+#include "stdafx.h"
 #if defined(Q_OS_WIN)
 #include <Windows.h>
 #include <Shellapi.h>
 #endif
-#include <QApplication>
-#include <QFileInfo>
-#include <QMenu>
-#include <QClipboard>
-#include <QDesktopServices>
 #if defined(Q_OS_WIN)
 #include "ShellContextMenu.h"
 #endif

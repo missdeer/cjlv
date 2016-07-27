@@ -1,10 +1,5 @@
+#include "stdafx.h"
 #include "qtsingleapplication.h"
-#include <QtCore>
-#include <QApplication>
-#include <QCommandLineOption>
-#include <QCommandLineParser>
-#include <QDateTime>
-#include <QMessageBox>
 #include "mainwindow.h"
 #include "settings.h"
 
