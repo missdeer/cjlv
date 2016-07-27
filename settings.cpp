@@ -115,6 +115,11 @@ void Settings::setTraceEnabled(bool traceEnabled)
     m_traceEnabled = traceEnabled;
 }
 
+bool Settings::allLogLevelEnabled() const
+{
+    return m_fatalEnabled && m_errorEnabled && m_warnEnabled && m_infoEnabled && m_debugEnabled && m_traceEnabled;
+}
+
 bool Settings::searchOrFitler() const
 {
     return m_searchOrFitler;

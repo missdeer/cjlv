@@ -56,6 +56,7 @@ public:
     bool traceEnabled() const;
     void setTraceEnabled(bool traceEnabled);
 
+    bool allLogLevelEnabled() const;
 private:
     bool m_inMemoryDatabase;
     bool m_searchOrFitler;

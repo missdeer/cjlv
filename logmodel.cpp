@@ -640,6 +640,46 @@ void LogModel::doReload()
 
 void LogModel::generateSQLStatements(int offset, QString &sqlFetch, QString &sqlCount)
 {    
+    if (g_settings->allLogLevelEnabled() || m_searchField == "level")
+    {
+        if (m_luaMode)
+        {
+            // lua match
+            sqlCount = QString("SELECT COUNT(*) FROM logs WHERE %1 MATCH 'dummy'").arg(m_searchField);
+            sqlFetch = QString("SELECT * FROM logs WHERE %1 MATCH 'dummy' ORDER BY epoch LIMIT %2, 200;").arg(m_searchField).arg(offset);
+            return;
+        }
+
+        if (m_keyword.isEmpty())
+        {
+            // no search, no filter
+            sqlCount = "SELECT COUNT(*) FROM logs";
+            sqlFetch = QString("SELECT * FROM logs ORDER BY epoch LIMIT %1, 200;").arg(offset);
+            return;
+        }
+
+        if (m_searchField.isEmpty())
+        {
+            // SQL WHERE clause extension
+            sqlCount = QString("SELECT COUNT(*) FROM logs WHERE %1").arg(m_keyword);
+            sqlFetch = QString("SELECT * FROM logs WHERE %1 ORDER BY epoch LIMIT %2, 200;").arg(m_keyword).arg(offset);
+            return;
+        }
+
+        if (m_regexpMode)
+        {
+            // regexp filter
+            sqlCount = QString("SELECT COUNT(*) FROM logs WHERE %1 REGEXP ?").arg(m_searchField);
+            sqlFetch = QString("SELECT * FROM logs WHERE %1 REGEXP ? ORDER BY epoch LIMIT %2, 200;").arg(m_searchField).arg(offset);
+            return;
+        }
+
+        // simple keyword, SQL LIKE fitler
+        sqlCount = QString("SELECT COUNT(*) FROM logs WHERE %1 LIKE '%'||?||'%'").arg(m_searchField);
+        sqlFetch = QString("SELECT * FROM logs WHERE %1 LIKE '%'||?||'%' ORDER BY epoch LIMIT %2, 200;").arg(m_searchField).arg(offset);
+        return;
+    }
+
     if (m_luaMode)
     {
         // lua match
@@ -664,34 +704,17 @@ void LogModel::generateSQLStatements(int offset, QString &sqlFetch, QString &sql
         return;
     }
 
-    if (m_searchField != "level")
+    if (m_regexpMode)
     {
-        if (m_regexpMode)
-        {
-            // regexp filter
-            sqlCount = QString("SELECT COUNT(*) FROM logs WHERE %1 REGEXP ? AND level GLOB 'dummy'").arg(m_searchField);
-            sqlFetch = QString("SELECT * FROM logs WHERE %1 REGEXP ? AND level GLOB 'dummy' ORDER BY epoch LIMIT %2, 200;").arg(m_searchField).arg(offset);
-            return;
-        }
-
-        // simple keyword, SQL LIKE fitler
-        sqlCount = QString("SELECT COUNT(*) FROM logs WHERE %1 LIKE '%'||?||'%' AND level GLOB 'dummy'").arg(m_searchField);
-        sqlFetch = QString("SELECT * FROM logs WHERE %1 LIKE '%'||?||'%' AND level GLOB 'dummy' ORDER BY epoch LIMIT %2, 200;").arg(m_searchField).arg(offset);
+        // regexp filter
+        sqlCount = QString("SELECT COUNT(*) FROM logs WHERE %1 REGEXP ? AND level GLOB 'dummy'").arg(m_searchField);
+        sqlFetch = QString("SELECT * FROM logs WHERE %1 REGEXP ? AND level GLOB 'dummy' ORDER BY epoch LIMIT %2, 200;").arg(m_searchField).arg(offset);
+        return;
     }
-    else
-    {
-        if (m_regexpMode)
-        {
-            // regexp filter
-            sqlCount = QString("SELECT COUNT(*) FROM logs WHERE %1 REGEXP ?").arg(m_searchField);
-            sqlFetch = QString("SELECT * FROM logs WHERE %1 REGEXP ? ORDER BY epoch LIMIT %2, 200;").arg(m_searchField).arg(offset);
-            return;
-        }
 
-        // simple keyword, SQL LIKE fitler
-        sqlCount = QString("SELECT COUNT(*) FROM logs WHERE %1 LIKE '%'||?||'%'").arg(m_searchField);
-        sqlFetch = QString("SELECT * FROM logs WHERE %1 LIKE '%'||?||'%' ORDER BY epoch LIMIT %2, 200;").arg(m_searchField).arg(offset);
-    }
+    // simple keyword, SQL LIKE fitler
+    sqlCount = QString("SELECT COUNT(*) FROM logs WHERE %1 LIKE '%'||?||'%' AND level GLOB 'dummy'").arg(m_searchField);
+    sqlFetch = QString("SELECT * FROM logs WHERE %1 LIKE '%'||?||'%' AND level GLOB 'dummy' ORDER BY epoch LIMIT %2, 200;").arg(m_searchField).arg(offset);
 }
 
 void LogModel::doFilter(const QString &content, const QString &field, bool regexpMode, bool luaMode)
