@@ -38,10 +38,34 @@ public:
     const QString & everythingPath() const;
     void setEverythingPath(const QString& everythingPath);
 
+    bool fatalEnabled() const;
+    void setFatalEnabled(bool fatalEnabled);
+
+    bool errorEnabled() const;
+    void setErrorEnabled(bool errorEnabled);
+
+    bool warnEnabled() const;
+    void setWarnEnabled(bool warnEnabled);
+
+    bool infoEnabled() const;
+    void setInfoEnabled(bool infoEnabled);
+
+    bool debugEnabled() const;
+    void setDebugEnabled(bool debugEnabled);
+
+    bool traceEnabled() const;
+    void setTraceEnabled(bool traceEnabled);
+
 private:
     bool m_inMemoryDatabase;
     bool m_searchOrFitler;
     bool m_regexMode;
+    bool m_fatalEnabled;
+    bool m_errorEnabled;
+    bool m_warnEnabled;
+    bool m_infoEnabled;
+    bool m_debugEnabled;
+    bool m_traceEnabled;
     QString m_searchField;
     QString m_temporaryDirectory;
     QString m_lastOpenedDirectory;

@@ -8,6 +8,7 @@
 #include <QStandardPaths>
 #include <QFile>
 #include <QDir>
+#include <QMap>
 #include <QDateTime>
 #include <QRegularExpression>
 #include <QtConcurrent>
@@ -114,6 +115,30 @@ start_read:
         return m_offset == m_fileSize;
     }
 };
+
+static void level_glob(sqlite3_context* ctx, int /*argc*/, sqlite3_value** argv)
+{
+    QString text(reinterpret_cast<const char*>(sqlite3_value_text(argv[1])));
+
+    QMap<QString, bool> v {
+        {"FATAL", g_settings->fatalEnabled()},
+        {"ERROR", g_settings->errorEnabled()},
+        {"WARN", g_settings->warnEnabled()},
+        {"INFO", g_settings->infoEnabled()},
+        {"DEBUG", g_settings->debugEnabled()},
+        {"TRACE", g_settings->traceEnabled()},
+    };
+
+    bool b = v[text];
+    if (b)
+    {
+        sqlite3_result_int(ctx, 1);
+    }
+    else
+    {
+        sqlite3_result_int(ctx, 0);
+    }
+}
 
 static void lua_match(sqlite3_context* ctx, int /*argc*/, sqlite3_value** argv)
 {
@@ -618,38 +643,55 @@ void LogModel::generateSQLStatements(int offset, QString &sqlFetch, QString &sql
     if (m_luaMode)
     {
         // lua match
-        sqlCount = QString("SELECT COUNT(*) FROM logs WHERE %1 MATCH 'dummy'").arg(m_searchField);
-        sqlFetch = QString("SELECT * FROM logs WHERE %1 MATCH 'dummy' ORDER BY epoch LIMIT %2, 200;").arg(m_searchField).arg(offset);
+        sqlCount = QString("SELECT COUNT(*) FROM logs WHERE %1 MATCH 'dummy' AND level GLOB 'dummy'").arg(m_searchField);
+        sqlFetch = QString("SELECT * FROM logs WHERE %1 MATCH 'dummy' AND level GLOB 'dummy' ORDER BY epoch LIMIT %2, 200;").arg(m_searchField).arg(offset);
         return;
     }
 
     if (m_keyword.isEmpty())
     {
         // no search, no filter
-        sqlCount = "SELECT COUNT(*) FROM logs";
-        sqlFetch = QString("SELECT * FROM logs ORDER BY epoch LIMIT %1, 200;").arg(offset);
+        sqlCount = "SELECT COUNT(*) FROM logs WHERE level GLOB 'dummy'";
+        sqlFetch = QString("SELECT * FROM logs WHERE level GLOB 'dummy' ORDER BY epoch LIMIT %1, 200;").arg(offset);
         return;
     }
 
     if (m_searchField.isEmpty())
     {
         // SQL WHERE clause extension
-        sqlCount = QString("SELECT COUNT(*) FROM logs WHERE %1").arg(m_keyword);
-        sqlFetch = QString("SELECT * FROM logs WHERE %1 ORDER BY epoch LIMIT %2, 200;").arg(m_keyword).arg(offset);
+        sqlCount = QString("SELECT COUNT(*) FROM logs WHERE %1 AND level GLOB 'dummy'").arg(m_keyword);
+        sqlFetch = QString("SELECT * FROM logs WHERE %1 AND level GLOB 'dummy' ORDER BY epoch LIMIT %2, 200;").arg(m_keyword).arg(offset);
         return;
     }
 
-    if (m_regexpMode)
+    if (m_searchField != "level")
     {
-        // regexp filter
-        sqlCount = QString("SELECT COUNT(*) FROM logs WHERE %1 REGEXP ?").arg(m_searchField);
-        sqlFetch = QString("SELECT * FROM logs WHERE %1 REGEXP ? ORDER BY epoch LIMIT %2, 200;").arg(m_searchField).arg(offset);
-        return;
-    }
+        if (m_regexpMode)
+        {
+            // regexp filter
+            sqlCount = QString("SELECT COUNT(*) FROM logs WHERE %1 REGEXP ? AND level GLOB 'dummy'").arg(m_searchField);
+            sqlFetch = QString("SELECT * FROM logs WHERE %1 REGEXP ? AND level GLOB 'dummy' ORDER BY epoch LIMIT %2, 200;").arg(m_searchField).arg(offset);
+            return;
+        }
 
-    // simple keyword, SQL LIKE fitler
-    sqlCount = QString("SELECT COUNT(*) FROM logs WHERE %1 LIKE '%'||?||'%'").arg(m_searchField);
-    sqlFetch = QString("SELECT * FROM logs WHERE %1 LIKE '%'||?||'%' ORDER BY epoch LIMIT %2, 200;").arg(m_searchField).arg(offset);
+        // simple keyword, SQL LIKE fitler
+        sqlCount = QString("SELECT COUNT(*) FROM logs WHERE %1 LIKE '%'||?||'%' AND level GLOB 'dummy'").arg(m_searchField);
+        sqlFetch = QString("SELECT * FROM logs WHERE %1 LIKE '%'||?||'%' AND level GLOB 'dummy' ORDER BY epoch LIMIT %2, 200;").arg(m_searchField).arg(offset);
+    }
+    else
+    {
+        if (m_regexpMode)
+        {
+            // regexp filter
+            sqlCount = QString("SELECT COUNT(*) FROM logs WHERE %1 REGEXP ?").arg(m_searchField);
+            sqlFetch = QString("SELECT * FROM logs WHERE %1 REGEXP ? ORDER BY epoch LIMIT %2, 200;").arg(m_searchField).arg(offset);
+            return;
+        }
+
+        // simple keyword, SQL LIKE fitler
+        sqlCount = QString("SELECT COUNT(*) FROM logs WHERE %1 LIKE '%'||?||'%'").arg(m_searchField);
+        sqlFetch = QString("SELECT * FROM logs WHERE %1 LIKE '%'||?||'%' ORDER BY epoch LIMIT %2, 200;").arg(m_searchField).arg(offset);
+    }
 }
 
 void LogModel::doFilter(const QString &content, const QString &field, bool regexpMode, bool luaMode)
@@ -969,6 +1011,7 @@ void LogModel::createDatabase()
                     // http://www.sqlite.org/2016/sqlite-amalgamation-3110100.zip
                     sqlite3_create_function_v2(db_handle, "regexp", 2, SQLITE_UTF8 | SQLITE_DETERMINISTIC, NULL, &qt_regexp, NULL, NULL, NULL);
                     sqlite3_create_function_v2(db_handle, "match", 2, SQLITE_UTF8 | SQLITE_DETERMINISTIC, NULL, &lua_match, NULL, NULL, NULL);
+                    sqlite3_create_function_v2(db_handle, "glob", 2, SQLITE_UTF8 | SQLITE_DETERMINISTIC, NULL, &level_glob, NULL, NULL, NULL);
                 }
             }
         }

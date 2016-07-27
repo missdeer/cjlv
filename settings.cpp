@@ -10,6 +10,12 @@ Settings::Settings()
     : m_inMemoryDatabase(true)
     , m_searchOrFitler(false)
     , m_regexMode(false)
+    , m_fatalEnabled(true)
+    , m_errorEnabled(true)
+    , m_warnEnabled(true)
+    , m_infoEnabled(true)
+    , m_debugEnabled(true)
+    , m_traceEnabled(true)
 {
 
 }
@@ -47,6 +53,66 @@ const QString &Settings::everythingPath() const
 void Settings::setEverythingPath(const QString& everythingPath)
 {
     m_everythingPath = everythingPath;
+}
+
+bool Settings::fatalEnabled() const
+{
+    return m_fatalEnabled;
+}
+
+void Settings::setFatalEnabled(bool fatalEnabled)
+{
+    m_fatalEnabled = fatalEnabled;
+}
+
+bool Settings::errorEnabled() const
+{
+    return m_errorEnabled;
+}
+
+void Settings::setErrorEnabled(bool errorEnabled)
+{
+    m_errorEnabled = errorEnabled;
+}
+
+bool Settings::warnEnabled() const
+{
+    return m_warnEnabled;
+}
+
+void Settings::setWarnEnabled(bool warnEnabled)
+{
+    m_warnEnabled = warnEnabled;
+}
+
+bool Settings::infoEnabled() const
+{
+    return m_infoEnabled;
+}
+
+void Settings::setInfoEnabled(bool infoEnabled)
+{
+    m_infoEnabled = infoEnabled;
+}
+
+bool Settings::debugEnabled() const
+{
+    return m_debugEnabled;
+}
+
+void Settings::setDebugEnabled(bool debugEnabled)
+{
+    m_debugEnabled = debugEnabled;
+}
+
+bool Settings::traceEnabled() const
+{
+    return m_traceEnabled;
+}
+
+void Settings::setTraceEnabled(bool traceEnabled)
+{
+    m_traceEnabled = traceEnabled;
 }
 
 bool Settings::searchOrFitler() const

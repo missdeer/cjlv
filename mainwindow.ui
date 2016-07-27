@@ -116,6 +116,17 @@
      <addaction name="actionSearchFieldLogFile"/>
      <addaction name="actionSearchFieldLine"/>
     </widget>
+    <widget class="QMenu" name="menuLog_Level">
+     <property name="title">
+      <string>Log Level</string>
+     </property>
+     <addaction name="actionLogLevelFatal"/>
+     <addaction name="actionLogLevelError"/>
+     <addaction name="actionLogLevelWarn"/>
+     <addaction name="actionLogLevelInfo"/>
+     <addaction name="actionLogLevelDebug"/>
+     <addaction name="actionLogLevelTrace"/>
+    </widget>
     <addaction name="actionSearch"/>
     <addaction name="actionFilter"/>
     <addaction name="separator"/>
@@ -124,6 +135,7 @@
     <addaction name="actionRefreshKeyword"/>
     <addaction name="actionRegexpMode"/>
     <addaction name="menuSearchField"/>
+    <addaction name="menuLog_Level"/>
     <addaction name="separator"/>
     <addaction name="actionScrollToTop"/>
     <addaction name="actionScrollToBottom"/>
@@ -729,6 +741,90 @@
    </property>
    <property name="toolTip">
     <string>Help content</string>
+   </property>
+  </action>
+  <action name="actionLogLevelFatal">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Fatal</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+L, Ctrl+F</string>
+   </property>
+  </action>
+  <action name="actionLogLevelError">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Error</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+L, Ctrl+E</string>
+   </property>
+  </action>
+  <action name="actionLogLevelWarn">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Warn</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+L, Ctrl+W</string>
+   </property>
+  </action>
+  <action name="actionLogLevelInfo">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Info</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+L, Ctrl+I</string>
+   </property>
+  </action>
+  <action name="actionLogLevelDebug">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Debug</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+L, Ctrl+D</string>
+   </property>
+  </action>
+  <action name="actionLogLevelTrace">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Trace</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+L, Ctrl+T</string>
    </property>
   </action>
  </widget>

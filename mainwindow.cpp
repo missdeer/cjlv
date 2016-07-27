@@ -442,3 +442,39 @@ void MainWindow::on_actionHelpContent_triggered()
 {
     QDesktopServices::openUrl(QUrl::fromUserInput("https://wiki.cisco.com/display/CUCBU/Cisco+Jabber+Log+Viewer"));
 }
+
+void MainWindow::on_actionLogLevelFatal_triggered()
+{
+    g_settings->setFatalEnabled(ui->actionLogLevelFatal->isChecked());
+    on_actionRefreshKeyword_triggered();
+}
+
+void MainWindow::on_actionLogLevelError_triggered()
+{
+    g_settings->setErrorEnabled(ui->actionLogLevelError->isChecked());
+    on_actionRefreshKeyword_triggered();
+}
+
+void MainWindow::on_actionLogLevelWarn_triggered()
+{
+    g_settings->setWarnEnabled(ui->actionLogLevelWarn->isChecked());
+    on_actionRefreshKeyword_triggered();
+}
+
+void MainWindow::on_actionLogLevelInfo_triggered()
+{
+    g_settings->setInfoEnabled(ui->actionLogLevelInfo->isChecked());
+    on_actionRefreshKeyword_triggered();
+}
+
+void MainWindow::on_actionLogLevelDebug_triggered()
+{
+    g_settings->setDebugEnabled(ui->actionLogLevelDebug->isChecked());
+    on_actionRefreshKeyword_triggered();
+}
+
+void MainWindow::on_actionLogLevelTrace_triggered()
+{
+    g_settings->setTraceEnabled(ui->actionLogLevelTrace->isChecked());
+    on_actionRefreshKeyword_triggered();
+}

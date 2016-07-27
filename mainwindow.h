@@ -87,6 +87,18 @@ private slots:
 
     void on_actionHelpContent_triggered();
 
+    void on_actionLogLevelFatal_triggered();
+
+    void on_actionLogLevelError_triggered();
+
+    void on_actionLogLevelWarn_triggered();
+
+    void on_actionLogLevelInfo_triggered();
+
+    void on_actionLogLevelDebug_triggered();
+
+    void on_actionLogLevelTrace_triggered();
+
 private:
     Ui::MainWindow *ui;
     QWinThumbnailToolBar *thumbbar;
