@@ -79,6 +79,14 @@ MainWindow::~MainWindow()
 
 void MainWindow::openLogs(const QStringList &logs)
 {
+    QList<QString> names {
+        "jabber.log",
+        "jabber.log.1",
+        "jabber.log.2",
+        "jabber.log.3",
+        "jabber.log.4",
+        "jabber.log.5"
+    };
     Q_FOREACH(const QString& fileName, logs)
     {
         QFileInfo fi(fileName);
@@ -88,7 +96,8 @@ void MainWindow::openLogs(const QStringList &logs)
             {
                 ui->tabWidget->openZipBundle(fileName);
             }
-            else
+
+            if (names.contains( fi.fileName()))
             {
                 ui->tabWidget->openRawLogFile(QStringList() << fileName);
             }
