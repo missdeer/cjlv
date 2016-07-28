@@ -1,12 +1,4 @@
-#include <Windows.h>
-#include <Shellapi.h>
-#include <shobjidl.h>
-#include <shlguid.h>
-#include <strsafe.h>
-#include <PSapi.h>
 #include "stdafx.h"
-#include <Everything.h>
-#include <everything_ipc.h>
 #include "everythingwrapper.h"
 
 

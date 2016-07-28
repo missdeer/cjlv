@@ -1,7 +1,5 @@
 #include "stdafx.h"
 #if defined(Q_OS_WIN)
-#include <Windows.h>
-#include <Shellapi.h>
 #include "ShellContextMenu.h"
 #endif
 #include "extensionmodel.h"

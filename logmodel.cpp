@@ -1,6 +1,4 @@
 #include "stdafx.h"
-#include <sqlite3.h>
-#include <lua.hpp>
 #include "settings.h"
 #include "logmodel.h"
 

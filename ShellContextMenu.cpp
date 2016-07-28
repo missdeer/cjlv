@@ -1,7 +1,4 @@
-#include <Windows.h>
 #include "stdafx.h"
-#include <Shobjidl.h>
-#include <Shlobj.h>
 #include "ShellContextMenu.h"
 
 

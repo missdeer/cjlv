@@ -2,7 +2,22 @@
 #define STDAFX_H
 
 
+#if defined(_WIN32)
+#include <Windows.h>
+#include <Shellapi.h>
+#include <shobjidl.h>
+#include <shlguid.h>
+#include <Shlobj.h>
+#include <strsafe.h>
+#include <PSapi.h>
+#include <Everything.h>
+#include <everything_ipc.h>
+#endif
+
+#include <sqlite3.h>
 #if defined (__cplusplus)
+
+#include <lua.hpp>
 #include <QtCore>
 #include <QtGui>
 #include <QSettings>
@@ -23,7 +38,6 @@
 #include <QDomDocument>
 #include <QTextStream>
 #include <QStringBuilder>
-#include <QMessageBox>
 #include <QApplication>
 #include <QMenu>
 #include <QClipboard>
