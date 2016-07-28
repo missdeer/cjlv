@@ -366,8 +366,12 @@ void MainWindow::dropEvent(QDropEvent *e)
 {
     QStringList logs;
 
-    std::for_each(e->mimeData()->urls().begin(), e->mimeData()->urls().end(),
-                  [&logs](const QUrl& url) { logs << url.toLocalFile(); });
+    if (!e->mimeData()->hasUrls())
+        return;
+    QList<QUrl> urls = e->mimeData()->urls();
+
+    std::for_each(urls.begin(), urls.end(),
+                  [&logs](const QUrl& url) {logs << url.toLocalFile();});
     openLogs(logs);
 }
 
