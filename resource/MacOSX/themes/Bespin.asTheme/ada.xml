@@ -1,15 +1,15 @@
 <AinesmileTheme name="ada" desc="ADA" ext="">
-	<style name="DEFAULT" style_id="0" fg_color="F8F8F8" bg_color="2A211C" font_name="Menlo" font_style="0" font_size="10"/>
-	<style name="INSTRUCTION WORD" style_id="1" fg_color="F6F080" bg_color="2A211C" font_name="Menlo" font_style="0" font_size="10"/>
-	<style name="IDENTIFIER" style_id="2" fg_color="EB939A" bg_color="2A211C" font_name="Menlo" font_style="0" font_size="10"/>
-	<style name="NUMBER" style_id="3" fg_color="FF3A83" bg_color="2A211C" font_name="Menlo" font_style="0" font_size="10"/>
-	<style name="DELIMITER" style_id="4" fg_color="000000" bg_color="2A211C" font_name="Menlo" font_style="0" font_size="10"/>
-	<style name="CHARACTER" style_id="5" fg_color="55E439" bg_color="2A211C" font_name="Menlo" font_style="0" font_size="10"/>
-	<style name="CHARACTER EOL" style_id="6" fg_color="000000" bg_color="2A211C" font_name="Menlo" font_style="0" font_size="10"/>
-	<style name="STRING" style_id="7" fg_color="55E439" bg_color="2A211C" font_name="Menlo" font_style="0" font_size="10"/>
-	<style name="STRING EOL" style_id="8" fg_color="55E439" bg_color="2A211C" font_name="Menlo" font_style="0" font_size="10"/>
-	<style name="LABEL" style_id="9" fg_color="EFE900" bg_color="2A211C" font_name="Menlo" font_style="0" font_size="10"/>
-	<style name="COMMENT LINE" style_id="10" fg_color="1E9AE0" bg_color="2A211C" font_name="Menlo" font_style="0" font_size="10"/>
-	<style name="ILLEGAL" style_id="11" fg_color="000000" bg_color="2A211C" font_name="Menlo" font_style="0" font_size="10"/>
+	<style name="DEFAULT" style_id="0" fg_color="F8F8F8" bg_color="2A211C" font_name="Monaco" font_style="0" font_size="10"/>
+	<style name="INSTRUCTION WORD" style_id="1" fg_color="F6F080" bg_color="2A211C" font_name="Monaco" font_style="0" font_size="10"/>
+	<style name="IDENTIFIER" style_id="2" fg_color="EB939A" bg_color="2A211C" font_name="Monaco" font_style="0" font_size="10"/>
+	<style name="NUMBER" style_id="3" fg_color="FF3A83" bg_color="2A211C" font_name="Monaco" font_style="0" font_size="10"/>
+	<style name="DELIMITER" style_id="4" fg_color="000000" bg_color="2A211C" font_name="Monaco" font_style="0" font_size="10"/>
+	<style name="CHARACTER" style_id="5" fg_color="55E439" bg_color="2A211C" font_name="Monaco" font_style="0" font_size="10"/>
+	<style name="CHARACTER EOL" style_id="6" fg_color="000000" bg_color="2A211C" font_name="Monaco" font_style="0" font_size="10"/>
+	<style name="STRING" style_id="7" fg_color="55E439" bg_color="2A211C" font_name="Monaco" font_style="0" font_size="10"/>
+	<style name="STRING EOL" style_id="8" fg_color="55E439" bg_color="2A211C" font_name="Monaco" font_style="0" font_size="10"/>
+	<style name="LABEL" style_id="9" fg_color="EFE900" bg_color="2A211C" font_name="Monaco" font_style="0" font_size="10"/>
+	<style name="COMMENT LINE" style_id="10" fg_color="1E9AE0" bg_color="2A211C" font_name="Monaco" font_style="0" font_size="10"/>
+	<style name="ILLEGAL" style_id="11" fg_color="000000" bg_color="2A211C" font_name="Monaco" font_style="0" font_size="10"/>
 </AinesmileTheme>
 

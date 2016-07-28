@@ -102,7 +102,7 @@ void ScintillaConfig::initScintilla(ScintillaEdit* sci)
     sci->setMouseDwellTime(2500);
 
     sci->setSavePoint();
-    sci->setFontQuality(SC_EFF_QUALITY_LCD_OPTIMIZED);
+    sci->setFontQuality( SC_EFF_QUALITY_ANTIALIASED);
 
     QString appDirPath = QApplication::applicationDirPath();
     QDir configDir(appDirPath);

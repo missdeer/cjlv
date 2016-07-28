@@ -1,11 +1,11 @@
 <AinesmileTheme name="asp" desc="asp" ext="asp">
-	<style name="DEFAULT" style_id="81" fg_color="839496" bg_color="083C4B" font_name="Menlo" font_style="0" font_size=""/>
-	<style name="COMMENTLINE" style_id="82" fg_color="586E75" bg_color="083C4B" font_name="Menlo" font_style="2" font_size=""/>
-	<style name="NUMBER" style_id="83" fg_color="2AA198" bg_color="083C4B" font_name="Menlo" font_style="0" font_size=""/>
-	<style name="WORD" style_id="84" fg_color="859900" bg_color="083C4B" font_name="Menlo" font_style="0" font_size=""/>
-	<style name="STRING" style_id="85" fg_color="2AA198" bg_color="083C4B" font_name="Menlo" font_style="0" font_size=""/>
-	<style name="IDENTIFIER" style_id="86" fg_color="B58900" bg_color="083C4B" font_name="Menlo" font_style="0" font_size=""/>
-	<style name="ASPSYBOL" style_id="15" fg_color="DC322F" bg_color="083C4B" font_name="Menlo" font_style="1" font_size=""/>
-	<style name="SCRIPTTYPE" style_id="16" fg_color="CB4B16" bg_color="083C4B" font_name="Menlo" font_style="0" font_size=""/>
+	<style name="DEFAULT" style_id="81" fg_color="839496" bg_color="083C4B" font_name="Monaco" font_style="0" font_size=""/>
+	<style name="COMMENTLINE" style_id="82" fg_color="586E75" bg_color="083C4B" font_name="Monaco" font_style="2" font_size=""/>
+	<style name="NUMBER" style_id="83" fg_color="2AA198" bg_color="083C4B" font_name="Monaco" font_style="0" font_size=""/>
+	<style name="WORD" style_id="84" fg_color="859900" bg_color="083C4B" font_name="Monaco" font_style="0" font_size=""/>
+	<style name="STRING" style_id="85" fg_color="2AA198" bg_color="083C4B" font_name="Monaco" font_style="0" font_size=""/>
+	<style name="IDENTIFIER" style_id="86" fg_color="B58900" bg_color="083C4B" font_name="Monaco" font_style="0" font_size=""/>
+	<style name="ASPSYBOL" style_id="15" fg_color="DC322F" bg_color="083C4B" font_name="Monaco" font_style="1" font_size=""/>
+	<style name="SCRIPTTYPE" style_id="16" fg_color="CB4B16" bg_color="083C4B" font_name="Monaco" font_style="0" font_size=""/>
 </AinesmileTheme>
 

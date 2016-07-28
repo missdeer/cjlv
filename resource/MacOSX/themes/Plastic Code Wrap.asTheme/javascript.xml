@@ -1,15 +1,15 @@
 <AinesmileTheme name="javascript" desc="Javascript" ext="">
-	<style name="DEFAULT" style_id="41" fg_color="F8F8F8" bg_color="0B161D" font_name="Menlo" font_style="0" font_size="10"/>
-	<style name="NUMBER" style_id="45" fg_color="FF3A83" bg_color="0B161D" font_name="Menlo" font_style="0" font_size="10"/>
-	<style name="WORD" style_id="46" fg_color="F8F8F8" bg_color="0B161D" font_name="Menlo" font_style="0" font_size="10"/>
-	<style name="KEYWORD" style_id="47" fg_color="FFAA00" bg_color="0B161D" font_name="Menlo" font_style="0" font_size="10"/>
-	<style name="DOUBLESTRING" style_id="48" fg_color="55E439" bg_color="0B161D" font_name="Menlo" font_style="0" font_size="10"/>
-	<style name="SINGLESTRING" style_id="49" fg_color="55E439" bg_color="0B161D" font_name="Menlo" font_style="0" font_size="10"/>
-	<style name="SYMBOLS" style_id="50" fg_color="F8F8F8" bg_color="0B161D" font_name="Menlo" font_style="0" font_size="10"/>
-	<style name="STRINGEOL" style_id="51" fg_color="55E439" bg_color="0B161D" font_name="Menlo" font_style="0" font_size="10"/>
-	<style name="REGEX" style_id="52" fg_color="FFB454" bg_color="0B161D" font_name="Menlo" font_style="0" font_size="10"/>
-	<style name="COMMENT" style_id="42" fg_color="1E9AE0" bg_color="0B161D" font_name="Menlo" font_style="0" font_size="10"/>
-	<style name="COMMENTLINE" style_id="43" fg_color="1E9AE0" bg_color="0B161D" font_name="Menlo" font_style="0" font_size="10"/>
-	<style name="COMMENTDOC" style_id="44" fg_color="1E9AE0" bg_color="0B161D" font_name="Menlo" font_style="0" font_size="10"/>
+	<style name="DEFAULT" style_id="41" fg_color="F8F8F8" bg_color="0B161D" font_name="Monaco" font_style="0" font_size="10"/>
+	<style name="NUMBER" style_id="45" fg_color="FF3A83" bg_color="0B161D" font_name="Monaco" font_style="0" font_size="10"/>
+	<style name="WORD" style_id="46" fg_color="F8F8F8" bg_color="0B161D" font_name="Monaco" font_style="0" font_size="10"/>
+	<style name="KEYWORD" style_id="47" fg_color="FFAA00" bg_color="0B161D" font_name="Monaco" font_style="0" font_size="10"/>
+	<style name="DOUBLESTRING" style_id="48" fg_color="55E439" bg_color="0B161D" font_name="Monaco" font_style="0" font_size="10"/>
+	<style name="SINGLESTRING" style_id="49" fg_color="55E439" bg_color="0B161D" font_name="Monaco" font_style="0" font_size="10"/>
+	<style name="SYMBOLS" style_id="50" fg_color="F8F8F8" bg_color="0B161D" font_name="Monaco" font_style="0" font_size="10"/>
+	<style name="STRINGEOL" style_id="51" fg_color="55E439" bg_color="0B161D" font_name="Monaco" font_style="0" font_size="10"/>
+	<style name="REGEX" style_id="52" fg_color="FFB454" bg_color="0B161D" font_name="Monaco" font_style="0" font_size="10"/>
+	<style name="COMMENT" style_id="42" fg_color="1E9AE0" bg_color="0B161D" font_name="Monaco" font_style="0" font_size="10"/>
+	<style name="COMMENTLINE" style_id="43" fg_color="1E9AE0" bg_color="0B161D" font_name="Monaco" font_style="0" font_size="10"/>
+	<style name="COMMENTDOC" style_id="44" fg_color="1E9AE0" bg_color="0B161D" font_name="Monaco" font_style="0" font_size="10"/>
 </AinesmileTheme>
 

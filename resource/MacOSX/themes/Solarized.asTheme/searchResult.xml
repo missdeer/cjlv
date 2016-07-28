@@ -1,10 +1,10 @@
 <AinesmileTheme name="searchResult" desc="Search result" ext="">
-	<style name="Default" style_id="0" fg_color="839496" bg_color="002B36" font_name="Menlo" font_style="0" font_size=""/>
-	<style name="Search Header" style_id="1" fg_color="B58900" bg_color="002B36" font_name="Menlo" font_style="0" font_size=""/>
-	<style name="File Header" style_id="2" fg_color="CB4B16" bg_color="002B36" font_name="Menlo" font_style="0" font_size=""/>
-	<style name="Line Number" style_id="3" fg_color="586E75" bg_color="002B36" font_name="Menlo" font_style="0" font_size=""/>
-	<style name="Hit Word" style_id="4" fg_color="B58900" bg_color="6C71C4" font_name="Menlo" font_style="0" font_size=""/>
-	<style name="Selected Line" style_id="5" fg_color="839496" bg_color="EEE8D5" font_name="Menlo" font_style="0" font_size=""/>
-	<style name="Current line background colour" style_id="6" fg_color="" bg_color="073642" font_name="Menlo" font_style="" font_size=""/>
+	<style name="Default" style_id="0" fg_color="839496" bg_color="002B36" font_name="Monaco" font_style="0" font_size=""/>
+	<style name="Search Header" style_id="1" fg_color="B58900" bg_color="002B36" font_name="Monaco" font_style="0" font_size=""/>
+	<style name="File Header" style_id="2" fg_color="CB4B16" bg_color="002B36" font_name="Monaco" font_style="0" font_size=""/>
+	<style name="Line Number" style_id="3" fg_color="586E75" bg_color="002B36" font_name="Monaco" font_style="0" font_size=""/>
+	<style name="Hit Word" style_id="4" fg_color="B58900" bg_color="6C71C4" font_name="Monaco" font_style="0" font_size=""/>
+	<style name="Selected Line" style_id="5" fg_color="839496" bg_color="EEE8D5" font_name="Monaco" font_style="0" font_size=""/>
+	<style name="Current line background colour" style_id="6" fg_color="" bg_color="073642" font_name="Monaco" font_style="" font_size=""/>
 </AinesmileTheme>
 

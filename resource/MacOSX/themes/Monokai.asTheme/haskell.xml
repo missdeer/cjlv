@@ -1,20 +1,20 @@
 <AinesmileTheme name="haskell" desc="Haskell" ext="">
-	<style name="DEFAULT" style_id="0" fg_color="F8F8F2" bg_color="272822" font_name="Menlo" font_style="" font_size="10"/>
-	<style name="IDENTIFIER" style_id="1" fg_color="66D9EF" bg_color="272822" font_name="Menlo" font_style="" font_size="10"/>
-	<style name="KEYWORD" style_id="2" fg_color="F92672" bg_color="272822" font_name="Menlo" font_style="" font_size="10"/>
-	<style name="NUMBER" style_id="3" fg_color="AE81FF" bg_color="272822" font_name="Menlo" font_style="" font_size="10"/>
-	<style name="STRING" style_id="4" fg_color="E6DB74" bg_color="272822" font_name="Menlo" font_style="" font_size="10"/>
-	<style name="CHARACTER" style_id="5" fg_color="E6DB74" bg_color="272822" font_name="Menlo" font_style="" font_size="10"/>
-	<style name="CLASS" style_id="6" fg_color="A6E22E" bg_color="272822" font_name="Menlo" font_style="" font_size="10"/>
-	<style name="MODULE" style_id="7" fg_color="" bg_color="272822" font_name="Menlo" font_style="" font_size="10"/>
-	<style name="CAPITAL" style_id="8" fg_color="" bg_color="272822" font_name="Menlo" font_style="" font_size="10"/>
-	<style name="DATA" style_id="9" fg_color="" bg_color="272822" font_name="Menlo" font_style="" font_size="10"/>
-	<style name="IMPORT" style_id="10" fg_color="" bg_color="272822" font_name="Menlo" font_style="" font_size="10"/>
-	<style name="OPERATOR" style_id="11" fg_color="F92672" bg_color="272822" font_name="Menlo" font_style="" font_size="10"/>
-	<style name="INSTANCE" style_id="12" fg_color="" bg_color="272822" font_name="Menlo" font_style="" font_size="10"/>
-	<style name="COMMENTLINE" style_id="13" fg_color="75715E" bg_color="272822" font_name="Menlo" font_style="" font_size="10"/>
-	<style name="COMMENTBLOCK" style_id="14" fg_color="75715E" bg_color="272822" font_name="Menlo" font_style="" font_size="10"/>
-	<style name="COMMENTBLOCK2" style_id="15" fg_color="75715E" bg_color="272822" font_name="Menlo" font_style="" font_size="10"/>
-	<style name="COMMENTBLOCK3" style_id="16" fg_color="75715E" bg_color="272822" font_name="Menlo" font_style="" font_size="10"/>
+	<style name="DEFAULT" style_id="0" fg_color="F8F8F2" bg_color="272822" font_name="Monaco" font_style="" font_size="10"/>
+	<style name="IDENTIFIER" style_id="1" fg_color="66D9EF" bg_color="272822" font_name="Monaco" font_style="" font_size="10"/>
+	<style name="KEYWORD" style_id="2" fg_color="F92672" bg_color="272822" font_name="Monaco" font_style="" font_size="10"/>
+	<style name="NUMBER" style_id="3" fg_color="AE81FF" bg_color="272822" font_name="Monaco" font_style="" font_size="10"/>
+	<style name="STRING" style_id="4" fg_color="E6DB74" bg_color="272822" font_name="Monaco" font_style="" font_size="10"/>
+	<style name="CHARACTER" style_id="5" fg_color="E6DB74" bg_color="272822" font_name="Monaco" font_style="" font_size="10"/>
+	<style name="CLASS" style_id="6" fg_color="A6E22E" bg_color="272822" font_name="Monaco" font_style="" font_size="10"/>
+	<style name="MODULE" style_id="7" fg_color="" bg_color="272822" font_name="Monaco" font_style="" font_size="10"/>
+	<style name="CAPITAL" style_id="8" fg_color="" bg_color="272822" font_name="Monaco" font_style="" font_size="10"/>
+	<style name="DATA" style_id="9" fg_color="" bg_color="272822" font_name="Monaco" font_style="" font_size="10"/>
+	<style name="IMPORT" style_id="10" fg_color="" bg_color="272822" font_name="Monaco" font_style="" font_size="10"/>
+	<style name="OPERATOR" style_id="11" fg_color="F92672" bg_color="272822" font_name="Monaco" font_style="" font_size="10"/>
+	<style name="INSTANCE" style_id="12" fg_color="" bg_color="272822" font_name="Monaco" font_style="" font_size="10"/>
+	<style name="COMMENTLINE" style_id="13" fg_color="75715E" bg_color="272822" font_name="Monaco" font_style="" font_size="10"/>
+	<style name="COMMENTBLOCK" style_id="14" fg_color="75715E" bg_color="272822" font_name="Monaco" font_style="" font_size="10"/>
+	<style name="COMMENTBLOCK2" style_id="15" fg_color="75715E" bg_color="272822" font_name="Monaco" font_style="" font_size="10"/>
+	<style name="COMMENTBLOCK3" style_id="16" fg_color="75715E" bg_color="272822" font_name="Monaco" font_style="" font_size="10"/>
 </AinesmileTheme>
 

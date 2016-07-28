@@ -1,19 +1,19 @@
 <AinesmileTheme name="cpp" desc="C++" ext="">
-	<style name="PREPROCESSOR" style_id="9" fg_color="a32129" bg_color="6c7d51" font_name="Menlo" font_style="0" font_size=""/>
-	<style name="DEFAULT" style_id="11" fg_color="f2c476" bg_color="6c7d51" font_name="Menlo" font_style="0" font_size=""/>
-	<style name="INSTRUCTION WORD" style_id="5" fg_color="cbe248" bg_color="6c7d51" font_name="Menlo" font_style="0" font_size=""/>
-	<style name="TYPE WORD" style_id="16" fg_color="efc53d" bg_color="6c7d51" font_name="Menlo" font_style="0" font_size=""/>
-	<style name="NUMBER" style_id="4" fg_color="ffdc87" bg_color="6c7d51" font_name="Menlo" font_style="0" font_size=""/>
-	<style name="STRING" style_id="6" fg_color="ffdc87" bg_color="6c7d51" font_name="Menlo" font_style="0" font_size=""/>
-	<style name="CHARACTER" style_id="7" fg_color="ffdc87" bg_color="6c7d51" font_name="Menlo" font_style="0" font_size=""/>
-	<style name="OPERATOR" style_id="10" fg_color="ffee88" bg_color="6c7d51" font_name="Menlo" font_style="1" font_size=""/>
-	<style name="VERBATIM" style_id="13" fg_color="ffdc87" bg_color="6c7d51" font_name="Menlo" font_style="0" font_size=""/>
-	<style name="REGEX" style_id="14" fg_color="afcf90" bg_color="6c7d51" font_name="Menlo" font_style="0" font_size=""/>
-	<style name="COMMENT" style_id="1" fg_color="2a390e" bg_color="6c7d51" font_name="Menlo" font_style="2" font_size=""/>
-	<style name="COMMENT LINE" style_id="2" fg_color="2a390e" bg_color="6c7d51" font_name="Menlo" font_style="2" font_size=""/>
-	<style name="COMMENT DOC" style_id="3" fg_color="2a390e" bg_color="6c7d51" font_name="Menlo" font_style="2" font_size=""/>
-	<style name="COMMENT LINE DOC" style_id="15" fg_color="2a390e" bg_color="6c7d51" font_name="Menlo" font_style="2" font_size=""/>
-	<style name="COMMENT DOC KEYWORD" style_id="17" fg_color="2a390e" bg_color="6c7d51" font_name="Menlo" font_style="3" font_size=""/>
-	<style name="COMMENT DOC KEYWORD ERROR" style_id="18" fg_color="981f0e" bg_color="fdd64a" font_name="Menlo" font_style="3" font_size=""/>
+	<style name="PREPROCESSOR" style_id="9" fg_color="a32129" bg_color="6c7d51" font_name="Monaco" font_style="0" font_size=""/>
+	<style name="DEFAULT" style_id="11" fg_color="f2c476" bg_color="6c7d51" font_name="Monaco" font_style="0" font_size=""/>
+	<style name="INSTRUCTION WORD" style_id="5" fg_color="cbe248" bg_color="6c7d51" font_name="Monaco" font_style="0" font_size=""/>
+	<style name="TYPE WORD" style_id="16" fg_color="efc53d" bg_color="6c7d51" font_name="Monaco" font_style="0" font_size=""/>
+	<style name="NUMBER" style_id="4" fg_color="ffdc87" bg_color="6c7d51" font_name="Monaco" font_style="0" font_size=""/>
+	<style name="STRING" style_id="6" fg_color="ffdc87" bg_color="6c7d51" font_name="Monaco" font_style="0" font_size=""/>
+	<style name="CHARACTER" style_id="7" fg_color="ffdc87" bg_color="6c7d51" font_name="Monaco" font_style="0" font_size=""/>
+	<style name="OPERATOR" style_id="10" fg_color="ffee88" bg_color="6c7d51" font_name="Monaco" font_style="1" font_size=""/>
+	<style name="VERBATIM" style_id="13" fg_color="ffdc87" bg_color="6c7d51" font_name="Monaco" font_style="0" font_size=""/>
+	<style name="REGEX" style_id="14" fg_color="afcf90" bg_color="6c7d51" font_name="Monaco" font_style="0" font_size=""/>
+	<style name="COMMENT" style_id="1" fg_color="2a390e" bg_color="6c7d51" font_name="Monaco" font_style="2" font_size=""/>
+	<style name="COMMENT LINE" style_id="2" fg_color="2a390e" bg_color="6c7d51" font_name="Monaco" font_style="2" font_size=""/>
+	<style name="COMMENT DOC" style_id="3" fg_color="2a390e" bg_color="6c7d51" font_name="Monaco" font_style="2" font_size=""/>
+	<style name="COMMENT LINE DOC" style_id="15" fg_color="2a390e" bg_color="6c7d51" font_name="Monaco" font_style="2" font_size=""/>
+	<style name="COMMENT DOC KEYWORD" style_id="17" fg_color="2a390e" bg_color="6c7d51" font_name="Monaco" font_style="3" font_size=""/>
+	<style name="COMMENT DOC KEYWORD ERROR" style_id="18" fg_color="981f0e" bg_color="fdd64a" font_name="Monaco" font_style="3" font_size=""/>
 </AinesmileTheme>
 

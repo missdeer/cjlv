@@ -1,31 +1,31 @@
 <AinesmileTheme>
 	<style name="Global override" style_id="0" fg_color="839496" bg_color="002B36" font_name="Consolas" font_style="0" font_size="10"/>
 	<style name="Default Style" style_id="32" fg_color="839496" bg_color="002B36" font_name="Consolas" font_style="0" font_size="10"/>
-	<style name="Indent guideline style" style_id="37" fg_color="586E75" bg_color="002B36" font_name="Menlo" font_style="0" font_size=""/>
-	<style name="Brace highlight style" style_id="34" fg_color="DC322F" bg_color="859900" font_name="Menlo" font_style="1" font_size=""/>
-	<style name="Bad brace colour" style_id="35" fg_color="D33682" bg_color="002B36" font_name="Menlo" font_style="0" font_size=""/>
-	<style name="Current line background colour" style_id="0" fg_color="" bg_color="073642" font_name="Menlo" font_style="" font_size=""/>
-	<style name="Selected text colour" style_id="0" fg_color="" bg_color="EEE8D5" font_name="Menlo" font_style="" font_size=""/>
-	<style name="Caret colour" style_id="2069" fg_color="EEE8D5" bg_color="" font_name="Menlo" font_style="" font_size=""/>
-	<style name="Edge colour" style_id="0" fg_color="586E75" bg_color="" font_name="Menlo" font_style="" font_size=""/>
-	<style name="Line number margin" style_id="33" fg_color="586E75" bg_color="073642" font_name="Menlo" font_style="0" font_size=""/>
-	<style name="Fold" style_id="0" fg_color="586E75" bg_color="073642" font_name="Menlo" font_style="" font_size=""/>
-	<style name="Fold active" style_id="0" fg_color="DC322F" bg_color="" font_name="Menlo" font_style="" font_size=""/>
-	<style name="Fold margin" style_id="0" fg_color="586E75" bg_color="073642" font_name="Menlo" font_style="" font_size=""/>
-	<style name="White space symbol" style_id="0" fg_color="B58900" bg_color="" font_name="Menlo" font_style="" font_size=""/>
-	<style name="Smart HighLighting" style_id="29" fg_color="" bg_color="FDF6E3" font_name="Menlo" font_style="" font_size=""/>
-	<style name="Find Mark Style" style_id="31" fg_color="" bg_color="6C71C4" font_name="Menlo" font_style="" font_size=""/>
-	<style name="Mark Style 1" style_id="25" fg_color="" bg_color="DC322F" font_name="Menlo" font_style="" font_size=""/>
-	<style name="Mark Style 2" style_id="24" fg_color="" bg_color="268BD2" font_name="Menlo" font_style="" font_size=""/>
-	<style name="Mark Style 3" style_id="23" fg_color="" bg_color="2AA198" font_name="Menlo" font_style="" font_size=""/>
-	<style name="Mark Style 4" style_id="22" fg_color="" bg_color="859900" font_name="Menlo" font_style="" font_size=""/>
-	<style name="Mark Style 5" style_id="21" fg_color="" bg_color="B58900" font_name="Menlo" font_style="" font_size=""/>
-	<style name="Incremental highlight all" style_id="28" fg_color="" bg_color="002B36" font_name="Menlo" font_style="" font_size=""/>
-	<style name="Tags match highlighting" style_id="27" fg_color="" bg_color="CB4B16" font_name="Menlo" font_style="" font_size=""/>
-	<style name="Tags attribute" style_id="26" fg_color="" bg_color="CB4B16" font_name="Menlo" font_style="" font_size=""/>
-	<style name="Active tab focused indicator" style_id="0" fg_color="CB4B16" bg_color="" font_name="Menlo" font_style="" font_size=""/>
-	<style name="Active tab unfocused indicator" style_id="0" fg_color="002B36" bg_color="" font_name="Menlo" font_style="" font_size=""/>
-	<style name="Active tab text" style_id="0" fg_color="000000" bg_color="" font_name="Menlo" font_style="" font_size=""/>
-	<style name="Inactive tabs" style_id="0" fg_color="EEE8D5" bg_color="586E75" font_name="Menlo" font_style="" font_size=""/>
+	<style name="Indent guideline style" style_id="37" fg_color="586E75" bg_color="002B36" font_name="Monaco" font_style="0" font_size=""/>
+	<style name="Brace highlight style" style_id="34" fg_color="DC322F" bg_color="859900" font_name="Monaco" font_style="1" font_size=""/>
+	<style name="Bad brace colour" style_id="35" fg_color="D33682" bg_color="002B36" font_name="Monaco" font_style="0" font_size=""/>
+	<style name="Current line background colour" style_id="0" fg_color="" bg_color="073642" font_name="Monaco" font_style="" font_size=""/>
+	<style name="Selected text colour" style_id="0" fg_color="" bg_color="EEE8D5" font_name="Monaco" font_style="" font_size=""/>
+	<style name="Caret colour" style_id="2069" fg_color="EEE8D5" bg_color="" font_name="Monaco" font_style="" font_size=""/>
+	<style name="Edge colour" style_id="0" fg_color="586E75" bg_color="" font_name="Monaco" font_style="" font_size=""/>
+	<style name="Line number margin" style_id="33" fg_color="586E75" bg_color="073642" font_name="Monaco" font_style="0" font_size=""/>
+	<style name="Fold" style_id="0" fg_color="586E75" bg_color="073642" font_name="Monaco" font_style="" font_size=""/>
+	<style name="Fold active" style_id="0" fg_color="DC322F" bg_color="" font_name="Monaco" font_style="" font_size=""/>
+	<style name="Fold margin" style_id="0" fg_color="586E75" bg_color="073642" font_name="Monaco" font_style="" font_size=""/>
+	<style name="White space symbol" style_id="0" fg_color="B58900" bg_color="" font_name="Monaco" font_style="" font_size=""/>
+	<style name="Smart HighLighting" style_id="29" fg_color="" bg_color="FDF6E3" font_name="Monaco" font_style="" font_size=""/>
+	<style name="Find Mark Style" style_id="31" fg_color="" bg_color="6C71C4" font_name="Monaco" font_style="" font_size=""/>
+	<style name="Mark Style 1" style_id="25" fg_color="" bg_color="DC322F" font_name="Monaco" font_style="" font_size=""/>
+	<style name="Mark Style 2" style_id="24" fg_color="" bg_color="268BD2" font_name="Monaco" font_style="" font_size=""/>
+	<style name="Mark Style 3" style_id="23" fg_color="" bg_color="2AA198" font_name="Monaco" font_style="" font_size=""/>
+	<style name="Mark Style 4" style_id="22" fg_color="" bg_color="859900" font_name="Monaco" font_style="" font_size=""/>
+	<style name="Mark Style 5" style_id="21" fg_color="" bg_color="B58900" font_name="Monaco" font_style="" font_size=""/>
+	<style name="Incremental highlight all" style_id="28" fg_color="" bg_color="002B36" font_name="Monaco" font_style="" font_size=""/>
+	<style name="Tags match highlighting" style_id="27" fg_color="" bg_color="CB4B16" font_name="Monaco" font_style="" font_size=""/>
+	<style name="Tags attribute" style_id="26" fg_color="" bg_color="CB4B16" font_name="Monaco" font_style="" font_size=""/>
+	<style name="Active tab focused indicator" style_id="0" fg_color="CB4B16" bg_color="" font_name="Monaco" font_style="" font_size=""/>
+	<style name="Active tab unfocused indicator" style_id="0" fg_color="002B36" bg_color="" font_name="Monaco" font_style="" font_size=""/>
+	<style name="Active tab text" style_id="0" fg_color="000000" bg_color="" font_name="Monaco" font_style="" font_size=""/>
+	<style name="Inactive tabs" style_id="0" fg_color="EEE8D5" bg_color="586E75" font_name="Monaco" font_style="" font_size=""/>
 </AinesmileTheme>
 

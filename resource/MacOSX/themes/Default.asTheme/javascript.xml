@@ -1,14 +1,14 @@
 <AinesmileTheme name="javascript" desc="Javascript" ext="">
-	<style name="DEFAULT" style_id="41" fg_color="000000" bg_color="F2F4FF" font_name="Menlo" font_style="0" font_size=""/>
-	<style name="NUMBER" style_id="45" fg_color="FF0000" bg_color="F2F4FF" font_name="Menlo" font_style="0" font_size=""/>
-	<style name="WORD" style_id="46" fg_color="000000" bg_color="F2F4FF" font_name="Menlo" font_style="0" font_size=""/>
-	<style name="KEYWORD" style_id="47" fg_color="000080" bg_color="F2F4FF" font_name="Menlo" font_style="3" font_size=""/>
-	<style name="DOUBLESTRING" style_id="48" fg_color="808080" bg_color="F2F4FF" font_name="Menlo" font_style="0" font_size=""/>
-	<style name="SINGLESTRING" style_id="49" fg_color="808080" bg_color="F2F4FF" font_name="Menlo" font_style="0" font_size=""/>
-	<style name="SYMBOLS" style_id="50" fg_color="000000" bg_color="F2F4FF" font_name="Menlo" font_style="1" font_size=""/>
-	<style name="REGEX" style_id="52" fg_color="8000FF" bg_color="F2F4FF" font_name="Menlo" font_style="0" font_size=""/>
-	<style name="COMMENT" style_id="42" fg_color="008000" bg_color="F2F4FF" font_name="Menlo" font_style="0" font_size=""/>
-	<style name="COMMENTLINE" style_id="43" fg_color="008000" bg_color="F2F4FF" font_name="Menlo" font_style="0" font_size=""/>
-	<style name="COMMENTDOC" style_id="44" fg_color="008080" bg_color="F2F4FF" font_name="Menlo" font_style="0" font_size=""/>
+	<style name="DEFAULT" style_id="41" fg_color="000000" bg_color="F2F4FF" font_name="Monaco" font_style="0" font_size=""/>
+	<style name="NUMBER" style_id="45" fg_color="FF0000" bg_color="F2F4FF" font_name="Monaco" font_style="0" font_size=""/>
+	<style name="WORD" style_id="46" fg_color="000000" bg_color="F2F4FF" font_name="Monaco" font_style="0" font_size=""/>
+	<style name="KEYWORD" style_id="47" fg_color="000080" bg_color="F2F4FF" font_name="Monaco" font_style="3" font_size=""/>
+	<style name="DOUBLESTRING" style_id="48" fg_color="808080" bg_color="F2F4FF" font_name="Monaco" font_style="0" font_size=""/>
+	<style name="SINGLESTRING" style_id="49" fg_color="808080" bg_color="F2F4FF" font_name="Monaco" font_style="0" font_size=""/>
+	<style name="SYMBOLS" style_id="50" fg_color="000000" bg_color="F2F4FF" font_name="Monaco" font_style="1" font_size=""/>
+	<style name="REGEX" style_id="52" fg_color="8000FF" bg_color="F2F4FF" font_name="Monaco" font_style="0" font_size=""/>
+	<style name="COMMENT" style_id="42" fg_color="008000" bg_color="F2F4FF" font_name="Monaco" font_style="0" font_size=""/>
+	<style name="COMMENTLINE" style_id="43" fg_color="008000" bg_color="F2F4FF" font_name="Monaco" font_style="0" font_size=""/>
+	<style name="COMMENTDOC" style_id="44" fg_color="008080" bg_color="F2F4FF" font_name="Monaco" font_style="0" font_size=""/>
 </AinesmileTheme>
 

@@ -1,17 +1,17 @@
 <AinesmileTheme name="python" desc="Python" ext="">
-	<style name="DEFAULT" style_id="0" fg_color="C3BE98" bg_color="1A0F0B" font_name="Menlo" font_style="0" font_size="10"/>
-	<style name="COMMENTLINE" style_id="1" fg_color="679D47" bg_color="1A0F0B" font_name="Menlo" font_style="0" font_size="10"/>
-	<style name="NUMBER" style_id="2" fg_color="DA5659" bg_color="1A0F0B" font_name="Menlo" font_style="0" font_size="10"/>
-	<style name="STRING" style_id="3" fg_color="7CA563" bg_color="1A0F0B" font_name="Menlo" font_style="0" font_size="10"/>
-	<style name="CHARACTER" style_id="4" fg_color="7CA563" bg_color="1A0F0B" font_name="Menlo" font_style="0" font_size="10"/>
-	<style name="KEYWORDS" style_id="5" fg_color="B3935C" bg_color="1A0F0B" font_name="Menlo" font_style="0" font_size="10"/>
-	<style name="TRIPLE" style_id="6" fg_color="000000" bg_color="1A0F0B" font_name="Menlo" font_style="0" font_size="10"/>
-	<style name="TRIPLEDOUBLE" style_id="7" fg_color="000000" bg_color="1A0F0B" font_name="Menlo" font_style="0" font_size="10"/>
-	<style name="CLASSNAME" style_id="8" fg_color="000000" bg_color="1A0F0B" font_name="Menlo" font_style="0" font_size="10"/>
-	<style name="DEFNAME" style_id="9" fg_color="000000" bg_color="1A0F0B" font_name="Menlo" font_style="0" font_size="10"/>
-	<style name="OPERATOR" style_id="10" fg_color="B3935C" bg_color="1A0F0B" font_name="Menlo" font_style="0" font_size="10"/>
-	<style name="IDENTIFIER" style_id="11" fg_color="D77261" bg_color="1A0F0B" font_name="Menlo" font_style="0" font_size="10"/>
-	<style name="COMMENTBLOCK" style_id="12" fg_color="679D47" bg_color="1A0F0B" font_name="Menlo" font_style="0" font_size="10"/>
-	<style name="STRINGEOL" style_id="12" fg_color="7CA563" bg_color="1A0F0B" font_name="Menlo" font_style="0" font_size="10"/>
+	<style name="DEFAULT" style_id="0" fg_color="C3BE98" bg_color="1A0F0B" font_name="Monaco" font_style="0" font_size="10"/>
+	<style name="COMMENTLINE" style_id="1" fg_color="679D47" bg_color="1A0F0B" font_name="Monaco" font_style="0" font_size="10"/>
+	<style name="NUMBER" style_id="2" fg_color="DA5659" bg_color="1A0F0B" font_name="Monaco" font_style="0" font_size="10"/>
+	<style name="STRING" style_id="3" fg_color="7CA563" bg_color="1A0F0B" font_name="Monaco" font_style="0" font_size="10"/>
+	<style name="CHARACTER" style_id="4" fg_color="7CA563" bg_color="1A0F0B" font_name="Monaco" font_style="0" font_size="10"/>
+	<style name="KEYWORDS" style_id="5" fg_color="B3935C" bg_color="1A0F0B" font_name="Monaco" font_style="0" font_size="10"/>
+	<style name="TRIPLE" style_id="6" fg_color="000000" bg_color="1A0F0B" font_name="Monaco" font_style="0" font_size="10"/>
+	<style name="TRIPLEDOUBLE" style_id="7" fg_color="000000" bg_color="1A0F0B" font_name="Monaco" font_style="0" font_size="10"/>
+	<style name="CLASSNAME" style_id="8" fg_color="000000" bg_color="1A0F0B" font_name="Monaco" font_style="0" font_size="10"/>
+	<style name="DEFNAME" style_id="9" fg_color="000000" bg_color="1A0F0B" font_name="Monaco" font_style="0" font_size="10"/>
+	<style name="OPERATOR" style_id="10" fg_color="B3935C" bg_color="1A0F0B" font_name="Monaco" font_style="0" font_size="10"/>
+	<style name="IDENTIFIER" style_id="11" fg_color="D77261" bg_color="1A0F0B" font_name="Monaco" font_style="0" font_size="10"/>
+	<style name="COMMENTBLOCK" style_id="12" fg_color="679D47" bg_color="1A0F0B" font_name="Monaco" font_style="0" font_size="10"/>
+	<style name="STRINGEOL" style_id="12" fg_color="7CA563" bg_color="1A0F0B" font_name="Monaco" font_style="0" font_size="10"/>
 </AinesmileTheme>
 

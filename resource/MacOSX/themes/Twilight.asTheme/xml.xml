@@ -1,17 +1,17 @@
 <AinesmileTheme name="xml" desc="XML" ext="">
-	<style name="XMLSTART" style_id="12" fg_color="494949" bg_color="141414" font_name="Menlo" font_style="0" font_size="10"/>
-	<style name="XMLEND" style_id="13" fg_color="494949" bg_color="141414" font_name="Menlo" font_style="0" font_size="10"/>
-	<style name="DEFAULT" style_id="0" fg_color="CCCCCC" bg_color="141414" font_name="Menlo" font_style="0" font_size="10"/>
-	<style name="COMMENT" style_id="9" fg_color="5F5A60" bg_color="141414" font_name="Menlo" font_style="0" font_size="10"/>
-	<style name="NUMBER" style_id="5" fg_color="CF6A4C" bg_color="141414" font_name="Menlo" font_style="0" font_size="10"/>
-	<style name="DOUBLESTRING" style_id="6" fg_color="8F9D6A" bg_color="141414" font_name="Menlo" font_style="0" font_size="10"/>
-	<style name="SINGLESTRING" style_id="7" fg_color="8F9D6A" bg_color="141414" font_name="Menlo" font_style="0" font_size="10"/>
-	<style name="TAG" style_id="1" fg_color="9B703F" bg_color="141414" font_name="Menlo" font_style="0" font_size="10"/>
-	<style name="TAGEND" style_id="11" fg_color="9B703F" bg_color="141414" font_name="Menlo" font_style="0" font_size="10"/>
-	<style name="TAGUNKNOWN" style_id="2" fg_color="9B703F" bg_color="141414" font_name="Menlo" font_style="0" font_size="10"/>
-	<style name="ATTRIBUTE" style_id="3" fg_color="CCCCCC" bg_color="141414" font_name="Menlo" font_style="0" font_size="10"/>
-	<style name="ATTRIBUTEUNKNOWN" style_id="4" fg_color="CCCCCC" bg_color="141414" font_name="Menlo" font_style="0" font_size="10"/>
-	<style name="SGMLDEFAULT" style_id="21" fg_color="8F9D6A" bg_color="141414" font_name="Menlo" font_style="0" font_size="10"/>
-	<style name="CDATA" style_id="17" fg_color="CF6A4C" bg_color="141414" font_name="Menlo" font_style="0" font_size="10"/>
+	<style name="XMLSTART" style_id="12" fg_color="494949" bg_color="141414" font_name="Monaco" font_style="0" font_size="10"/>
+	<style name="XMLEND" style_id="13" fg_color="494949" bg_color="141414" font_name="Monaco" font_style="0" font_size="10"/>
+	<style name="DEFAULT" style_id="0" fg_color="CCCCCC" bg_color="141414" font_name="Monaco" font_style="0" font_size="10"/>
+	<style name="COMMENT" style_id="9" fg_color="5F5A60" bg_color="141414" font_name="Monaco" font_style="0" font_size="10"/>
+	<style name="NUMBER" style_id="5" fg_color="CF6A4C" bg_color="141414" font_name="Monaco" font_style="0" font_size="10"/>
+	<style name="DOUBLESTRING" style_id="6" fg_color="8F9D6A" bg_color="141414" font_name="Monaco" font_style="0" font_size="10"/>
+	<style name="SINGLESTRING" style_id="7" fg_color="8F9D6A" bg_color="141414" font_name="Monaco" font_style="0" font_size="10"/>
+	<style name="TAG" style_id="1" fg_color="9B703F" bg_color="141414" font_name="Monaco" font_style="0" font_size="10"/>
+	<style name="TAGEND" style_id="11" fg_color="9B703F" bg_color="141414" font_name="Monaco" font_style="0" font_size="10"/>
+	<style name="TAGUNKNOWN" style_id="2" fg_color="9B703F" bg_color="141414" font_name="Monaco" font_style="0" font_size="10"/>
+	<style name="ATTRIBUTE" style_id="3" fg_color="CCCCCC" bg_color="141414" font_name="Monaco" font_style="0" font_size="10"/>
+	<style name="ATTRIBUTEUNKNOWN" style_id="4" fg_color="CCCCCC" bg_color="141414" font_name="Monaco" font_style="0" font_size="10"/>
+	<style name="SGMLDEFAULT" style_id="21" fg_color="8F9D6A" bg_color="141414" font_name="Monaco" font_style="0" font_size="10"/>
+	<style name="CDATA" style_id="17" fg_color="CF6A4C" bg_color="141414" font_name="Monaco" font_style="0" font_size="10"/>
 </AinesmileTheme>
 

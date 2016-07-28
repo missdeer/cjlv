@@ -1,10 +1,10 @@
 <AinesmileTheme name="diff" desc="DIFF" ext="">
-	<style name="DEFAULT" style_id="0" fg_color="DCDCCC" bg_color="3F3F3F" font_name="Menlo" font_style="0" font_size=""/>
-	<style name="COMMENT" style_id="1" fg_color="7F9F7F" bg_color="3F3F3F" font_name="Menlo" font_style="3" font_size=""/>
-	<style name="COMMAND" style_id="2" fg_color="DBDBBC" bg_color="3F3F3F" font_name="Menlo" font_style="1" font_size=""/>
-	<style name="HEADER" style_id="3" fg_color="DEDEBE" bg_color="3F3F3F" font_name="Menlo" font_style="1" font_size=""/>
-	<style name="POSITION" style_id="4" fg_color="FDCEAE" bg_color="3F3F3F" font_name="Menlo" font_style="1" font_size=""/>
-	<style name="DELETED" style_id="5" fg_color="CFBFAF" bg_color="3F3F3F" font_name="Menlo" font_style="0" font_size=""/>
-	<style name="ADDED" style_id="6" fg_color="E3CEAB" bg_color="3F3F3F" font_name="Menlo" font_style="0" font_size=""/>
+	<style name="DEFAULT" style_id="0" fg_color="DCDCCC" bg_color="3F3F3F" font_name="Monaco" font_style="0" font_size=""/>
+	<style name="COMMENT" style_id="1" fg_color="7F9F7F" bg_color="3F3F3F" font_name="Monaco" font_style="3" font_size=""/>
+	<style name="COMMAND" style_id="2" fg_color="DBDBBC" bg_color="3F3F3F" font_name="Monaco" font_style="1" font_size=""/>
+	<style name="HEADER" style_id="3" fg_color="DEDEBE" bg_color="3F3F3F" font_name="Monaco" font_style="1" font_size=""/>
+	<style name="POSITION" style_id="4" fg_color="FDCEAE" bg_color="3F3F3F" font_name="Monaco" font_style="1" font_size=""/>
+	<style name="DELETED" style_id="5" fg_color="CFBFAF" bg_color="3F3F3F" font_name="Monaco" font_style="0" font_size=""/>
+	<style name="ADDED" style_id="6" fg_color="E3CEAB" bg_color="3F3F3F" font_name="Monaco" font_style="0" font_size=""/>
 </AinesmileTheme>
 

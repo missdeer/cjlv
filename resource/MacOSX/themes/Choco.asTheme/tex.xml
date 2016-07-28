@@ -1,9 +1,9 @@
 <AinesmileTheme name="tex" desc="TeX" ext="">
-	<style name="DEFAULT" style_id="0" fg_color="C3BE98" bg_color="1A0F0B" font_name="Menlo" font_style="0" font_size="10"/>
-	<style name="SPECIAL" style_id="1" fg_color="000000" bg_color="1A0F0B" font_name="Menlo" font_style="0" font_size="10"/>
-	<style name="GROUP" style_id="2" fg_color="000000" bg_color="1A0F0B" font_name="Menlo" font_style="0" font_size="10"/>
-	<style name="SYMBOL" style_id="3" fg_color="C3BE98" bg_color="1A0F0B" font_name="Menlo" font_style="0" font_size="10"/>
-	<style name="COMMAND" style_id="4" fg_color="D77261" bg_color="1A0F0B" font_name="Menlo" font_style="0" font_size="10"/>
-	<style name="TEXT" style_id="5" fg_color="7CA563" bg_color="1A0F0B" font_name="Menlo" font_style="0" font_size="10"/>
+	<style name="DEFAULT" style_id="0" fg_color="C3BE98" bg_color="1A0F0B" font_name="Monaco" font_style="0" font_size="10"/>
+	<style name="SPECIAL" style_id="1" fg_color="000000" bg_color="1A0F0B" font_name="Monaco" font_style="0" font_size="10"/>
+	<style name="GROUP" style_id="2" fg_color="000000" bg_color="1A0F0B" font_name="Monaco" font_style="0" font_size="10"/>
+	<style name="SYMBOL" style_id="3" fg_color="C3BE98" bg_color="1A0F0B" font_name="Monaco" font_style="0" font_size="10"/>
+	<style name="COMMAND" style_id="4" fg_color="D77261" bg_color="1A0F0B" font_name="Monaco" font_style="0" font_size="10"/>
+	<style name="TEXT" style_id="5" fg_color="7CA563" bg_color="1A0F0B" font_name="Monaco" font_style="0" font_size="10"/>
 </AinesmileTheme>
 

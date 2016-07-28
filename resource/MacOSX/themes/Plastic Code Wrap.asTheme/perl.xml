@@ -1,23 +1,23 @@
 <AinesmileTheme name="perl" desc="Perl" ext="">
-	<style name="PREPROCESSOR" style_id="9" fg_color="FFAA00" bg_color="0B161D" font_name="Menlo" font_style="0" font_size="10"/>
-	<style name="DEFAULT" style_id="0" fg_color="F8F8F8" bg_color="0B161D" font_name="Menlo" font_style="0" font_size="10"/>
-	<style name="INSTRUCTION WORD" style_id="5" fg_color="F6F080" bg_color="0B161D" font_name="Menlo" font_style="0" font_size="10"/>
-	<style name="NUMBER" style_id="4" fg_color="FF3A83" bg_color="0B161D" font_name="Menlo" font_style="0" font_size="10"/>
-	<style name="STRING" style_id="6" fg_color="55E439" bg_color="0B161D" font_name="Menlo" font_style="0" font_size="10"/>
-	<style name="CHARACTER" style_id="7" fg_color="55E439" bg_color="0B161D" font_name="Menlo" font_style="0" font_size="10"/>
-	<style name="OPERATOR" style_id="10" fg_color="FFAA00" bg_color="0B161D" font_name="Menlo" font_style="0" font_size="10"/>
-	<style name="REGEX" style_id="17" fg_color="FFB454" bg_color="0B161D" font_name="Menlo" font_style="0" font_size="10"/>
-	<style name="COMMENT LINE" style_id="2" fg_color="1E9AE0" bg_color="0B161D" font_name="Menlo" font_style="0" font_size="10"/>
-	<style name="SCALAR" style_id="12" fg_color="000000" bg_color="0B161D" font_name="Menlo" font_style="0" font_size="10"/>
-	<style name="ARRAY" style_id="13" fg_color="000000" bg_color="0B161D" font_name="Menlo" font_style="0" font_size="10"/>
-	<style name="HASH" style_id="14" fg_color="000000" bg_color="0B161D" font_name="Menlo" font_style="0" font_size="10"/>
-	<style name="SYMBOL TABLE" style_id="15" fg_color="F8F8F8" bg_color="0B161D" font_name="Menlo" font_style="0" font_size="10"/>
-	<style name="PUNCTUATION" style_id="8" fg_color="000000" bg_color="0B161D" font_name="Menlo" font_style="0" font_size="10"/>
-	<style name="POD" style_id="3" fg_color="000000" bg_color="0B161D" font_name="Menlo" font_style="0" font_size="10"/>
-	<style name="ERROR" style_id="1" fg_color="000000" bg_color="0B161D" font_name="Menlo" font_style="0" font_size="10"/>
-	<style name="LONGQUOTE" style_id="19" fg_color="000000" bg_color="0B161D" font_name="Menlo" font_style="0" font_size="10"/>
-	<style name="DATASECTION" style_id="21" fg_color="000000" bg_color="0B161D" font_name="Menlo" font_style="0" font_size="10"/>
-	<style name="REGSUBST" style_id="18" fg_color="000000" bg_color="0B161D" font_name="Menlo" font_style="0" font_size="10"/>
-	<style name="BACKTICKS" style_id="20" fg_color="000000" bg_color="0B161D" font_name="Menlo" font_style="0" font_size="10"/>
+	<style name="PREPROCESSOR" style_id="9" fg_color="FFAA00" bg_color="0B161D" font_name="Monaco" font_style="0" font_size="10"/>
+	<style name="DEFAULT" style_id="0" fg_color="F8F8F8" bg_color="0B161D" font_name="Monaco" font_style="0" font_size="10"/>
+	<style name="INSTRUCTION WORD" style_id="5" fg_color="F6F080" bg_color="0B161D" font_name="Monaco" font_style="0" font_size="10"/>
+	<style name="NUMBER" style_id="4" fg_color="FF3A83" bg_color="0B161D" font_name="Monaco" font_style="0" font_size="10"/>
+	<style name="STRING" style_id="6" fg_color="55E439" bg_color="0B161D" font_name="Monaco" font_style="0" font_size="10"/>
+	<style name="CHARACTER" style_id="7" fg_color="55E439" bg_color="0B161D" font_name="Monaco" font_style="0" font_size="10"/>
+	<style name="OPERATOR" style_id="10" fg_color="FFAA00" bg_color="0B161D" font_name="Monaco" font_style="0" font_size="10"/>
+	<style name="REGEX" style_id="17" fg_color="FFB454" bg_color="0B161D" font_name="Monaco" font_style="0" font_size="10"/>
+	<style name="COMMENT LINE" style_id="2" fg_color="1E9AE0" bg_color="0B161D" font_name="Monaco" font_style="0" font_size="10"/>
+	<style name="SCALAR" style_id="12" fg_color="000000" bg_color="0B161D" font_name="Monaco" font_style="0" font_size="10"/>
+	<style name="ARRAY" style_id="13" fg_color="000000" bg_color="0B161D" font_name="Monaco" font_style="0" font_size="10"/>
+	<style name="HASH" style_id="14" fg_color="000000" bg_color="0B161D" font_name="Monaco" font_style="0" font_size="10"/>
+	<style name="SYMBOL TABLE" style_id="15" fg_color="F8F8F8" bg_color="0B161D" font_name="Monaco" font_style="0" font_size="10"/>
+	<style name="PUNCTUATION" style_id="8" fg_color="000000" bg_color="0B161D" font_name="Monaco" font_style="0" font_size="10"/>
+	<style name="POD" style_id="3" fg_color="000000" bg_color="0B161D" font_name="Monaco" font_style="0" font_size="10"/>
+	<style name="ERROR" style_id="1" fg_color="000000" bg_color="0B161D" font_name="Monaco" font_style="0" font_size="10"/>
+	<style name="LONGQUOTE" style_id="19" fg_color="000000" bg_color="0B161D" font_name="Monaco" font_style="0" font_size="10"/>
+	<style name="DATASECTION" style_id="21" fg_color="000000" bg_color="0B161D" font_name="Monaco" font_style="0" font_size="10"/>
+	<style name="REGSUBST" style_id="18" fg_color="000000" bg_color="0B161D" font_name="Monaco" font_style="0" font_size="10"/>
+	<style name="BACKTICKS" style_id="20" fg_color="000000" bg_color="0B161D" font_name="Monaco" font_style="0" font_size="10"/>
 </AinesmileTheme>
 
