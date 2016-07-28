@@ -85,7 +85,7 @@ void ScintillaConfig::initScintilla(ScintillaEdit* sci)
     sci->setWrapVisualFlagsLocation(SC_WRAPVISUALFLAGLOC_DEFAULT);
     sci->setWrapStartIndent(0);
 
-    sci->setLayoutCache(2);
+    sci->setLayoutCache(SC_CACHE_PAGE);
     sci->linesSplit(0);
     sci->setEdgeMode(0);
     sci->setEdgeColumn(200);
@@ -93,8 +93,14 @@ void ScintillaConfig::initScintilla(ScintillaEdit* sci)
 
     sci->usePopUp(true);
     //sci->send(SCI_SETUSEPALETTE, 1, 0);
+#if defined(Q_OS_WIN)
+    sci->setTechnology(SC_TECHNOLOGY_DIRECTWRITEDC );
+    sci->setBufferedDraw(false);
+#else
     sci->setBufferedDraw(true);
-    sci->setTwoPhaseDraw(true);
+#endif
+    //sci->setTwoPhaseDraw(true);
+    sci->setPhasesDraw(SC_PHASES_TWO);
     sci->setCodePage(SC_CP_UTF8);
     sci->setWordChars("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_");
     sci->setZoom(1);
