@@ -47,7 +47,7 @@ Name: enu; MessagesFile: compiler:Default.isl
 Name: desktopicon; Description: {cm:CreateDesktopIcon}; GroupDescription: {cm:AdditionalIcons}
 
 [Files]
-Source: "Cisco Jabber Log Viewer.exe"; DestDir: "{app}"
+Source: "CJLV.exe"; DestDir: "{app}"
 Source: "language\*"; DestDir: "{app}\language"; Flags: recursesubdirs
 Source: "themes\*"; DestDir: "{app}\themes"; Flags: recursesubdirs
 Source: "extensions\*"; DestDir: "{app}\extensions"; Flags: recursesubdirs
@@ -56,9 +56,9 @@ Source: "Everything.dll"; DestDir: "{app}"
 Source: "Everything.exe"; DestDir: "{app}"
 
 [Icons]
-Name: {commondesktop}\Cisco Jabber Log Viewer; Filename: {app}\Cisco Jabber Log Viewer.exe; WorkingDir: {app}; Tasks: desktopicon; Comment: Launch Cisco Jabber Log Viewer
-Name: {group}\Cisco Jabber; Filename: {app}\Cisco Jabber Log Viewer.exe; WorkingDir: {app}; Comment: Launch Cisco Jabber Log Viewer
-Name: {group}\{cm:UninstallProgram, Cisco Jabber Log Viewer}; Filename: {uninstallexe}; IconFilename: {app}\Cisco Jabber Log Viewer.exe; IconIndex: 0; 
+Name: {commondesktop}\Cisco Jabber Log Viewer; Filename: {app}\CJLV.exe; WorkingDir: {app}; Tasks: desktopicon; Comment: Launch Cisco Jabber Log Viewer
+Name: {group}\Cisco Jabber; Filename: {app}\CJLV.exe; WorkingDir: {app}; Comment: Launch Cisco Jabber Log Viewer
+Name: {group}\{cm:UninstallProgram, Cisco Jabber Log Viewer}; Filename: {uninstallexe}; IconFilename: {app}\CJLV.exe; IconIndex: 0; 
 
 [Messages]
 BeveledLabel=Powered by fyang3@cisco.com
@@ -66,7 +66,7 @@ BeveledLabel=Powered by fyang3@cisco.com
 [UninstallDelete]
 
 [Registry]
-Root: HKLM; Subkey: Software\Microsoft\Windows\CurrentVersion\App Paths\Cisco Jabber Log Viewer.exe; ValueType: string; ValueData: {app}\Cisco Jabber Log Viewer.exe; Flags: uninsdeletekey
+Root: HKLM; Subkey: Software\Microsoft\Windows\CurrentVersion\App Paths\CJLV.exe; ValueType: string; ValueData: {app}\CJLV.exe; Flags: uninsdeletekey
 
 [Run]
-Filename: {app}\Cisco Jabber Log Viewer.exe; Description: "Launch Cisco Jabber Log Viewer"; Flags: postinstall shellexec 
+Filename: {app}\CJLV.exe; Description: "Launch Cisco Jabber Log Viewer"; Flags: postinstall shellexec 
