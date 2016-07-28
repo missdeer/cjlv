@@ -1,11 +1,11 @@
 <AinesmileTheme name="batch" desc="Batch" ext="">
-	<style name="DEFAULT" style_id="0" fg_color="C3BE98" bg_color="1A0F0B" font_name="Fixedsys" font_style="0" font_size="10"/>
-	<style name="COMMENT" style_id="1" fg_color="679D47" bg_color="1A0F0B" font_name="Fixedsys" font_style="0" font_size="10"/>
-	<style name="KEYWORDS" style_id="2" fg_color="B3935C" bg_color="1A0F0B" font_name="Fixedsys" font_style="0" font_size="10"/>
-	<style name="LABEL" style_id="3" fg_color="6D4C2F" bg_color="1A0F0B" font_name="Fixedsys" font_style="0" font_size="10"/>
-	<style name="HIDE SYBOL" style_id="4" fg_color="B3935C" bg_color="1A0F0B" font_name="Fixedsys" font_style="0" font_size="10"/>
-	<style name="COMMAND" style_id="5" fg_color="D77261" bg_color="1A0F0B" font_name="Fixedsys" font_style="0" font_size="10"/>
-	<style name="VARIABLE" style_id="6" fg_color="7989A6" bg_color="1A0F0B" font_name="Fixedsys" font_style="0" font_size="10"/>
-	<style name="OPERATOR" style_id="7" fg_color="B3935C" bg_color="1A0F0B" font_name="Fixedsys" font_style="0" font_size="10"/>
+	<style name="DEFAULT" style_id="0" fg_color="C3BE98" bg_color="1A0F0B" font_name="Consolas" font_style="0" font_size="10"/>
+	<style name="COMMENT" style_id="1" fg_color="679D47" bg_color="1A0F0B" font_name="Consolas" font_style="0" font_size="10"/>
+	<style name="KEYWORDS" style_id="2" fg_color="B3935C" bg_color="1A0F0B" font_name="Consolas" font_style="0" font_size="10"/>
+	<style name="LABEL" style_id="3" fg_color="6D4C2F" bg_color="1A0F0B" font_name="Consolas" font_style="0" font_size="10"/>
+	<style name="HIDE SYBOL" style_id="4" fg_color="B3935C" bg_color="1A0F0B" font_name="Consolas" font_style="0" font_size="10"/>
+	<style name="COMMAND" style_id="5" fg_color="D77261" bg_color="1A0F0B" font_name="Consolas" font_style="0" font_size="10"/>
+	<style name="VARIABLE" style_id="6" fg_color="7989A6" bg_color="1A0F0B" font_name="Consolas" font_style="0" font_size="10"/>
+	<style name="OPERATOR" style_id="7" fg_color="B3935C" bg_color="1A0F0B" font_name="Consolas" font_style="0" font_size="10"/>
 </AinesmileTheme>
 

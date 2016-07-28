@@ -1,12 +1,12 @@
 <AinesmileTheme name="asp" desc="asp" ext="asp">
-	<style name="DEFAULT" style_id="81" fg_color="F8F8F8" bg_color="141414" font_name="Fixedsys" font_style="0" font_size="10"/>
-	<style name="COMMENTLINE" style_id="82" fg_color="5F5A60" bg_color="141414" font_name="Fixedsys" font_style="0" font_size="10"/>
-	<style name="NUMBER" style_id="83" fg_color="CF6A4C" bg_color="141414" font_name="Fixedsys" font_style="0" font_size="10"/>
-	<style name="WORD" style_id="84" fg_color="CDA869" bg_color="141414" font_name="Fixedsys" font_style="0" font_size="10"/>
-	<style name="STRING" style_id="85" fg_color="8F9D6A" bg_color="141414" font_name="Fixedsys" font_style="0" font_size="10"/>
-	<style name="STRINGEOL" style_id="87" fg_color="8F9D6A" bg_color="141414" font_name="Fixedsys" font_style="0" font_size="10"/>
-	<style name="IDENTIFIER" style_id="86" fg_color="CF6A4C" bg_color="141414" font_name="Fixedsys" font_style="0" font_size="10"/>
-	<style name="ASPSYBOL" style_id="15" fg_color="F8F8F8" bg_color="141414" font_name="Fixedsys" font_style="0" font_size="10"/>
-	<style name="SCRIPTTYPE" style_id="16" fg_color="F8F8F8" bg_color="141414" font_name="Fixedsys" font_style="0" font_size="10"/>
+	<style name="DEFAULT" style_id="81" fg_color="F8F8F8" bg_color="141414" font_name="Consolas" font_style="0" font_size="10"/>
+	<style name="COMMENTLINE" style_id="82" fg_color="5F5A60" bg_color="141414" font_name="Consolas" font_style="0" font_size="10"/>
+	<style name="NUMBER" style_id="83" fg_color="CF6A4C" bg_color="141414" font_name="Consolas" font_style="0" font_size="10"/>
+	<style name="WORD" style_id="84" fg_color="CDA869" bg_color="141414" font_name="Consolas" font_style="0" font_size="10"/>
+	<style name="STRING" style_id="85" fg_color="8F9D6A" bg_color="141414" font_name="Consolas" font_style="0" font_size="10"/>
+	<style name="STRINGEOL" style_id="87" fg_color="8F9D6A" bg_color="141414" font_name="Consolas" font_style="0" font_size="10"/>
+	<style name="IDENTIFIER" style_id="86" fg_color="CF6A4C" bg_color="141414" font_name="Consolas" font_style="0" font_size="10"/>
+	<style name="ASPSYBOL" style_id="15" fg_color="F8F8F8" bg_color="141414" font_name="Consolas" font_style="0" font_size="10"/>
+	<style name="SCRIPTTYPE" style_id="16" fg_color="F8F8F8" bg_color="141414" font_name="Consolas" font_style="0" font_size="10"/>
 </AinesmileTheme>
 

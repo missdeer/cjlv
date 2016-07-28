@@ -1,18 +1,18 @@
 <AinesmileTheme name="autoit" desc="autoIt" ext="">
-	<style name="DEFAULT" style_id="0" fg_color="C3BE98" bg_color="1A0F0B" font_name="Fixedsys" font_style="0" font_size="10"/>
-	<style name="COMMENT LINE" style_id="1" fg_color="679D47" bg_color="1A0F0B" font_name="Fixedsys" font_style="0" font_size="10"/>
-	<style name="COMMENT" style_id="2" fg_color="679D47" bg_color="1A0F0B" font_name="Fixedsys" font_style="0" font_size="10"/>
-	<style name="NUMBER" style_id="3" fg_color="DA5659" bg_color="1A0F0B" font_name="Fixedsys" font_style="0" font_size="10"/>
-	<style name="FUNCTION" style_id="4" fg_color="C29863" bg_color="1A0F0B" font_name="Fixedsys" font_style="0" font_size="10"/>
-	<style name="INSTRUCTION WORD" style_id="5" fg_color="F1E694" bg_color="1A0F0B" font_name="Fixedsys" font_style="0" font_size="10"/>
-	<style name="MACRO" style_id="6" fg_color="000000" bg_color="1A0F0B" font_name="Fixedsys" font_style="0" font_size="10"/>
-	<style name="STRING" style_id="7" fg_color="7CA563" bg_color="1A0F0B" font_name="Fixedsys" font_style="0" font_size="10"/>
-	<style name="OPERATOR" style_id="8" fg_color="B3935C" bg_color="1A0F0B" font_name="Fixedsys" font_style="0" font_size="10"/>
-	<style name="VARIABLE" style_id="9" fg_color="7989A6" bg_color="1A0F0B" font_name="Fixedsys" font_style="0" font_size="10"/>
-	<style name="SENT" style_id="10" fg_color="000000" bg_color="1A0F0B" font_name="Fixedsys" font_style="0" font_size="10"/>
-	<style name="PREPROCESSOR" style_id="11" fg_color="8996A8" bg_color="1A0F0B" font_name="Fixedsys" font_style="0" font_size="10"/>
-	<style name="SPECIAL" style_id="12" fg_color="000000" bg_color="1A0F0B" font_name="Fixedsys" font_style="0" font_size="10"/>
-	<style name="EXPAND" style_id="13" fg_color="000000" bg_color="1A0F0B" font_name="Fixedsys" font_style="0" font_size="10"/>
-	<style name="COMOBJ" style_id="14" fg_color="000000" bg_color="1A0F0B" font_name="Fixedsys" font_style="0" font_size="10"/>
+	<style name="DEFAULT" style_id="0" fg_color="C3BE98" bg_color="1A0F0B" font_name="Consolas" font_style="0" font_size="10"/>
+	<style name="COMMENT LINE" style_id="1" fg_color="679D47" bg_color="1A0F0B" font_name="Consolas" font_style="0" font_size="10"/>
+	<style name="COMMENT" style_id="2" fg_color="679D47" bg_color="1A0F0B" font_name="Consolas" font_style="0" font_size="10"/>
+	<style name="NUMBER" style_id="3" fg_color="DA5659" bg_color="1A0F0B" font_name="Consolas" font_style="0" font_size="10"/>
+	<style name="FUNCTION" style_id="4" fg_color="C29863" bg_color="1A0F0B" font_name="Consolas" font_style="0" font_size="10"/>
+	<style name="INSTRUCTION WORD" style_id="5" fg_color="F1E694" bg_color="1A0F0B" font_name="Consolas" font_style="0" font_size="10"/>
+	<style name="MACRO" style_id="6" fg_color="000000" bg_color="1A0F0B" font_name="Consolas" font_style="0" font_size="10"/>
+	<style name="STRING" style_id="7" fg_color="7CA563" bg_color="1A0F0B" font_name="Consolas" font_style="0" font_size="10"/>
+	<style name="OPERATOR" style_id="8" fg_color="B3935C" bg_color="1A0F0B" font_name="Consolas" font_style="0" font_size="10"/>
+	<style name="VARIABLE" style_id="9" fg_color="7989A6" bg_color="1A0F0B" font_name="Consolas" font_style="0" font_size="10"/>
+	<style name="SENT" style_id="10" fg_color="000000" bg_color="1A0F0B" font_name="Consolas" font_style="0" font_size="10"/>
+	<style name="PREPROCESSOR" style_id="11" fg_color="8996A8" bg_color="1A0F0B" font_name="Consolas" font_style="0" font_size="10"/>
+	<style name="SPECIAL" style_id="12" fg_color="000000" bg_color="1A0F0B" font_name="Consolas" font_style="0" font_size="10"/>
+	<style name="EXPAND" style_id="13" fg_color="000000" bg_color="1A0F0B" font_name="Consolas" font_style="0" font_size="10"/>
+	<style name="COMOBJ" style_id="14" fg_color="000000" bg_color="1A0F0B" font_name="Consolas" font_style="0" font_size="10"/>
 </AinesmileTheme>
 

@@ -1,18 +1,18 @@
 <AinesmileTheme name="fortran" desc="Fortran" ext="">
-	<style name="DEFAULT" style_id="0" fg_color="FFFFFF" bg_color="000040" font_name="Fixedsys" font_style="0" font_size=""/>
-	<style name="COMMENT" style_id="1" fg_color="80A0FF" bg_color="000040" font_name="Fixedsys" font_style="0" font_size=""/>
-	<style name="NUMBER" style_id="2" fg_color="FFFFFF" bg_color="000040" font_name="Fixedsys" font_style="0" font_size=""/>
-	<style name="STRING" style_id="3" fg_color="FFA0A0" bg_color="000040" font_name="Fixedsys" font_style="0" font_size=""/>
-	<style name="STRING2" style_id="4" fg_color="FFA0A0" bg_color="000040" font_name="Fixedsys" font_style="1" font_size=""/>
-	<style name="STRINGEOL" style_id="5" fg_color="FFA0A0" bg_color="000040" font_name="Fixedsys" font_style="2" font_size=""/>
-	<style name="OPERATOR" style_id="6" fg_color="FFFFFF" bg_color="000040" font_name="Fixedsys" font_style="1" font_size=""/>
-	<style name="IDENTIFIER" style_id="7" fg_color="C0C0C0" bg_color="000040" font_name="Fixedsys" font_style="0" font_size=""/>
-	<style name="INSTRUCTION WORD" style_id="8" fg_color="0000FF" bg_color="000040" font_name="Fixedsys" font_style="1" font_size=""/>
-	<style name="FUNCTION1" style_id="9" fg_color="8000FF" bg_color="000040" font_name="Fixedsys" font_style="1" font_size=""/>
-	<style name="FUNCTION2" style_id="10" fg_color="0080C0" bg_color="000040" font_name="Fixedsys" font_style="1" font_size=""/>
-	<style name="PREPROCESSOR" style_id="11" fg_color="800000" bg_color="000040" font_name="Fixedsys" font_style="0" font_size=""/>
-	<style name="OPERATOR2" style_id="12" fg_color="FFFFFF" bg_color="000040" font_name="Fixedsys" font_style="0" font_size=""/>
-	<style name="LABEL" style_id="13" fg_color="FFFFFF" bg_color="000040" font_name="Fixedsys" font_style="1" font_size=""/>
-	<style name="CONTINUATION" style_id="14" fg_color="008000" bg_color="000040" font_name="Fixedsys" font_style="0" font_size=""/>
+	<style name="DEFAULT" style_id="0" fg_color="FFFFFF" bg_color="000040" font_name="Consolas" font_style="0" font_size=""/>
+	<style name="COMMENT" style_id="1" fg_color="80A0FF" bg_color="000040" font_name="Consolas" font_style="0" font_size=""/>
+	<style name="NUMBER" style_id="2" fg_color="FFFFFF" bg_color="000040" font_name="Consolas" font_style="0" font_size=""/>
+	<style name="STRING" style_id="3" fg_color="FFA0A0" bg_color="000040" font_name="Consolas" font_style="0" font_size=""/>
+	<style name="STRING2" style_id="4" fg_color="FFA0A0" bg_color="000040" font_name="Consolas" font_style="1" font_size=""/>
+	<style name="STRINGEOL" style_id="5" fg_color="FFA0A0" bg_color="000040" font_name="Consolas" font_style="2" font_size=""/>
+	<style name="OPERATOR" style_id="6" fg_color="FFFFFF" bg_color="000040" font_name="Consolas" font_style="1" font_size=""/>
+	<style name="IDENTIFIER" style_id="7" fg_color="C0C0C0" bg_color="000040" font_name="Consolas" font_style="0" font_size=""/>
+	<style name="INSTRUCTION WORD" style_id="8" fg_color="0000FF" bg_color="000040" font_name="Consolas" font_style="1" font_size=""/>
+	<style name="FUNCTION1" style_id="9" fg_color="8000FF" bg_color="000040" font_name="Consolas" font_style="1" font_size=""/>
+	<style name="FUNCTION2" style_id="10" fg_color="0080C0" bg_color="000040" font_name="Consolas" font_style="1" font_size=""/>
+	<style name="PREPROCESSOR" style_id="11" fg_color="800000" bg_color="000040" font_name="Consolas" font_style="0" font_size=""/>
+	<style name="OPERATOR2" style_id="12" fg_color="FFFFFF" bg_color="000040" font_name="Consolas" font_style="0" font_size=""/>
+	<style name="LABEL" style_id="13" fg_color="FFFFFF" bg_color="000040" font_name="Consolas" font_style="1" font_size=""/>
+	<style name="CONTINUATION" style_id="14" fg_color="008000" bg_color="000040" font_name="Consolas" font_style="0" font_size=""/>
 </AinesmileTheme>
 

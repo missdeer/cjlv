@@ -1,15 +1,15 @@
 <AinesmileTheme name="javascript" desc="Javascript" ext="">
-	<style name="DEFAULT" style_id="41" fg_color="FFFFFF" bg_color="222C28" font_name="Fixedsys" font_style="0" font_size="10"/>
-	<style name="NUMBER" style_id="45" fg_color="E98800" bg_color="222C28" font_name="Fixedsys" font_style="0" font_size="10"/>
-	<style name="WORD" style_id="46" fg_color="FFFFFF" bg_color="222C28" font_name="Fixedsys" font_style="0" font_size="10"/>
-	<style name="KEYWORD" style_id="47" fg_color="A8B3AB" bg_color="222C28" font_name="Fixedsys" font_style="0" font_size="10"/>
-	<style name="DOUBLESTRING" style_id="48" fg_color="FFFFFF" bg_color="222C28" font_name="Fixedsys" font_style="0" font_size="10"/>
-	<style name="SINGLESTRING" style_id="49" fg_color="FFFFFF" bg_color="222C28" font_name="Fixedsys" font_style="0" font_size="10"/>
-	<style name="SYMBOLS" style_id="50" fg_color="FFFFFF" bg_color="222C28" font_name="Fixedsys" font_style="0" font_size="10"/>
-	<style name="STRINGEOL" style_id="51" fg_color="FFFFFF" bg_color="222C28" font_name="Fixedsys" font_style="0" font_size="10"/>
-	<style name="REGEX" style_id="52" fg_color="FFFFFF" bg_color="222C28" font_name="Fixedsys" font_style="0" font_size="10"/>
-	<style name="COMMENT" style_id="42" fg_color="666C68" bg_color="222C28" font_name="Fixedsys" font_style="0" font_size="10"/>
-	<style name="COMMENTLINE" style_id="43" fg_color="666C68" bg_color="222C28" font_name="Fixedsys" font_style="0" font_size="10"/>
-	<style name="COMMENTDOC" style_id="44" fg_color="666C68" bg_color="222C28" font_name="Fixedsys" font_style="0" font_size="10"/>
+	<style name="DEFAULT" style_id="41" fg_color="FFFFFF" bg_color="222C28" font_name="Consolas" font_style="0" font_size="10"/>
+	<style name="NUMBER" style_id="45" fg_color="E98800" bg_color="222C28" font_name="Consolas" font_style="0" font_size="10"/>
+	<style name="WORD" style_id="46" fg_color="FFFFFF" bg_color="222C28" font_name="Consolas" font_style="0" font_size="10"/>
+	<style name="KEYWORD" style_id="47" fg_color="A8B3AB" bg_color="222C28" font_name="Consolas" font_style="0" font_size="10"/>
+	<style name="DOUBLESTRING" style_id="48" fg_color="FFFFFF" bg_color="222C28" font_name="Consolas" font_style="0" font_size="10"/>
+	<style name="SINGLESTRING" style_id="49" fg_color="FFFFFF" bg_color="222C28" font_name="Consolas" font_style="0" font_size="10"/>
+	<style name="SYMBOLS" style_id="50" fg_color="FFFFFF" bg_color="222C28" font_name="Consolas" font_style="0" font_size="10"/>
+	<style name="STRINGEOL" style_id="51" fg_color="FFFFFF" bg_color="222C28" font_name="Consolas" font_style="0" font_size="10"/>
+	<style name="REGEX" style_id="52" fg_color="FFFFFF" bg_color="222C28" font_name="Consolas" font_style="0" font_size="10"/>
+	<style name="COMMENT" style_id="42" fg_color="666C68" bg_color="222C28" font_name="Consolas" font_style="0" font_size="10"/>
+	<style name="COMMENTLINE" style_id="43" fg_color="666C68" bg_color="222C28" font_name="Consolas" font_style="0" font_size="10"/>
+	<style name="COMMENTDOC" style_id="44" fg_color="666C68" bg_color="222C28" font_name="Consolas" font_style="0" font_size="10"/>
 </AinesmileTheme>
 

@@ -1,19 +1,19 @@
 <AinesmileTheme name="tcl" desc="TCL" ext="">
-	<style name="PREPROCESSOR" style_id="9" fg_color="FFAA00" bg_color="2A211C" font_name="Fixedsys" font_style="0" font_size="10"/>
-	<style name="DEFAULT" style_id="11" fg_color="F8F8F8" bg_color="2A211C" font_name="Fixedsys" font_style="0" font_size="10"/>
-	<style name="INSTRUCTION WORD" style_id="5" fg_color="F6F080" bg_color="2A211C" font_name="Fixedsys" font_style="0" font_size="10"/>
-	<style name="TYPE WORD" style_id="16" fg_color="FFAA00" bg_color="2A211C" font_name="Fixedsys" font_style="0" font_size="10"/>
-	<style name="NUMBER" style_id="4" fg_color="FF3A83" bg_color="2A211C" font_name="Fixedsys" font_style="0" font_size="10"/>
-	<style name="STRING" style_id="6" fg_color="55E439" bg_color="2A211C" font_name="Fixedsys" font_style="0" font_size="10"/>
-	<style name="CHARACTER" style_id="7" fg_color="55E439" bg_color="2A211C" font_name="Fixedsys" font_style="0" font_size="10"/>
-	<style name="OPERATOR" style_id="10" fg_color="FFAA00" bg_color="2A211C" font_name="Fixedsys" font_style="0" font_size="10"/>
-	<style name="VERBATIM" style_id="13" fg_color="FF3A83" bg_color="2A211C" font_name="Fixedsys" font_style="0" font_size="10"/>
-	<style name="REGEX" style_id="14" fg_color="FFB454" bg_color="2A211C" font_name="Fixedsys" font_style="0" font_size="10"/>
-	<style name="COMMENT" style_id="1" fg_color="1E9AE0" bg_color="2A211C" font_name="Fixedsys" font_style="0" font_size="10"/>
-	<style name="COMMENT LINE" style_id="2" fg_color="1E9AE0" bg_color="2A211C" font_name="Fixedsys" font_style="0" font_size="10"/>
-	<style name="COMMENT DOC" style_id="3" fg_color="1E9AE0" bg_color="2A211C" font_name="Fixedsys" font_style="0" font_size="10"/>
-	<style name="COMMENT LINE DOC" style_id="15" fg_color="1E9AE0" bg_color="2A211C" font_name="Fixedsys" font_style="0" font_size="10"/>
-	<style name="COMMENT DOC KEYWORD" style_id="17" fg_color="1E9AE0" bg_color="2A211C" font_name="Fixedsys" font_style="0" font_size="10"/>
-	<style name="COMMENT DOC KEYWORD ERROR" style_id="18" fg_color="1E9AE0" bg_color="2A211C" font_name="Fixedsys" font_style="0" font_size="10"/>
+	<style name="PREPROCESSOR" style_id="9" fg_color="FFAA00" bg_color="2A211C" font_name="Consolas" font_style="0" font_size="10"/>
+	<style name="DEFAULT" style_id="11" fg_color="F8F8F8" bg_color="2A211C" font_name="Consolas" font_style="0" font_size="10"/>
+	<style name="INSTRUCTION WORD" style_id="5" fg_color="F6F080" bg_color="2A211C" font_name="Consolas" font_style="0" font_size="10"/>
+	<style name="TYPE WORD" style_id="16" fg_color="FFAA00" bg_color="2A211C" font_name="Consolas" font_style="0" font_size="10"/>
+	<style name="NUMBER" style_id="4" fg_color="FF3A83" bg_color="2A211C" font_name="Consolas" font_style="0" font_size="10"/>
+	<style name="STRING" style_id="6" fg_color="55E439" bg_color="2A211C" font_name="Consolas" font_style="0" font_size="10"/>
+	<style name="CHARACTER" style_id="7" fg_color="55E439" bg_color="2A211C" font_name="Consolas" font_style="0" font_size="10"/>
+	<style name="OPERATOR" style_id="10" fg_color="FFAA00" bg_color="2A211C" font_name="Consolas" font_style="0" font_size="10"/>
+	<style name="VERBATIM" style_id="13" fg_color="FF3A83" bg_color="2A211C" font_name="Consolas" font_style="0" font_size="10"/>
+	<style name="REGEX" style_id="14" fg_color="FFB454" bg_color="2A211C" font_name="Consolas" font_style="0" font_size="10"/>
+	<style name="COMMENT" style_id="1" fg_color="1E9AE0" bg_color="2A211C" font_name="Consolas" font_style="0" font_size="10"/>
+	<style name="COMMENT LINE" style_id="2" fg_color="1E9AE0" bg_color="2A211C" font_name="Consolas" font_style="0" font_size="10"/>
+	<style name="COMMENT DOC" style_id="3" fg_color="1E9AE0" bg_color="2A211C" font_name="Consolas" font_style="0" font_size="10"/>
+	<style name="COMMENT LINE DOC" style_id="15" fg_color="1E9AE0" bg_color="2A211C" font_name="Consolas" font_style="0" font_size="10"/>
+	<style name="COMMENT DOC KEYWORD" style_id="17" fg_color="1E9AE0" bg_color="2A211C" font_name="Consolas" font_style="0" font_size="10"/>
+	<style name="COMMENT DOC KEYWORD ERROR" style_id="18" fg_color="1E9AE0" bg_color="2A211C" font_name="Consolas" font_style="0" font_size="10"/>
 </AinesmileTheme>
 

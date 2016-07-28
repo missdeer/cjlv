@@ -1,7 +1,7 @@
 <AinesmileTheme name="props" desc="Properties file" ext="">
-	<style name="DEFAULT" style_id="0" fg_color="FFFFFF" bg_color="222C28" font_name="Fixedsys" font_style="0" font_size="10"/>
-	<style name="COMMENT" style_id="1" fg_color="666C68" bg_color="222C28" font_name="Fixedsys" font_style="0" font_size="10"/>
-	<style name="ASSIGNMENT" style_id="3" fg_color="A8B3AB" bg_color="222C28" font_name="Fixedsys" font_style="0" font_size="10"/>
-	<style name="DEFVAL" style_id="4" fg_color="A8B3AB" bg_color="222C28" font_name="Fixedsys" font_style="0" font_size="10"/>
+	<style name="DEFAULT" style_id="0" fg_color="FFFFFF" bg_color="222C28" font_name="Consolas" font_style="0" font_size="10"/>
+	<style name="COMMENT" style_id="1" fg_color="666C68" bg_color="222C28" font_name="Consolas" font_style="0" font_size="10"/>
+	<style name="ASSIGNMENT" style_id="3" fg_color="A8B3AB" bg_color="222C28" font_name="Consolas" font_style="0" font_size="10"/>
+	<style name="DEFVAL" style_id="4" fg_color="A8B3AB" bg_color="222C28" font_name="Consolas" font_style="0" font_size="10"/>
 </AinesmileTheme>
 
