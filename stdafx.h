@@ -3,6 +3,7 @@
 
 
 #if defined(_WIN32)
+#define NOMINMAX
 #include <Windows.h>
 #include <Shellapi.h>
 #include <shobjidl.h>

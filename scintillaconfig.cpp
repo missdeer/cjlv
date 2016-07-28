@@ -2,10 +2,6 @@
 #include "ScintillaEdit.h"
 #include "scintillaconfig.h"
 
-ScintillaConfig::ScintillaConfig()
-{
-}
-
 void ScintillaConfig::initScintilla(ScintillaEdit* sci)
 {
     sci->styleResetDefault();

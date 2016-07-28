@@ -6,7 +6,6 @@ class ScintillaEdit;
 class ScintillaConfig
 {
 public:
-    ScintillaConfig();
     void initScintilla(ScintillaEdit* sci);
     void initFolderStyle(ScintillaEdit* sci);
     void initEditorStyle(ScintillaEdit* sci, const QString &lang = "xml");
