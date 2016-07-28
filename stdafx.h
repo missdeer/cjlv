@@ -14,10 +14,8 @@
 #include <everything_ipc.h>
 #endif
 
-#include <sqlite3.h>
 #if defined (__cplusplus)
 
-#include <lua.hpp>
 #include <QtCore>
 #include <QtGui>
 #include <QSettings>
