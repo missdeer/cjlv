@@ -329,7 +329,7 @@ void LogModel::query(int offset)
     if (m_inQuery.end() != it)
     {
 #ifndef QT_NO_DEBUG
-        qDebug() << __FUNCTION__ << "offset:" << offset << ", i:" << i;
+        qDebug() << __FUNCTION__ << "offset:" << offset ;
 #endif
         return;
     }

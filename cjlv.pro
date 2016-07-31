@@ -106,12 +106,12 @@ win32: {
     TARGET = CJLV
     QT += winextras
     QMAKE_LFLAGS += "/LTCG"
-    INCLUDEPATH += $$PWD/3rdparty/Everything-SDK/include $$PWD/3rdparty/Everything-SDK/ipc $$PWD/3rdparty/LuaJIT-2.0.4/src
+    INCLUDEPATH += $$PWD/3rdparty/Everything-SDK/include $$PWD/3rdparty/Everything-SDK/ipc
 
     SOURCES += everythingwrapper.cpp ShellContextMenu.cpp
     HEADERS += everythingwrapper.h ShellContextMenu.h
 
-    LIBS+=-L$$PWD/3rdparty/zlib-1.2.8 -lScintillaEdit -lzlib -L$$PWD/3rdparty/Everything-SDK/lib -lUser32 -lShell32 -lpsapi -lOle32
+    LIBS+=-L$$PWD/3rdparty/zlib-1.2.8 -L$$PWD/3rdparty/Everything-SDK/lib -lScintillaEdit -lzlib -lUser32 -lShell32 -lpsapi -lOle32
 
     contains(QMAKE_HOST.arch, x86_64): LIBS += -lEverything64
     else: LIBS += -lEverything32
@@ -124,9 +124,6 @@ win32: {
         copy_themes.commands = '$(COPY_DIR) $$shell_path($$PWD/resource/Windows/themes) $$shell_path($$OUT_PWD/Release/themes/)'
         copy_language.commands = '$(COPY_DIR) $$shell_path($$PWD/resource/language) $$shell_path($$OUT_PWD/Release/language/)'
         copy_langmap.commands = '$(COPY_FILE) $$shell_path($$PWD/resource/langmap.xml) $$shell_path($$OUT_PWD/Release/langmap.xml)'
-        copy_lua.commands = '$(COPY_FILE) $$shell_path($$PWD/3rdparty/LuaJIT-2.0.4/src/lua51.dll) $$shell_path($$OUT_PWD/Release/lua51.dll)'
-        copy_scintilla.commands = '$(COPY_FILE) $$shell_path($$PWD/3rdparty/scintilla/bin/release/ScintillaEdit3.dll) $$shell_path($$OUT_PWD/Release/ScintillaEdit3.dll)'
-        copy_everything.commands = '$(COPY_FILE) $$shell_path($$PWD/3rdparty/Everything-SDK/dll/Everything64.dll) $$shell_path($$OUT_PWD/Release/Everything.dll)'
 
         contains(QMAKE_HOST.arch, x86_64): {
             copy_everything_dll.commands = '$(COPY_FILE) $$shell_path($$PWD/3rdparty/Everything-SDK/dll/Everything64.dll) $$shell_path($$OUT_PWD/Release/Everything.dll)'
@@ -139,8 +136,8 @@ win32: {
             copy_iss.commands = '$(COPY_FILE) $$shell_path($$PWD/cjlv-msvc-x86.iss) $$shell_path($$OUT_PWD/Release/cjlv-msvc-x86.iss)'
         }
 
-        QMAKE_EXTRA_TARGETS +=  copy_extensions copy_scintilla copy_lua copy_iss copy_themes copy_language copy_langmap copy_everything_dll copy_everything_exe
-        POST_TARGETDEPS += copy_extensions copy_scintilla copy_lua copy_iss copy_themes copy_language copy_langmap copy_everything_dll copy_everything_exe
+        QMAKE_EXTRA_TARGETS +=  copy_extensions copy_iss copy_themes copy_language copy_langmap copy_everything_dll copy_everything_exe
+        POST_TARGETDEPS += copy_extensions copy_iss copy_themes copy_language copy_langmap copy_everything_dll copy_everything_exe
         QMAKE_POST_LINK += $$quote($$WINDEPLOYQT --release --force \"$${OUT_PWD}/Release/$${TARGET}.exe\")
     }
     else: LIBS += -L$$PWD/3rdparty/scintilla/bin/debug
