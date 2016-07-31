@@ -88,14 +88,11 @@ void ScintillaConfig::initScintilla(ScintillaEdit* sci)
     sci->setEdgeColour(0xC0DCC0);
 
     sci->usePopUp(true);
-    //sci->send(SCI_SETUSEPALETTE, 1, 0);
+
 #if defined(Q_OS_WIN)
     sci->setTechnology(SC_TECHNOLOGY_DIRECTWRITEDC );
-    sci->setBufferedDraw(false);
-#else
-    sci->setBufferedDraw(true);
 #endif
-    //sci->setTwoPhaseDraw(true);
+    sci->setBufferedDraw(false);
     sci->setPhasesDraw(SC_PHASES_TWO);
     sci->setCodePage(SC_CP_UTF8);
     sci->setWordChars("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_");
