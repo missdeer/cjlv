@@ -502,7 +502,11 @@ const QString &LogModel::getLogSourceFile(const QModelIndex &index)
     auto it = m_logs.find(index.row());
     Q_ASSERT(m_logs.end() != it);
     QSharedPointer<LogItem> r = *it;
+#if defined(Q_OS_WIN)
+    return r->source.replace(QChar('/'), QChar('\\'));
+#else
     return r->source;
+#endif
 }
 
 QString LogModel::getLogFileName(const QModelIndex &index)
