@@ -245,17 +245,18 @@ void ScintillaConfig::applyThemeStyle(ScintillaEdit *sci, const QString &themePa
             color = ((color & 0xFF0000) >> 16) | (color & 0xFF00) | ((color & 0xFF) << 16);
             sci->styleSetBack(id, color);
         }
-        QString fontName = styleElem.attribute("font_name");
-        if (!fontName.isEmpty())
-            sci->styleSetFont(id, fontName.toStdString().c_str());
-        else
-#if defined(Q_OS_MAC)
-            sci->styleSetFont(id, "Monaco");
-#elif defined(Q_OS_WIN)
-            sci->styleSetFont(id, "Consolas");
-#else
-            sci->styleSetFont(id, "Droidsans");
-#endif
+//        QString fontName = styleElem.attribute("font_name");
+//        if (!fontName.isEmpty())
+//            sci->styleSetFont(id, fontName.toStdString().c_str());
+//        else
+//#if defined(Q_OS_MAC)
+//            sci->styleSetFont(id, "Monaco");
+//#elif defined(Q_OS_WIN)
+//            sci->styleSetFont(id, "Consolas");
+//#else
+//            sci->styleSetFont(id, "Droidsans");
+//#endif
+        sci->styleSetFont(id, "Source Code Pro");
 
         uint fontStyle = styleElem.attribute("font_style").toUInt();
         if (fontStyle & 0x01)

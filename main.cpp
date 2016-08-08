@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include <QFontDatabase>
 #include "qtsingleapplication.h"
 #include "mainwindow.h"
 #include "settings.h"
@@ -10,22 +11,44 @@
 int main(int argc, char *argv[])
 {
 #if !defined(Q_OS_WIN)
-    // increase the number of file that can be opened in Qt Creator.
+    // increase the number of file that can be opened.
     struct rlimit rl;
     getrlimit(RLIMIT_NOFILE, &rl);
 
     rl.rlim_cur = qMin((rlim_t)OPEN_MAX, rl.rlim_max);
     setrlimit(RLIMIT_NOFILE, &rl);
 #endif
+    SharedTools::QtSingleApplication a("Cisco Jabber Log Viewer", argc, argv);
 
+    QStringList fonts {
+        "SourceCodePro-Regular.ttf",
+        "SourceCodePro-Black.ttf",
+        "SourceCodePro-Bold.ttf",
+        "SourceCodePro-ExtraLight.ttf",
+        "SourceCodePro-Light.ttf",
+        "SourceCodePro-Medium.ttf",
+        "SourceCodePro-Semibold.ttf"
+    };
+    QString fontPath = QApplication::applicationDirPath();
+    QDir dir(fontPath);
 #if !defined(Q_OS_MAC)
     QCoreApplication::setAttribute(Qt::AA_DisableHighDpiScaling, true);
 #else
     QCoreApplication::setAttribute(Qt::AA_DontShowIconsInMenus, true);
+    dir.cdUp();
+    dir.cd("Resources");
 #endif
-    QCoreApplication::setAttribute(Qt::AA_UseHighDpiPixmaps, true);
+    dir.cd("Fonts");
+    foreach(const QString& f, fonts)
+    {
+        fontPath = dir.absolutePath() + QDir::separator() + f;
+        if (QFile::exists(fontPath))
+            QFontDatabase::addApplicationFont(fontPath);
+        else
+            QMessageBox::critical(NULL, "Font missing", fontPath, QMessageBox::Ok);
+    }
 
-    SharedTools::QtSingleApplication a("Cisco Jabber Log Viewer", argc, argv);
+    QCoreApplication::setAttribute(Qt::AA_UseHighDpiPixmaps, true);
 	
     QCoreApplication::setApplicationName("Cisco Jabber Log Viewer");
     QCoreApplication::setApplicationVersion("1.1");
