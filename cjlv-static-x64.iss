@@ -51,6 +51,7 @@ Source: "CJLV.exe"; DestDir: "{app}"
 Source: "language\*"; DestDir: "{app}\language"; Flags: recursesubdirs
 Source: "themes\*"; DestDir: "{app}\themes"; Flags: recursesubdirs
 Source: "extensions\*"; DestDir: "{app}\extensions"; Flags: recursesubdirs
+Source: "Fonts\*"; DestDir: "{app}\Fonts"; Flags: recursesubdirs
 Source: "langmap.xml"; DestDir: "{app}"
 Source: "Everything.dll"; DestDir: "{app}"
 Source: "Everything.exe"; DestDir: "{app}"
