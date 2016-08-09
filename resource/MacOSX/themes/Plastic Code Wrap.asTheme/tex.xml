@@ -1,9 +1,0 @@
-<AinesmileTheme name="tex" desc="TeX" ext="">
-	<style name="DEFAULT" style_id="0" fg_color="F8F8F8" bg_color="0B161D" font_name="Monaco" font_style="0" font_size="10"/>
-	<style name="SPECIAL" style_id="1" fg_color="000000" bg_color="0B161D" font_name="Monaco" font_style="0" font_size="10"/>
-	<style name="GROUP" style_id="2" fg_color="000000" bg_color="0B161D" font_name="Monaco" font_style="0" font_size="10"/>
-	<style name="SYMBOL" style_id="3" fg_color="F8F8F8" bg_color="0B161D" font_name="Monaco" font_style="0" font_size="10"/>
-	<style name="COMMAND" style_id="4" fg_color="EB939A" bg_color="0B161D" font_name="Monaco" font_style="0" font_size="10"/>
-	<style name="TEXT" style_id="5" fg_color="55E439" bg_color="0B161D" font_name="Monaco" font_style="0" font_size="10"/>
-</AinesmileTheme>
-
