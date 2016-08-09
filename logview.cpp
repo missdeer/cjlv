@@ -267,9 +267,8 @@ void LogView::extractContent(const QModelIndex& index)
     }
 }
 
-void LogView::openSourceFile(const QModelIndex &index)
+void LogView::openSourceFile(const QModelIndex &index, bool openWithBuiltinEditor)
 {
-    showCodeEditorPane();
     const QString& source = m_model->getLogSourceFile(index);
 
     QRegularExpression re("([^\\(]+)\\(([0-9]+)");
@@ -341,7 +340,26 @@ void LogView::openSourceFile(const QModelIndex &index)
 
             if (matched && (g_settings->sourceDirectory().isEmpty() || (!g_settings->sourceDirectory().isEmpty() && dir == srcDir)))
             {
-                m_codeEditorTabWidget->gotoLine(filePath, m.captured(2).toInt());
+                if (openWithBuiltinEditor)
+                {
+                    showCodeEditorPane();
+                    m_codeEditorTabWidget->gotoLine(filePath, m.captured(2).toInt());
+                }
+                else
+                {
+                    int index = filePath.indexOf("components");
+                    if (index == -1)
+                        index = filePath.indexOf("products");
+                    if (index == -1)
+                        index = filePath.indexOf("services");
+                    if (index >= 0)
+                    {
+                        QString url = QString("http://10.74.8.135:8080/source/xref/trunk/%1#%2")
+                                .arg(filePath.mid(index).replace(QChar('\\'), QChar('/')))
+                                .arg(m.captured(2).toInt());
+                        QDesktopServices::openUrl(url);
+                    }
+                }
                 return;
             }
         }
@@ -373,7 +391,7 @@ void LogView::onDoubleClicked(const QModelIndex& index)
     switch (index.column())// the content field
     {
     case 4:
-        openSourceFile(index);
+        openSourceFile(index, true);
         break;
     case 7:
         extractContent(index);
@@ -411,6 +429,10 @@ void LogView::onCustomContextMenuRequested(const QPoint &pos)
     {
         QMenu menu(this);
 
+        QAction* pOpengrokAction = new QAction("Browse Source File with OpenGrok", this);
+        connect(pOpengrokAction, &QAction::triggered, this, &LogView::onBrowseSourceFileWithOpenGrok);
+        menu.addAction(pOpengrokAction);
+
         QAction* pSourceFilePreviewAction = new QAction("Source File Preview", this);
         connect(pSourceFilePreviewAction, &QAction::triggered, this, &LogView::onSourceFilePreview);
         menu.addAction(pSourceFilePreviewAction);
@@ -432,12 +454,21 @@ void LogView::onCustomContextMenuRequested(const QPoint &pos)
     }
 }
 
+void LogView::onBrowseSourceFileWithOpenGrok()
+{
+    QItemSelectionModel* selected = m_tableView->selectionModel();
+    if (selected && selected->hasSelection())
+    {
+        openSourceFile(selected->currentIndex(), false);
+    }
+}
+
 void LogView::onSourceFilePreview()
 {
     QItemSelectionModel* selected = m_tableView->selectionModel();
     if (selected && selected->hasSelection())
     {
-        openSourceFile(selected->currentIndex());
+        openSourceFile(selected->currentIndex(), true);
     }
 }
 

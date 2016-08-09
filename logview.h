@@ -52,6 +52,7 @@ private slots:
     void onDataLoaded();
     void onRowCountChanged();
     void onCustomContextMenuRequested(const QPoint &pos);
+    void onBrowseSourceFileWithOpenGrok();
     void onSourceFilePreview();
     void onContentPreview();
     void onLogFilePreview();
@@ -71,7 +72,7 @@ private:
     void showProgressDialog();
     void closeProgressDialog();
     void extractContent(const QModelIndex& index);
-    void openSourceFile(const QModelIndex& index);
+    void openSourceFile(const QModelIndex& index, bool openWithBuiltinEditor);
     void openLog(const QModelIndex& index);
     void gotoLogLine(const QModelIndex& index);
     void showCodeEditorPane();
