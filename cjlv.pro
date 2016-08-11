@@ -14,13 +14,9 @@ PRECOMPILED_HEADER = stdafx.h
 include($$PWD/3rdparty/quazip-0.7.2/quazip.pri)
 include($$PWD/3rdparty/qtsingleapplication/qtsingleapplication.pri)
 include($$PWD/3rdparty/lua-5.3.3/src/lua.pri)
+include($$PWD/3rdparty/scintilla/qt/ScintillaEdit/ScintillaEdit.pri)
 
-INCLUDEPATH += $$PWD/3rdparty/scintilla/qt/ScintillaEditBase \
-    $$PWD/3rdparty/scintilla/qt/ScintillaEdit \
-    $$PWD/3rdparty/scintilla/include \
-    $$PWD/3rdparty/scintilla/src \
-    $$PWD/3rdparty/scintilla/lexlib \
-    $$PWD/3rdparty/sqlite3
+INCLUDEPATH += $$PWD/3rdparty/sqlite3
 
 DEFINES += SCINTILLA_QT=1 SCI_LEXER=1 _CRT_SECURE_NO_DEPRECATE=1 SCI_STATIC_LINK=1 LOKI_FUNCTOR_IS_NOT_A_SMALLOBJECT
 
@@ -77,7 +73,7 @@ macx: {
     #icon.files += cjlv.png
     INSTALLS += icon
     INCLUDEPATH += /usr/local/include
-    LIBS+=-L$$PWD/3rdparty/zlib-1.2.8 -F $$PWD/3rdparty/scintilla/bin -framework ScintillaEdit  -lz -framework CoreServices -lobjc
+    LIBS+=-L$$PWD/3rdparty/zlib-1.2.8 -lz -framework CoreServices -lobjc
 
     CONFIG(release, debug|release) : {
         QMAKE_INFO_PLIST = osxInfo.plist
@@ -89,16 +85,11 @@ macx: {
         copy_language.commands = cp -R \"$$PWD/resource/language\" \"$${TARGET}.app/Contents/Resources\"
         copy_langmap.commands = cp \"$$PWD/resource/langmap.xml\" \"$${TARGET}.app/Contents/Resources/\"
         copy_fonts.commands = cp -R \"$$PWD/Fonts\" \"$${TARGET}.app/Contents/Resources/\"
-        mkdir_framework.commands = mkdir -p \"$${TARGET}.app/Contents/Frameworks\"
-        clean_scintilla.depends = mkdir_framework
-        clean_scintilla.commands = rm -rf \"$${TARGET}.app/Contents/Frameworks/ScintillaEdit.framework\"
-        copy_scintilla.depends = clean_scintilla
-        copy_scintilla.commands = cp -R \"$$PWD/3rdparty/scintilla/bin/ScintillaEdit.framework\" \"$${TARGET}.app/Contents/Frameworks\"
 
-        dmg_installer.depends =  copy_scintilla copy_themes copy_language copy_langmap copy_extensions copy_fonts
+        dmg_installer.depends =  copy_themes copy_language copy_langmap copy_extensions copy_fonts
         dmg_installer.commands = $$MACDEPLOYQT \"$${OUT_PWD}/$${TARGET}.app\" -dmg
-        QMAKE_EXTRA_TARGETS +=  mkdir_framework clean_scintilla copy_scintilla copy_themes copy_language copy_langmap mkdir_extensions copy_extensions copy_fonts dmg_installer
-        POST_TARGETDEPS += mkdir_framework clean_scintilla copy_scintilla copy_themes copy_language copy_langmap mkdir_extensions copy_extensions copy_fonts
+        QMAKE_EXTRA_TARGETS +=  copy_themes copy_language copy_langmap mkdir_extensions copy_extensions copy_fonts dmg_installer
+        POST_TARGETDEPS += copy_themes copy_language copy_langmap mkdir_extensions copy_extensions copy_fonts
         QMAKE_POST_LINK += $$quote($$MACDEPLOYQT \"$${OUT_PWD}/$${TARGET}.app\" -dmg -appstore-compliant)
     }
 }
@@ -112,14 +103,12 @@ win32: {
     SOURCES += everythingwrapper.cpp ShellContextMenu.cpp
     HEADERS += everythingwrapper.h ShellContextMenu.h
 
-    LIBS+=-L$$PWD/3rdparty/zlib-1.2.8 -L$$PWD/3rdparty/Everything-SDK/lib -lScintillaEdit -lzlib -lUser32 -lShell32 -lpsapi -lOle32
+    LIBS+=-L$$PWD/3rdparty/zlib-1.2.8 -L$$PWD/3rdparty/Everything-SDK/lib -lzlib -lUser32 -lShell32 -lpsapi -lOle32
 
     contains(QMAKE_HOST.arch, x86_64): LIBS += -lEverything64
     else: LIBS += -lEverything32
 
     CONFIG(release, debug|release): {
-        LIBS += -L$$PWD/3rdparty/scintilla/bin/release
-
         WINDEPLOYQT = $$[QT_INSTALL_BINS]/windeployqt.exe
         copy_extensions.commands = '$(COPY_DIR) $$shell_path($$PWD/extensions) $$shell_path($$OUT_PWD/Release/extensions/)'
         copy_themes.commands = '$(COPY_DIR) $$shell_path($$PWD/resource/themes) $$shell_path($$OUT_PWD/Release/themes/)'
