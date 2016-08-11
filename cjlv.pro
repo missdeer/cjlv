@@ -15,6 +15,7 @@ include($$PWD/3rdparty/quazip-0.7.2/quazip.pri)
 include($$PWD/3rdparty/qtsingleapplication/qtsingleapplication.pri)
 include($$PWD/3rdparty/lua-5.3.3/src/lua.pri)
 include($$PWD/3rdparty/scintilla/qt/ScintillaEdit/ScintillaEdit.pri)
+include($$PWD/Boost.pri)
 
 INCLUDEPATH += $$PWD/3rdparty/sqlite3
 
@@ -129,7 +130,7 @@ win32: {
 
         QMAKE_EXTRA_TARGETS +=  copy_extensions copy_iss copy_themes copy_language copy_langmap copy_everything_dll copy_everything_exe copy_fonts
         POST_TARGETDEPS += copy_extensions copy_iss copy_themes copy_language copy_langmap copy_everything_dll copy_everything_exe copy_fonts
-        QMAKE_POST_LINK += $$quote($$WINDEPLOYQT --release --force \"$${OUT_PWD}/Release/$${TARGET}.exe\")
+        #QMAKE_POST_LINK += $$quote($$WINDEPLOYQT --release --force \"$${OUT_PWD}/Release/$${TARGET}.exe\")
     }
     else: LIBS += -L$$PWD/3rdparty/scintilla/bin/debug
 }

@@ -1,49 +1,39 @@
 #include "stdafx.h"
+#include <boost/scope_exit.hpp>
 #include "ShellContextMenu.h"
 
 
 #define MIN_ID 1
 #define MAX_ID 10000
-
-class CItemIdListReleaser {
-	public:
-	explicit CItemIdListReleaser(ITEMIDLIST* i) : p_i(i) {}
-	~CItemIdListReleaser() { 
-		LPMALLOC lpMalloc = NULL;
-		SHGetMalloc (&lpMalloc);
-		lpMalloc->Free (p_i);
-		}
-	private:
-	ITEMIDLIST* p_i;
-};
-class CComInterfaceReleaser {
-	public:
-	explicit CComInterfaceReleaser(IUnknown* i) : p_i(i) {}
-	~CComInterfaceReleaser() { p_i->Release();}
-	private:
-	IUnknown* p_i;
-};
 	
 void CShellContextMenu::ShowContextMenu(QMenu *menu, QWidget* parent, QPoint &pt, QString path)
 {	
 	ITEMIDLIST * id = 0;
 	HRESULT result = SHParseDisplayName(path.replace(QChar('/'), QChar('\\')).toStdWString().c_str(), 0, &id, 0, 0);
 	if (!SUCCEEDED(result) || !id)
-		return;
-	CItemIdListReleaser idReleaser (id);
+        return;
+    BOOST_SCOPE_EXIT(id) {
+        LPMALLOC lpMalloc = NULL;
+        SHGetMalloc (&lpMalloc);
+        lpMalloc->Free (id);
+    } BOOST_SCOPE_EXIT_END
 	IShellFolder * ifolder = 0;
 
 	LPCITEMIDLIST idChild = 0;
 	result = SHBindToParent(id, IID_IShellFolder, (void**)&ifolder, &idChild);
 	if (!SUCCEEDED(result) || !ifolder)
-		return ;
-	CComInterfaceReleaser ifolderReleaser (ifolder);
+        return ;
+    BOOST_SCOPE_EXIT(ifolder) {
+        ifolder->Release();
+    } BOOST_SCOPE_EXIT_END
 
 	IContextMenu * imenu = 0;
 	result = ifolder->GetUIObjectOf((HWND)parent->winId(), 1, (const ITEMIDLIST **)&idChild, IID_IContextMenu, 0, (void**)&imenu);
 	if (!SUCCEEDED(result) || !ifolder)
-		return ;
-	CComInterfaceReleaser menuReleaser(imenu);
+        return ;
+    BOOST_SCOPE_EXIT(imenu) {
+        imenu->Release();
+    } BOOST_SCOPE_EXIT_END
 
 	HMENU hMenu = CreatePopupMenu();
 	if (!hMenu)
