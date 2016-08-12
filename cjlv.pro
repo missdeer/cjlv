@@ -85,13 +85,20 @@ macx: {
         copy_themes.commands = cp -R \"$$PWD/resource/themes\" \"$${TARGET}.app/Contents/Resources\"
         copy_language.commands = cp -R \"$$PWD/resource/language\" \"$${TARGET}.app/Contents/Resources\"
         copy_langmap.commands = cp \"$$PWD/resource/langmap.xml\" \"$${TARGET}.app/Contents/Resources/\"
-        copy_fonts.commands = cp -R \"$$PWD/Fonts\" \"$${TARGET}.app/Contents/Resources/\"
+        copy_fonts.commands = cp -R \"$$PWD/Fonts\" \"$${TARGET}.app/Contents/Resources/\" 
 
-        dmg_installer.depends =  copy_themes copy_language copy_langmap copy_extensions copy_fonts
-        dmg_installer.commands = $$MACDEPLOYQT \"$${OUT_PWD}/$${TARGET}.app\" -dmg
-        QMAKE_EXTRA_TARGETS +=  copy_themes copy_language copy_langmap mkdir_extensions copy_extensions copy_fonts dmg_installer
-        POST_TARGETDEPS += copy_themes copy_language copy_langmap mkdir_extensions copy_extensions copy_fonts
-        QMAKE_POST_LINK += $$quote($$MACDEPLOYQT \"$${OUT_PWD}/$${TARGET}.app\" -dmg -appstore-compliant)
+        deploy.depends += copy_themes copy_language copy_langmap mkdir_extensions copy_extensions copy_fonts
+        deploy.commands += $$MACDEPLOYQT \"$${OUT_PWD}/$${TARGET}.app\" -appstore-compliant
+
+        APPCERT = Developer ID Application: Fan Yang (Y73SBCN2CG)
+        INSTALLERCERT = 3rd Party Mac Developer Installer: Fan Yang (Y73SBCN2CG)
+        BUNDLEID = com.cisco.jabber.viewer
+
+        codesign_bundle.depends += deploy
+        codesign_bundle.commands = codesign -s \"$${APPCERT}\" -v -f --timestamp=none --deep \"$${OUT_PWD}/$${TARGET}.app\"
+        makedmg.depends += codesign_bundle
+        makedmg.commands = hdiutil create -srcfolder \"$${TARGET}.app\" -volname \"$${TARGET}\" -format UDBZ \"$${TARGET}.dmg\" -ov -scrub -stretch 2g
+        QMAKE_EXTRA_TARGETS +=  copy_themes copy_language copy_langmap mkdir_extensions copy_extensions copy_fonts deploy codesign_bundle makedmg
     }
 }
 
