@@ -16,11 +16,8 @@ void ScintillaConfig::initScintilla(ScintillaEdit* sci)
     sci->setWhitespaceFore(true, 0x808080);
     sci->setWhitespaceBack(true, 0xFFFFFF);
     sci->setMouseDownCaptures(true);
-    //sci->setReadOnly(true);
 #if defined(Q_OS_WIN)
     sci->setEOLMode(SC_EOL_CRLF);
-#elif defined(Q_OS_MAC)
-    sci->setEOLMode(SC_EOL_CR);
 #else
     sci->setEOLMode(SC_EOL_LF);
 #endif

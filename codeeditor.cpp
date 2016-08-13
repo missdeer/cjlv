@@ -81,12 +81,16 @@ void CodeEditor::marginClicked(int position, int /*modifiers*/, int margin)
     ScintillaEdit* sci = qobject_cast<ScintillaEdit*>(sender());
     if (sci->marginTypeN(margin) == SC_MARGIN_SYMBOL)
     {
-        sptr_t line = sci->lineFromPosition(position);
-        sptr_t foldLevel = sci->foldLevel(line);
-        if (foldLevel & SC_FOLDLEVELHEADERFLAG)
-        {
-            sci->toggleFold(line);
-        }
+        sptr_t maskN = sci->marginMaskN(margin);
+        if ((maskN & 0xFFFFFFFF) == SC_MASK_FOLDERS)
+		{
+			sptr_t line = sci->lineFromPosition(position);
+			sptr_t foldLevel = sci->foldLevel(line);
+			if (foldLevel & SC_FOLDLEVELHEADERFLAG)
+			{
+				sci->toggleFold(line);
+			}
+		}
     }
 }
 
