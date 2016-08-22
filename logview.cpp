@@ -354,7 +354,7 @@ void LogView::openSourceFile(const QModelIndex &index, bool openWithBuiltinEdito
                         index = filePath.indexOf("services");
                     if (index >= 0)
                     {
-                        QString url = QString("http://10.74.8.135:8080/source/xref/trunk/%1#%2")
+                        QString url = QString("http://jmpopengrok.jabberqa.cisco.com:8080/source/xref/trunk/%1#%2")
                                 .arg(filePath.mid(index).replace(QChar('\\'), QChar('/')))
                                 .arg(m.captured(2).toInt());
                         QDesktopServices::openUrl(url);
