@@ -90,7 +90,7 @@ void CodeEditorTabWidget::onCopyFileFullPath()
 {
     QClipboard *clipboard = QApplication::clipboard();
 #if defined(Q_OS_WIN)
-    clipboard->setText(QDir::toNativeSeparators(tabToolTip(currentIndex()));
+    clipboard->setText(QDir::toNativeSeparators(tabToolTip(currentIndex())));
 #else
     clipboard->setText(tabToolTip(currentIndex()));
 #endif
