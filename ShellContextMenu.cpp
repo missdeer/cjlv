@@ -9,7 +9,7 @@
 void CShellContextMenu::ShowContextMenu(QMenu *menu, QWidget* parent, QPoint &pt, QString path)
 {	
 	ITEMIDLIST * id = 0;
-	HRESULT result = SHParseDisplayName(path.replace(QChar('/'), QChar('\\')).toStdWString().c_str(), 0, &id, 0, 0);
+    HRESULT result = SHParseDisplayName(QDir::toNativeSeparators(path).toStdWString().c_str(), 0, &id, 0, 0);
 	if (!SUCCEEDED(result) || !id)
         return;
     BOOST_SCOPE_EXIT(id) {

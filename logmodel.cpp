@@ -503,7 +503,7 @@ const QString &LogModel::getLogSourceFile(const QModelIndex &index)
     Q_ASSERT(m_logs.end() != it);
     QSharedPointer<LogItem> r = *it;
 #if defined(Q_OS_WIN)
-    return r->source.replace(QChar('/'), QChar('\\'));
+    return QDir::toNativeSeparators(r->source);
 #else
     return r->source;
 #endif

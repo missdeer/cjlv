@@ -121,7 +121,7 @@ void TabWidget::onCopyFileFullPath()
 {
     QClipboard *clipboard = QApplication::clipboard();
 #if defined(Q_OS_WIN)
-    clipboard->setText(tabToolTip(currentIndex()).replace(QChar('/'), QChar('\\')));
+    clipboard->setText(QDir::toNativeSeparators(tabToolTip(currentIndex())));
 #else
     clipboard->setText(tabToolTip(currentIndex()));
 #endif
@@ -131,7 +131,7 @@ void TabWidget::onOpenContainerFolder()
 {
     QString fileFullPath = tabToolTip(currentIndex());
 #if defined(Q_OS_WIN)
-    QString arg = QString("/select,\"%1\"").arg(fileFullPath.replace(QChar('/'), QChar('\\')));
+    QString arg = QString("/select,\"%1\"").arg(QDir::toNativeSeparators(fileFullPath));
     ::ShellExecuteW(NULL, L"open", L"explorer.exe", arg.toStdWString().c_str(), NULL, SW_SHOWNORMAL);
 #endif
 #if defined(Q_OS_MAC)
@@ -254,7 +254,7 @@ void TabWidget::onCustomContextMenuRequested(const QPoint &pos)
 
 #if defined(Q_OS_WIN)
         CShellContextMenu scm;
-        scm.ShowContextMenu(&menu, this, mapToGlobal(pos), tabToolTip(currentIndex()).replace(QChar('/'), QChar('\\')));
+        scm.ShowContextMenu(&menu, this, mapToGlobal(pos), QDir::toNativeSeparators(tabToolTip(currentIndex())));
 #else
         menu.exec(mapToGlobal(pos));
 #endif

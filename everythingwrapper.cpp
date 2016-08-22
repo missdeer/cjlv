@@ -86,8 +86,7 @@ void launchEverything(const QString& everythingFilePath)
 {
     if (QFile::exists(everythingFilePath))
     {
-        QString path = everythingFilePath;
-        path = path.replace(QChar('/'), QChar('\\'));
+        QString path = QDir::toNativeSeparators(everythingFilePath);
         ::ShellExecuteW(NULL, L"open", path.toStdWString().c_str(), NULL, NULL, SW_SHOWMINIMIZED);
     }
 }
@@ -104,8 +103,7 @@ QString GetEverythingPath()
             SendMessage(hWnd,EVERYTHING_WM_IPC,EVERYTHING_IPC_CREATE_DESKTOP_SHORTCUT,0);
         }
 
-        QString path = QStandardPaths::writableLocation(QStandardPaths::DesktopLocation) % "/Search Everything.lnk";
-        path = path.replace(QChar('/'), QChar('\\'));
+        QString path = QDir::toNativeSeparators(QStandardPaths::writableLocation(QStandardPaths::DesktopLocation) % "/Search Everything.lnk");
 
         WCHAR szTarget[MAX_PATH] = {0};
         HRESULT hr = ResolveIt(hWnd, path.toStdString().c_str(), szTarget, sizeof(szTarget)/sizeof(szTarget[0]));
