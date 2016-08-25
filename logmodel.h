@@ -41,7 +41,7 @@ public:
     void copyCells(const QModelIndexList& cells);
     void copyRows(const QList<int>& rows);
     const QString& getLogContent(const QModelIndex &index);
-    const QString& getLogSourceFile(const QModelIndex &index);
+    QString getLogSourceFile(const QModelIndex &index);
     QString getLogFileName(const QModelIndex &index);
     int getLogFileLine(const QModelIndex &index, QString& fileName);
     int getId(const QModelIndex &index);

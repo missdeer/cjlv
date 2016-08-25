@@ -497,7 +497,7 @@ const QString& LogModel::getLogContent(const QModelIndex& index)
     return r->content;
 }
 
-const QString &LogModel::getLogSourceFile(const QModelIndex &index)
+QString LogModel::getLogSourceFile(const QModelIndex &index)
 {
     auto it = m_logs.find(index.row());
     Q_ASSERT(m_logs.end() != it);
