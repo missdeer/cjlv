@@ -269,7 +269,7 @@ void LogView::extractContent(const QModelIndex& index)
 
 void LogView::openSourceFile(const QModelIndex &index, bool openWithBuiltinEditor)
 {
-    const QString& source = m_model->getLogSourceFile(index);
+    QString source = m_model->getLogSourceFile(index);
 
     QRegularExpression re("([^\\(]+)\\(([0-9]+)");
     QRegularExpressionMatch m = re.match(source);
