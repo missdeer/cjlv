@@ -912,6 +912,46 @@ bool LogModel::parseLine(const QString& line, QStringList& results)
     }
 
     results.append(line.mid(endPos + 3, -1)); // content
+
+    auto it = m_levelCountMap.find(results.at(1));
+    if (m_levelCountMap.end() == it)
+        m_levelCountMap.insert(results.at(1), 0);
+    else
+        m_levelCountMap[results.at(1)]++;
+
+    it = m_threadCountMap.find(results.at(2));
+    if (m_threadCountMap.end() == it)
+        m_threadCountMap.insert(results.at(2), 0);
+    else
+        m_threadCountMap[results.at(2)]++;
+
+    it = m_sourceLineCountMap.find(results.at(3));
+    if (m_sourceLineCountMap.end() == it)
+        m_sourceLineCountMap.insert(results.at(3), 0);
+    else
+        m_sourceLineCountMap[results.at(3)]++;
+
+    QString sourceFile = results.at(3);
+    int index = sourceFile.indexOf(QChar('('));
+    if (index > 0)
+        sourceFile.remove(index);
+    it = m_sourceFileCountMap.find(sourceFile);
+    if (m_sourceFileCountMap.end() == it)
+        m_sourceFileCountMap.insert(sourceFile, 0);
+    else
+        m_sourceFileCountMap[sourceFile]++;
+
+    it = m_categoryCountMap.find(results.at(4));
+    if (m_categoryCountMap.end() == it)
+        m_categoryCountMap.insert(results.at(4), 0);
+    else
+        m_categoryCountMap[results.at(4)]++;
+
+    it = m_methodCountMap.find(results.at(5));
+    if (m_methodCountMap.end() == it)
+        m_methodCountMap.insert(results.at(5), 0);
+    else
+        m_methodCountMap[results.at(5)]++;
     return true;
 }
 
@@ -1031,6 +1071,12 @@ void LogModel::createDatabase()
     {
         QSqlQuery query(db);
         query.exec("CREATE TABLE logs(id INTEGER PRIMARY KEY AUTOINCREMENT,epoch INTEGER, time DATETIME,level TEXT,thread TEXT,source TEXT,category TEXT,method TEXT, content TEXT, log TEXT, line INTEGER);");
+        query.exec("CREATE TABLE level_statistic(id INTEGER PRIMARY KEY AUTOINCREMENT, key TEXT, count INTEGER);");
+        query.exec("CREATE TABLE thread_statistic(id INTEGER PRIMARY KEY AUTOINCREMENT, key TEXT, count INTEGER);");
+        query.exec("CREATE TABLE source_file_statistic(id INTEGER PRIMARY KEY AUTOINCREMENT, key TEXT, count INTEGER);");
+        query.exec("CREATE TABLE source_line_statistic(id INTEGER PRIMARY KEY AUTOINCREMENT, key TEXT, count INTEGER);");
+        query.exec("CREATE TABLE category_statistic(id INTEGER PRIMARY KEY AUTOINCREMENT, key TEXT, count INTEGER);");
+        query.exec("CREATE TABLE method_statistic(id INTEGER PRIMARY KEY AUTOINCREMENT, key TEXT, count INTEGER);");
     }
 }
 
@@ -1143,6 +1189,109 @@ int LogModel::copyFromFileToDatabase(const QString &fileName)
 #endif
         }
     }
+
+    db.commit();
+
+    query.prepare("INSERT INTO level_statistic (key, count) VALUES (:key, :count);");
+    db.transaction();
+    for (auto i = m_levelCountMap.constBegin();
+         i != m_levelCountMap.constEnd();
+         ++i)
+    {
+        query.bindValue(":key", i.key());
+        query.bindValue(":count", i.value());
+        if (!query.exec()) {
+#ifndef QT_NO_DEBUG
+            qDebug() << " inserting level_statistic into database failed!";
+#endif
+        }
+    }
+    m_levelCountMap.clear();
+    db.commit();
+
+    query.prepare("INSERT INTO thread_statistic (key, count) VALUES (:key, :count);");
+    db.transaction();
+    for (auto i = m_threadCountMap.constBegin();
+         i != m_threadCountMap.constEnd();
+         ++i)
+    {
+        query.bindValue(":key", i.key());
+        query.bindValue(":count", i.value());
+        if (!query.exec()) {
+#ifndef QT_NO_DEBUG
+            qDebug() << " inserting thread_statistic into database failed!";
+#endif
+        }
+    }
+    m_threadCountMap.clear();
+    db.commit();
+
+    query.prepare("INSERT INTO source_file_statistic (key, count) VALUES (:key, :count);");
+    db.transaction();
+    for (auto i = m_sourceFileCountMap.constBegin();
+         i != m_sourceFileCountMap.constEnd();
+         ++i)
+    {
+        query.bindValue(":key", i.key());
+        query.bindValue(":count", i.value());
+        if (!query.exec()) {
+#ifndef QT_NO_DEBUG
+            qDebug() << " inserting source_file_statistic into database failed!";
+#endif
+        }
+    }
+    m_sourceFileCountMap.clear();
+    db.commit();
+
+    query.prepare("INSERT INTO source_line_statistic (key, count) VALUES (:key, :count);");
+    db.transaction();
+    for (auto i = m_sourceLineCountMap.constBegin();
+         i != m_sourceLineCountMap.constEnd();
+         ++i)
+    {
+        query.bindValue(":key", i.key());
+        query.bindValue(":count", i.value());
+        if (!query.exec()) {
+#ifndef QT_NO_DEBUG
+            qDebug() << " inserting source_line_statistic into database failed!";
+#endif
+        }
+    }
+    m_sourceLineCountMap.clear();
+    db.commit();
+
+    query.prepare("INSERT INTO category_statistic (key, count) VALUES (:key, :count);");
+    db.transaction();
+    for (auto i = m_categoryCountMap.constBegin();
+         i != m_categoryCountMap.constEnd();
+         ++i)
+    {
+        query.bindValue(":key", i.key());
+        query.bindValue(":count", i.value());
+        if (!query.exec()) {
+#ifndef QT_NO_DEBUG
+            qDebug() << " inserting category_statistic into database failed!";
+#endif
+        }
+    }
+    m_categoryCountMap.clear();
+    db.commit();
+
+    query.prepare("INSERT INTO method_statistic (key, count) VALUES (:key, :count);");
+    db.transaction();
+    for (auto i = m_methodCountMap.constBegin();
+         i != m_methodCountMap.constEnd();
+         ++i)
+    {
+        query.bindValue(":key", i.key());
+        query.bindValue(":count", i.value());
+        if (!query.exec()) {
+#ifndef QT_NO_DEBUG
+            qDebug() << " inserting method_statistic into database failed!";
+#endif
+        }
+    }
+    m_methodCountMap.clear();
     db.commit();
 
     return recordCount;

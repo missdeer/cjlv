@@ -81,6 +81,14 @@ private:
     QString category;
     QString method ;
     QString content ;
+
+    QMap<QString, int> m_levelCountMap;
+    QMap<QString, int> m_threadCountMap;
+    QMap<QString, int> m_sourceFileCountMap;
+    QMap<QString, int> m_sourceLineCountMap;
+    QMap<QString, int> m_categoryCountMap;
+    QMap<QString, int> m_methodCountMap;
+
     void createDatabase();
     int copyFromFileToDatabase(const QString& fileName);
     void doReload();
