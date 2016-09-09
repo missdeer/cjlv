@@ -450,7 +450,8 @@ void LogView::onDataLoaded()
         QChart *chart = new QChart();
         chart->addSeries(series);
         chart->setTitle("Level Count Statistic");
-        chart->legend()->hide();
+        chart->legend()->setVisible(true);
+        chart->legend()->setAlignment(Qt::AlignRight);
 
         m_levelStatisticChart->setChart(chart);
         m_levelStatisticChart->setRenderHint(QPainter::Antialiasing);
@@ -472,7 +473,8 @@ void LogView::onDataLoaded()
         QChart *chart = new QChart();
         chart->addSeries(series);
         chart->setTitle("Thread Count Statistic");
-        chart->legend()->hide();
+        chart->legend()->setVisible(true);
+        chart->legend()->setAlignment(Qt::AlignRight);
 
         m_threadStatisticChart->setChart(chart);
         m_threadStatisticChart->setRenderHint(QPainter::Antialiasing);
@@ -494,7 +496,8 @@ void LogView::onDataLoaded()
         QChart *chart = new QChart();
         chart->addSeries(series);
         chart->setTitle("Source File Count Statistic");
-        chart->legend()->hide();
+        chart->legend()->setVisible(true);
+        chart->legend()->setAlignment(Qt::AlignRight);
 
         m_sourceFileStatisticChart->setChart(chart);
         m_sourceFileStatisticChart->setRenderHint(QPainter::Antialiasing);
@@ -516,7 +519,8 @@ void LogView::onDataLoaded()
         QChart *chart = new QChart();
         chart->addSeries(series);
         chart->setTitle("Source Line Count Statistic");
-        chart->legend()->hide();
+        chart->legend()->setVisible(true);
+        chart->legend()->setAlignment(Qt::AlignRight);
 
         m_sourceLineStatisticChart->setChart(chart);
         m_sourceLineStatisticChart->setRenderHint(QPainter::Antialiasing);
@@ -538,7 +542,8 @@ void LogView::onDataLoaded()
         QChart *chart = new QChart();
         chart->addSeries(series);
         chart->setTitle("Category Count Statistic");
-        chart->legend()->hide();
+        chart->legend()->setVisible(true);
+        chart->legend()->setAlignment(Qt::AlignRight);
 
         m_categoryStatisticChart->setChart(chart);
         m_categoryStatisticChart->setRenderHint(QPainter::Antialiasing);
@@ -560,7 +565,8 @@ void LogView::onDataLoaded()
         QChart *chart = new QChart();
         chart->addSeries(series);
         chart->setTitle("Method Count Statistic");
-        chart->legend()->hide();
+        chart->legend()->setVisible(true);
+        chart->legend()->setAlignment(Qt::AlignRight);
 
         m_methodStatisticChart->setChart(chart);
         m_methodStatisticChart->setRenderHint(QPainter::Antialiasing);
