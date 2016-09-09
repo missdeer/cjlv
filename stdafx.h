@@ -69,6 +69,8 @@
 #include <QDragEnterEvent>
 #include <QHBoxLayout>
 
+#include <QtCharts>
+
 #if defined(Q_OS_WIN)
 #include <QWinThumbnailToolBar>
 #include <QWinThumbnailToolButton>

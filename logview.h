@@ -58,7 +58,14 @@ private slots:
     void onLogFilePreview();
 private:
     QSplitter* m_verticalSplitter;
+    QTabWidget* m_logTableChartTabWidget;
     QTableView *m_tableView;
+    QtCharts::QChartView* m_levelStatisticChart;
+    QtCharts::QChartView* m_threadStatisticChart;
+    QtCharts::QChartView* m_sourceFileStatisticChart;
+    QtCharts::QChartView* m_sourceLineStatisticChart;
+    QtCharts::QChartView* m_categoryStatisticChart;
+    QtCharts::QChartView* m_methodStatisticChart;
     CodeEditorTabWidget* m_codeEditorTabWidget;
     LogModel* m_model;
     QString m_path;

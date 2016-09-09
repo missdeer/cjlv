@@ -1,11 +1,13 @@
 #include "stdafx.h"
 #include <JlCompress.h>
+#include <QtCharts>
 #if defined(Q_OS_WIN)
 #include "ShellContextMenu.h"
 #endif
 #include "settings.h"
 #include "logmodel.h"
 #include "logview.h"
+
 
 bool QuickGetFilesByFileName(const QString& fileName, QStringList& results);
 
@@ -26,13 +28,14 @@ public:
 LogView::LogView(QWidget *parent)
     : QWidget (parent)
     , m_verticalSplitter(new QSplitter( Qt::Vertical, parent))
-    , m_tableView(new QTableView(m_verticalSplitter))
+    , m_logTableChartTabWidget(new QTabWidget(m_verticalSplitter))
+    , m_tableView(new QTableView(m_logTableChartTabWidget))
     , m_codeEditorTabWidget(new CodeEditorTabWidget(m_verticalSplitter))
     , m_model(new LogModel(m_tableView))
     , m_lastId(-1)
     , m_lastColumn(-1)
 {
-    m_verticalSplitter->addWidget(m_tableView);
+    m_verticalSplitter->addWidget(m_logTableChartTabWidget);
     m_verticalSplitter->addWidget(m_codeEditorTabWidget);
 
     QList<int> sizes;
@@ -45,6 +48,7 @@ LogView::LogView(QWidget *parent)
     m_mainLayout->addWidget(m_verticalSplitter);
     setLayout(m_mainLayout);
 
+    m_logTableChartTabWidget->addTab(m_tableView, "Logs");
     m_tableView->setModel(m_model);
     m_tableView->horizontalHeader()->setSectionResizeMode(7, QHeaderView::Stretch);
     m_tableView->setContextMenuPolicy(Qt::CustomContextMenu);
