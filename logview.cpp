@@ -410,6 +410,7 @@ void LogView::onDoubleClicked(const QModelIndex& index)
 void LogView::onDataLoaded()
 {
     closeProgressDialog();
+    // draw charts
 }
 
 void LogView::onRowCountChanged()

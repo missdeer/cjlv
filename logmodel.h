@@ -18,6 +18,11 @@ struct LogItem {
     int line;
 };
 
+struct StatisticItem {
+    QString content;
+    int count;
+};
+
 class LogModel : public QAbstractTableModel
 {
     Q_OBJECT
@@ -46,6 +51,13 @@ public:
     int getLogFileLine(const QModelIndex &index, QString& fileName);
     int getId(const QModelIndex &index);
     void runExtension(ExtensionPtr e);
+
+    bool getLevelStatistic(QList<QSharedPointer<StatisticItem>>& sis);
+    bool getThreadStatistic(QList<QSharedPointer<StatisticItem>>& sis);
+    bool getSourceFileStatistic(QList<QSharedPointer<StatisticItem>>& sis);
+    bool getSourceLineStatistic(QList<QSharedPointer<StatisticItem>>& sis);
+    bool getCategoryStatistic(QList<QSharedPointer<StatisticItem>>& sis);
+    bool getMethodStatistic(QList<QSharedPointer<StatisticItem>>& sis);
 signals:
     void logItemReady(int, QSharedPointer<LogItem>);
     void logItemsReady(QMap<int, QSharedPointer<LogItem>>);
@@ -98,6 +110,7 @@ private:
     void createDatabaseIndex();
     void generateSQLStatements(int offset, QString& sqlFetch, QString& sqlCount);
     void doFilter(const QString& content, const QString& field, bool regexpMode, bool luaMode);
+    bool getStatistic(const QString& tableName, QList<QSharedPointer<StatisticItem>>& sis);
 };
 
 #endif // LOGMODEL_H

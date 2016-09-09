@@ -592,6 +592,70 @@ void LogModel::runExtension(ExtensionPtr e)
     }
 }
 
+bool LogModel::getStatistic(const QString &tableName, QList<QSharedPointer<StatisticItem>> &sis)
+{
+    QString sql = QString("SELECT * FROM %1 ORDER BY count LIMIT 10;").arg(tableName);
+
+    QSqlDatabase db = QSqlDatabase::database(m_dbFile, true);
+    if (!db.isValid()) {
+        db = QSqlDatabase::addDatabase("QSQLITE", m_dbFile);
+        db.setDatabaseName(m_dbFile);
+    }
+
+    if (!db.isOpen())
+        db.open();
+
+    if (db.isOpen())
+    {
+        QSqlQuery q(db);
+        q.prepare(sql);
+        if (q.exec()) {
+            int contentIndex = q.record().indexOf("content");
+            int countIndex = q.record().indexOf("count");
+            while (q.next()) {
+                QSharedPointer<StatisticItem> si =  QSharedPointer<StatisticItem>(new StatisticItem);
+                si->content = q.value(contentIndex).toString();
+                si->count =  q.value(countIndex).toInt();
+                sis.append(si);
+            }
+            q.clear();
+            q.finish();
+            return true;
+        }
+    }
+    return false;
+}
+
+bool LogModel::getLevelStatistic(QList<QSharedPointer<StatisticItem>> &sis)
+{
+    return getStatistic("level_statistic", sis);
+}
+
+bool LogModel::getThreadStatistic(QList<QSharedPointer<StatisticItem>> &sis)
+{
+    return getStatistic("thread_statistic", sis);
+}
+
+bool LogModel::getSourceFileStatistic(QList<QSharedPointer<StatisticItem>> &sis)
+{
+    return getStatistic("source_file_statistic", sis);
+}
+
+bool LogModel::getSourceLineStatistic(QList<QSharedPointer<StatisticItem>> &sis)
+{
+    return getStatistic("source_line_statistic", sis);
+}
+
+bool LogModel::getCategoryStatistic(QList<QSharedPointer<StatisticItem>> &sis)
+{
+    return getStatistic("category_statistic", sis);
+}
+
+bool LogModel::getMethodStatistic(QList<QSharedPointer<StatisticItem>> &sis)
+{
+    return getStatistic("method_statistic", sis);
+}
+
 void LogModel::onLogItemReady(int i,  QSharedPointer<LogItem> log)
 {
 #ifndef QT_NO_DEBUG
