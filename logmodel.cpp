@@ -610,7 +610,7 @@ bool LogModel::getStatistic(const QString &tableName, QList<QSharedPointer<Stati
         QSqlQuery q(db);
         q.prepare(sql);
         if (q.exec()) {
-            int contentIndex = q.record().indexOf("content");
+            int contentIndex = q.record().indexOf("key");
             int countIndex = q.record().indexOf("count");
             while (q.next()) {
                 QSharedPointer<StatisticItem> si =  QSharedPointer<StatisticItem>(new StatisticItem);
