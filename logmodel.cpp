@@ -217,7 +217,7 @@ QVariant LogModel::data(const QModelIndex &index, int role) const
     if (role != Qt::DisplayRole)
         return QVariant();
 
-    if (index.row() < 0 || index.row() >= m_totalRowCount)
+    if (index.row() < 0 || index.row() >= m_rowCount)
         return QVariant();
 
     auto it = m_logs.find(index.row());
@@ -594,7 +594,7 @@ void LogModel::runExtension(ExtensionPtr e)
 
 bool LogModel::getStatistic(const QString &tableName, QList<QSharedPointer<StatisticItem>> &sis)
 {
-    QString sql = QString("SELECT * FROM %1 ORDER BY count LIMIT 10;").arg(tableName);
+    QString sql = QString("SELECT * FROM %1 ORDER BY count DESC LIMIT 15;").arg(tableName);
 
     QSqlDatabase db = QSqlDatabase::database(m_dbFile, true);
     if (!db.isValid()) {
@@ -612,18 +612,142 @@ bool LogModel::getStatistic(const QString &tableName, QList<QSharedPointer<Stati
         if (q.exec()) {
             int contentIndex = q.record().indexOf("key");
             int countIndex = q.record().indexOf("count");
+            int count = 0;
             while (q.next()) {
                 QSharedPointer<StatisticItem> si =  QSharedPointer<StatisticItem>(new StatisticItem);
                 si->content = q.value(contentIndex).toString();
                 si->count =  q.value(countIndex).toInt();
+                si->percent = ((double)si->count * 100)/((double)m_totalRowCount);
                 sis.append(si);
+                count += si->count;
             }
             q.clear();
             q.finish();
+            if (m_totalRowCount > count && count * 3 > m_totalRowCount * 2)
+            {
+                QSharedPointer<StatisticItem> si =  QSharedPointer<StatisticItem>(new StatisticItem);
+                si->content = "Other";
+                si->count =  m_totalRowCount - count;
+                si->percent = ((double)si->count * 100)/((double)m_totalRowCount);
+                sis.append(si);
+            }
             return true;
         }
     }
     return false;
+}
+
+void LogModel::saveStatistic()
+{
+    QSqlDatabase db = QSqlDatabase::database(m_dbFile, false);
+    if (!db.isValid() || !db.isOpen())
+    {
+        qDebug() << "opening database file failed " << m_dbFile;
+        return ;
+    }
+
+    QSqlQuery query(db);
+    query.prepare("INSERT INTO level_statistic (key, count) VALUES (:key, :count);");
+    db.transaction();
+    for (auto i = m_levelCountMap.constBegin();
+         i != m_levelCountMap.constEnd();
+         ++i)
+    {
+        query.bindValue(":key", i.key());
+        query.bindValue(":count", i.value());
+        if (!query.exec()) {
+#ifndef QT_NO_DEBUG
+            qDebug() << " inserting level_statistic into database failed!";
+#endif
+        }
+    }
+    m_levelCountMap.clear();
+    db.commit();
+
+    query.prepare("INSERT INTO thread_statistic (key, count) VALUES (:key, :count);");
+    db.transaction();
+    for (auto i = m_threadCountMap.constBegin();
+         i != m_threadCountMap.constEnd();
+         ++i)
+    {
+        query.bindValue(":key", i.key());
+        query.bindValue(":count", i.value());
+        if (!query.exec()) {
+#ifndef QT_NO_DEBUG
+            qDebug() << " inserting thread_statistic into database failed!";
+#endif
+        }
+    }
+    m_threadCountMap.clear();
+    db.commit();
+
+    query.prepare("INSERT INTO source_file_statistic (key, count) VALUES (:key, :count);");
+    db.transaction();
+    for (auto i = m_sourceFileCountMap.constBegin();
+         i != m_sourceFileCountMap.constEnd();
+         ++i)
+    {
+        query.bindValue(":key", i.key());
+        query.bindValue(":count", i.value());
+        if (!query.exec()) {
+#ifndef QT_NO_DEBUG
+            qDebug() << " inserting source_file_statistic into database failed!";
+#endif
+        }
+    }
+    m_sourceFileCountMap.clear();
+    db.commit();
+
+    query.prepare("INSERT INTO source_line_statistic (key, count) VALUES (:key, :count);");
+    db.transaction();
+    for (auto i = m_sourceLineCountMap.constBegin();
+         i != m_sourceLineCountMap.constEnd();
+         ++i)
+    {
+        query.bindValue(":key", i.key());
+        query.bindValue(":count", i.value());
+        if (!query.exec()) {
+#ifndef QT_NO_DEBUG
+            qDebug() << " inserting source_line_statistic into database failed!";
+#endif
+        }
+    }
+    m_sourceLineCountMap.clear();
+    db.commit();
+
+    query.prepare("INSERT INTO category_statistic (key, count) VALUES (:key, :count);");
+    db.transaction();
+    for (auto i = m_categoryCountMap.constBegin();
+         i != m_categoryCountMap.constEnd();
+         ++i)
+    {
+        query.bindValue(":key", i.key());
+        query.bindValue(":count", i.value());
+        if (!query.exec()) {
+#ifndef QT_NO_DEBUG
+            qDebug() << " inserting category_statistic into database failed!";
+#endif
+        }
+    }
+    m_categoryCountMap.clear();
+    db.commit();
+
+    query.prepare("INSERT INTO method_statistic (key, count) VALUES (:key, :count);");
+    db.transaction();
+    for (auto i = m_methodCountMap.constBegin();
+         i != m_methodCountMap.constEnd();
+         ++i)
+    {
+        query.bindValue(":key", i.key());
+        query.bindValue(":count", i.value());
+        if (!query.exec()) {
+#ifndef QT_NO_DEBUG
+            qDebug() << " inserting method_statistic into database failed!";
+#endif
+        }
+    }
+    m_methodCountMap.clear();
+    db.commit();
 }
 
 bool LogModel::getLevelStatistic(QList<QSharedPointer<StatisticItem>> &sis)
@@ -665,11 +789,10 @@ void LogModel::onLogItemReady(int i,  QSharedPointer<LogItem> log)
 }
 
 void LogModel::onLogItemsReady(QMap<int, QSharedPointer<LogItem> > logs)
-{
-    auto i = logs.constBegin();
-    while (i != logs.constEnd()) {
-        m_logs[i.key()] = i.value();
-        ++i;
+{    
+    for (auto i = logs.constBegin();i != logs.constEnd(); ++i)
+    {
+        m_logs[i.key()] = i.value();        
     }
 }
 
@@ -681,7 +804,10 @@ void LogModel::doReload()
     QDateTime t = QDateTime::currentDateTime();
 
     std::for_each(m_logFiles.rbegin(), m_logFiles.rend(),
-                  [=](const QString& log) { e->m_rowCount += copyFromFileToDatabase(log); });
+                  [&](const QString& log) { e->m_rowCount += copyFromFileToDatabase(log); });
+    m_totalRowCount = e->m_rowCount;
+    saveStatistic();
+
     qint64 q = t.secsTo(QDateTime::currentDateTime());
     createDatabaseIndex();
     qDebug() << "loaded elapsed " << q << " s";
@@ -981,19 +1107,19 @@ bool LogModel::parseLine(const QString& line, QStringList& results)
     if (m_levelCountMap.end() == it)
         m_levelCountMap.insert(results.at(1), 1);
     else
-        m_levelCountMap[results.at(1)]++;
+       (*it)++;
 
     it = m_threadCountMap.find(results.at(2));
     if (m_threadCountMap.end() == it)
         m_threadCountMap.insert(results.at(2), 1);
     else
-        m_threadCountMap[results.at(2)]++;
+        (*it)++;
 
     it = m_sourceLineCountMap.find(results.at(3));
     if (m_sourceLineCountMap.end() == it)
         m_sourceLineCountMap.insert(results.at(3), 1);
     else
-        m_sourceLineCountMap[results.at(3)]++;
+        (*it)++;
 
     QString sourceFile = results.at(3);
     int index = sourceFile.indexOf(QChar('('));
@@ -1003,19 +1129,19 @@ bool LogModel::parseLine(const QString& line, QStringList& results)
     if (m_sourceFileCountMap.end() == it)
         m_sourceFileCountMap.insert(sourceFile, 1);
     else
-        m_sourceFileCountMap[sourceFile]++;
+        (*it)++;
 
     it = m_categoryCountMap.find(results.at(4));
     if (m_categoryCountMap.end() == it)
         m_categoryCountMap.insert(results.at(4), 1);
     else
-        m_categoryCountMap[results.at(4)]++;
+        (*it)++;
 
     it = m_methodCountMap.find(results.at(5));
     if (m_methodCountMap.end() == it)
         m_methodCountMap.insert(results.at(5), 1);
     else
-        m_methodCountMap[results.at(5)]++;
+        (*it)++;
     return true;
 }
 
@@ -1032,8 +1158,6 @@ bool LogModel::event(QEvent *e)
             endRemoveRows();
         }
         m_rowCount = dynamic_cast<RowCountEvent*>(e)->m_rowCount;
-        if (m_rowCount > m_totalRowCount)
-            m_totalRowCount = m_rowCount;
         qDebug() << "row count event:" << m_rowCount;
         if (m_rowCount != 0)
         {
@@ -1253,109 +1377,6 @@ int LogModel::copyFromFileToDatabase(const QString &fileName)
 #endif
         }
     }
-
-    db.commit();
-
-    query.prepare("INSERT INTO level_statistic (key, count) VALUES (:key, :count);");
-    db.transaction();
-    for (auto i = m_levelCountMap.constBegin();
-         i != m_levelCountMap.constEnd();
-         ++i)
-    {
-        query.bindValue(":key", i.key());
-        query.bindValue(":count", i.value());
-        if (!query.exec()) {
-#ifndef QT_NO_DEBUG
-            qDebug() << " inserting level_statistic into database failed!";
-#endif
-        }
-    }
-    m_levelCountMap.clear();
-    db.commit();
-
-    query.prepare("INSERT INTO thread_statistic (key, count) VALUES (:key, :count);");
-    db.transaction();
-    for (auto i = m_threadCountMap.constBegin();
-         i != m_threadCountMap.constEnd();
-         ++i)
-    {
-        query.bindValue(":key", i.key());
-        query.bindValue(":count", i.value());
-        if (!query.exec()) {
-#ifndef QT_NO_DEBUG
-            qDebug() << " inserting thread_statistic into database failed!";
-#endif
-        }
-    }
-    m_threadCountMap.clear();
-    db.commit();
-
-    query.prepare("INSERT INTO source_file_statistic (key, count) VALUES (:key, :count);");
-    db.transaction();
-    for (auto i = m_sourceFileCountMap.constBegin();
-         i != m_sourceFileCountMap.constEnd();
-         ++i)
-    {
-        query.bindValue(":key", i.key());
-        query.bindValue(":count", i.value());
-        if (!query.exec()) {
-#ifndef QT_NO_DEBUG
-            qDebug() << " inserting source_file_statistic into database failed!";
-#endif
-        }
-    }
-    m_sourceFileCountMap.clear();
-    db.commit();
-
-    query.prepare("INSERT INTO source_line_statistic (key, count) VALUES (:key, :count);");
-    db.transaction();
-    for (auto i = m_sourceLineCountMap.constBegin();
-         i != m_sourceLineCountMap.constEnd();
-         ++i)
-    {
-        query.bindValue(":key", i.key());
-        query.bindValue(":count", i.value());
-        if (!query.exec()) {
-#ifndef QT_NO_DEBUG
-            qDebug() << " inserting source_line_statistic into database failed!";
-#endif
-        }
-    }
-    m_sourceLineCountMap.clear();
-    db.commit();
-
-    query.prepare("INSERT INTO category_statistic (key, count) VALUES (:key, :count);");
-    db.transaction();
-    for (auto i = m_categoryCountMap.constBegin();
-         i != m_categoryCountMap.constEnd();
-         ++i)
-    {
-        query.bindValue(":key", i.key());
-        query.bindValue(":count", i.value());
-        if (!query.exec()) {
-#ifndef QT_NO_DEBUG
-            qDebug() << " inserting category_statistic into database failed!";
-#endif
-        }
-    }
-    m_categoryCountMap.clear();
-    db.commit();
-
-    query.prepare("INSERT INTO method_statistic (key, count) VALUES (:key, :count);");
-    db.transaction();
-    for (auto i = m_methodCountMap.constBegin();
-         i != m_methodCountMap.constEnd();
-         ++i)
-    {
-        query.bindValue(":key", i.key());
-        query.bindValue(":count", i.value());
-        if (!query.exec()) {
-#ifndef QT_NO_DEBUG
-            qDebug() << " inserting method_statistic into database failed!";
-#endif
-        }
-    }
-    m_methodCountMap.clear();
     db.commit();
 
     return recordCount;

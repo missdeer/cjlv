@@ -8,6 +8,7 @@
 #include "extension.h"
 
 class LogModel;
+struct StatisticItem;
 
 QT_BEGIN_NAMESPACE
 class QTableView;
@@ -83,6 +84,7 @@ private:
     void openLog(const QModelIndex& index);
     void gotoLogLine(const QModelIndex& index);
     void showCodeEditorPane();
+    void setChart(QtCharts::QChartView* chartView, const QList<QSharedPointer<StatisticItem> >& sis, const QString& label);
 };
 
 #endif // LOGVIEW_H

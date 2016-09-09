@@ -428,6 +428,35 @@ void LogView::onDoubleClicked(const QModelIndex& index)
     }
 }
 
+void LogView::setChart(QtCharts::QChartView* chartView,const QList<QSharedPointer<StatisticItem> >& sis, const QString& label)
+{
+    QPieSeries *series = new QPieSeries();
+    int totalCount = 0;
+    std::for_each(sis.begin(), sis.end(), [&totalCount](QSharedPointer<StatisticItem> si){ totalCount += si->count;});
+    for (QSharedPointer<StatisticItem> si: sis)
+    {
+        QString label = QString("%1, %2, %3%").arg(si->content).arg(si->count).arg(si->percent, 0, 'f', 2);
+        QPieSlice *slice = series->append(label, si->count);
+        slice->setLabelVisible();
+    }
+
+    int index = sis.length() - 1;
+    if (sis.at(index)->count > sis.at(index - 1)->count)
+        index--;
+    QPieSlice *slice = series->slices().at(index);
+    slice->setExploded();
+
+    QChart *chart = new QChart();
+    chart->addSeries(series);
+    chart->setTitle(label);
+    chart->setTheme(QChart::ChartThemeQt);
+    chart->legend()->setVisible(true);
+    chart->legend()->setAlignment(Qt::AlignRight);
+
+    chartView->setChart(chart);
+    chartView->setRenderHint(QPainter::Antialiasing);
+}
+
 void LogView::onDataLoaded()
 {
     closeProgressDialog();
@@ -436,140 +465,32 @@ void LogView::onDataLoaded()
     QList<QSharedPointer<StatisticItem>> sis;
     if (m_model->getLevelStatistic(sis))
     {
-        QPieSeries *series = new QPieSeries();
-        for (QSharedPointer<StatisticItem> si: sis)
-        {
-            qDebug() << si->content << si->count;
-            QPieSlice *slice = series->append(si->content, si->count);
-            slice->setLabelVisible();
-        }
-
-        QPieSlice *slice = series->slices().at(1);
-        slice->setExploded();
-
-        QChart *chart = new QChart();
-        chart->addSeries(series);
-        chart->setTitle("Level Count Statistic");
-        chart->legend()->setVisible(true);
-        chart->legend()->setAlignment(Qt::AlignRight);
-
-        m_levelStatisticChart->setChart(chart);
-        m_levelStatisticChart->setRenderHint(QPainter::Antialiasing);
+        setChart(m_levelStatisticChart, sis, "Level Count Statistic");
         sis.clear();
     }
     if (m_model->getThreadStatistic(sis))
     {
-        QPieSeries *series = new QPieSeries();
-        for (QSharedPointer<StatisticItem> si: sis)
-        {
-            qDebug() << si->content << si->count;
-            QPieSlice *slice = series->append(si->content, si->count);
-            slice->setLabelVisible();
-        }
-
-        QPieSlice *slice = series->slices().at(1);
-        slice->setExploded();
-
-        QChart *chart = new QChart();
-        chart->addSeries(series);
-        chart->setTitle("Thread Count Statistic");
-        chart->legend()->setVisible(true);
-        chart->legend()->setAlignment(Qt::AlignRight);
-
-        m_threadStatisticChart->setChart(chart);
-        m_threadStatisticChart->setRenderHint(QPainter::Antialiasing);
+        setChart(m_threadStatisticChart, sis, "Thread Count Statistic");
         sis.clear();
     }
     if (m_model->getSourceFileStatistic(sis))
     {
-        QPieSeries *series = new QPieSeries();
-        for (QSharedPointer<StatisticItem> si: sis)
-        {
-            qDebug() << si->content << si->count;
-            QPieSlice *slice = series->append(si->content, si->count);
-            slice->setLabelVisible();
-        }
-
-        QPieSlice *slice = series->slices().at(1);
-        slice->setExploded();
-
-        QChart *chart = new QChart();
-        chart->addSeries(series);
-        chart->setTitle("Source File Count Statistic");
-        chart->legend()->setVisible(true);
-        chart->legend()->setAlignment(Qt::AlignRight);
-
-        m_sourceFileStatisticChart->setChart(chart);
-        m_sourceFileStatisticChart->setRenderHint(QPainter::Antialiasing);
+        setChart(m_sourceFileStatisticChart, sis, "Source File Count Statistic");
         sis.clear();
     }
     if (m_model->getSourceLineStatistic(sis))
     {
-        QPieSeries *series = new QPieSeries();
-        for (QSharedPointer<StatisticItem> si: sis)
-        {
-            qDebug() << si->content << si->count;
-            QPieSlice *slice = series->append(si->content, si->count);
-            slice->setLabelVisible();
-        }
-
-        QPieSlice *slice = series->slices().at(1);
-        slice->setExploded();
-
-        QChart *chart = new QChart();
-        chart->addSeries(series);
-        chart->setTitle("Source Line Count Statistic");
-        chart->legend()->setVisible(true);
-        chart->legend()->setAlignment(Qt::AlignRight);
-
-        m_sourceLineStatisticChart->setChart(chart);
-        m_sourceLineStatisticChart->setRenderHint(QPainter::Antialiasing);
+        setChart(m_sourceLineStatisticChart, sis, "Source Line Count Statistic");
         sis.clear();
     }
     if (m_model->getCategoryStatistic(sis))
     {
-        QPieSeries *series = new QPieSeries();
-        for (QSharedPointer<StatisticItem> si: sis)
-        {
-            qDebug() << si->content << si->count;
-            QPieSlice *slice = series->append(si->content, si->count);
-            slice->setLabelVisible();
-        }
-
-        QPieSlice *slice = series->slices().at(1);
-        slice->setExploded();
-
-        QChart *chart = new QChart();
-        chart->addSeries(series);
-        chart->setTitle("Category Count Statistic");
-        chart->legend()->setVisible(true);
-        chart->legend()->setAlignment(Qt::AlignRight);
-
-        m_categoryStatisticChart->setChart(chart);
-        m_categoryStatisticChart->setRenderHint(QPainter::Antialiasing);
+        setChart(m_categoryStatisticChart, sis, "Category Count Statistic");
         sis.clear();
     }
     if (m_model->getMethodStatistic(sis))
     {
-        QPieSeries *series = new QPieSeries();
-        for (QSharedPointer<StatisticItem> si: sis)
-        {
-            qDebug() << si->content << si->count;
-            QPieSlice *slice = series->append(si->content, si->count);
-            slice->setLabelVisible();
-        }
-
-        QPieSlice *slice = series->slices().at(1);
-        slice->setExploded();
-
-        QChart *chart = new QChart();
-        chart->addSeries(series);
-        chart->setTitle("Method Count Statistic");
-        chart->legend()->setVisible(true);
-        chart->legend()->setAlignment(Qt::AlignRight);
-
-        m_methodStatisticChart->setChart(chart);
-        m_methodStatisticChart->setRenderHint(QPainter::Antialiasing);
+        setChart(m_methodStatisticChart, sis, "Method Count Statistic");
         sis.clear();
     }
 }

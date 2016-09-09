@@ -21,6 +21,7 @@ struct LogItem {
 struct StatisticItem {
     QString content;
     int count;
+    double percent;
 };
 
 class LogModel : public QAbstractTableModel
@@ -111,6 +112,7 @@ private:
     void generateSQLStatements(int offset, QString& sqlFetch, QString& sqlCount);
     void doFilter(const QString& content, const QString& field, bool regexpMode, bool luaMode);
     bool getStatistic(const QString& tableName, QList<QSharedPointer<StatisticItem>>& sis);
+    void saveStatistic();
 };
 
 #endif // LOGMODEL_H
