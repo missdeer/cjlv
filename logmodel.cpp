@@ -915,41 +915,41 @@ bool LogModel::parseLine(const QString& line, QStringList& results)
 
     auto it = m_levelCountMap.find(results.at(1));
     if (m_levelCountMap.end() == it)
-        m_levelCountMap.insert(results.at(1), 0);
+        m_levelCountMap.insert(results.at(1), 1);
     else
         m_levelCountMap[results.at(1)]++;
 
     it = m_threadCountMap.find(results.at(2));
     if (m_threadCountMap.end() == it)
-        m_threadCountMap.insert(results.at(2), 0);
+        m_threadCountMap.insert(results.at(2), 1);
     else
         m_threadCountMap[results.at(2)]++;
 
     it = m_sourceLineCountMap.find(results.at(3));
     if (m_sourceLineCountMap.end() == it)
-        m_sourceLineCountMap.insert(results.at(3), 0);
+        m_sourceLineCountMap.insert(results.at(3), 1);
     else
         m_sourceLineCountMap[results.at(3)]++;
 
     QString sourceFile = results.at(3);
     int index = sourceFile.indexOf(QChar('('));
     if (index > 0)
-        sourceFile.remove(index);
+        sourceFile.remove(index, sourceFile.length() - index);
     it = m_sourceFileCountMap.find(sourceFile);
     if (m_sourceFileCountMap.end() == it)
-        m_sourceFileCountMap.insert(sourceFile, 0);
+        m_sourceFileCountMap.insert(sourceFile, 1);
     else
         m_sourceFileCountMap[sourceFile]++;
 
     it = m_categoryCountMap.find(results.at(4));
     if (m_categoryCountMap.end() == it)
-        m_categoryCountMap.insert(results.at(4), 0);
+        m_categoryCountMap.insert(results.at(4), 1);
     else
         m_categoryCountMap[results.at(4)]++;
 
     it = m_methodCountMap.find(results.at(5));
     if (m_methodCountMap.end() == it)
-        m_methodCountMap.insert(results.at(5), 0);
+        m_methodCountMap.insert(results.at(5), 1);
     else
         m_methodCountMap[results.at(5)]++;
     return true;
