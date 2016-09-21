@@ -68,7 +68,7 @@ macx: {
     OBJECTIVE_SOURCES += \
         mdfindwrapper.mm
 
-    QMAKE_MAC_SDK = macosx10.11
+    #QMAKE_MAC_SDK = macosx10.11
     ICON = cjlv.icns
     icon.path = $$PWD
     #icon.files += cjlv.png
