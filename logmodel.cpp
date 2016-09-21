@@ -594,8 +594,6 @@ void LogModel::runExtension(ExtensionPtr e)
 
 bool LogModel::getStatistic(const QString &tableName, QList<QSharedPointer<StatisticItem>> &sis)
 {
-    QString sql = QString("SELECT * FROM %1 ORDER BY count DESC LIMIT 15;").arg(tableName);
-
     QSqlDatabase db = QSqlDatabase::database(m_dbFile, true);
     if (!db.isValid()) {
         db = QSqlDatabase::addDatabase("QSQLITE", m_dbFile);
@@ -605,15 +603,26 @@ bool LogModel::getStatistic(const QString &tableName, QList<QSharedPointer<Stati
     if (!db.isOpen())
         db.open();
 
-    if (db.isOpen())
+    if (!db.isOpen())
     {
-        QSqlQuery q(db);
+        return false;
+    }
+
+    QSqlQuery q(db);
+    int limitCount = 15;
+    for(int count = 0;;limitCount++)
+    {
+        QString sql = QString("SELECT * FROM %1 ORDER BY count DESC LIMIT %2;").arg(tableName).arg(limitCount);
+
         q.prepare(sql);
-        if (q.exec()) {
+        if (q.exec())
+        {
             int contentIndex = q.record().indexOf("key");
             int countIndex = q.record().indexOf("count");
-            int count = 0;
-            while (q.next()) {
+            count = 0;
+            sis.clear();
+            while (q.next())
+            {
                 QSharedPointer<StatisticItem> si =  QSharedPointer<StatisticItem>(new StatisticItem);
                 si->content = q.value(contentIndex).toString();
                 si->count =  q.value(countIndex).toInt();
@@ -623,7 +632,10 @@ bool LogModel::getStatistic(const QString &tableName, QList<QSharedPointer<Stati
             }
             q.clear();
             q.finish();
-            if (m_totalRowCount > count && count * 3 > m_totalRowCount * 2)
+            if (count * 3 <= m_totalRowCount * 2)
+                continue;
+
+            if (count < m_totalRowCount)
             {
                 QSharedPointer<StatisticItem> si =  QSharedPointer<StatisticItem>(new StatisticItem);
                 si->content = "Other";
@@ -631,9 +643,15 @@ bool LogModel::getStatistic(const QString &tableName, QList<QSharedPointer<Stati
                 si->percent = ((double)si->count * 100)/((double)m_totalRowCount);
                 sis.append(si);
             }
+
             return true;
         }
+        else
+        {
+            return (!sis.empty());
+        }
     }
+
     return false;
 }
 
