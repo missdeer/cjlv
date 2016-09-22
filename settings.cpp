@@ -50,7 +50,7 @@ void Settings::save()
     settings.setValue("searchField", m_searchField);
     settings.setValue("temporaryDirectory", m_temporaryDirectory);
     settings.setValue("sourceDirectory", m_sourceDirectory);
-    settings.setValue("lastOpenedDirectory", m_lastOpenedDirectory);
+    settings.setValue("lastOpenedDirectory",QDir::toNativeSeparators(m_lastOpenedDirectory));
     if (!m_everythingPath.isEmpty())
         settings.setValue("everythingPath", m_everythingPath);
     settings.sync();

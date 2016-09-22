@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include <QFontDatabase>
+#include <boost/scope_exit.hpp>
 #include "qtsingleapplication.h"
 #include "mainwindow.h"
 #include "settings.h"
@@ -73,6 +74,9 @@ int main(int argc, char *argv[])
     parser.process(a);
 
     g_settings = new Settings;
+    BOOST_SCOPE_EXIT(g_settings) {
+        delete g_settings;
+    } BOOST_SCOPE_EXIT_END
     g_settings->initialize();
     QString t = parser.value("t");
     if (!t.isEmpty())
