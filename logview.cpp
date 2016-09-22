@@ -433,11 +433,12 @@ void LogView::setChart(QtCharts::QChartView* chartView,const QList<QSharedPointe
     QPieSeries *series = new QPieSeries();
     int totalCount = 0;
     std::for_each(sis.begin(), sis.end(), [&totalCount](QSharedPointer<StatisticItem> si){ totalCount += si->count;});
+    bool visible = false;
     for (QSharedPointer<StatisticItem> si: sis)
     {
         QString label = QString("%1, %2, %3%").arg(si->content).arg(si->count).arg(si->percent, 0, 'f', 2);
         QPieSlice *slice = series->append(label, si->count);
-        slice->setLabelVisible();
+        slice->setLabelVisible(visible = !visible);
     }
 
     int index = sis.length() - 1;

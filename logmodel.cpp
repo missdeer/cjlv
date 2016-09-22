@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include <sqlite3.h>
 #include <lua.hpp>
+#include <boost/scope_exit.hpp>
 #include "settings.h"
 #include "logmodel.h"
 
@@ -952,19 +953,9 @@ void LogModel::doQuery(int offset)
         return;
     }
 
-    struct ScopedUnlock
-    {
-        QMutex& m_queryMutex_;
-        explicit ScopedUnlock(QMutex& queryMutex)
-            : m_queryMutex_(queryMutex)
-        {
-        }
-        ~ScopedUnlock()
-        {
-            m_queryMutex_.unlock();
-        }
-    };
-    ScopedUnlock sl(m_queryMutex);
+    BOOST_SCOPE_EXIT(this_) {
+        this_->m_queryMutex.unlock();
+    } BOOST_SCOPE_EXIT_END
 
     QString sqlCount;
     QString sqlFetch ;
@@ -974,20 +965,9 @@ void LogModel::doQuery(int offset)
     e->m_offset = offset;
     e->m_size = 0;
 
-    struct ScopedEventThrow
-    {
-        LogModel* target_;
-        FinishedQueryEvent* e_;
-        ScopedEventThrow(LogModel* t, FinishedQueryEvent* e)
-            : target_(t), e_(e)
-        {
-        }
-        ~ScopedEventThrow()
-        {
-            QCoreApplication::postEvent(target_, e_);
-        }
-    };
-    ScopedEventThrow se(this, e);
+    BOOST_SCOPE_EXIT(this_, e) {
+        QCoreApplication::postEvent(this_, e);
+    } BOOST_SCOPE_EXIT_END
 
     if (sqlFetch == m_sqlFetch && sqlCount == m_sqlCount && m_keyword.isEmpty())
     {
