@@ -34,7 +34,9 @@ SOURCES += main.cpp\
     preferencedialog.cpp \
     extensiondialog.cpp \
     extensionmodel.cpp \
-    extension.cpp
+    extension.cpp \
+    sourcewindow.cpp \
+    sourceviewtabwidget.cpp
 
 HEADERS  += mainwindow.h \
     logview.h \
@@ -48,11 +50,14 @@ HEADERS  += mainwindow.h \
     extensiondialog.h \
     extensionmodel.h \
     extension.h \
-    stdafx.h
+    stdafx.h \
+    sourcewindow.h \
+    sourceviewtabwidget.h
 
 FORMS    += mainwindow.ui \
     preferencedialog.ui \
-    extensiondialog.ui
+    extensiondialog.ui \
+    sourcewindow.ui
 
 DISTFILES += \
     cjlv.png

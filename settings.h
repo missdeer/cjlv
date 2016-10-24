@@ -142,6 +142,15 @@ public:
     {
         return m_fatalEnabled && m_errorEnabled && m_warnEnabled && m_infoEnabled && m_debugEnabled && m_traceEnabled;
     }
+    bool multiMonitorEnabled() const
+    {
+        return m_multiMonitorEnabled;
+    }
+    void setMultiMonitorEnabled(bool multiMonitorEnabled)
+    {
+        m_multiMonitorEnabled = multiMonitorEnabled;
+    }
+
 private:
     bool m_inMemoryDatabase;
     bool m_searchOrFitler;
@@ -152,6 +161,7 @@ private:
     bool m_infoEnabled;
     bool m_debugEnabled;
     bool m_traceEnabled;
+    bool m_multiMonitorEnabled;
     QString m_searchField;
     QString m_temporaryDirectory;
     QString m_lastOpenedDirectory;

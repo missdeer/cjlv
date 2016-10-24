@@ -5,6 +5,7 @@
 #if defined(Q_OS_WIN)
 #include "ShellContextMenu.h"
 #endif
+#include "sourcewindow.h"
 #include "settings.h"
 #include "logmodel.h"
 #include "logview.h"
@@ -18,6 +19,7 @@ extern QWinTaskbarButton *g_winTaskbarButton;
 extern QWinTaskbarProgress *g_winTaskbarProgress;
 #endif
 static QProgressDialog* g_progressDialog = nullptr;
+static SourceWindow* g_sourceWindow = nullptr;
 static QAtomicInt g_loadingReferenceCount;
 static const QEvent::Type EXTRACTED_EVENT = QEvent::Type(QEvent::User + 1);
 
@@ -363,8 +365,25 @@ void LogView::openSourceFile(const QModelIndex &index, bool openWithBuiltinEdito
             {
                 if (openWithBuiltinEditor)
                 {
-                    showCodeEditorPane();
-                    m_codeEditorTabWidget->gotoLine(filePath, m.captured(2).toInt());
+                    if (g_settings->multiMonitorEnabled())
+                    {
+                        if (!g_sourceWindow)
+                        {
+                            g_sourceWindow = new SourceWindow();
+                        }
+
+                        if (!g_sourceWindow->isVisible())
+                        {
+                            // show
+                            g_sourceWindow->showMaximized();
+                        }
+                        g_sourceWindow->gotoLine(filePath, m.captured(2).toInt());
+                    }
+                    else
+                    {
+                        showCodeEditorPane();
+                        m_codeEditorTabWidget->gotoLine(filePath, m.captured(2).toInt());
+                    }
                 }
                 else
                 {
