@@ -1,8 +1,4 @@
 #include "stdafx.h"
-#if defined(Q_OS_WIN)
-#include "ShellContextMenu.h"
-#endif
-#include "codeeditortabwidget.h"
 #include "sourcewindow.h"
 #include "ui_sourcewindow.h"
 
@@ -18,7 +14,7 @@ SourceWindow::~SourceWindow()
     delete ui;
 }
 
-void SourceWindow::gotoLine(const QString &fileName, int line)
+void SourceWindow::gotoLine(const QString &logFile, const QString &sourceFile, int line)
 {
-
+    ui->tabWidget->gotoLine(logFile, sourceFile, line);
 }

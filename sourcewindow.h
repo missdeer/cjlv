@@ -16,7 +16,7 @@ public:
     explicit SourceWindow(QWidget *parent = 0);
     ~SourceWindow();
 
-    void gotoLine(const QString& fileName, int line = -1);
+    void gotoLine(const QString &logFile, const QString& sourceFile, int line = -1);
 private:
     Ui::SourceWindow *ui;
 };
