@@ -369,7 +369,30 @@ void LogView::openSourceFile(const QModelIndex &index, bool openWithBuiltinEdito
                     {
                         if (!g_sourceWindow)
                         {
-                            g_sourceWindow = new SourceWindow();
+                            QWidgetList widgets = qApp->topLevelWidgets();
+                            auto it = std::find_if(widgets.begin(), widgets.end(),
+                                                   [](QWidget* w){ return (w->objectName() == "MainWindow"); });
+                            QWidget* mainWindow = nullptr;
+                            if (widgets.end() != it)
+                                mainWindow = *it;
+                            else if (!widgets.isEmpty())
+                                mainWindow = widgets.at(0);
+
+                            g_sourceWindow = new SourceWindow(mainWindow);
+
+                            g_sourceWindow->show();
+
+                            QList<QScreen *> screens = QApplication::screens();
+                            for (QScreen* s : screens)
+                            {
+                                if (s != mainWindow->windowHandle()->screen())
+                                {
+                                    g_sourceWindow->move(s->geometry().x(), s->geometry().y());
+                                    g_sourceWindow->resize(s->geometry().width(), s->geometry().height());
+                                    break;
+                                }
+                            }
+                            g_sourceWindow->showMaximized();
                         }
 
                         if (!g_sourceWindow->isVisible())
@@ -377,7 +400,8 @@ void LogView::openSourceFile(const QModelIndex &index, bool openWithBuiltinEdito
                             // show
                             g_sourceWindow->showMaximized();
                         }
-                        g_sourceWindow->gotoLine(filePath, m.captured(2).toInt());
+                        g_sourceWindow->gotoLine(m_path, filePath, m.captured(2).toInt());
+                        g_sourceWindow->raise();
                     }
                     else
                     {

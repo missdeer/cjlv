@@ -6,6 +6,7 @@ class CodeEditor;
 
 class CodeEditorTabWidget : public QTabWidget
 {
+    Q_OBJECT
 public:
     explicit CodeEditorTabWidget(QWidget *parent = 0);
 

@@ -8,6 +8,10 @@
 SourceViewTabWidget::SourceViewTabWidget(QWidget *parent /*= 0*/)
     : QTabWidget(parent)
 {
+    setTabsClosable(true);
+    setDocumentMode(true);
+    setContextMenuPolicy(Qt::CustomContextMenu);
+
     connect(this, &QTabWidget::tabCloseRequested, this, &SourceViewTabWidget::onTabCloseRequested);
     connect(this, &QTabWidget::tabBarDoubleClicked, this, &SourceViewTabWidget::onTabCloseRequested);
     connect(this, &QWidget::customContextMenuRequested, this, &SourceViewTabWidget::onCustomContextMenuRequested);
@@ -40,6 +44,9 @@ void SourceViewTabWidget::gotoLine(const QString &logFile, const QString &source
     if (index >= 0)
     {
         setCurrentIndex(index);
+        QWidget* w = widget(index);
+        CodeEditorTabWidget* v = qobject_cast<CodeEditorTabWidget*>(w);
+        v->gotoLine(sourceFile, line);
         return;
     }
 
@@ -54,12 +61,97 @@ void SourceViewTabWidget::gotoLine(const QString &logFile, const QString &source
 
 void SourceViewTabWidget::onCustomContextMenuRequested(const QPoint &pos)
 {
+    int c = count();
+    if (c)
+    {
+        bool onTabbar = false;
 
+        for (int i=0; i<c; i++)
+        {
+            if ( tabBar()->tabRect(i).contains( pos ) )
+            {
+                onTabbar = true;
+                tabBar()->setCurrentIndex(i);
+                break;
+            }
+        }
+
+        if (!onTabbar)
+            return;
+
+        QMenu menu(this);
+        QAction* pCloseAction = new QAction(QIcon(":/image/close.png"), "Close", this);
+        menu.addAction(pCloseAction);
+        connect(pCloseAction, &QAction::triggered, this, &SourceViewTabWidget::onCloseCurrent);
+        QAction* pCloseAllAction = new QAction(QIcon(":/image/closeall.png"), "Close All", this);
+        menu.addAction(pCloseAllAction);
+        connect(pCloseAllAction, &QAction::triggered, this, &SourceViewTabWidget::onCloseAll);
+        QAction* pCloseAllButThisAction = new QAction("Close All But This", this);
+        menu.addAction(pCloseAllButThisAction);
+        connect(pCloseAllButThisAction, &QAction::triggered, this, &SourceViewTabWidget::onCloseAllButThis);
+
+        menu.addSeparator();
+
+        QAction* pCopyFileNameAction = new QAction("Copy File Name", this);
+        connect(pCopyFileNameAction, &QAction::triggered, this, &SourceViewTabWidget::onCopyFileName);
+        menu.addAction(pCopyFileNameAction);
+        QAction* pCopyFileFullPathAction = new QAction("Copy File Full Path", this);
+        connect(pCopyFileFullPathAction, &QAction::triggered, this, &SourceViewTabWidget::onCopyFileFullPath);
+        menu.addAction(pCopyFileFullPathAction);
+
+        menu.addSeparator();
+
+        QAction* pOpenContainerFolderAction = new QAction("Open Container Folder", this);
+        connect(pOpenContainerFolderAction, &QAction::triggered, this, &SourceViewTabWidget::onOpenContainerFolder);
+        menu.addAction(pOpenContainerFolderAction);
+
+#if defined(Q_OS_WIN)
+        CShellContextMenu scm;
+        scm.ShowContextMenu(&menu, this, mapToGlobal(pos), QDir::toNativeSeparators(tabToolTip(currentIndex())));
+#else
+        menu.exec(mapToGlobal(pos));
+#endif
+    }
 }
 
 void SourceViewTabWidget::onCurrentChanged(int index)
 {
 
+}
+
+void SourceViewTabWidget::onCopyFileName()
+{
+    QClipboard *clipboard = QApplication::clipboard();
+    clipboard->setText(tabText(currentIndex()));
+}
+
+void SourceViewTabWidget::onCopyFileFullPath()
+{
+    QClipboard *clipboard = QApplication::clipboard();
+#if defined(Q_OS_WIN)
+    clipboard->setText(QDir::toNativeSeparators(tabToolTip(currentIndex())));
+#else
+    clipboard->setText(tabToolTip(currentIndex()));
+#endif
+}
+
+void SourceViewTabWidget::onOpenContainerFolder()
+{
+    QString fileFullPath = tabToolTip(currentIndex());
+#if defined(Q_OS_WIN)
+    QString arg = QString("/select,\"%1\"").arg(QDir::toNativeSeparators(fileFullPath));
+    ::ShellExecuteW(NULL, L"open", L"explorer.exe", arg.toStdWString().c_str(), NULL, SW_SHOWNORMAL);
+#endif
+#if defined(Q_OS_MAC)
+    QStringList scriptArgs;
+    scriptArgs << QLatin1String("-e")
+               << QString::fromLatin1("tell application \"Finder\" to reveal POSIX file \"%1\"").arg(fileFullPath);
+    QProcess::execute(QLatin1String("/usr/bin/osascript"), scriptArgs);
+    scriptArgs.clear();
+    scriptArgs << QLatin1String("-e")
+               << QLatin1String("tell application \"Finder\" to activate");
+    QProcess::execute("/usr/bin/osascript", scriptArgs);
+#endif
 }
 
 int SourceViewTabWidget::findTab(const QString &path)

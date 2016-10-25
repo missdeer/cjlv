@@ -21,6 +21,9 @@ public slots:
 
     void gotoLine(const QString &logFile, const QString& sourceFile, int line = -1);
 private slots:
+    void onCopyFileName();
+    void onCopyFileFullPath();
+    void onOpenContainerFolder();
 
     void onCustomContextMenuRequested(const QPoint &pos);
     void onCurrentChanged(int index);
