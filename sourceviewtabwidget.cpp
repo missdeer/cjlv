@@ -5,6 +5,8 @@
 #include "codeeditortabwidget.h"
 #include "sourceviewtabwidget.h"
 
+extern QTabWidget* g_mainTabWidget;
+
 SourceViewTabWidget::SourceViewTabWidget(QWidget *parent /*= 0*/)
     : QTabWidget(parent)
 {
@@ -49,6 +51,8 @@ void SourceViewTabWidget::onTabCloseRequested(int index)
     removeTab(index);
     delete w;
     // notify main tab widget
+    if (this == sender())
+    emit g_mainTabWidget->tabCloseRequested(index);
 }
 
 void SourceViewTabWidget::gotoLine(const QString &logFile, const QString &sourceFile, int line)
@@ -129,8 +133,9 @@ void SourceViewTabWidget::onCustomContextMenuRequested(const QPoint &pos)
 
 void SourceViewTabWidget::onCurrentChanged(int index)
 {
-
     // notify main tab widget
+    if (this == sender())
+    emit g_mainTabWidget->currentChanged(index);
 }
 
 void SourceViewTabWidget::onCopyFileName()

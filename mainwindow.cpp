@@ -10,6 +10,7 @@
 QWinTaskbarButton *g_winTaskbarButton = nullptr;
 QWinTaskbarProgress *g_winTaskbarProgress = nullptr;
 #endif
+QTabWidget* g_mainTabWidget = nullptr;
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -17,6 +18,7 @@ MainWindow::MainWindow(QWidget *parent) :
     thumbbar(nullptr)
 {
     ui->setupUi(this);
+    g_mainTabWidget = ui->tabWidget;
 #if defined(Q_OS_WIN)
     ui->tabbarTopPlaceholder->setVisible(false);
 #endif

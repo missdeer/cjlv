@@ -276,7 +276,7 @@ void TabWidget::onCurrentChanged(int index)
         emit statusBarMessage("");
     }
     // notify source view tab widget if exists
-    if (g_sourceWindow)
+    if (g_sourceWindow && g_sourceWindow != sender())
         emit g_sourceWindow->currentChanged(index);
 }
 
@@ -323,7 +323,7 @@ void TabWidget::onTabCloseRequested(int index)
     removeTab(index);
     delete w;
     // notify source view tab widget if exists
-    if (g_sourceWindow)
+    if (g_sourceWindow && g_sourceWindow != sender())
         emit g_sourceWindow->tabCloseRequested(index);
 }
 
