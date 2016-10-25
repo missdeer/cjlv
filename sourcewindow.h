@@ -17,6 +17,10 @@ public:
     ~SourceWindow();
 
     void gotoLine(const QString &logFile, const QString& sourceFile, int line = -1);
+
+signals:
+    void tabCloseRequested(int);
+    void currentChanged(int);
 private:
     Ui::SourceWindow *ui;
 };

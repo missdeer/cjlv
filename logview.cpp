@@ -18,8 +18,8 @@ bool QuickGetFilesByFileName(const QString& fileName, QStringList& results);
 extern QWinTaskbarButton *g_winTaskbarButton;
 extern QWinTaskbarProgress *g_winTaskbarProgress;
 #endif
+SourceWindow* g_sourceWindow = nullptr;
 static QProgressDialog* g_progressDialog = nullptr;
-static SourceWindow* g_sourceWindow = nullptr;
 static QAtomicInt g_loadingReferenceCount;
 static const QEvent::Type EXTRACTED_EVENT = QEvent::Type(QEvent::User + 1);
 

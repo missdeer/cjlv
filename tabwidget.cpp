@@ -4,6 +4,7 @@
 #endif
 #include "extensionmodel.h"
 #include "logview.h"
+#include "sourcewindow.h"
 #include "tabwidget.h"
 
 TabWidget::TabWidget(QWidget *parent)
@@ -261,7 +262,7 @@ void TabWidget::onCustomContextMenuRequested(const QPoint &pos)
     }
 }
 
-void TabWidget::onCurrentChanged(int /*index*/)
+void TabWidget::onCurrentChanged(int index)
 {
     QWidget* w = currentWidget();
     if (w)
@@ -275,6 +276,8 @@ void TabWidget::onCurrentChanged(int /*index*/)
         emit statusBarMessage("");
     }
     // notify source view tab widget if exists
+    if (g_sourceWindow)
+        emit g_sourceWindow->currentChanged(index);
 }
 
 void TabWidget::onLogViewRowCountChanged()
@@ -320,6 +323,8 @@ void TabWidget::onTabCloseRequested(int index)
     removeTab(index);
     delete w;
     // notify source view tab widget if exists
+    if (g_sourceWindow)
+        emit g_sourceWindow->tabCloseRequested(index);
 }
 
 int TabWidget::findTab(const QString &path)

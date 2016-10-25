@@ -87,4 +87,6 @@ private:
     void setChart(QtCharts::QChartView* chartView, const QList<QSharedPointer<StatisticItem> >& sis, const QString& label);
 };
 
+class SourceWindow;
+extern SourceWindow* g_sourceWindow;
 #endif // LOGVIEW_H

@@ -18,6 +18,7 @@ public slots:
     void onCloseAllButThis();
     void onCloseCurrent();
     void onTabCloseRequested(int index);
+    void onCurrentChanged(int index);
 
     void gotoLine(const QString &logFile, const QString& sourceFile, int line = -1);
 private slots:
@@ -26,7 +27,6 @@ private slots:
     void onOpenContainerFolder();
 
     void onCustomContextMenuRequested(const QPoint &pos);
-    void onCurrentChanged(int index);
 private:
     QStringList logFiles;
     int findTab(const QString &path);
