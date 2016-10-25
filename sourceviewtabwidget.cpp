@@ -135,7 +135,7 @@ void SourceViewTabWidget::onCurrentChanged(int index)
 {
     // notify main tab widget
     if (this == sender())
-    emit g_mainTabWidget->currentChanged(index);
+        g_mainTabWidget->setCurrentIndex(index);
 }
 
 void SourceViewTabWidget::onCopyFileName()
