@@ -20,22 +20,35 @@ SourceViewTabWidget::SourceViewTabWidget(QWidget *parent /*= 0*/)
 
 void SourceViewTabWidget::onCloseAll()
 {
-
+    for (int index = count() -1; index >=0; index--)
+    {
+        onTabCloseRequested(index);
+    }
 }
 
 void SourceViewTabWidget::onCloseAllButThis()
 {
-
+    for (int index = count() -1; index > currentIndex(); index--)
+    {
+        onTabCloseRequested(index);
+    }
+    while (count() > 1)
+    {
+        onTabCloseRequested(0);
+    }
 }
 
 void SourceViewTabWidget::onCloseCurrent()
 {
-
+    onTabCloseRequested(currentIndex());
 }
 
 void SourceViewTabWidget::onTabCloseRequested(int index)
 {
-
+    QWidget* w = widget(index);
+    removeTab(index);
+    delete w;
+    // notify main tab widget
 }
 
 void SourceViewTabWidget::gotoLine(const QString &logFile, const QString &sourceFile, int line)
@@ -117,6 +130,7 @@ void SourceViewTabWidget::onCustomContextMenuRequested(const QPoint &pos)
 void SourceViewTabWidget::onCurrentChanged(int index)
 {
 
+    // notify main tab widget
 }
 
 void SourceViewTabWidget::onCopyFileName()

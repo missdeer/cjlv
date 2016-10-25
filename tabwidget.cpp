@@ -274,6 +274,7 @@ void TabWidget::onCurrentChanged(int /*index*/)
     {
         emit statusBarMessage("");
     }
+    // notify source view tab widget if exists
 }
 
 void TabWidget::onLogViewRowCountChanged()
@@ -318,6 +319,7 @@ void TabWidget::onTabCloseRequested(int index)
     disconnect(v, &LogView::rowCountChanged, this, &TabWidget::onLogViewRowCountChanged);
     removeTab(index);
     delete w;
+    // notify source view tab widget if exists
 }
 
 int TabWidget::findTab(const QString &path)
