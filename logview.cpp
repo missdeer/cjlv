@@ -7,6 +7,7 @@
 #endif
 #include "sourcewindow.h"
 #include "settings.h"
+#include "presencewidget.h"
 #include "logmodel.h"
 #include "logview.h"
 
@@ -33,7 +34,7 @@ LogView::LogView(QWidget *parent)
     : QWidget (parent)
     , m_verticalSplitter(new QSplitter( Qt::Vertical, parent))
     , m_logTableChartTabWidget(new QTabWidget(m_verticalSplitter))
-    , m_tableView(new QTableView(m_logTableChartTabWidget))
+    , m_logsTableView(new QTableView(m_logTableChartTabWidget))
     , m_levelStatisticChart(new QtCharts::QChartView(m_logTableChartTabWidget))
     , m_threadStatisticChart(new QtCharts::QChartView(m_logTableChartTabWidget))
     , m_sourceFileStatisticChart(new QtCharts::QChartView(m_logTableChartTabWidget))
@@ -41,7 +42,8 @@ LogView::LogView(QWidget *parent)
     , m_categoryStatisticChart(new QtCharts::QChartView(m_logTableChartTabWidget))
     , m_methodStatisticChart(new QtCharts::QChartView(m_logTableChartTabWidget))
     , m_codeEditorTabWidget(new CodeEditorTabWidget(m_verticalSplitter))
-    , m_model(new LogModel(m_tableView))
+    , m_logModel(new LogModel(m_logsTableView))
+    , m_presenceWidget(new PresenceWidget(m_logTableChartTabWidget))
     , m_lastId(-1)
     , m_lastColumn(-1)
 {
@@ -61,22 +63,23 @@ LogView::LogView(QWidget *parent)
     m_logTableChartTabWidget->setTabPosition(QTabWidget::South);
     m_logTableChartTabWidget->setTabsClosable(false);
     m_logTableChartTabWidget->setDocumentMode(true);
-    m_logTableChartTabWidget->addTab(m_tableView, "Logs");
+    m_logTableChartTabWidget->addTab(m_logsTableView, "Logs");
     m_logTableChartTabWidget->addTab(m_levelStatisticChart, "Level");
     m_logTableChartTabWidget->addTab(m_threadStatisticChart, "Thread");
     m_logTableChartTabWidget->addTab(m_sourceFileStatisticChart, "Source File");
     m_logTableChartTabWidget->addTab(m_sourceLineStatisticChart, "Source Line");
     m_logTableChartTabWidget->addTab(m_categoryStatisticChart, "Category");
     m_logTableChartTabWidget->addTab(m_methodStatisticChart, "Method");
-    m_tableView->setModel(m_model);
-    m_tableView->horizontalHeader()->setSectionResizeMode(7, QHeaderView::Stretch);
-    m_tableView->setContextMenuPolicy(Qt::CustomContextMenu);
+    m_logTableChartTabWidget->addTab(m_presenceWidget, "Presence");
+    m_logsTableView->setModel(m_logModel);
+    m_logsTableView->horizontalHeader()->setSectionResizeMode(7, QHeaderView::Stretch);
+    m_logsTableView->setContextMenuPolicy(Qt::CustomContextMenu);
 
-    connect(m_tableView, &QAbstractItemView::doubleClicked, this, &LogView::onDoubleClicked);
-    connect(m_tableView, &QWidget::customContextMenuRequested, this, &LogView::onCustomContextMenuRequested);
-    connect(m_model, &LogModel::dataLoaded, this, &LogView::onDataLoaded);
-    connect(m_model, &LogModel::rowCountChanged, this, &LogView::onRowCountChanged);
-    connect(this, &LogView::runExtension, m_model, &LogModel::runExtension);
+    connect(m_logsTableView, &QAbstractItemView::doubleClicked, this, &LogView::onDoubleClicked);
+    connect(m_logsTableView, &QWidget::customContextMenuRequested, this, &LogView::onCustomContextMenuRequested);
+    connect(m_logModel, &LogModel::dataLoaded, this, &LogView::onDataLoaded);
+    connect(m_logModel, &LogModel::rowCountChanged, this, &LogView::onRowCountChanged);
+    connect(this, &LogView::runExtension, m_logModel, &LogModel::runExtension);
 }
 
 LogView::~LogView()
@@ -118,7 +121,7 @@ void LogView::openRawLogFile(const QStringList &paths)
 
     showProgressDialog();
 
-    m_model->loadFromFiles(paths);
+    m_logModel->loadFromFiles(paths);
 }
 
 void LogView::openFolder(const QString &path)
@@ -141,7 +144,7 @@ void LogView::openFolder(const QString &path)
 
     showProgressDialog();
 
-    m_model->loadFromFiles(fileNames);
+    m_logModel->loadFromFiles(fileNames);
 }
 
 bool LogView::matched(const QString &path)
@@ -156,11 +159,11 @@ bool LogView::matched(const QStringList &paths)
 
 void LogView::copyCurrentCell()
 {
-    QItemSelectionModel* selected =  m_tableView->selectionModel();
+    QItemSelectionModel* selected =  m_logsTableView->selectionModel();
     if (!selected->hasSelection())
         return;
     QModelIndex i = selected->currentIndex();
-    m_model->copyCell(i);
+    m_logModel->copyCell(i);
 }
 
 void LogView::copyCurrentRow()
@@ -169,26 +172,26 @@ void LogView::copyCurrentRow()
         m_codeEditorTabWidget->copy();
     else
     {
-        QItemSelectionModel* selected =  m_tableView->selectionModel();
+        QItemSelectionModel* selected =  m_logsTableView->selectionModel();
         if (!selected->hasSelection())
             return;
         int row = selected->currentIndex().row();
-        m_model->copyRow(row);
+        m_logModel->copyRow(row);
     }
 }
 
 void LogView::copySelectedCells()
 {
-    QItemSelectionModel* selected =  m_tableView->selectionModel();
+    QItemSelectionModel* selected =  m_logsTableView->selectionModel();
     if (!selected->hasSelection())
         return;
     QModelIndexList l = selected->selectedIndexes();
-    m_model->copyCells(l);
+    m_logModel->copyCells(l);
 }
 
 void LogView::copySelectedRows()
 {
-    QItemSelectionModel* selected =  m_tableView->selectionModel();
+    QItemSelectionModel* selected =  m_logsTableView->selectionModel();
     if (!selected->hasSelection())
         return;
     QModelIndexList l = selected->selectedIndexes();
@@ -200,32 +203,32 @@ void LogView::copySelectedRows()
     auto t = rows.toStdList();
     t.unique();
     rows = QList<int>::fromStdList(t);
-    m_model->copyRows(rows);
+    m_logModel->copyRows(rows);
 }
 
 void LogView::scrollToTop()
 {
-    m_tableView->scrollToTop();
+    m_logsTableView->scrollToTop();
 }
 
 void LogView::scrollToBottom()
 {
-    m_tableView->scrollToBottom();
+    m_logsTableView->scrollToBottom();
 }
 
 void LogView::gotoById(int i)
 {
-    m_tableView->scrollTo(m_model->index(i-1, 0));
+    m_logsTableView->scrollTo(m_logModel->index(i-1, 0));
 }
 
 void LogView::reload()
 {
-    m_model->reload();
+    m_logModel->reload();
 }
 
 int LogView::rowCount()
 {
-    return m_model->rowCount();
+    return m_logModel->rowCount();
 }
 
 void LogView::showCodeEditorPane()
@@ -241,12 +244,12 @@ void LogView::showCodeEditorPane()
 
 void LogView::filter(const QString &keyword)
 {
-    QItemSelectionModel* selected =  m_tableView->selectionModel();
+    QItemSelectionModel* selected =  m_logsTableView->selectionModel();
     if (keyword.isEmpty() && selected && selected->hasSelection())
     {
         // record the selected cell
         QModelIndex i = selected->currentIndex();
-        m_lastId = m_model->getId(i);
+        m_lastId = m_logModel->getId(i);
         m_lastColumn = i.column();
     }
     else
@@ -254,14 +257,14 @@ void LogView::filter(const QString &keyword)
         m_lastId = -1;
         m_lastColumn = -1;
     }
-    m_model->onFilter(keyword);
+    m_logModel->onFilter(keyword);
 }
 
 void LogView::extractContent(const QModelIndex& index)
 {
     showCodeEditorPane();
 
-    const QString& text = m_model->getLogContent(index);
+    const QString& text = m_logModel->getLogContent(index);
     // try to format XML document
     int startPos = text.indexOf(QChar('<'));
     int endPos = text.lastIndexOf(QChar('>'));
@@ -292,7 +295,7 @@ void LogView::extractContent(const QModelIndex& index)
 
 void LogView::openSourceFile(const QModelIndex &index, bool openWithBuiltinEditor)
 {
-    const QString& source = m_model->getLogSourceFile(index);
+    const QString& source = m_logModel->getLogSourceFile(index);
 
     QRegularExpression re("([^\\(]+)\\(([0-9]+)");
     QRegularExpressionMatch m = re.match(source);
@@ -438,7 +441,7 @@ void LogView::openSourceFile(const QModelIndex &index, bool openWithBuiltinEdito
 void LogView::openLog(const QModelIndex &index)
 {
     showCodeEditorPane();
-    const QString& logFile = m_model->getLogFileName(index);
+    const QString& logFile = m_logModel->getLogFileName(index);
     m_codeEditorTabWidget->gotoLine(logFile);
 }
 
@@ -446,7 +449,7 @@ void LogView::gotoLogLine(const QModelIndex &index)
 {
     showCodeEditorPane();
     QString logFile;
-    int line = m_model->getLogFileLine(index, logFile);
+    int line = m_logModel->getLogFileLine(index, logFile);
     m_codeEditorTabWidget->gotoLine(logFile, line);
 }
 
@@ -507,32 +510,32 @@ void LogView::onDataLoaded()
     // draw charts
 
     QList<QSharedPointer<StatisticItem>> sis;
-    if (m_model->getLevelStatistic(sis))
+    if (m_logModel->getLevelStatistic(sis))
     {
         setChart(m_levelStatisticChart, sis, "Level Count Statistic");
         sis.clear();
     }
-    if (m_model->getThreadStatistic(sis))
+    if (m_logModel->getThreadStatistic(sis))
     {
         setChart(m_threadStatisticChart, sis, "Thread Count Statistic");
         sis.clear();
     }
-    if (m_model->getSourceFileStatistic(sis))
+    if (m_logModel->getSourceFileStatistic(sis))
     {
         setChart(m_sourceFileStatisticChart, sis, "Source File Count Statistic");
         sis.clear();
     }
-    if (m_model->getSourceLineStatistic(sis))
+    if (m_logModel->getSourceLineStatistic(sis))
     {
         setChart(m_sourceLineStatisticChart, sis, "Source Line Count Statistic");
         sis.clear();
     }
-    if (m_model->getCategoryStatistic(sis))
+    if (m_logModel->getCategoryStatistic(sis))
     {
         setChart(m_categoryStatisticChart, sis, "Category Count Statistic");
         sis.clear();
     }
-    if (m_model->getMethodStatistic(sis))
+    if (m_logModel->getMethodStatistic(sis))
     {
         setChart(m_methodStatisticChart, sis, "Method Count Statistic");
         sis.clear();
@@ -543,15 +546,15 @@ void LogView::onRowCountChanged()
 {
     if (m_lastId >= 0 && m_lastColumn >= 0)
     {
-        m_tableView->scrollTo(m_model->index(m_lastId -1, m_lastColumn));
-        m_tableView->selectRow(m_lastId -1);
+        m_logsTableView->scrollTo(m_logModel->index(m_lastId -1, m_lastColumn));
+        m_logsTableView->selectRow(m_lastId -1);
     }
     emit rowCountChanged();
 }
 
 void LogView::onCustomContextMenuRequested(const QPoint &pos)
 {
-    QItemSelectionModel* model = m_tableView->selectionModel();
+    QItemSelectionModel* model = m_logsTableView->selectionModel();
     if (model && model->hasSelection())
     {
         QMenu menu(this);
@@ -574,7 +577,7 @@ void LogView::onCustomContextMenuRequested(const QPoint &pos)
 
 #if defined(Q_OS_WIN)
         CShellContextMenu scm;
-        scm.ShowContextMenu(&menu, this, m_tableView->viewport()->mapToGlobal(pos), QDir::toNativeSeparators(m_path));
+        scm.ShowContextMenu(&menu, this, m_logsTableView->viewport()->mapToGlobal(pos), QDir::toNativeSeparators(m_path));
 #else
         menu.exec(m_tableView->viewport()->mapToGlobal(pos));
 #endif
@@ -583,7 +586,7 @@ void LogView::onCustomContextMenuRequested(const QPoint &pos)
 
 void LogView::onBrowseSourceFileWithOpenGrok()
 {
-    QItemSelectionModel* selected = m_tableView->selectionModel();
+    QItemSelectionModel* selected = m_logsTableView->selectionModel();
     if (selected && selected->hasSelection())
     {
         openSourceFile(selected->currentIndex(), false);
@@ -592,7 +595,7 @@ void LogView::onBrowseSourceFileWithOpenGrok()
 
 void LogView::onSourceFilePreview()
 {
-    QItemSelectionModel* selected = m_tableView->selectionModel();
+    QItemSelectionModel* selected = m_logsTableView->selectionModel();
     if (selected && selected->hasSelection())
     {
         openSourceFile(selected->currentIndex(), true);
@@ -601,7 +604,7 @@ void LogView::onSourceFilePreview()
 
 void LogView::onContentPreview()
 {
-    QItemSelectionModel* selected = m_tableView->selectionModel();
+    QItemSelectionModel* selected = m_logsTableView->selectionModel();
     if (selected && selected->hasSelection())
     {
         extractContent(selected->currentIndex());
@@ -610,7 +613,7 @@ void LogView::onContentPreview()
 
 void LogView::onLogFilePreview()
 {
-    QItemSelectionModel* selected = m_tableView->selectionModel();
+    QItemSelectionModel* selected = m_logsTableView->selectionModel();
     if (selected && selected->hasSelection())
     {
         gotoLogLine(selected->currentIndex());
@@ -638,7 +641,7 @@ bool LogView::event(QEvent* e)
             std::for_each(list.begin(), list.end(),
                           [&fileNames](const QFileInfo& fileInfo){fileNames << fileInfo.filePath();});
 
-            m_model->loadFromFiles(fileNames);
+            m_logModel->loadFromFiles(fileNames);
         }
         return true;
     default:

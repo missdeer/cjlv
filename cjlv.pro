@@ -36,7 +36,9 @@ SOURCES += main.cpp\
     extensionmodel.cpp \
     extension.cpp \
     sourcewindow.cpp \
-    sourceviewtabwidget.cpp
+    sourceviewtabwidget.cpp \
+    presencemodel.cpp \
+    presencewidget.cpp
 
 HEADERS  += mainwindow.h \
     logview.h \
@@ -52,7 +54,9 @@ HEADERS  += mainwindow.h \
     extension.h \
     stdafx.h \
     sourcewindow.h \
-    sourceviewtabwidget.h
+    sourceviewtabwidget.h \
+    presencemodel.h \
+    presencewidget.h
 
 FORMS    += mainwindow.ui \
     preferencedialog.ui \

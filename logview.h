@@ -7,6 +7,7 @@
 #include "codeeditortabwidget.h"
 #include "extension.h"
 
+class PresenceWidget;
 class LogModel;
 struct StatisticItem;
 
@@ -60,7 +61,7 @@ private slots:
 private:
     QSplitter* m_verticalSplitter;
     QTabWidget* m_logTableChartTabWidget;
-    QTableView *m_tableView;
+    QTableView *m_logsTableView;
     QtCharts::QChartView* m_levelStatisticChart;
     QtCharts::QChartView* m_threadStatisticChart;
     QtCharts::QChartView* m_sourceFileStatisticChart;
@@ -68,7 +69,8 @@ private:
     QtCharts::QChartView* m_categoryStatisticChart;
     QtCharts::QChartView* m_methodStatisticChart;
     CodeEditorTabWidget* m_codeEditorTabWidget;
-    LogModel* m_model;
+    LogModel* m_logModel;
+    PresenceWidget* m_presenceWidget;
     QString m_path;
     QString m_extractDir;
     QMutex m_mutex;
