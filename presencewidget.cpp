@@ -57,8 +57,17 @@ void PresenceWidget::onReceivedPresenceBuddyList(QStringList bl)
     m_cbBuddyList->addItems(bl);
 }
 
-void PresenceWidget::onResizeTableCells(int columns, int rows)
+void PresenceWidget::onResizeTableCells(int columns, int /*rows*/)
 {
     m_presenceTableView->resizeColumnToContents(0);
     m_presenceTableView->resizeColumnToContents(1);
+    if (columns > 2)
+    {
+        QRect rc = m_presenceTableView->geometry();
+        int leftWidth = rc.width() - m_presenceTableView->horizontalHeader()->sectionSize(0) - m_presenceTableView->horizontalHeader()->sectionSize(1);
+        int toWidth = leftWidth/(columns-2);
+        for (int i = 2; i < columns; i++)
+            m_presenceTableView->setColumnWidth(i, toWidth);
+    }
+    m_presenceTableView->resizeRowsToContents();
 }
