@@ -12,8 +12,15 @@ PresenceWidget::PresenceWidget(QWidget *parent) : QWidget(parent)
     QHBoxLayout* topBarLayout = new QHBoxLayout;
     topBarLayout->setMargin(0);
     topBar->setLayout(topBarLayout);
+    QLabel* label = new QLabel(topBar);
+    label->setText("Buddy List:");
+    topBarLayout->addWidget(label);
     QComboBox* cbBuddyList = new QComboBox(topBar);
     topBarLayout->addWidget(cbBuddyList);
+    QPushButton* btnRefreshBuddyList = new QPushButton(topBar);
+    btnRefreshBuddyList->setText("...");
+    topBarLayout->addWidget(btnRefreshBuddyList);
+    topBarLayout->setStretch(1, 1);
 
     m_mainLayout->addWidget(topBar);
     QTableView* presenceTableView = new QTableView(this);
