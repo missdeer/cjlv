@@ -3,6 +3,8 @@
 
 #include <QWidget>
 
+class PresenceModel;
+
 class PresenceWidget : public QWidget
 {
     Q_OBJECT
@@ -14,6 +16,7 @@ signals:
 public slots:
 
 private:
+    PresenceModel* m_model;
 };
 
 #endif // PRESENCEWIDGET_H

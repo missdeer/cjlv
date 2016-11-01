@@ -579,7 +579,7 @@ void LogView::onCustomContextMenuRequested(const QPoint &pos)
         CShellContextMenu scm;
         scm.ShowContextMenu(&menu, this, m_logsTableView->viewport()->mapToGlobal(pos), QDir::toNativeSeparators(m_path));
 #else
-        menu.exec(m_tableView->viewport()->mapToGlobal(pos));
+        menu.exec(m_logsTableView->viewport()->mapToGlobal(pos));
 #endif
     }
 }
