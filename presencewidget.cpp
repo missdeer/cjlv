@@ -24,17 +24,18 @@ PresenceWidget::PresenceWidget(QWidget *parent) : QWidget(parent)
     topBarLayout->setStretch(1, 1);
 
     m_mainLayout->addWidget(topBar);
-    QTableView* presenceTableView = new QTableView(this);
-    m_mainLayout->addWidget(presenceTableView);
+    m_presenceTableView = new QTableView(this);
+    m_mainLayout->addWidget(m_presenceTableView);
 
     setLayout(m_mainLayout);
 
-    m_model = new PresenceModel(presenceTableView);
-    presenceTableView->setModel(m_model);
+    m_model = new PresenceModel(m_presenceTableView);
+    m_presenceTableView->setModel(m_model);
 
     connect(m_model, &PresenceModel::receivedPresenceBuddyList, this, &PresenceWidget::onReceivedPresenceBuddyList);
     connect(this, &PresenceWidget::databaseCreated, m_model, &PresenceModel::onDatabaseCreated);
     connect(m_cbBuddyList, &QComboBox::currentTextChanged, m_model, &PresenceModel::onSelectedJIDChanged);
+    connect(m_model, &PresenceModel::resizeTableCells, this, &PresenceWidget::onResizeTableCells);
 }
 
 void PresenceWidget::onRefreshBuddyList()
@@ -47,4 +48,10 @@ void PresenceWidget::onReceivedPresenceBuddyList(QStringList bl)
     m_cbBuddyList->clear();
     bl.insert(0, "--NONE--");
     m_cbBuddyList->addItems(bl);
+}
+
+void PresenceWidget::onResizeTableCells(int columns, int rows)
+{
+    m_presenceTableView->horizontalHeader()->setSectionResizeMode(columns-1, QHeaderView::Stretch);
+    //m_presenceTableView->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 }

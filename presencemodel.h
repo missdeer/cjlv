@@ -28,6 +28,7 @@ public:
 signals:
     void receivedPresenceBuddyList(QStringList);
     void gotPresences(QStringList, QList<QSharedPointer<PresenceItem>>);
+    void resizeTableCells(int, int);
 public slots:
     void onDatabaseCreated(QString dbFile);
     void onSelectedJIDChanged(const QString &text);

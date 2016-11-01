@@ -52,7 +52,26 @@ QVariant PresenceModel::data(const QModelIndex& index, int role) const
         return QVariant(it->time);
     default:
         if (index.column() -2< it->presences.size())
-            return QVariant(it->presences.at(index.column()-2));
+        {
+            QString text = it->presences.at(index.column() - 2);
+            if (!text.isEmpty())
+            {
+                int startPos = text.indexOf(QChar('<'));
+                int endPos = text.lastIndexOf(QChar('>'));
+                if (startPos > 0 && endPos > startPos)
+                {
+                    QString xmlIn = text.mid(startPos, endPos - startPos + 1);
+                    QString xmlOut;
+
+                    QDomDocument doc;
+                    doc.setContent(xmlIn, false);
+                    QTextStream writer(&xmlOut);
+                    doc.save(writer, 4);
+
+                    return QVariant(xmlOut.trimmed());
+                }
+            }
+        }
     }
 
     return QVariant();
@@ -128,6 +147,8 @@ void PresenceModel::onGetPrsences(QStringList jidList, QList<QSharedPointer<Pres
     beginInsertRows(QModelIndex(), 0, presences.size() - 1);
     m_presences = presences;
     endInsertRows();
+
+    emit resizeTableCells(jidList.size() + 2, presences.size());
 }
 
 
