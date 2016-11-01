@@ -196,13 +196,13 @@ void PresenceModel::doQueryPresence(const QString &jid)
                     int index = jids.indexOf(jid);
                     if (index < 0)
                     {
-                        jids.append(jid);
-                        for (int i = 0; i < jids.size()-1; i++)
+                        for (int i = 0; i < jids.size(); i++)
                             p->presences.append("");
+                        jids.append(jid);
                     }
                     else
                     {
-                        for (int i = 0; i < index -1; i++)
+                        for (int i = 0; i < index; i++)
                             p->presences.append("");
                     }
                     p->presences.append(content);
