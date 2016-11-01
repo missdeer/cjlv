@@ -4,6 +4,7 @@
 
 class PresenceModel : public QAbstractTableModel
 {
+    Q_OBJECT
 public:
     explicit PresenceModel(QObject *parent = 0);
     ~PresenceModel();
@@ -16,6 +17,15 @@ public:
     virtual QVariant headerData(int section, Qt::Orientation orientation,
                         int role = Qt::DisplayRole) const ;
 
+    void requestReceivedPresenceBuddyList();
+signals:
+    void receivedPresenceBuddyList(QStringList);
+public slots:
+    void onDatabaseCreated(QString dbFile);
+private:
+    QMutex m_mutex;
+    QString m_dbFile;
+    void doRequestReceivedPresenceBuddyList();
 };
 
 #endif // PRESENCEMODEL_H

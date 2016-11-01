@@ -1224,13 +1224,16 @@ void LogModel::createDatabase()
     QFile::remove(m_dbFile);
 
     QSqlDatabase db = QSqlDatabase::database(m_dbFile, true);
-    if (!db.isValid()) {
+    if (!db.isValid())
+    {
         db = QSqlDatabase::addDatabase("QSQLITE", m_dbFile);
     }
     if (g_settings->inMemoryDatabase())
         db.setDatabaseName(":memory:");
     else
         db.setDatabaseName(m_dbFile);
+
+    emit databaseCreated(m_dbFile);
 
     if (!db.isOpen())
     {

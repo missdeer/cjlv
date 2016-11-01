@@ -79,6 +79,7 @@ LogView::LogView(QWidget *parent)
     connect(m_logsTableView, &QWidget::customContextMenuRequested, this, &LogView::onCustomContextMenuRequested);
     connect(m_logModel, &LogModel::dataLoaded, this, &LogView::onDataLoaded);
     connect(m_logModel, &LogModel::rowCountChanged, this, &LogView::onRowCountChanged);
+    connect(m_logModel, &LogModel::databaseCreated, m_presenceWidget, &PresenceWidget::databaseCreated);
     connect(this, &LogView::runExtension, m_logModel, &LogModel::runExtension);
 }
 

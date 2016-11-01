@@ -15,10 +15,11 @@ PresenceWidget::PresenceWidget(QWidget *parent) : QWidget(parent)
     QLabel* label = new QLabel(topBar);
     label->setText("Buddy List:");
     topBarLayout->addWidget(label);
-    QComboBox* cbBuddyList = new QComboBox(topBar);
-    topBarLayout->addWidget(cbBuddyList);
+    m_cbBuddyList = new QComboBox(topBar);
+    topBarLayout->addWidget(m_cbBuddyList);
     QPushButton* btnRefreshBuddyList = new QPushButton(topBar);
     btnRefreshBuddyList->setText("...");
+    connect(btnRefreshBuddyList, &QPushButton::pressed, this, &PresenceWidget::onRefreshBuddyList);
     topBarLayout->addWidget(btnRefreshBuddyList);
     topBarLayout->setStretch(1, 1);
 
@@ -30,4 +31,19 @@ PresenceWidget::PresenceWidget(QWidget *parent) : QWidget(parent)
 
     m_model = new PresenceModel(presenceTableView);
     presenceTableView->setModel(m_model);
+
+    connect(m_model, &PresenceModel::receivedPresenceBuddyList, this, &PresenceWidget::onReceivedPresenceBuddyList);
+    connect(this, &PresenceWidget::databaseCreated, m_model, &PresenceModel::onDatabaseCreated);
+}
+
+void PresenceWidget::onRefreshBuddyList()
+{
+    m_model->requestReceivedPresenceBuddyList();
+}
+
+void PresenceWidget::onReceivedPresenceBuddyList(QStringList bl)
+{
+    m_cbBuddyList->clear();
+    bl.insert(0, "--NONE--");
+    m_cbBuddyList->addItems(bl);
 }

@@ -12,11 +12,14 @@ public:
     explicit PresenceWidget(QWidget *parent = 0);
 
 signals:
+    void databaseCreated(QString);
 
 public slots:
-
+    void onRefreshBuddyList();
+    void onReceivedPresenceBuddyList(QStringList bl);
 private:
     PresenceModel* m_model;
+    QComboBox* m_cbBuddyList;
 };
 
 #endif // PRESENCEWIDGET_H
