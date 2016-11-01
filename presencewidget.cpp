@@ -2,7 +2,9 @@
 #include "presencemodel.h"
 #include "presencewidget.h"
 
-PresenceWidget::PresenceWidget(QWidget *parent) : QWidget(parent)
+PresenceWidget::PresenceWidget(QWidget *parent)
+    : QWidget(parent)
+    , m_presenceTableView(new QTableView(this))
 {
     QVBoxLayout* m_mainLayout = new QVBoxLayout;
     Q_ASSERT(m_mainLayout);
@@ -17,14 +19,19 @@ PresenceWidget::PresenceWidget(QWidget *parent) : QWidget(parent)
     topBarLayout->addWidget(label);
     m_cbBuddyList = new QComboBox(topBar);
     topBarLayout->addWidget(m_cbBuddyList);
+
     QPushButton* btnRefreshBuddyList = new QPushButton(topBar);
-    btnRefreshBuddyList->setText("...");
+    btnRefreshBuddyList->setText("Refresh");
     connect(btnRefreshBuddyList, &QPushButton::pressed, this, &PresenceWidget::onRefreshBuddyList);
     topBarLayout->addWidget(btnRefreshBuddyList);
     topBarLayout->setStretch(1, 1);
 
+    QPushButton* btnResizeRowsToContents = new QPushButton(topBar);
+    btnResizeRowsToContents->setText("Rows Fit");
+    connect(btnResizeRowsToContents, &QPushButton::pressed, [&](){m_presenceTableView->resizeRowsToContents();});
+    topBarLayout->addWidget(btnResizeRowsToContents);
+
     m_mainLayout->addWidget(topBar);
-    m_presenceTableView = new QTableView(this);
     m_mainLayout->addWidget(m_presenceTableView);
 
     setLayout(m_mainLayout);
@@ -52,6 +59,6 @@ void PresenceWidget::onReceivedPresenceBuddyList(QStringList bl)
 
 void PresenceWidget::onResizeTableCells(int columns, int rows)
 {
-    m_presenceTableView->horizontalHeader()->setSectionResizeMode(columns-1, QHeaderView::Stretch);
-    //m_presenceTableView->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+    m_presenceTableView->resizeColumnToContents(0);
+    m_presenceTableView->resizeColumnToContents(1);
 }

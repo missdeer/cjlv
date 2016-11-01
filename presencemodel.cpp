@@ -49,7 +49,7 @@ QVariant PresenceModel::data(const QModelIndex& index, int role) const
     case 0:
         return QVariant(it->id);
     case 1:
-        return QVariant(it->time);
+        return QVariant(it->time.toString("yyyy-MM-dd hh:mm:ss.zzz"));
     default:
         if (index.column() -2< it->presences.size())
         {
