@@ -21,6 +21,7 @@ public slots:
     void onCurrentChanged(int index);
 
     void gotoLine(const QString &logFile, const QString& sourceFile, int line = -1);
+    void setContent(const QString& logFile, const QString& text);
 private slots:
     void onCopyFileName();
     void onCopyFileFullPath();

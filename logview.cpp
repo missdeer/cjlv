@@ -233,12 +233,52 @@ int LogView::rowCount()
 
 void LogView::showCodeEditorPane()
 {
-    const QList<int>& sizes = m_verticalSplitter->sizes();
-    if (sizes.length() == 2 && sizes[1] < height()/10)
+    if (g_settings->multiMonitorEnabled())
     {
-        QList<int> resizes;
-        resizes << height()/2 <<  height()/2;
-        m_verticalSplitter->setSizes(resizes);
+        if (!g_sourceWindow)
+        {
+            QWidgetList widgets = qApp->topLevelWidgets();
+            auto it = std::find_if(widgets.begin(), widgets.end(),
+                                   [](QWidget* w){ return (w->objectName() == "MainWindow"); });
+            QWidget* mainWindow = nullptr;
+            if (widgets.end() != it)
+                mainWindow = *it;
+            else if (!widgets.isEmpty())
+                mainWindow = widgets.at(0);
+
+            g_sourceWindow = new SourceWindow(mainWindow);
+
+            g_sourceWindow->show();
+
+            QList<QScreen *> screens = QApplication::screens();
+            for (QScreen* s : screens)
+            {
+                if (s != mainWindow->windowHandle()->screen())
+                {
+                    g_sourceWindow->move(s->geometry().x(), s->geometry().y());
+                    g_sourceWindow->resize(s->geometry().width(), s->geometry().height());
+                    break;
+                }
+            }
+            g_sourceWindow->showMaximized();
+        }
+
+        if (!g_sourceWindow->isVisible())
+        {
+            // show
+            g_sourceWindow->showMaximized();
+        }
+        g_sourceWindow->raise();
+    }
+    else
+    {
+        const QList<int>& sizes = m_verticalSplitter->sizes();
+        if (sizes.length() == 2 && sizes[1] < height()/10)
+        {
+            QList<int> resizes;
+            resizes << height()/2 <<  height()/2;
+            m_verticalSplitter->setSizes(resizes);
+        }
     }
 }
 
@@ -264,7 +304,7 @@ void LogView::extractContent(const QModelIndex& index)
 {
     showCodeEditorPane();
 
-    const QString& text = m_logModel->getLogContent(index);
+    QString text = m_logModel->getLogContent(index);
     // try to format XML document
     int startPos = text.indexOf(QChar('<'));
     int endPos = text.lastIndexOf(QChar('>'));
@@ -285,7 +325,12 @@ void LogView::extractContent(const QModelIndex& index)
 
         header.append("\n");
         header.append(xmlOut);
-        m_codeEditorTabWidget->setContent(header);
+        text = header;
+    }
+
+    if (g_settings->multiMonitorEnabled())
+    {
+        g_sourceWindow->setContent(m_path, text);
     }
     else
     {
@@ -368,47 +413,13 @@ void LogView::openSourceFile(const QModelIndex &index, bool openWithBuiltinEdito
             {
                 if (openWithBuiltinEditor)
                 {
+                    showCodeEditorPane();
                     if (g_settings->multiMonitorEnabled())
-                    {
-                        if (!g_sourceWindow)
-                        {
-                            QWidgetList widgets = qApp->topLevelWidgets();
-                            auto it = std::find_if(widgets.begin(), widgets.end(),
-                                                   [](QWidget* w){ return (w->objectName() == "MainWindow"); });
-                            QWidget* mainWindow = nullptr;
-                            if (widgets.end() != it)
-                                mainWindow = *it;
-                            else if (!widgets.isEmpty())
-                                mainWindow = widgets.at(0);
-
-                            g_sourceWindow = new SourceWindow(mainWindow);
-
-                            g_sourceWindow->show();
-
-                            QList<QScreen *> screens = QApplication::screens();
-                            for (QScreen* s : screens)
-                            {
-                                if (s != mainWindow->windowHandle()->screen())
-                                {
-                                    g_sourceWindow->move(s->geometry().x(), s->geometry().y());
-                                    g_sourceWindow->resize(s->geometry().width(), s->geometry().height());
-                                    break;
-                                }
-                            }
-                            g_sourceWindow->showMaximized();
-                        }
-
-                        if (!g_sourceWindow->isVisible())
-                        {
-                            // show
-                            g_sourceWindow->showMaximized();
-                        }
+                    {                        
                         g_sourceWindow->gotoLine(m_path, filePath, m.captured(2).toInt());
-                        g_sourceWindow->raise();
                     }
                     else
                     {
-                        showCodeEditorPane();
                         m_codeEditorTabWidget->gotoLine(filePath, m.captured(2).toInt());
                     }
                 }
@@ -442,7 +453,14 @@ void LogView::openLog(const QModelIndex &index)
 {
     showCodeEditorPane();
     const QString& logFile = m_logModel->getLogFileName(index);
-    m_codeEditorTabWidget->gotoLine(logFile);
+    if (g_settings->multiMonitorEnabled())
+    {
+        g_sourceWindow->gotoLine(m_path, logFile);
+    }
+    else
+    {
+        m_codeEditorTabWidget->gotoLine(logFile);
+    }
 }
 
 void LogView::gotoLogLine(const QModelIndex &index)
@@ -450,7 +468,14 @@ void LogView::gotoLogLine(const QModelIndex &index)
     showCodeEditorPane();
     QString logFile;
     int line = m_logModel->getLogFileLine(index, logFile);
-    m_codeEditorTabWidget->gotoLine(logFile, line);
+    if (g_settings->multiMonitorEnabled())
+    {
+        g_sourceWindow->gotoLine(m_path, logFile, line);
+    }
+    else
+    {
+        m_codeEditorTabWidget->gotoLine(logFile, line);
+    }
 }
 
 void LogView::onDoubleClicked(const QModelIndex& index)

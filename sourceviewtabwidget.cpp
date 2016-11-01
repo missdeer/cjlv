@@ -76,6 +76,27 @@ void SourceViewTabWidget::gotoLine(const QString &logFile, const QString &source
     v->gotoLine(sourceFile, line);
 }
 
+void SourceViewTabWidget::setContent(const QString &logFile, const QString &text)
+{
+    int index = findTab(logFile);
+    if (index >= 0)
+    {
+        setCurrentIndex(index);
+        QWidget* w = widget(index);
+        CodeEditorTabWidget* v = qobject_cast<CodeEditorTabWidget*>(w);
+        v->setContent(text);
+        return;
+    }
+
+    // create a new tab and set content
+    CodeEditorTabWidget* v = new CodeEditorTabWidget(this);
+
+    QFileInfo fi(logFile);
+    index = addTab(v, "Content", "Content Field Value");
+    logFiles.insert(index, logFile);
+    v->setContent(text);
+}
+
 void SourceViewTabWidget::onCustomContextMenuRequested(const QPoint &pos)
 {
     int c = count();

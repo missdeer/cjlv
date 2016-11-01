@@ -17,7 +17,7 @@ public:
     ~SourceWindow();
 
     void gotoLine(const QString &logFile, const QString& sourceFile, int line = -1);
-
+    void setContent(const QString &logFile, const QString& text);
 signals:
     void tabCloseRequested(int);
     void currentChanged(int);

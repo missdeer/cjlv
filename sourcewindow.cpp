@@ -20,3 +20,8 @@ void SourceWindow::gotoLine(const QString &logFile, const QString &sourceFile, i
 {
     ui->tabWidget->gotoLine(logFile, sourceFile, line);
 }
+
+void SourceWindow::setContent(const QString& logFile, const QString &text)
+{
+    ui->tabWidget->setContent(logFile, text);
+}
