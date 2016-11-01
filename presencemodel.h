@@ -1,6 +1,13 @@
 #ifndef PRESENCEMODEL_H
 #define PRESENCEMODEL_H
 
+struct PresenceItem
+{
+    int id;
+    QDateTime time;
+    QStringList presences;
+};
+
 
 class PresenceModel : public QAbstractTableModel
 {
@@ -20,12 +27,18 @@ public:
     void requestReceivedPresenceBuddyList();
 signals:
     void receivedPresenceBuddyList(QStringList);
+    void gotPresences(QStringList, QList<QSharedPointer<PresenceItem>>);
 public slots:
     void onDatabaseCreated(QString dbFile);
+    void onSelectedJIDChanged(const QString &text);
+    void onGetPrsences(QStringList jidList, QList<QSharedPointer<PresenceItem>> presences);
 private:
     QMutex m_mutex;
     QString m_dbFile;
+    QStringList m_fullJIDList;
+    QList<QSharedPointer<PresenceItem>> m_presences;
     void doRequestReceivedPresenceBuddyList();
+    void doQueryPresence(const QString& jid);
 };
 
 #endif // PRESENCEMODEL_H

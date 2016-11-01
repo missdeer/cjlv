@@ -34,6 +34,7 @@ PresenceWidget::PresenceWidget(QWidget *parent) : QWidget(parent)
 
     connect(m_model, &PresenceModel::receivedPresenceBuddyList, this, &PresenceWidget::onReceivedPresenceBuddyList);
     connect(this, &PresenceWidget::databaseCreated, m_model, &PresenceModel::onDatabaseCreated);
+    connect(m_cbBuddyList, &QComboBox::currentTextChanged, m_model, &PresenceModel::onSelectedJIDChanged);
 }
 
 void PresenceWidget::onRefreshBuddyList()
