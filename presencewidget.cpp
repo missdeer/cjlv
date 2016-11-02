@@ -38,6 +38,8 @@ PresenceWidget::PresenceWidget(QWidget *parent)
 
     m_model = new PresenceModel(m_presenceTableView);
     m_presenceTableView->setModel(m_model);
+    m_presenceTableView->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
+    m_presenceTableView->setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
 
     connect(m_model, &PresenceModel::receivedPresenceBuddyList, this, &PresenceWidget::onReceivedPresenceBuddyList);
     connect(this, &PresenceWidget::databaseCreated, m_model, &PresenceModel::onDatabaseCreated);
