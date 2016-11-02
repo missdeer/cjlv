@@ -36,7 +36,7 @@ QVariant PresenceModel::data(const QModelIndex& index, int role) const
     if (!index.isValid())
         return QVariant();
 
-    if (role != Qt::DisplayRole)
+    if (role != Qt::DisplayRole && role != Qt::ToolTipRole)
         return QVariant();
 
     if (index.row() < 0 || index.row() >= m_presences.size())
@@ -65,10 +65,49 @@ QVariant PresenceModel::data(const QModelIndex& index, int role) const
 
                     QDomDocument doc;
                     doc.setContent(xmlIn, false);
-                    QTextStream writer(&xmlOut);
-                    doc.save(writer, 4);
+                    if (role == Qt::DisplayRole)
+                    {
+                        QTextStream writer(&xmlOut);
+                        doc.save(writer, 4);
 
-                    return QVariant(xmlOut.trimmed());
+                        return QVariant(xmlOut.trimmed());
+                    }
+                    if (role == Qt::ToolTipRole)
+                    {
+                        // extract x node
+                        QDomElement it = doc.documentElement().firstChildElement("x");
+                        if (!it.isNull())
+                        {
+                            QString var = it.attribute("var");
+                            bool ok = false;
+                            int value = var.toInt(&ok, 10);
+                            if (ok)
+                            {
+                                QMap<int, QString> m = {
+                                    {1, "Desktop Share"},
+                                    {2, "VOIP"},
+                                    {4, "Video"},
+                                    {8, "On a Call"},
+                                    {16, "In Webex Meeting"},
+                                    {32, "In Outlook Meeting"},
+                                    {64, "Tele Conf"},
+                                    {256, "AES"},
+                                    {512, "Sharing in Webex Meeting"},
+                                };
+                                QString res("Mask:");
+                                for (auto kv = m.begin(); m.end() != kv; ++kv)
+                                {
+                                    if (value & kv.key())
+                                    {
+                                        res.append("\n    " + kv.value());
+                                    }
+                                }
+
+                                if (res != "Rich presence:")
+                                    return QVariant(res);
+                            }
+                        }
+                    }
                 }
             }
         }
