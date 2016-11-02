@@ -103,7 +103,7 @@ QVariant PresenceModel::data(const QModelIndex& index, int role) const
                                     }
                                 }
 
-                                if (res != "Rich presence:")
+                                if (res != "Mask:")
                                     return QVariant(res);
                             }
                         }
