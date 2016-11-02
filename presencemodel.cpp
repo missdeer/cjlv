@@ -36,6 +36,11 @@ QVariant PresenceModel::data(const QModelIndex& index, int role) const
     if (!index.isValid())
         return QVariant();
 
+    if (role == Qt::BackgroundRole && index.column() > 1 && index.column() %2 == 0)
+    {
+        return QVariant(QColor(224, 224, 224));
+    }
+
     if (role != Qt::DisplayRole && role != Qt::ToolTipRole)
         return QVariant();
 

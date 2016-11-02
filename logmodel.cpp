@@ -215,6 +215,11 @@ QVariant LogModel::data(const QModelIndex &index, int role) const
     if (!index.isValid())
         return QVariant();
 
+    if (role == Qt::BackgroundRole && index.row() % 2 == 0)
+    {
+        return QVariant(QColor(224, 224, 224));
+    }
+
     if (role != Qt::DisplayRole)
         return QVariant();
 
