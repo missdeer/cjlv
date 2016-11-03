@@ -55,6 +55,7 @@ void PresenceWidget::onRefreshBuddyList()
 void PresenceWidget::onReceivedPresenceBuddyList(QStringList bl)
 {
     m_cbBuddyList->clear();
+    qSort(bl);
     bl.insert(0, "--NONE--");
     m_cbBuddyList->addItems(bl);
 }
