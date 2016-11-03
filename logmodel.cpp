@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include <tuple>
 #include <sqlite3.h>
 #include <lua.hpp>
 #include <boost/scope_exit.hpp>
@@ -324,7 +325,61 @@ void LogModel::reload()
 
 void LogModel::onFilter(const QString &keyword)
 {
-    doFilter(keyword, g_settings->searchField(), g_settings->regexMode(), false);
+    bool regexpMode = g_settings->regexMode();
+    QString searchField = g_settings->searchField();
+    QString kw = keyword;
+
+    QStringList sl = keyword.split(">");
+    if (sl.size() >= 2)
+    {
+        QString prefix = sl.at(0);
+        QStringList ss = prefix.split(":");
+        if (ss.size() == 1 || (ss.size() == 2 && (ss.at(1) == "r" || ss.at(1) == "!r")))
+        {
+            prefix = ss.at(0);
+
+            if (ss.size() == 1 && prefix == "r")
+            {
+                regexpMode = true;
+                kw = keyword.mid(keyword.indexOf(">") + 1);
+            }
+            else if (ss.size() == 1 && prefix == "!r")
+            {
+                regexpMode = false;
+                kw = keyword.mid(keyword.indexOf(">") + 1);
+            }
+            else
+            {
+                std::vector< std::tuple<QString, QString>> m = {
+                    { "i", "id"},
+                    { "d", "datetime"},
+                    { "v", "level"},
+                    { "t", "thread"},
+                    { "s", "source"},
+                    { "a", "category"},
+                    { "m", "method"},
+                    { "c", "content"},
+                    { "f", "logfile"},
+                    { "l", "line"},
+                };
+
+                for (auto t: m)
+                {
+                    if (std::get<0>(t) == prefix || (prefix.size() > 1 && std::get<1>(t).startsWith(prefix)))
+                    {
+                        searchField = std::get<1>(t);
+                        kw = keyword.mid(keyword.indexOf(">") + 1);
+                        if (ss.size() == 2 && ss.at(1) == "r")
+                            regexpMode = true;
+                        else if (ss.size() == 2 && ss.at(1) == "!r")
+                            regexpMode = false;
+                        break;
+                    }
+                }
+            }
+        }
+    }
+    doFilter(kw.trimmed(), searchField, regexpMode, false);
 }
 
 void LogModel::query(int offset)
