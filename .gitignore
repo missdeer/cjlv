@@ -3,6 +3,15 @@
 *.pdb
 *.exp
 *.exe
+*.dll
+*.res
+*.user
+*.dylib
+*.a
+*.lib
+*_resource.rc
+Makefile.Debug
+Makefile.Release
 moc_*.cpp
 *.cmake
 *.pyc
