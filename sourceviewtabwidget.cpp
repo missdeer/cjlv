@@ -57,43 +57,13 @@ void SourceViewTabWidget::onTabCloseRequested(int index)
 
 void SourceViewTabWidget::gotoLine(const QString &logFile, const QString &sourceFile, int line)
 {
-    int index = findTab(logFile);
-    if (index >= 0)
-    {
-        setCurrentIndex(index);
-        QWidget* w = widget(index);
-        CodeEditorTabWidget* v = qobject_cast<CodeEditorTabWidget*>(w);
-        v->gotoLine(sourceFile, line);
-        return;
-    }
-
-    // add tab
-    CodeEditorTabWidget* v = new CodeEditorTabWidget(this);
-
-    QFileInfo fi(logFile);
-    index = addTab(v, fi.fileName(), logFile);
-    logFiles.insert(index, logFile);
+    CodeEditorTabWidget* v = getCodeEditorTabWidget(logFile);
     v->gotoLine(sourceFile, line);
 }
 
 void SourceViewTabWidget::setContent(const QString &logFile, const QString &text)
 {
-    int index = findTab(logFile);
-    if (index >= 0)
-    {
-        setCurrentIndex(index);
-        QWidget* w = widget(index);
-        CodeEditorTabWidget* v = qobject_cast<CodeEditorTabWidget*>(w);
-        v->setContent(text);
-        return;
-    }
-
-    // create a new tab and set content
-    CodeEditorTabWidget* v = new CodeEditorTabWidget(this);
-
-    QFileInfo fi(logFile);
-    index = addTab(v, "Content", "Content Field Value");
-    logFiles.insert(index, logFile);
+    CodeEditorTabWidget* v = getCodeEditorTabWidget(logFile);
     v->setContent(text);
 }
 
@@ -211,4 +181,24 @@ int SourceViewTabWidget::addTab(CodeEditorTabWidget *w, const QString &text, con
     setTabToolTip(index, tooltip);
     setCurrentIndex(index);
     return index;
+}
+
+CodeEditorTabWidget *SourceViewTabWidget::getCodeEditorTabWidget(const QString &file)
+{
+    int index = findTab(file);
+    if (index >= 0)
+    {
+        setCurrentIndex(index);
+        QWidget* w = widget(index);
+        CodeEditorTabWidget* v = qobject_cast<CodeEditorTabWidget*>(w);
+        return v;
+    }
+
+    // add tab
+    CodeEditorTabWidget* v = new CodeEditorTabWidget(this);
+
+    QFileInfo fi(file);
+    index = addTab(v, fi.fileName(), file);
+    logFiles.insert(index, file);
+    return v;
 }

@@ -32,6 +32,7 @@ private:
     QStringList logFiles;
     int findTab(const QString &path);
     int addTab(CodeEditorTabWidget *w, const QString &text, const QString &tooltip);
+    CodeEditorTabWidget* getCodeEditorTabWidget(const QString &file);
 };
 
 #endif // SOURCEVIEWTABWIDGET_H
