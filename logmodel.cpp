@@ -1010,10 +1010,14 @@ void LogModel::doFilter(const QString &content, const QString &field, bool regex
 
     //qDebug() << __FUNCTION__ << content << field << regexpMode;
     m_luaMode = luaMode;
+    bool regexpModeBackup = m_regexpMode;
     m_regexpMode = regexpMode;
+    QString searchFieldBackup = m_searchField;
     m_searchField = field;
     m_keyword = content;
     query(0);
+    m_regexpMode = regexpModeBackup;
+    m_searchField = searchFieldBackup;
 }
 
 void LogModel::doQuery(int offset)
