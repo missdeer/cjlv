@@ -22,31 +22,10 @@ MainWindow::MainWindow(QWidget *parent) :
 #if defined(Q_OS_WIN)
     ui->tabbarTopPlaceholder->setVisible(false);
 #endif
-    QWidget* searchBar = new QWidget(ui->mainToolBar);
-    searchBar->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    QHBoxLayout * searchLayout = new QHBoxLayout(searchBar);
-    searchLayout->addWidget(ui->cbKeyword);
-    searchLayout->setStretch(0, 1);
-    ui->mainToolBar->insertWidget(ui->actionRegexpMode, searchBar);
 
     QActionGroup *searchModeGroup = new QActionGroup(this);
     searchModeGroup->addAction(ui->actionFilter);
     searchModeGroup->addAction(ui->actionSearch);
-
-    QActionGroup *searchFieldGroup = new QActionGroup(this);
-    searchFieldGroup->addAction(ui->actionSearchFieldContent);
-    searchFieldGroup->addAction(ui->actionSearchFieldID);
-    searchFieldGroup->addAction(ui->actionSearchFieldCategory);
-    searchFieldGroup->addAction(ui->actionSearchFieldSourceFile);
-    searchFieldGroup->addAction(ui->actionSearchFieldMethod);
-    searchFieldGroup->addAction(ui->actionSearchFieldLogFile);
-    searchFieldGroup->addAction(ui->actionSearchFieldLine);
-    searchFieldGroup->addAction(ui->actionSearchFieldThread);
-    searchFieldGroup->addAction(ui->actionSearchFieldDateTime);
-
-    ui->cbKeyword->lineEdit()->setPlaceholderText(tr("Search Field Content"));
-    ui->cbKeyword->lineEdit()->addAction(ui->actionRefreshKeyword, QLineEdit::ActionPosition::LeadingPosition);
-    ui->cbKeyword->lineEdit()->addAction(ui->actionClearKeyword, QLineEdit::ActionPosition::TrailingPosition);
 
     connect(ui->tabWidget, &TabWidget::statusBarMessage, this, &MainWindow::onStatusBarMessageChanges);
     connect(ui->actionClose, &QAction::triggered, ui->tabWidget, &TabWidget::onCloseCurrent);
@@ -68,8 +47,6 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(em, &ExtensionModel::extensionModified, this, &MainWindow::onExtensionModified);
     connect(em, &ExtensionModel::extensionRemoved, this, &MainWindow::onExtensionRemoved);
     connect(em, &ExtensionModel::extensionScanned, this, &MainWindow::onExtensionScanned);
-
-    g_settings->setSearchField("content");
 
     ui->actionSearch->setChecked(g_settings->searchOrFitler());
 }
@@ -260,86 +237,64 @@ void MainWindow::on_actionAbout_triggered()
                        tr("Easy to use tool for Cisco Jabber log reading.\r\nContact me at fyang3@cisco.com if you have any problem about this application.\r\nBuilt at " __DATE__ " " __TIME__));
 }
 
-void MainWindow::on_cbKeyword_editTextChanged(const QString &text)
-{
-    ui->tabWidget->filter(text);
-}
-
-void MainWindow::on_cbKeyword_currentIndexChanged(const QString &text)
-{
-    ui->tabWidget->filter(text.trimmed());
-}
-
 void MainWindow::on_actionInputKeyword_triggered()
 {
-    ui->cbKeyword->setFocus();
-    ui->cbKeyword->lineEdit()->selectAll();
+    ui->tabWidget->inputKeyword();
 }
 
 void MainWindow::on_actionSearchFieldContent_triggered()
 {
-    ui->cbKeyword->lineEdit()->setPlaceholderText(tr("Search Field Content"));
-    g_settings->setSearchField("content");
+    ui->tabWidget->searchFieldContent();
 }
 
 void MainWindow::on_actionSearchFieldID_triggered()
 {
-    ui->cbKeyword->lineEdit()->setPlaceholderText(tr("Search Field ID"));
-    g_settings->setSearchField("id");
+    ui->tabWidget->searchFieldID();
 }
 
 void MainWindow::on_actionSearchFieldDateTime_triggered()
 {
-    ui->cbKeyword->lineEdit()->setPlaceholderText(tr("Search Field Date Time"));
-    g_settings->setSearchField("time");
+    ui->tabWidget->searchFieldDateTime();
 }
 
 void MainWindow::on_actionSearchFieldThread_triggered()
 {
-    ui->cbKeyword->lineEdit()->setPlaceholderText(tr("Search Field Thread"));
-    g_settings->setSearchField("thread");
+    ui->tabWidget->searchFieldThread();
 }
 
 void MainWindow::on_actionSearchFieldCategory_triggered()
 {
-    ui->cbKeyword->lineEdit()->setPlaceholderText(tr("Search Field Category"));
-    g_settings->setSearchField("category");
+    ui->tabWidget->searchFieldCategory();
 }
 
 void MainWindow::on_actionSearchFieldSourceFile_triggered()
 {
-    ui->cbKeyword->lineEdit()->setPlaceholderText(tr("Search Field Source File"));
-    g_settings->setSearchField("source");
+    ui->tabWidget->searchFieldSourceFile();
 }
 
 void MainWindow::on_actionSearchFieldMethod_triggered()
 {
-    ui->cbKeyword->lineEdit()->setPlaceholderText(tr("Search Field Method"));
-    g_settings->setSearchField("method");
+    ui->tabWidget->searchFieldMethod();
 }
 
 void MainWindow::on_actionSearchFieldLogFile_triggered()
 {
-    ui->cbKeyword->lineEdit()->setPlaceholderText(tr("Search Field Log File"));
-    g_settings->setSearchField("log");
+    ui->tabWidget->searchFieldLogFile();
 }
 
 void MainWindow::on_actionSearchFieldLine_triggered()
 {
-    ui->cbKeyword->lineEdit()->setPlaceholderText(tr("Search Field Line"));
-    g_settings->setSearchField("line");
+    ui->tabWidget->searchFieldLine();
 }
 
 void MainWindow::on_actionSearchFieldLevel_triggered()
 {
-    ui->cbKeyword->lineEdit()->setPlaceholderText(tr("Search Field Level"));
-    g_settings->setSearchField("level");
+    ui->tabWidget->searchFieldLevel();
 }
 
 void MainWindow::on_actionClearKeyword_triggered()
 {
-    ui->cbKeyword->setFocus();
-    ui->cbKeyword->clearEditText();
+    ui->tabWidget->clearKeyword();
 }
 
 void MainWindow::on_actionEditExtensions_triggered()
@@ -363,7 +318,7 @@ void MainWindow::on_actionEditExtensions_triggered()
 
 void MainWindow::on_actionRegexpMode_triggered()
 {
-    g_settings->setRegexMode(ui->actionRegexpMode->isChecked());
+    ui->tabWidget->enableRegexpMode(ui->actionRegexpMode->isChecked());
 }
 
 void MainWindow::dragEnterEvent(QDragEnterEvent *e)
@@ -439,11 +394,6 @@ void MainWindow::showEvent(QShowEvent *e)
     e->accept();
 }
 
-void MainWindow::on_actionRefreshKeyword_triggered()
-{
-    ui->tabWidget->filter(ui->cbKeyword->lineEdit()->text().trimmed());
-}
-
 void MainWindow::on_actionHelpContent_triggered()
 {
     QDesktopServices::openUrl(QUrl::fromUserInput("https://wiki.cisco.com/display/CUCBU/Cisco+Jabber+Log+Viewer"));
@@ -452,35 +402,29 @@ void MainWindow::on_actionHelpContent_triggered()
 void MainWindow::on_actionLogLevelFatal_triggered()
 {
     g_settings->setFatalEnabled(ui->actionLogLevelFatal->isChecked());
-    on_actionRefreshKeyword_triggered();
 }
 
 void MainWindow::on_actionLogLevelError_triggered()
 {
     g_settings->setErrorEnabled(ui->actionLogLevelError->isChecked());
-    on_actionRefreshKeyword_triggered();
 }
 
 void MainWindow::on_actionLogLevelWarn_triggered()
 {
     g_settings->setWarnEnabled(ui->actionLogLevelWarn->isChecked());
-    on_actionRefreshKeyword_triggered();
 }
 
 void MainWindow::on_actionLogLevelInfo_triggered()
 {
     g_settings->setInfoEnabled(ui->actionLogLevelInfo->isChecked());
-    on_actionRefreshKeyword_triggered();
 }
 
 void MainWindow::on_actionLogLevelDebug_triggered()
 {
     g_settings->setDebugEnabled(ui->actionLogLevelDebug->isChecked());
-    on_actionRefreshKeyword_triggered();
 }
 
 void MainWindow::on_actionLogLevelTrace_triggered()
 {
     g_settings->setTraceEnabled(ui->actionLogLevelTrace->isChecked());
-    on_actionRefreshKeyword_triggered();
 }

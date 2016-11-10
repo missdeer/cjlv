@@ -17,6 +17,19 @@ public:
 
     void filter(const QString& keyword);
 
+    void inputKeyword();
+    void clearKeyword();
+    void enableRegexpMode(bool enabled);
+    void searchFieldContent();
+    void searchFieldID();
+    void searchFieldDateTime();
+    void searchFieldThread();
+    void searchFieldCategory();
+    void searchFieldSourceFile();
+    void searchFieldMethod();
+    void searchFieldLogFile();
+    void searchFieldLine();
+    void searchFieldLevel();
 signals:
     void statusBarMessage(const QString&);
 

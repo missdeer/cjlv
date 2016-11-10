@@ -44,6 +44,30 @@ public:
     void reload();
     int rowCount();
     void filter(const QString& keyword);
+
+    void enableRegexpMode(bool enabled);
+
+    void inputKeyword();
+
+    void searchFieldContent();
+
+    void searchFieldID();
+
+    void searchFieldDateTime();
+
+    void searchFieldThread();
+
+    void searchFieldCategory();
+
+    void searchFieldSourceFile();
+
+    void searchFieldMethod();
+
+    void searchFieldLogFile();
+
+    void searchFieldLine();
+
+    void searchFieldLevel();
 signals:
     void rowCountChanged();
     void runExtension(ExtensionPtr e);
@@ -58,6 +82,11 @@ private slots:
     void onSourceFilePreview();
     void onContentPreview();
     void onLogFilePreview();
+    void onCbKeywordEditTextChanged(const QString &text);
+    void onCbKeywordCurrentIndexChanged(const QString &text);
+    void onReloadSearchResult();
+public slots:
+    void onClearKeyword();
 private:
     QSplitter* m_verticalSplitter;
     QTabWidget* m_logTableChartTabWidget;
@@ -71,7 +100,7 @@ private:
     CodeEditorTabWidget* m_codeEditorTabWidget;
     LogModel* m_logModel;
     PresenceWidget* m_presenceWidget;
-    QComboBox* m_cbBuddyList;
+    QComboBox* m_cbSearchKeyword;
     QString m_path;
     QString m_extractDir;
     QMutex m_mutex;

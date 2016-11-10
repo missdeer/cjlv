@@ -54,28 +54,35 @@ LogView::LogView(QWidget *parent)
     sizes << 0x7FFFF << 0;
     m_verticalSplitter->setSizes(sizes);
 
-    QVBoxLayout* m_mainLayout = new QVBoxLayout;
-    Q_ASSERT(m_mainLayout);
-    m_mainLayout->setMargin(0);
+    QVBoxLayout* mainLayout = new QVBoxLayout;
+    Q_ASSERT(mainLayout);
+    mainLayout->setMargin(0);
 
-    QWidget* topBar = new QWidget(this);
+    QWidget* logsTab = new QWidget(this);
+    QWidget* topBar = new QWidget(logsTab);
     QHBoxLayout* topBarLayout = new QHBoxLayout;
     topBarLayout->setMargin(0);
     topBar->setLayout(topBarLayout);
     QLabel* label = new QLabel(topBar);
     label->setText("Search keyword:");
     topBarLayout->addWidget(label);
-    m_cbBuddyList = new QComboBox(topBar);
-    topBarLayout->addWidget(m_cbBuddyList);
+    m_cbSearchKeyword = new QComboBox(topBar);
+    topBarLayout->addWidget(m_cbSearchKeyword);
+    topBarLayout->setStretch(1, 1);
 
-    m_mainLayout->addWidget(topBar);
-    m_mainLayout->addWidget(m_verticalSplitter);
-    setLayout(m_mainLayout);
+    QVBoxLayout* logsTabLayout = new QVBoxLayout;
+    logsTabLayout->setMargin(0);
+    logsTabLayout->addWidget(topBar);
+    logsTabLayout->addWidget(m_logsTableView);
+    logsTab->setLayout(logsTabLayout);
+
+    mainLayout->addWidget(m_verticalSplitter);
+    setLayout(mainLayout);
 
     m_logTableChartTabWidget->setTabPosition(QTabWidget::South);
     m_logTableChartTabWidget->setTabsClosable(false);
     m_logTableChartTabWidget->setDocumentMode(true);
-    m_logTableChartTabWidget->addTab(m_logsTableView, "Logs");
+    m_logTableChartTabWidget->addTab(logsTab, "Logs");
     m_logTableChartTabWidget->addTab(m_levelStatisticChart, "Level");
     m_logTableChartTabWidget->addTab(m_threadStatisticChart, "Thread");
     m_logTableChartTabWidget->addTab(m_sourceFileStatisticChart, "Source File");
@@ -87,6 +94,17 @@ LogView::LogView(QWidget *parent)
     m_logsTableView->horizontalHeader()->setSectionResizeMode(7, QHeaderView::Stretch);
     m_logsTableView->setContextMenuPolicy(Qt::CustomContextMenu);
 
+    m_cbSearchKeyword->setEditable(true);
+    m_cbSearchKeyword->lineEdit()->setPlaceholderText(tr("Search Field Content"));
+    QAction* actionReloadSearchResult = new QAction(QIcon(":/image/reload.png"), "Reload Search Result", this);
+    m_cbSearchKeyword->lineEdit()->addAction(actionReloadSearchResult, QLineEdit::ActionPosition::LeadingPosition);
+    QAction* actionClearKeyword = new QAction(QIcon(":/image/clear-keyword.png"), "Clear Keyword", this);
+    m_cbSearchKeyword->lineEdit()->addAction(actionClearKeyword, QLineEdit::ActionPosition::TrailingPosition);
+
+    connect(actionReloadSearchResult, &QAction::triggered, this, &LogView::onReloadSearchResult);
+    connect(actionClearKeyword, &QAction::triggered, this, &LogView::onClearKeyword);
+    connect(m_cbSearchKeyword, &QComboBox::editTextChanged, this, &LogView::onCbKeywordEditTextChanged);
+    connect(m_cbSearchKeyword, static_cast<void(QComboBox::*)(const QString &)>(&QComboBox::currentIndexChanged), this, &LogView::onCbKeywordCurrentIndexChanged);
     connect(m_logsTableView, &QAbstractItemView::doubleClicked, this, &LogView::onDoubleClicked);
     connect(m_logsTableView, &QWidget::customContextMenuRequested, this, &LogView::onCustomContextMenuRequested);
     connect(m_logModel, &LogModel::dataLoaded, this, &LogView::onDataLoaded);
@@ -656,6 +674,98 @@ void LogView::onLogFilePreview()
     {
         gotoLogLine(selected->currentIndex());
     }
+}
+
+void LogView::onCbKeywordEditTextChanged(const QString &text)
+{
+    filter(text);
+}
+
+void LogView::onCbKeywordCurrentIndexChanged(const QString &text)
+{
+    filter(text.trimmed());
+}
+
+void LogView::inputKeyword()
+{
+    m_cbSearchKeyword->setFocus();
+    m_cbSearchKeyword->lineEdit()->selectAll();
+}
+
+void LogView::searchFieldContent()
+{
+    m_cbSearchKeyword->lineEdit()->setPlaceholderText(tr("Search Field Content"));
+    m_logModel->setSearchField("content");
+}
+
+void LogView::searchFieldID()
+{
+    m_cbSearchKeyword->lineEdit()->setPlaceholderText(tr("Search Field ID"));
+    m_logModel->setSearchField("id");
+}
+
+void LogView::searchFieldDateTime()
+{
+    m_cbSearchKeyword->lineEdit()->setPlaceholderText(tr("Search Field Date Time"));
+    m_logModel->setSearchField("time");
+}
+
+void LogView::searchFieldThread()
+{
+    m_cbSearchKeyword->lineEdit()->setPlaceholderText(tr("Search Field Thread"));
+    m_logModel->setSearchField("thread");
+}
+
+void LogView::searchFieldCategory()
+{
+    m_cbSearchKeyword->lineEdit()->setPlaceholderText(tr("Search Field Category"));
+    m_logModel->setSearchField("category");
+}
+
+void LogView::searchFieldSourceFile()
+{
+    m_cbSearchKeyword->lineEdit()->setPlaceholderText(tr("Search Field Source File"));
+    m_logModel->setSearchField("source");
+}
+
+void LogView::searchFieldMethod()
+{
+    m_cbSearchKeyword->lineEdit()->setPlaceholderText(tr("Search Field Method"));
+    m_logModel->setSearchField("method");
+}
+
+void LogView::searchFieldLogFile()
+{
+    m_cbSearchKeyword->lineEdit()->setPlaceholderText(tr("Search Field Log File"));
+    m_logModel->setSearchField("log");
+}
+
+void LogView::searchFieldLine()
+{
+    m_cbSearchKeyword->lineEdit()->setPlaceholderText(tr("Search Field Line"));
+    m_logModel->setSearchField("line");
+}
+
+void LogView::searchFieldLevel()
+{
+    m_cbSearchKeyword->lineEdit()->setPlaceholderText(tr("Search Field Level"));
+    m_logModel->setSearchField("level");
+}
+
+void LogView::onClearKeyword()
+{
+    m_cbSearchKeyword->setFocus();
+    m_cbSearchKeyword->clearEditText();
+}
+
+void LogView::enableRegexpMode(bool enabled)
+{
+    m_logModel->setRegexpMode(enabled);
+}
+
+void LogView::onReloadSearchResult()
+{
+    filter(m_cbSearchKeyword->lineEdit()->text().trimmed());
 }
 
 bool LogView::event(QEvent* e)

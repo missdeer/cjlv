@@ -50,10 +50,6 @@ private slots:
 
     void on_actionAbout_triggered();
 
-    void on_cbKeyword_editTextChanged(const QString &text);
-
-    void on_cbKeyword_currentIndexChanged(const QString &text);
-
     void on_actionInputKeyword_triggered();
 
     void on_actionSearchFieldContent_triggered();
@@ -81,8 +77,6 @@ private slots:
     void on_actionEditExtensions_triggered();
 
     void on_actionRegexpMode_triggered();
-
-    void on_actionRefreshKeyword_triggered();
 
     void on_actionHelpContent_triggered();
 

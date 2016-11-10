@@ -19,15 +19,6 @@ public:
         m_searchOrFitler = searchOrFitler;
     }
 
-    const QString & searchField() const
-    {
-        return m_searchField;
-    }
-    void setSearchField(const QString& searchField)
-    {
-        m_searchField = searchField;
-    }
-
     const QString & temporaryDirectory() const
     {
         return m_temporaryDirectory;
@@ -53,15 +44,6 @@ public:
     void setSourceDirectory(const QString &sourceDirectory)
     {
         m_sourceDirectory = sourceDirectory;
-    }
-
-    bool regexMode() const
-    {
-        return m_regexMode;
-    }
-    void setRegexMode(bool regexMode)
-    {
-        m_regexMode = regexMode;
     }
 
     bool inMemoryDatabase() const
@@ -154,7 +136,6 @@ public:
 private:
     bool m_inMemoryDatabase;
     bool m_searchOrFitler;
-    bool m_regexMode;
     bool m_fatalEnabled;
     bool m_errorEnabled;
     bool m_warnEnabled;
@@ -162,7 +143,6 @@ private:
     bool m_debugEnabled;
     bool m_traceEnabled;
     bool m_multiMonitorEnabled;
-    QString m_searchField;
     QString m_temporaryDirectory;
     QString m_lastOpenedDirectory;
     QString m_sourceDirectory;

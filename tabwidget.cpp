@@ -72,6 +72,136 @@ void TabWidget::filter(const QString& keyword)
     }
 }
 
+void TabWidget::inputKeyword()
+{
+    QWidget* w = currentWidget();
+    if (w)
+    {
+        LogView* v = qobject_cast<LogView*>(w);
+        v->inputKeyword();
+    }
+}
+
+void TabWidget::clearKeyword()
+{
+    QWidget* w = currentWidget();
+    if (w)
+    {
+        LogView* v = qobject_cast<LogView*>(w);
+        v->onClearKeyword();
+    }
+}
+
+void TabWidget::enableRegexpMode(bool enabled)
+{
+    QWidget* w = currentWidget();
+    if (w)
+    {
+        LogView* v = qobject_cast<LogView*>(w);
+        v->enableRegexpMode(enabled);
+    }
+}
+
+void TabWidget::searchFieldContent()
+{
+    QWidget* w = currentWidget();
+    if (w)
+    {
+        LogView* v = qobject_cast<LogView*>(w);
+        v->searchFieldContent();
+    }
+}
+
+void TabWidget::searchFieldID()
+{
+    QWidget* w = currentWidget();
+    if (w)
+    {
+        LogView* v = qobject_cast<LogView*>(w);
+        v->searchFieldID();
+    }
+}
+
+void TabWidget::searchFieldDateTime()
+{
+    QWidget* w = currentWidget();
+    if (w)
+    {
+        LogView* v = qobject_cast<LogView*>(w);
+        v->searchFieldDateTime();
+    }
+}
+
+void TabWidget::searchFieldThread()
+{
+    QWidget* w = currentWidget();
+    if (w)
+    {
+        LogView* v = qobject_cast<LogView*>(w);
+        v->searchFieldThread();
+    }
+}
+
+void TabWidget::searchFieldCategory()
+{
+    QWidget* w = currentWidget();
+    if (w)
+    {
+        LogView* v = qobject_cast<LogView*>(w);
+        v->searchFieldCategory();
+    }
+}
+
+void TabWidget::searchFieldSourceFile()
+{
+    QWidget* w = currentWidget();
+    if (w)
+    {
+        LogView* v = qobject_cast<LogView*>(w);
+        v->searchFieldSourceFile();
+    }
+}
+
+void TabWidget::searchFieldMethod()
+{
+    QWidget* w = currentWidget();
+    if (w)
+    {
+        LogView* v = qobject_cast<LogView*>(w);
+        v->searchFieldMethod();
+    }
+}
+
+void TabWidget::searchFieldLogFile()
+{
+    QWidget* w = currentWidget();
+    if (w)
+    {
+        LogView* v = qobject_cast<LogView*>(w);
+        v->searchFieldLogFile();
+    }
+}
+
+void TabWidget::searchFieldLine()
+{
+    QWidget* w = currentWidget();
+    if (w)
+    {
+        LogView* v = qobject_cast<LogView*>(w);
+        v->searchFieldLine();
+    }
+}
+
+void TabWidget::searchFieldLevel()
+{
+    QWidget* w = currentWidget();
+    if (w)
+    {
+        LogView* v = qobject_cast<LogView*>(w);
+        v->searchFieldLevel();
+    }
+}
+
 void TabWidget::onCopyCurrentCell()
 {
     QWidget* w = currentWidget();

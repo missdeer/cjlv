@@ -59,6 +59,8 @@ public:
     bool getSourceLineStatistic(QList<QSharedPointer<StatisticItem>>& sis);
     bool getCategoryStatistic(QList<QSharedPointer<StatisticItem>>& sis);
     bool getMethodStatistic(QList<QSharedPointer<StatisticItem>>& sis);
+    void setSearchField(const QString &searchField);
+    void setRegexpMode(bool regexpMode);
 signals:
     void logItemReady(int, QSharedPointer<LogItem>);
     void logItemsReady(QMap<int, QSharedPointer<LogItem>>);

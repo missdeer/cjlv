@@ -325,8 +325,8 @@ void LogModel::reload()
 
 void LogModel::onFilter(const QString &keyword)
 {
-    bool regexpMode = g_settings->regexMode();
-    QString searchField = g_settings->searchField();
+    bool regexpMode = m_regexpMode;
+    QString searchField = m_searchField;
     QString kw = keyword;
 
     QStringList sl = keyword.split(">");
@@ -380,6 +380,16 @@ void LogModel::onFilter(const QString &keyword)
         }
     }
     doFilter(kw.trimmed(), searchField, regexpMode, false);
+}
+
+void LogModel::setRegexpMode(bool regexpMode)
+{
+    m_regexpMode = regexpMode;
+}
+
+void LogModel::setSearchField(const QString &searchField)
+{
+    m_searchField = searchField;
 }
 
 void LogModel::query(int offset)
