@@ -57,6 +57,18 @@ LogView::LogView(QWidget *parent)
     QVBoxLayout* m_mainLayout = new QVBoxLayout;
     Q_ASSERT(m_mainLayout);
     m_mainLayout->setMargin(0);
+
+    QWidget* topBar = new QWidget(this);
+    QHBoxLayout* topBarLayout = new QHBoxLayout;
+    topBarLayout->setMargin(0);
+    topBar->setLayout(topBarLayout);
+    QLabel* label = new QLabel(topBar);
+    label->setText("Search keyword:");
+    topBarLayout->addWidget(label);
+    m_cbBuddyList = new QComboBox(topBar);
+    topBarLayout->addWidget(m_cbBuddyList);
+
+    m_mainLayout->addWidget(topBar);
     m_mainLayout->addWidget(m_verticalSplitter);
     setLayout(m_mainLayout);
 

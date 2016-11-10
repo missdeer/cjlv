@@ -198,7 +198,7 @@ CodeEditorTabWidget *SourceViewTabWidget::getCodeEditorTabWidget(const QString &
     CodeEditorTabWidget* v = new CodeEditorTabWidget(this);
 
     QFileInfo fi(file);
-    index = addTab(v, fi.fileName(), file);
+    index = addTab(v, fi.fileName(), file); // todo: should use the index from main tab widget
     logFiles.insert(index, file);
     return v;
 }

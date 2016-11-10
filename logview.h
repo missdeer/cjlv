@@ -71,6 +71,7 @@ private:
     CodeEditorTabWidget* m_codeEditorTabWidget;
     LogModel* m_logModel;
     PresenceWidget* m_presenceWidget;
+    QComboBox* m_cbBuddyList;
     QString m_path;
     QString m_extractDir;
     QMutex m_mutex;
