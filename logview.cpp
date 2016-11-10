@@ -96,7 +96,7 @@ LogView::LogView(QWidget *parent)
 
     m_cbSearchKeyword->setEditable(true);
     m_cbSearchKeyword->lineEdit()->setPlaceholderText(tr("Search Field Content"));
-    QAction* actionReloadSearchResult = new QAction(QIcon(":/image/reload.png"), "Reload Search Result", this);
+    QAction* actionReloadSearchResult = new QAction(QIcon(":/image/keyword.png"), "Reload Search Result", this);
     m_cbSearchKeyword->lineEdit()->addAction(actionReloadSearchResult, QLineEdit::ActionPosition::LeadingPosition);
     QAction* actionClearKeyword = new QAction(QIcon(":/image/clear-keyword.png"), "Clear Keyword", this);
     m_cbSearchKeyword->lineEdit()->addAction(actionClearKeyword, QLineEdit::ActionPosition::TrailingPosition);
