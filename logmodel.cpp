@@ -1020,7 +1020,7 @@ void LogModel::doFilter(const QString &content, const QString &field, bool regex
     query(0);
 
     QMutexLocker l(&m_dataMemberMutex);
-    m_dataMemberCondition.wait(&m_dataMemberMutex);
+    m_dataMemberCondition.wait(&m_dataMemberMutex, 500);
     m_regexpMode = regexpModeBackup;
     m_searchField = searchFieldBackup;
 }
