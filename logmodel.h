@@ -83,9 +83,12 @@ private:
     QList<int> m_inQuery;
     QMutex m_eventMutex;
     QMutex m_queryMutex;
+    QMutex m_dataMemberMutex;
+    QWaitCondition m_dataMemberCondition;
     QFuture<void> m_queryFuture;
     int m_rowCount;
     int m_totalRowCount;
+    int m_toQueryOffset;
     bool m_stopQuerying;
     bool m_regexpMode;
     bool m_luaMode;

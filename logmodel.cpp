@@ -170,6 +170,7 @@ LogModel::LogModel(QObject *parent)
     , m_searchField("content")
     , m_rowCount(0)
     , m_totalRowCount(0)
+    , m_toQueryOffset(-1)
     , m_regexpMode(false)
     , m_luaMode(false)
 {
@@ -907,6 +908,7 @@ void LogModel::doReload()
 
 void LogModel::generateSQLStatements(int offset, QString &sqlFetch, QString &sqlCount)
 {    
+    //qWarning() << __FUNCTION__ << m_keyword << m_searchField << m_regexpMode;
     if (g_settings->allLogLevelEnabled() || m_searchField == "level")
     {
         if (m_luaMode)
@@ -1008,14 +1010,17 @@ void LogModel::doFilter(const QString &content, const QString &field, bool regex
         endRemoveRows();
     }
 
-    //qDebug() << __FUNCTION__ << content << field << regexpMode;
     m_luaMode = luaMode;
     bool regexpModeBackup = m_regexpMode;
     m_regexpMode = regexpMode;
     QString searchFieldBackup = m_searchField;
     m_searchField = field;
     m_keyword = content;
+    //qWarning() << __FUNCTION__ << content << field << regexpMode << m_keyword << m_searchField << m_regexpMode;
     query(0);
+
+    QMutexLocker l(&m_dataMemberMutex);
+    m_dataMemberCondition.wait(&m_dataMemberMutex);
     m_regexpMode = regexpModeBackup;
     m_searchField = searchFieldBackup;
 }
@@ -1025,6 +1030,7 @@ void LogModel::doQuery(int offset)
     if (!m_queryMutex.tryLock())
     {
         qDebug() << "obtaining lock failed";
+        m_toQueryOffset = offset;
         return;
     }
 
@@ -1035,6 +1041,7 @@ void LogModel::doQuery(int offset)
     QString sqlCount;
     QString sqlFetch ;
     generateSQLStatements(offset, sqlFetch, sqlCount);
+    m_dataMemberCondition.wakeAll();
 
     FinishedQueryEvent* e = new FinishedQueryEvent;
     e->m_offset = offset;
@@ -1247,6 +1254,13 @@ bool LogModel::event(QEvent *e)
 
         int size = dynamic_cast<FinishedQueryEvent*>(e)->m_size;
         emit dataChanged(index(offset,0), index(offset+size, 0));
+
+        if (m_toQueryOffset >= 0)
+        {
+            offset = m_toQueryOffset;
+            m_toQueryOffset = -1;
+            query(offset);
+        }
     }
         return true;
     default:
