@@ -292,6 +292,7 @@ void LogView::showCodeEditorPane()
                 }
             }
             g_sourceWindow->showMaximized();
+            g_sourceWindow->setMainTabWidget((TabWidget*)parent());
         }
 
         if (!g_sourceWindow->isVisible())
@@ -361,7 +362,7 @@ void LogView::extractContent(const QModelIndex& index)
 
     if (g_settings->multiMonitorEnabled())
     {
-        g_sourceWindow->setContent(m_path, text);
+        g_sourceWindow->getSourceViewTabWidget()->setContent(m_path, text);
     }
     else
     {
@@ -447,7 +448,7 @@ void LogView::openSourceFile(const QModelIndex &index, bool openWithBuiltinEdito
                     showCodeEditorPane();
                     if (g_settings->multiMonitorEnabled())
                     {                        
-                        g_sourceWindow->gotoLine(m_path, filePath, m.captured(2).toInt());
+                        g_sourceWindow->getSourceViewTabWidget()->gotoLine(m_path, filePath, m.captured(2).toInt());
                     }
                     else
                     {
@@ -486,7 +487,7 @@ void LogView::openLog(const QModelIndex &index)
     const QString& logFile = m_logModel->getLogFileName(index);
     if (g_settings->multiMonitorEnabled())
     {
-        g_sourceWindow->gotoLine(m_path, logFile);
+        g_sourceWindow->getSourceViewTabWidget()->gotoLine(m_path, logFile);
     }
     else
     {
@@ -501,7 +502,7 @@ void LogView::gotoLogLine(const QModelIndex &index)
     int line = m_logModel->getLogFileLine(index, logFile);
     if (g_settings->multiMonitorEnabled())
     {
-        g_sourceWindow->gotoLine(m_path, logFile, line);
+        g_sourceWindow->getSourceViewTabWidget()->gotoLine(m_path, logFile, line);
     }
     else
     {

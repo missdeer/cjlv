@@ -30,6 +30,8 @@ public:
     void searchFieldLogFile();
     void searchFieldLine();
     void searchFieldLevel();
+
+    int findTab(const QString& path);
 signals:
     void statusBarMessage(const QString&);
 
@@ -62,7 +64,6 @@ private slots:
     void onLogViewRowCountChanged();
     
 private:
-    int findTab(const QString& path);
     int findTab(const QStringList& paths);
     int addTab(LogView *w, const QString& text, const QString& tooltip);
 };

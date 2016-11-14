@@ -3,6 +3,7 @@
 
 #include <QObject>
 
+class TabWidget;
 class CodeEditorTabWidget;
 
 class SourceViewTabWidget : public QTabWidget
@@ -20,6 +21,7 @@ public slots:
     void onTabCloseRequested(int index);
     void onCurrentChanged(int index);
 
+    void setMainTabWidget(TabWidget* w) { m_mainTabWidget = w; }
     void gotoLine(const QString &logFile, const QString& sourceFile, int line = -1);
     void setContent(const QString& logFile, const QString& text);
 private slots:
@@ -29,7 +31,8 @@ private slots:
 
     void onCustomContextMenuRequested(const QPoint &pos);
 private:
-    QStringList logFiles;
+    TabWidget* m_mainTabWidget;
+    QStringList m_logFiles;
     int findTab(const QString &path);
     int addTab(CodeEditorTabWidget *w, const QString &text, const QString &tooltip);
     CodeEditorTabWidget* getCodeEditorTabWidget(const QString &file);

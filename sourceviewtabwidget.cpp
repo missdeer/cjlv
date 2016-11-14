@@ -2,6 +2,7 @@
 #if defined(Q_OS_WIN)
 #include "ShellContextMenu.h"
 #endif
+#include "tabwidget.h"
 #include "codeeditortabwidget.h"
 #include "sourceviewtabwidget.h"
 
@@ -166,9 +167,9 @@ void SourceViewTabWidget::onOpenContainerFolder()
 
 int SourceViewTabWidget::findTab(const QString &path)
 {
-    for (int i = 0; i < logFiles.count(); i++)
+    for (int i = 0; i < m_logFiles.count(); i++)
     {
-        if (path == logFiles.at(i))
+        if (path == m_logFiles.at(i))
             return i;
     }
 
@@ -198,7 +199,16 @@ CodeEditorTabWidget *SourceViewTabWidget::getCodeEditorTabWidget(const QString &
     CodeEditorTabWidget* v = new CodeEditorTabWidget(this);
 
     QFileInfo fi(file);
-    index = addTab(v, fi.fileName(), file); // todo: should use the index from main tab widget
-    logFiles.insert(index, file);
+    index = m_mainTabWidget->findTab(file);
+    if (index < 0)
+    {
+        index = addTab(v, fi.fileName(), file); // todo: should use the index from main tab widget
+    }
+    else
+    {
+        insertTab(index,v, fi.fileName());
+        setTabToolTip(index, file);
+    }
+    m_logFiles.insert(index, file);
     return v;
 }

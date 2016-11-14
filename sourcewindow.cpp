@@ -7,8 +7,6 @@ SourceWindow::SourceWindow(QWidget *parent) :
     ui(new Ui::SourceWindow)
 {
     ui->setupUi(this);
-    connect(this, &SourceWindow::tabCloseRequested, ui->tabWidget, &SourceViewTabWidget::onTabCloseRequested);
-    connect(this, &SourceWindow::currentChanged, this, [this](int index){ this->ui->tabWidget->setCurrentIndex(index);});
 }
 
 SourceWindow::~SourceWindow()
@@ -16,12 +14,12 @@ SourceWindow::~SourceWindow()
     delete ui;
 }
 
-void SourceWindow::gotoLine(const QString &logFile, const QString &sourceFile, int line)
+SourceViewTabWidget *SourceWindow::getSourceViewTabWidget()
 {
-    ui->tabWidget->gotoLine(logFile, sourceFile, line);
+    return ui->tabWidget;
 }
 
-void SourceWindow::setContent(const QString& logFile, const QString &text)
+void SourceWindow::setMainTabWidget(TabWidget *w)
 {
-    ui->tabWidget->setContent(logFile, text);
+    ui->tabWidget->setMainTabWidget(w);
 }

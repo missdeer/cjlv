@@ -8,6 +8,9 @@ namespace Ui {
 class SourceWindow;
 }
 
+class TabWidget;
+class SourceViewTabWidget;
+
 class SourceWindow : public QMainWindow
 {
     Q_OBJECT
@@ -16,11 +19,8 @@ public:
     explicit SourceWindow(QWidget *parent = 0);
     ~SourceWindow();
 
-    void gotoLine(const QString &logFile, const QString& sourceFile, int line = -1);
-    void setContent(const QString &logFile, const QString& text);
-signals:
-    void tabCloseRequested(int);
-    void currentChanged(int);
+    SourceViewTabWidget* getSourceViewTabWidget();
+    void setMainTabWidget(TabWidget* w);
 private:
     Ui::SourceWindow *ui;
 };
