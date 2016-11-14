@@ -407,7 +407,7 @@ void TabWidget::onCurrentChanged(int index)
     }
     // notify source view tab widget if exists
     if (g_sourceWindow && g_sourceWindow != sender())
-        emit g_sourceWindow->getSourceViewTabWidget()->currentChanged(index);
+        emit g_sourceWindow->currentChanged(index);
 }
 
 void TabWidget::onLogViewRowCountChanged()
@@ -454,7 +454,7 @@ void TabWidget::onTabCloseRequested(int index)
     delete w;
     // notify source view tab widget if exists
     if (g_sourceWindow && g_sourceWindow != sender())
-        emit g_sourceWindow->getSourceViewTabWidget()->tabCloseRequested(index);
+        emit g_sourceWindow->tabCloseRequested(index);
 }
 
 int TabWidget::findTab(const QString &path)

@@ -89,6 +89,11 @@ void MainWindow::openLogs(const QStringList &logs)
     }
 }
 
+TabWidget *MainWindow::getMainTabWidget()
+{
+    return ui->tabWidget;
+}
+
 void MainWindow::onExtensionScanned()
 {
     ui->menuExtension->addSeparator();

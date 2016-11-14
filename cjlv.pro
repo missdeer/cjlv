@@ -117,6 +117,9 @@ win32: {
     QMAKE_LFLAGS += "/LTCG"
     INCLUDEPATH += $$PWD/3rdparty/Everything-SDK/include $$PWD/3rdparty/Everything-SDK/ipc
 
+    QMAKE_CXXFLAGS_RELEASE += /Zi
+    QMAKE_LFLAGS_RELEASE += /DEBUG
+
     SOURCES += everythingwrapper.cpp ShellContextMenu.cpp
     HEADERS += everythingwrapper.h ShellContextMenu.h
 

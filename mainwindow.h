@@ -7,6 +7,7 @@ namespace Ui {
 class MainWindow;
 }
 
+class TabWidget;
 QT_BEGIN_NAMESPACE
 class QDragEnterEvent;
 class QDropEvent;
@@ -25,6 +26,7 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
     void openLogs(const QStringList& logs);
+    TabWidget* getMainTabWidget();
 public slots:
     void onStatusBarMessageChanges(const QString& msg);
 private slots:

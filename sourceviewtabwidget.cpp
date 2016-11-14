@@ -10,6 +10,7 @@ extern QTabWidget* g_mainTabWidget;
 
 SourceViewTabWidget::SourceViewTabWidget(QWidget *parent /*= 0*/)
     : QTabWidget(parent)
+    , m_mainTabWidget(nullptr)
 {
     setTabsClosable(true);
     setDocumentMode(true);
@@ -51,9 +52,6 @@ void SourceViewTabWidget::onTabCloseRequested(int index)
     QWidget* w = widget(index);
     removeTab(index);
     delete w;
-    // notify main tab widget
-    if (this == sender())
-    emit g_mainTabWidget->tabCloseRequested(index);
 }
 
 void SourceViewTabWidget::gotoLine(const QString &logFile, const QString &sourceFile, int line)
@@ -125,9 +123,6 @@ void SourceViewTabWidget::onCustomContextMenuRequested(const QPoint &pos)
 
 void SourceViewTabWidget::onCurrentChanged(int index)
 {
-    // notify main tab widget
-    if (this == sender())
-        g_mainTabWidget->setCurrentIndex(index);
 }
 
 void SourceViewTabWidget::onCopyFileName()
@@ -199,14 +194,14 @@ CodeEditorTabWidget *SourceViewTabWidget::getCodeEditorTabWidget(const QString &
     CodeEditorTabWidget* v = new CodeEditorTabWidget(this);
 
     QFileInfo fi(file);
-    index = m_mainTabWidget->findTab(file);
-    if (index < 0)
+    index = m_mainTabWidget->currentIndex();
+    if (index >= count())
     {
-        index = addTab(v, fi.fileName(), file); // todo: should use the index from main tab widget
+        index = addTab(v, fi.fileName(), file);
     }
     else
     {
-        insertTab(index,v, fi.fileName());
+        insertTab(index, v, fi.fileName());
         setTabToolTip(index, file);
     }
     m_logFiles.insert(index, file);

@@ -21,6 +21,9 @@ public:
 
     SourceViewTabWidget* getSourceViewTabWidget();
     void setMainTabWidget(TabWidget* w);
+signals:
+    void tabCloseRequested(int);
+    void currentChanged(int);
 private:
     Ui::SourceWindow *ui;
 };

@@ -5,6 +5,8 @@
 #if defined(Q_OS_WIN)
 #include "ShellContextMenu.h"
 #endif
+#include "mainwindow.h"
+#include "tabwidget.h"
 #include "sourcewindow.h"
 #include "settings.h"
 #include "presencewidget.h"
@@ -292,7 +294,7 @@ void LogView::showCodeEditorPane()
                 }
             }
             g_sourceWindow->showMaximized();
-            g_sourceWindow->setMainTabWidget((TabWidget*)parent());
+            g_sourceWindow->setMainTabWidget(((MainWindow*)mainWindow)->getMainTabWidget());
         }
 
         if (!g_sourceWindow->isVisible())
