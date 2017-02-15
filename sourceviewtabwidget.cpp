@@ -121,7 +121,7 @@ void SourceViewTabWidget::onCustomContextMenuRequested(const QPoint &pos)
     }
 }
 
-void SourceViewTabWidget::onCurrentChanged(int index)
+void SourceViewTabWidget::onCurrentChanged(int /*index*/)
 {
 }
 
