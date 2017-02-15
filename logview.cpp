@@ -607,6 +607,7 @@ void LogView::onRowCountChanged()
     {
         m_logsTableView->scrollTo(m_logModel->index(m_lastId -1, m_lastColumn));
         m_logsTableView->selectRow(m_lastId -1);
+        m_lastId = m_lastColumn = -1;
     }
     emit rowCountChanged();
 }
