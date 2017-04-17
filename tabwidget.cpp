@@ -392,7 +392,7 @@ void TabWidget::onCustomContextMenuRequested(const QPoint &pos)
     }
 }
 
-void TabWidget::onCurrentChanged(int index)
+void TabWidget::onCurrentChanged(int /*index*/)
 {
     QWidget* w = currentWidget();
     if (w)

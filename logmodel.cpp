@@ -241,6 +241,16 @@ QVariant LogModel::data(const QModelIndex &index, int role) const
     }
 
     QSharedPointer<LogItem> r = *it;
+    if (r->level.isEmpty() || r->logFile.isEmpty() || r->source.isEmpty())
+    {
+        int alignRow = index.row() & (~align);
+#ifndef QT_NO_DEBUG
+        qDebug() << "do query index:" << alignRow;
+#endif
+        const_cast<LogModel&>(*this).query(alignRow);
+        return QVariant();
+    }
+
     switch (index.column())
     {
     case 0:
