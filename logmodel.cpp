@@ -1161,7 +1161,7 @@ void LogModel::doQuery(int offset)
                 if (log->level.isEmpty() || log->source.isEmpty() || log->logFile.isEmpty())
                 {
                     qDebug() << "empty record, quit iterating now";
-                    return;
+                    break;
                 }
                 logs[ offset ] = log;
                 offset++;
