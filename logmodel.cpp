@@ -1103,7 +1103,8 @@ void LogModel::doQuery(int offset)
         q.prepare(m_sqlCount);
         if (!m_keyword.isEmpty() && m_sqlCount.contains(QChar('?')))
             q.addBindValue(m_keyword);
-        if (q.exec()) {
+        if (q.exec())
+        {
             RowCountEvent* erc = new RowCountEvent;
             erc->m_rowCount = 0;
             if (q.next())
@@ -1121,9 +1122,16 @@ void LogModel::doQuery(int offset)
         q.prepare(m_sqlFetch);
         if (!m_keyword.isEmpty() && m_sqlFetch.contains(QChar('?')))
             q.addBindValue(m_keyword);
-        if (q.exec()) {
+        if (q.exec())
+        {
             if (m_stopQuerying)
                 return;
+
+            BOOST_SCOPE_EXIT(q) {
+                q.clear();
+                q.finish();
+            } BOOST_SCOPE_EXIT_END
+
             int idIndex = q.record().indexOf("id");
             int dateTimeIndex = q.record().indexOf("time");
             int levelIndex = q.record().indexOf("level");
@@ -1136,7 +1144,8 @@ void LogModel::doQuery(int offset)
             int lineIndex = q.record().indexOf("line");
             QMap<int, QSharedPointer<LogItem>> logs;
             int logItemCount = 0;
-            while (q.next() && !m_stopQuerying) {
+            while (q.next() && !m_stopQuerying)
+            {
                 QSharedPointer<LogItem> log =  QSharedPointer<LogItem>(new LogItem);
                 log->id = q.value(idIndex).toInt();
                 log->time =  q.value(dateTimeIndex).toDateTime();
@@ -1149,6 +1158,11 @@ void LogModel::doQuery(int offset)
                 log->logFile = q.value(logIndex).toString();
                 log->line = q.value(lineIndex).toInt();
 
+                if (log->level.isEmpty() || log->source.isEmpty() || log->logFile.isEmpty())
+                {
+                    qDebug() << "empty record, quit iterating now";
+                    return;
+                }
                 logs[ offset ] = log;
                 offset++;
 
@@ -1168,8 +1182,6 @@ void LogModel::doQuery(int offset)
                 logs.clear();
                 logItemCount = 0;
             }
-            q.clear();
-            q.finish();
         }
     }
 }
