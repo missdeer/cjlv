@@ -168,10 +168,12 @@ LogModel::LogModel(QObject *parent)
     : QAbstractTableModel(parent)
     , m_L(nullptr)
     , m_searchField("content")
+    , m_searchFieldOption("content")
     , m_rowCount(0)
     , m_totalRowCount(0)
     , m_toQueryOffset(-1)
     , m_regexpMode(false)
+    , m_regexpModeOption(false)
     , m_luaMode(false)
 {
     qRegisterMetaType<QSharedPointer<LogItem>>("QSharedPointer<LogItem>");
@@ -337,6 +339,12 @@ void LogModel::reload()
 
 void LogModel::onFilter(const QString &keyword)
 {
+    if (keyword != m_keyword)
+    {
+        // get regexp mode option and search field option
+        m_regexpMode = m_regexpModeOption;
+        m_searchField = m_searchFieldOption;
+    }
     bool regexpMode = m_regexpMode;
     QString searchField = m_searchField;
     QString kw = keyword;
@@ -345,6 +353,7 @@ void LogModel::onFilter(const QString &keyword)
     if (sl.size() >= 2)
     {
         QString prefix = sl.at(0);
+        qDebug() << "prefix:" << prefix << ", sl:" << sl;
         QStringList ss = prefix.split(":");
         if (ss.size() == 1 || (ss.size() == 2 && (ss.at(1) == "r" || ss.at(1) == "!r")))
         {
@@ -391,16 +400,18 @@ void LogModel::onFilter(const QString &keyword)
             }
         }
     }
-    doFilter(kw.trimmed(), searchField, regexpMode, false);
+    doFilter(kw.trimmed(), searchField, regexpMode, false, true);
 }
 
 void LogModel::setRegexpMode(bool regexpMode)
 {
+    m_regexpModeOption = regexpMode;
     m_regexpMode = regexpMode;
 }
 
 void LogModel::setSearchField(const QString &searchField)
 {
+    m_searchFieldOption = searchField;
     m_searchField = searchField;
 }
 
@@ -996,7 +1007,7 @@ void LogModel::generateSQLStatements(int offset, QString &sqlFetch, QString &sql
     sqlFetch = QString("SELECT * FROM logs WHERE %1 LIKE '%'||?||'%' AND level GLOB 'dummy' ORDER BY epoch LIMIT %2, 200;").arg(m_searchField).arg(offset);
 }
 
-void LogModel::doFilter(const QString &content, const QString &field, bool regexpMode, bool luaMode)
+void LogModel::doFilter(const QString &content, const QString &field, bool regexpMode, bool luaMode, bool saveOptions)
 {
     if (m_keyword == content)
         return;
@@ -1031,8 +1042,11 @@ void LogModel::doFilter(const QString &content, const QString &field, bool regex
 
     QMutexLocker l(&m_dataMemberMutex);
     m_dataMemberCondition.wait(&m_dataMemberMutex, 500);
-    m_regexpMode = regexpModeBackup;
-    m_searchField = searchFieldBackup;
+    if (!saveOptions)
+    {
+        m_regexpMode = regexpModeBackup;
+        m_searchField = searchFieldBackup;
+    }
 }
 
 void LogModel::doQuery(int offset)
@@ -1068,7 +1082,7 @@ void LogModel::doQuery(int offset)
     m_sqlCount = sqlCount;
     m_sqlFetch = sqlFetch;
 
-    qDebug() << __FUNCTION__ <<  m_sqlCount << m_sqlFetch << m_keyword;
+    qDebug() << __FUNCTION__ <<  m_sqlCount << m_sqlFetch << m_keyword << m_searchField;
 
     m_stopQuerying = false;
 

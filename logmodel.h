@@ -74,6 +74,7 @@ public slots:
 private:
     lua_State* m_L;
     QString m_searchField;
+    QString m_searchFieldOption;
     QString m_sqlCount;
     QString m_sqlFetch ;
     QString m_keyword;
@@ -91,6 +92,7 @@ private:
     int m_toQueryOffset;
     bool m_stopQuerying;
     bool m_regexpMode;
+    bool m_regexpModeOption;
     bool m_luaMode;
 
     QString dateTime;
@@ -116,7 +118,7 @@ private:
     bool event(QEvent *e) Q_DECL_OVERRIDE;
     void createDatabaseIndex();
     void generateSQLStatements(int offset, QString& sqlFetch, QString& sqlCount);
-    void doFilter(const QString& content, const QString& field, bool regexpMode, bool luaMode);
+    void doFilter(const QString& content, const QString& field, bool regexpMode, bool luaMode, bool saveOptions = false);
     bool getStatistic(const QString& tableName, QList<QSharedPointer<StatisticItem>>& sis);
     void saveStatistic();
 };
