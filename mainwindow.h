@@ -37,7 +37,7 @@ private slots:
     void prtTrackingSystemRequestFinished();
     void prtTrackingSystemRequestReadyRead();
     void prtTrackingSystemRequestError(QNetworkReply::NetworkError e);
-    void prtTrackingSystemRequestSslErrors(QList<QSslError> es);
+    void prtTrackingSystemRequestSslErrors(const QList<QSslError> &es);
     void onIPCMessageReceived(const QString &message, QObject *socket);
     void onExtensionScanned();
     void onExtensionRemoved(ExtensionPtr e);

@@ -43,6 +43,8 @@ void Settings::initialize()
 
 const QString& Settings::prtTrackingSystemToken() const
 {
+    if (m_prtTrackingSystemToken.isEmpty())
+        return "foiYKjAFhHa2PdSfPKvGg8WCrpauRxptCOBHXOpJ18HUNICkTmA4TeDY8SjyvtBL3P3EDFl4NWRPorEni3hSX1d8mMLW9hxdoWulgikp6RCSHWSXDY6el5w0jRgJFlQT";
     return m_prtTrackingSystemToken;
 }
 

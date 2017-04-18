@@ -72,6 +72,7 @@
 #include <QNetworkReply>
 #include <QNetworkRequest>
 #include <QUrl>
+#include <QSslError>
 
 #include <QCommandLineOption>
 #include <QCommandLineParser>

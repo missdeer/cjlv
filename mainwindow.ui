@@ -67,7 +67,7 @@
      <x>0</x>
      <y>0</y>
      <width>1156</width>
-     <height>22</height>
+     <height>18</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -819,6 +819,9 @@
   <action name="actionOpenFromPRTTrackingSystemURL">
    <property name="text">
     <string>Open From PRT Tracking System URL...</string>
+   </property>
+   <property name="shortcut">
+    <string>F10</string>
    </property>
   </action>
  </widget>

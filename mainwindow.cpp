@@ -221,9 +221,9 @@ void MainWindow::prtTrackingSystemRequestError(QNetworkReply::NetworkError e)
     qDebug() << "network error:" << e << reply->errorString();
 }
 
-void MainWindow::prtTrackingSystemRequestSslErrors(QList<QSslError> es)
+void MainWindow::prtTrackingSystemRequestSslErrors(const QList<QSslError> & es)
 {
-    for(auto e : es)
+    for(const QSslError &e : es)
     {
         qDebug() << "ssl error:" << e.errorString();
     }
@@ -358,8 +358,15 @@ void MainWindow::openPRTFromURL(const QString &u)
 
 void MainWindow::on_actionOpenFromPRTTrackingSystemURL_triggered()
 {
-    QString u = QInputDialog::getText(this, tr("Input URL"), tr("Input a valid PRT Tracking System URL"));
-    openPRTFromURL(u);
+    bool ok;
+    QString u = QInputDialog::getText(this,
+                                      tr("Input URL"),
+                                      tr("Input a valid PRT Tracking System URL"),
+                                      QLineEdit::Normal,
+                                      QString(),
+                                      &ok);
+    if (ok && !u.isEmpty())
+        openPRTFromURL(u);
 }
 
 void MainWindow::on_actionSearch_triggered()
