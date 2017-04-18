@@ -193,7 +193,7 @@ void ExtensionModel::scanExtensionsFromDirectory(const QString& path, const QStr
     QDir dir(path);
     QStringList nameFilters = QStringList() << "*.xml";
     QFileInfoList fil = dir.entryInfoList(nameFilters, QDir::Files | QDir::NoDotAndDotDot);
-    Q_FOREACH(const QFileInfo& fi, fil)
+    for(const QFileInfo& fi : fil)
     {
         ExtensionPtr e(new Extension);
 

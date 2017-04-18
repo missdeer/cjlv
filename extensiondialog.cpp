@@ -40,7 +40,7 @@ ExtensionDialog::~ExtensionDialog()
 void ExtensionDialog::on_tableView_selectionChanged(const QItemSelection &selected, const QItemSelection &/*deselected*/)
 {
     QModelIndexList list = selected.indexes();
-    Q_FOREACH(const QModelIndex& index, list)
+    for(const QModelIndex& index : list)
     {
         m_currentExtension = ExtensionModel::instance()->extension(index);
         if (!m_currentExtension)

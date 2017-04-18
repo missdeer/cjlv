@@ -18,11 +18,15 @@ struct LogItem {
     int line;
 };
 
+typedef QSharedPointer<LogItem> LogItemPtr;
+
 struct StatisticItem {
     QString content;
     int count;
     double percent;
 };
+
+typedef QSharedPointer<StatisticItem> StatisticItemPtr;
 
 class LogModel : public QAbstractTableModel
 {
@@ -52,6 +56,9 @@ public:
     int getLogFileLine(const QModelIndex &index, QString& fileName);
     int getId(const QModelIndex &index);
     void runExtension(ExtensionPtr e);
+
+    void saveRowsInFolder(const QList<int>& rows, const QString& folderName);
+    void saveRowsBetweenAnchorsInFolder(const QModelIndex& beginAnchor, const QModelIndex& endAnchor, const QString& folderName);
 
     bool getLevelStatistic(QList<QSharedPointer<StatisticItem>>& sis);
     bool getThreadStatistic(QList<QSharedPointer<StatisticItem>>& sis);
@@ -118,6 +125,7 @@ private:
     bool event(QEvent *e) Q_DECL_OVERRIDE;
     void createDatabaseIndex();
     void generateSQLStatements(int offset, QString& sqlFetch, QString& sqlCount);
+    QString generateSQLStatement(int from, int to);
     void doFilter(const QString& content, const QString& field, bool regexpMode, bool luaMode, bool saveOptions = false);
     bool getStatistic(const QString& tableName, QList<QSharedPointer<StatisticItem>>& sis);
     void saveStatistic();

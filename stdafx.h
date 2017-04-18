@@ -18,44 +18,47 @@
 #if defined (__cplusplus)
 
 #include <QtCore>
-#include <QtGui>
 #include <QSettings>
-#include <QMessageBox>
-#include <QFile>
-#include <QFileInfo>
 #include <QDir>
 #include <QUrl>
-#include <QFileDialog>
+#include <QFile>
+#include <QFileInfo>
 #include <QTemporaryFile>
 #include <QDate>
 #include <QDesktopServices>
 #include <QDateTime>
-#include <QThreadPool>
-#include <QCryptographicHash>
-#include <QProgressDialog>
-#include <QStandardPaths>
-#include <QDomDocument>
+#include <QList>
+#include <QPoint>
+#include <QClipboard>
+#include <QApplication>
 #include <QTextStream>
 #include <QStringBuilder>
-#include <QApplication>
+#include <QStandardPaths>
+#include <QCryptographicHash>
+
+#include <QtGui>
+#include <QDialog>
+#include <QMessageBox>
+#include <QFileDialog>
+#include <QProgressDialog>
 #include <QMenu>
-#include <QClipboard>
 #include <QSplitter>
 #include <QHeaderView>
-#include <QtConcurrent>
 #include <QDesktopWidget>
 #include <QInputDialog>
 #include <QSharedPointer>
 #include <QTabWidget>
-#include <QDialog>
 #include <QItemSelection>
 #include <QAbstractTableModel>
-#include <QList>
-#include <QFuture>
 #include <QMainWindow>
-#include <QPoint>
 #include <QTableView>
+
+#include <QDomDocument>
+
+#include <QtConcurrent>
+#include <QFuture>
 #include <QWaitCondition>
+#include <QThreadPool>
 
 #include <QSqlDatabase>
 #include <QSqlQuery>

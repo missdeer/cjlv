@@ -506,7 +506,7 @@ void LogModel::copyCells(const QModelIndexList& cells)
     QString text;
     QString t;
     int lastRow = cells.at(0).row();
-    Q_FOREACH(const QModelIndex& cell, cells)
+    for(const QModelIndex& cell : cells)
     {
         auto it = m_logs.find(cell.row());
         if (m_logs.end() == it)
@@ -560,7 +560,7 @@ void LogModel::copyCells(const QModelIndexList& cells)
 void LogModel::copyRows(const QList<int>& rows)
 {
     QString text;
-    Q_FOREACH(int row, rows)
+    for(int row : rows)
     {
         auto it = m_logs.find(row);
         if (m_logs.end() == it)
@@ -683,6 +683,135 @@ void LogModel::runExtension(ExtensionPtr e)
         g_L = m_L;
         // regexp mode is ignored
         doFilter(e->content(), e->field(), false, true);
+    }
+}
+
+void LogModel::saveRowsInFolder(const QList<int> &rows, const QString &folderName)
+{
+    QString text;
+    for(int row : rows)
+    {
+        auto it = m_logs.find(row);
+        if (m_logs.end() == it)
+        {
+            continue;
+        }
+
+        QSharedPointer<LogItem> r = *it;
+        QString t = QString("%1 %2 [%3] [%4] [%5] [%6] - %7\n")
+                       .arg(r->time.toString("yyyy-MM-dd hh:mm:ss.zzz"))
+                       .arg(r->level)
+                       .arg(r->thread)
+                       .arg(r->source)
+                       .arg(r->category)
+                       .arg(r->method)
+                       .arg(r->content);
+        text.append(t);
+    }
+    // save text to file
+    QFile f(folderName+"/jabber.log");
+    if (f.open(QIODevice::WriteOnly | QIODevice::Truncate))
+    {
+        QTextStream out(&f);
+        out << text;
+        f.close();
+    }
+}
+
+void LogModel::saveRowsBetweenAnchorsInFolder(const QModelIndex &beginAnchor, const QModelIndex &endAnchor, const QString &folderName)
+{
+    auto itBeginAnchor = m_logs.find(beginAnchor.row());
+    Q_ASSERT(m_logs.end() != itBeginAnchor);
+    QSharedPointer<LogItem> br = *itBeginAnchor;
+
+    auto itEndAnchor = m_logs.find(endAnchor.row());
+    Q_ASSERT(m_logs.end() != itEndAnchor);
+    QSharedPointer<LogItem> er = *itEndAnchor;
+
+    if (!m_queryMutex.tryLock())
+    {
+        qDebug() << "obtaining lock failed";
+        return;
+    }
+
+    BOOST_SCOPE_EXIT(this_) {
+        this_->m_queryMutex.unlock();
+    } BOOST_SCOPE_EXIT_END
+
+    QString sql = generateSQLStatement(br->id, er->id);
+
+    QSqlDatabase db = QSqlDatabase::database(m_dbFile, true);
+    if (!db.isValid()) {
+        db = QSqlDatabase::addDatabase("QSQLITE", m_dbFile);
+        db.setDatabaseName(m_dbFile);
+    }
+
+    if (!db.isOpen())
+        db.open();
+
+    if (db.isOpen())
+    {
+        QSqlQuery q(db);
+        q.prepare(sql);
+        if (!m_keyword.isEmpty() && m_sqlFetch.contains(QChar('?')))
+            q.addBindValue(m_keyword);
+        if (q.exec())
+        {
+            QFile f(folderName+"/jabber.log");
+            if (!f.open(QIODevice::WriteOnly | QIODevice::Truncate))
+            {
+                qDebug() << "opening file " << folderName << "/jabber.log failed";
+                return;
+            }
+
+            QTextStream out(&f);
+
+            int idIndex = q.record().indexOf("id");
+            int dateTimeIndex = q.record().indexOf("time");
+            int levelIndex = q.record().indexOf("level");
+            int threadIndex = q.record().indexOf("thread");
+            int sourceIndex = q.record().indexOf("source");
+            int categoryIndex = q.record().indexOf("category");
+            int methodIndex = q.record().indexOf("method");
+            int contentIndex = q.record().indexOf("content");
+            int logIndex = q.record().indexOf("log");
+            int lineIndex = q.record().indexOf("line");
+            while (q.next())
+            {
+                QSharedPointer<LogItem> log =  QSharedPointer<LogItem>(new LogItem);
+                log->id = q.value(idIndex).toInt();
+                log->time =  q.value(dateTimeIndex).toDateTime();
+                log->level = q.value(levelIndex).toString();
+                log->thread = q.value(threadIndex).toString();
+                log->source = q.value(sourceIndex).toString();
+                log->category = q.value(categoryIndex).toString();
+                log->method = q.value(methodIndex).toString();
+                log->content = q.value(contentIndex).toString();
+                log->logFile = q.value(logIndex).toString();
+                log->line = q.value(lineIndex).toInt();
+
+                if (log->level.isEmpty() || log->source.isEmpty() || log->logFile.isEmpty())
+                {
+                    qDebug() << "empty record, quit iterating now";
+                    break;
+                }
+
+                // save to file
+                out << QString("%1 %2 [%3] [%4] [%5] [%6] - %7\n")
+                       .arg(log->time.toString("yyyy-MM-dd hh:mm:ss.zzz"))
+                       .arg(log->level)
+                       .arg(log->thread)
+                       .arg(log->source)
+                       .arg(log->category)
+                       .arg(log->method)
+                       .arg(log->content);
+            }
+
+            f.close();
+
+            q.clear();
+            q.finish();
+        }
     }
 }
 
@@ -1007,6 +1136,66 @@ void LogModel::generateSQLStatements(int offset, QString &sqlFetch, QString &sql
     sqlFetch = QString("SELECT * FROM logs WHERE %1 LIKE '%'||?||'%' AND level GLOB 'dummy' ORDER BY epoch LIMIT %2, 200;").arg(m_searchField).arg(offset);
 }
 
+QString LogModel::generateSQLStatement(int from, int to)
+{
+    if (g_settings->allLogLevelEnabled() || m_searchField == "level")
+    {
+        if (m_luaMode)
+        {
+            // lua match
+            return QString("SELECT * FROM logs WHERE %1 AND id >= %2 AND id <= %3 MATCH 'dummy' ORDER BY epoch LIMIT 400000;").arg(m_searchField).arg(from).arg(to);
+        }
+
+        if (m_keyword.isEmpty())
+        {
+            // no search, no filter
+            return QString("SELECT * FROM logs WHERE id >= %1 AND id <= %2 ORDER BY epoch LIMIT 400000;").arg(from).arg(to);
+        }
+
+        if (m_searchField.isEmpty())
+        {
+            // SQL WHERE clause extension
+            return QString("SELECT * FROM logs WHERE %1 AND id >= %2 AND id <= %3 ORDER BY epoch LIMIT 400000;").arg(m_keyword).arg(from).arg(to);
+        }
+
+        if (m_regexpMode)
+        {
+            // regexp filter
+            return QString("SELECT * FROM logs WHERE %1 AND id >= %2 AND id <= %3 REGEXP ? ORDER BY epoch LIMIT 400000;").arg(m_searchField).arg(from).arg(to);
+        }
+
+        // simple keyword, SQL LIKE fitler
+        return QString("SELECT * FROM logs WHERE %1 LIKE '%'||?||'%' AND id >= %2 AND id <= %3 ORDER BY epoch LIMIT 400000;").arg(m_searchField).arg(from).arg(to);
+    }
+
+    if (m_luaMode)
+    {
+        // lua match
+        return QString("SELECT * FROM logs WHERE %1 AND id >= %2 AND id <= %3 MATCH 'dummy' AND level GLOB 'dummy' ORDER BY epoch LIMIT 400000;").arg(m_searchField).arg(from).arg(to);
+    }
+
+    if (m_keyword.isEmpty())
+    {
+        // no search, no filter
+        return QString("SELECT * FROM logs WHERE level GLOB 'dummy' AND id >= %1 AND id <= %2 ORDER BY epoch LIMIT 400000;").arg(from).arg(to);
+    }
+
+    if (m_searchField.isEmpty())
+    {
+        // SQL WHERE clause extension
+        return QString("SELECT * FROM logs WHERE %1 AND level GLOB 'dummy' AND id >= %2 AND id <= %3 ORDER BY epoch LIMIT 400000;").arg(m_keyword).arg(from).arg(to);
+    }
+
+    if (m_regexpMode)
+    {
+        // regexp filter
+        return QString("SELECT * FROM logs WHERE %1 REGEXP ? AND level GLOB 'dummy' AND id >= %2 AND id <= %3 ORDER BY epoch LIMIT 400000;").arg(m_searchField).arg(from).arg(to);
+    }
+
+    // simple keyword, SQL LIKE fitler
+    return QString("SELECT * FROM logs WHERE %1 LIKE '%'||?||'%' AND level GLOB 'dummy' AND id >= %2 AND id <= %3 ORDER BY epoch LIMIT 400000;").arg(m_searchField).arg(from).arg(to);
+}
+
 void LogModel::doFilter(const QString &content, const QString &field, bool regexpMode, bool luaMode, bool saveOptions)
 {
     if (m_keyword == content)
@@ -1127,11 +1316,6 @@ void LogModel::doQuery(int offset)
             if (m_stopQuerying)
                 return;
 
-            BOOST_SCOPE_EXIT(q) {
-                q.clear();
-                q.finish();
-            } BOOST_SCOPE_EXIT_END
-
             int idIndex = q.record().indexOf("id");
             int dateTimeIndex = q.record().indexOf("time");
             int levelIndex = q.record().indexOf("level");
@@ -1182,6 +1366,9 @@ void LogModel::doQuery(int offset)
                 logs.clear();
                 logItemCount = 0;
             }
+
+            q.clear();
+            q.finish();
         }
     }
 }

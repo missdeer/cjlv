@@ -7,6 +7,7 @@
 #include "codeeditortabwidget.h"
 #include "extension.h"
 
+class MainWindow;
 class PresenceWidget;
 class LogModel;
 struct StatisticItem;
@@ -85,6 +86,10 @@ private slots:
     void onCbKeywordEditTextChanged(const QString &text);
     void onCbKeywordCurrentIndexChanged(const QString &text);
     void onReloadSearchResult();
+    void onOpenSelectedRowsInNewTab();
+    void onSetBeginAnchor();
+    void onSetEndAnchor();
+    void onOpenRowsBetweenAnchorsInNewTab();
 public slots:
     void onClearKeyword();
 private:
@@ -106,6 +111,10 @@ private:
     QMutex m_mutex;
     int m_lastId;
     int m_lastColumn;
+
+    QModelIndex m_beginAnchor;
+    QModelIndex m_endAnchor;
+
     bool event(QEvent *e) Q_DECL_OVERRIDE;
 
     void extract(LogView* v, const QString& fileName, const QString& dirName);
@@ -117,6 +126,7 @@ private:
     void gotoLogLine(const QModelIndex& index);
     void showCodeEditorPane();
     void setChart(QtCharts::QChartView* chartView, const QList<QSharedPointer<StatisticItem> >& sis, const QString& label);
+    MainWindow *getMainWindow();
 };
 
 class SourceWindow;

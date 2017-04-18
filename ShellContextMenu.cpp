@@ -43,7 +43,7 @@ void CShellContextMenu::ShowContextMenu(QMenu *menu, QWidget* parent, QPoint &pt
 		QList<QAction *> actions = menu->actions();
 		UINT_PTR id = MAX_ID + 1;
 		::AppendMenuW(hMenu, MF_SEPARATOR, id++, 0);
-		Q_FOREACH(QAction* action, actions)
+        for(QAction* action : actions)
 		{
 			if (action->text().isEmpty())
 				::AppendMenuW(hMenu, MF_SEPARATOR, id++, 0);

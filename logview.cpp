@@ -229,7 +229,7 @@ void LogView::copySelectedRows()
         return;
     QModelIndexList l = selected->selectedIndexes();
     QList<int> rows;
-    Q_FOREACH(const QModelIndex& i, l)
+    for(const QModelIndex& i : l)
     {
         rows.append(i.row());
     }
@@ -270,14 +270,7 @@ void LogView::showCodeEditorPane()
     {
         if (!g_sourceWindow)
         {
-            QWidgetList widgets = qApp->topLevelWidgets();
-            auto it = std::find_if(widgets.begin(), widgets.end(),
-                                   [](QWidget* w){ return (w->objectName() == "MainWindow"); });
-            QWidget* mainWindow = nullptr;
-            if (widgets.end() != it)
-                mainWindow = *it;
-            else if (!widgets.isEmpty())
-                mainWindow = widgets.at(0);
+            MainWindow* mainWindow = getMainWindow();
 
             g_sourceWindow = new SourceWindow(mainWindow);
 
@@ -294,7 +287,7 @@ void LogView::showCodeEditorPane()
                 }
             }
             g_sourceWindow->showMaximized();
-            g_sourceWindow->setMainTabWidget(((MainWindow*)mainWindow)->getMainTabWidget());
+            g_sourceWindow->setMainTabWidget(mainWindow->getMainTabWidget());
         }
 
         if (!g_sourceWindow->isVisible())
@@ -420,7 +413,7 @@ void LogView::openSourceFile(const QModelIndex &index, bool openWithBuiltinEdito
         }
 
         QDir srcDir(g_settings->sourceDirectory());
-        Q_FOREACH(const QString& filePath, results)
+        for(const QString& filePath : results)
         {
             QFileInfo fi(filePath);
             if (fileDirs.length() > 1)
@@ -547,7 +540,7 @@ void LogView::setChart(QtCharts::QChartView* chartView,const QList<QSharedPointe
     }
 
     int index = sis.length() - 1;
-    if (sis.at(index)->count > sis.at(index - 1)->count)
+    if (sis.length() > 1 && sis.at(index)->count > sis.at(index - 1)->count)
         index--;
     QPieSlice *slice = series->slices().at(index);
     slice->setExploded();
@@ -561,6 +554,19 @@ void LogView::setChart(QtCharts::QChartView* chartView,const QList<QSharedPointe
 
     chartView->setChart(chart);
     chartView->setRenderHint(QPainter::Antialiasing);
+}
+
+MainWindow *LogView::getMainWindow()
+{
+    QWidgetList widgets = qApp->topLevelWidgets();
+    auto it = std::find_if(widgets.begin(), widgets.end(),
+                           [](QWidget* w){ return (w->objectName() == "MainWindow"); });
+    QWidget* mainWindow = nullptr;
+    if (widgets.end() != it)
+        mainWindow = *it;
+    else if (!widgets.isEmpty())
+        mainWindow = widgets.at(0);
+    return (MainWindow*)mainWindow;
 }
 
 void LogView::onDataLoaded()
@@ -634,6 +640,26 @@ void LogView::onCustomContextMenuRequested(const QPoint &pos)
         QAction* pLogFilePreviewAction = new QAction("Log File Preview", this);
         connect(pLogFilePreviewAction, &QAction::triggered, this, &LogView::onLogFilePreview);
         menu.addAction(pLogFilePreviewAction);
+
+        menu.addSeparator();
+        QItemSelectionModel* selected = m_logsTableView->selectionModel();
+        if (selected && selected->hasSelection())
+        {
+            QAction* pOpenSelectedRowsInNewTabAction = new QAction("Open Selected Rows In New Tab", this);
+            connect(pOpenSelectedRowsInNewTabAction, &QAction::triggered, this, &LogView::onOpenSelectedRowsInNewTab);
+            menu.addAction(pOpenSelectedRowsInNewTabAction);
+
+            QAction* pSetBeginAnchorAction = new QAction("Set Begin Anchor At The First Selected Row", this);
+            connect(pSetBeginAnchorAction, &QAction::triggered, this, &LogView::onSetBeginAnchor);
+            menu.addAction(pSetBeginAnchorAction);
+
+            QAction* pSetEndAnchorAction = new QAction("Set End Anchor At The Last Selected Row", this);
+            connect(pSetEndAnchorAction, &QAction::triggered, this, &LogView::onSetEndAnchor);
+            menu.addAction(pSetEndAnchorAction);
+        }
+        QAction* pOpenRowsBetweenAnchorsInNewTabAction = new QAction("Open Rows Between Anchors In New Tab", this);
+        connect(pOpenRowsBetweenAnchorsInNewTabAction, &QAction::triggered, this, &LogView::onOpenRowsBetweenAnchorsInNewTab);
+        menu.addAction(pOpenRowsBetweenAnchorsInNewTabAction);
 
 #if defined(Q_OS_WIN)
         CShellContextMenu scm;
@@ -770,6 +796,109 @@ void LogView::enableRegexpMode(bool enabled)
 void LogView::onReloadSearchResult()
 {
     filter(m_cbSearchKeyword->lineEdit()->text().trimmed());
+}
+
+void LogView::onOpenSelectedRowsInNewTab()
+{
+    QItemSelectionModel* selected =  m_logsTableView->selectionModel();
+    if (!selected->hasSelection())
+        return;
+    QModelIndexList l = selected->selectedIndexes();
+    QList<int> rows;
+    for(const QModelIndex& i : l)
+    {
+        rows.append(i.row());
+    }
+    auto t = rows.toStdList();
+    t.unique();
+    rows = QList<int>::fromStdList(t);
+
+    QString name = QInputDialog::getText(this, tr("Input Name"), tr("Please input name for the selected rows, it will be used as tab title."));
+
+    QString tempDir = g_settings->temporaryDirectory();
+    if (tempDir.isEmpty())
+    {
+        tempDir = QStandardPaths::writableLocation(QStandardPaths::TempLocation) % "/CiscoJabberLogs";
+    }
+    tempDir.append("/" % name);
+    QDir dir(tempDir);
+    if (!dir.exists())
+        dir.mkpath(tempDir);
+    else
+    {
+        if (QMessageBox::question(this,
+                              tr("Duplicated Name"),
+                              tr("There is a tab with the same name, overwrite it?"),
+                              QMessageBox::Yes | QMessageBox::No,
+                              QMessageBox::No) == QMessageBox::No)
+        {
+            return;
+        }
+    }
+
+    m_logModel->saveRowsInFolder(rows, tempDir);
+    TabWidget* tabWidget = getMainWindow()->getMainTabWidget();
+    tabWidget->openFolder(tempDir, false);
+}
+
+void LogView::onSetBeginAnchor()
+{
+    QItemSelectionModel* selected =  m_logsTableView->selectionModel();
+    if (!selected->hasSelection())
+        return;
+    QModelIndexList l = selected->selectedIndexes();
+    m_beginAnchor = l.at(0);
+}
+
+void LogView::onSetEndAnchor()
+{
+    QItemSelectionModel* selected =  m_logsTableView->selectionModel();
+    if (!selected->hasSelection())
+        return;
+    QModelIndexList l = selected->selectedIndexes();
+    m_endAnchor = l.at(l.length()-1);
+}
+
+void LogView::onOpenRowsBetweenAnchorsInNewTab()
+{
+    if (!m_beginAnchor.isValid())
+    {
+        QMessageBox::warning(this, tr("Error"), tr("Begin Anchor hasn't been set."), QMessageBox::Ok);
+        return;
+    }
+
+    if (!m_endAnchor.isValid())
+    {
+        QMessageBox::warning(this, tr("Error"), tr("End Anchor hasn't been set."), QMessageBox::Ok);
+        return;
+    }
+
+    QString name = QInputDialog::getText(this, tr("Input Name"), tr("Please input name for the rows between anchors, it will be used as tab title."));
+
+    QString tempDir = g_settings->temporaryDirectory();
+    if (tempDir.isEmpty())
+    {
+        tempDir = QStandardPaths::writableLocation(QStandardPaths::TempLocation) % "/CiscoJabberLogs";
+    }
+    tempDir.append("/" % name);
+    QDir dir(tempDir);
+    if (!dir.exists())
+        dir.mkpath(tempDir);
+    else
+    {
+        if (QMessageBox::question(this,
+                              tr("Duplicated Name"),
+                              tr("There is a tab with the same name, overwrite it?"),
+                              QMessageBox::Yes | QMessageBox::No,
+                              QMessageBox::No) == QMessageBox::No)
+        {
+            return;
+        }
+    }
+
+    m_logModel->saveRowsBetweenAnchorsInFolder(m_beginAnchor, m_endAnchor, tempDir);
+    TabWidget* tabWidget = getMainWindow()->getMainTabWidget();
+    tabWidget->openFolder(tempDir, false);
 }
 
 bool LogView::event(QEvent* e)
