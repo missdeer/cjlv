@@ -112,6 +112,8 @@ macx: {
 }
 
 win32: {
+    DISTFILES += \
+        cjlv.rc
     TARGET = CJLV
     QT += winextras
     QMAKE_LFLAGS += "/LTCG"
