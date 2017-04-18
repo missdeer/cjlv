@@ -50,6 +50,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(em, &ExtensionModel::extensionRemoved, this, &MainWindow::onExtensionRemoved);
     connect(em, &ExtensionModel::extensionScanned, this, &MainWindow::onExtensionScanned);
 
+    connect(QApplication::clipboard(), &QClipboard::dataChanged, this, &MainWindow::clipboardChanged);
     ui->actionSearch->setChecked(g_settings->searchOrFitler());
 }
 
@@ -107,6 +108,24 @@ void MainWindow::onExtensionScanned()
 void MainWindow::onStatusBarMessageChanges(const QString &msg)
 {
     ui->statusBar->showMessage(msg);
+}
+
+void MainWindow::clipboardChanged()
+{
+    QClipboard *clipboard = QApplication::clipboard();
+    QString originalText = clipboard->text();
+
+    if (originalText.startsWith("http://prt.jabberqa.cisco.com/#/conversations/"))
+    {
+        if (QMessageBox::question(this,
+                                  tr("Open PRT from URL"),
+                                  QString(tr("URL %1 is detected from clipboard, open it now?")).arg(originalText),
+                                  QMessageBox::Yes | QMessageBox::No,
+                                  QMessageBox::Yes) == QMessageBox::Yes)
+        {
+            openPRTFromURL(originalText);
+        }
+    }
 }
 
 void MainWindow::prtRequestFinished()
@@ -319,12 +338,10 @@ void MainWindow::on_actionOpenCurrentInstalledJabberLogFolder_triggered()
     ui->tabWidget->openFolder(dir, true);
 }
 
-void MainWindow::on_actionOpenFromPRTTrackingSystemURL_triggered()
+void MainWindow::openPRTFromURL(const QString &u)
 {
-    QString u = QInputDialog::getText(this, tr("Input URL"), tr("Input a valid PRT Tracking System URL"));
-    u = u.replace("#", "api/v1");
-
-    QUrl url(u);
+    QString rawURL(u);
+    QUrl url(rawURL.replace("#", "api/v1"));
     QNetworkRequest req(url);
     req.setRawHeader("token", g_settings->prtTrackingSystemToken().toUtf8());
     if (!m_nam)
@@ -337,6 +354,12 @@ void MainWindow::on_actionOpenFromPRTTrackingSystemURL_triggered()
     connect(reply, SIGNAL(sslErrors(QList<QSslError>)),
             this, SLOT(prtTrackingSystemRequestSslErrors(QList<QSslError>)));
     connect(reply, SIGNAL(finished()), this, SLOT(prtTrackingSystemRequestFinished()));
+}
+
+void MainWindow::on_actionOpenFromPRTTrackingSystemURL_triggered()
+{
+    QString u = QInputDialog::getText(this, tr("Input URL"), tr("Input a valid PRT Tracking System URL"));
+    openPRTFromURL(u);
 }
 
 void MainWindow::on_actionSearch_triggered()

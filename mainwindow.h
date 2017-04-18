@@ -31,6 +31,7 @@ public:
 public slots:
     void onStatusBarMessageChanges(const QString& msg);
 private slots:
+    void clipboardChanged();
     void prtRequestFinished();
     void prtRequestReadyRead();
     void prtTrackingSystemRequestFinished();
@@ -115,6 +116,7 @@ private:
     void showEvent(QShowEvent *e);
 
     void downloadPRT(const QString& u);
+    void openPRTFromURL(const QString& u);
 };
 
 #if defined(Q_OS_WIN)
