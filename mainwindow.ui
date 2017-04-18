@@ -78,6 +78,7 @@
     <addaction name="actionOpenRawLogFile"/>
     <addaction name="actionOpenLogFolder"/>
     <addaction name="actionOpenCurrentInstalledJabberLogFolder"/>
+    <addaction name="actionOpenFromPRTTrackingSystemURL"/>
     <addaction name="actionReload"/>
     <addaction name="separator"/>
     <addaction name="actionClose"/>
@@ -813,6 +814,11 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+L, Ctrl+T</string>
+   </property>
+  </action>
+  <action name="actionOpenFromPRTTrackingSystemURL">
+   <property name="text">
+    <string>Open From PRT Tracking System URL...</string>
    </property>
   </action>
  </widget>

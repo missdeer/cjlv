@@ -15,7 +15,9 @@ QTabWidget* g_mainTabWidget = nullptr;
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
-    thumbbar(nullptr)
+    thumbbar(nullptr),
+    m_nam(nullptr),
+    m_prt(nullptr)
 {
     ui->setupUi(this);
     g_mainTabWidget = ui->tabWidget;
@@ -105,6 +107,107 @@ void MainWindow::onExtensionScanned()
 void MainWindow::onStatusBarMessageChanges(const QString &msg)
 {
     ui->statusBar->showMessage(msg);
+}
+
+void MainWindow::prtRequestFinished()
+{
+    QNetworkReply* reply = qobject_cast<QNetworkReply*>(sender());
+    reply->deleteLater();
+    m_prt->close();
+    ui->tabWidget->openZipBundle(m_prt->fileName());
+}
+
+void MainWindow::prtRequestReadyRead()
+{
+    QNetworkReply* reply = qobject_cast<QNetworkReply*>(sender());
+    int statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+    if (statusCode >= 200 && statusCode < 300)
+    {
+        m_prt->write(reply->readAll());
+    }
+}
+
+void MainWindow::prtTrackingSystemRequestFinished()
+{
+    QNetworkReply* reply = qobject_cast<QNetworkReply*>(sender());
+    reply->deleteLater();
+
+    QJsonDocument doc = QJsonDocument::fromJson(m_prtInfo);
+    if (!doc.isObject())
+    {
+        qDebug() << "content received is not a json object" << QString(m_prtInfo);
+        return;
+    }
+
+    QJsonObject docObj = doc.object();
+    QJsonValue emailsObj = docObj["emails"];
+    if (!emailsObj.isArray())
+    {
+        qDebug() << "emails node is expected to be an array";
+        return;
+    }
+
+    QJsonArray emails = emailsObj.toArray();
+    for (auto email : emails)
+    {
+        if (!email.isObject())
+        {
+            qDebug() << "email element is expected to be an object";
+            continue;
+        }
+        QJsonObject ele = email.toObject();
+        QJsonValue attachmentsObj = ele["attachments"];
+        if (!attachmentsObj.isArray())
+        {
+            qDebug() << "attachments node is expected to be an array";
+            continue;
+        }
+        QJsonArray attachments = attachmentsObj.toArray();
+        for (auto attachment : attachments)
+        {
+            if (!attachment.isObject())
+            {
+                qDebug() << "attachment is expected to be an object";
+                continue;
+            }
+            QJsonObject attachmentObj = attachment.toObject();
+            QJsonValue path = attachmentObj["file_directory"];
+            QJsonValue name = attachmentObj["file_name"];
+            if (!path.isString() || !name.isString())
+            {
+                qDebug() << "path or name is missing.";
+                continue;
+            }
+            QString u = QString("http://prt.jabberqa.cisco.com/download?path=%1&name=%2").arg(path.toString()).arg(name.toString());
+            downloadPRT(u);
+            return;
+        }
+    }
+}
+
+void MainWindow::prtTrackingSystemRequestReadyRead()
+{
+    QNetworkReply* reply = qobject_cast<QNetworkReply*>(sender());
+    int statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+    if (statusCode >= 200 && statusCode < 300)
+    {
+        m_prtInfo.append(reply->readAll());
+    }
+}
+
+void MainWindow::prtTrackingSystemRequestError(QNetworkReply::NetworkError e)
+{
+    QNetworkReply* reply = qobject_cast<QNetworkReply*>(sender());
+
+    qDebug() << "network error:" << e << reply->errorString();
+}
+
+void MainWindow::prtTrackingSystemRequestSslErrors(QList<QSslError> es)
+{
+    for(auto e : es)
+    {
+        qDebug() << "ssl error:" << e.errorString();
+    }
 }
 
 void MainWindow::onIPCMessageReceived(const QString &message, QObject* /*socket*/)
@@ -214,6 +317,26 @@ void MainWindow::on_actionOpenCurrentInstalledJabberLogFolder_triggered()
     }
 
     ui->tabWidget->openFolder(dir, true);
+}
+
+void MainWindow::on_actionOpenFromPRTTrackingSystemURL_triggered()
+{
+    QString u = QInputDialog::getText(this, tr("Input URL"), tr("Input a valid PRT Tracking System URL"));
+    u = u.replace("#", "api/v1");
+
+    QUrl url(u);
+    QNetworkRequest req(url);
+    req.setRawHeader("token", g_settings->prtTrackingSystemToken().toUtf8());
+    if (!m_nam)
+        m_nam = new QNetworkAccessManager(this);
+    m_prtInfo.clear();
+    QNetworkReply* reply = m_nam->get(req);
+    connect(reply, SIGNAL(readyRead()), this, SLOT(prtTrackingSystemRequestReadyRead()));
+    connect(reply, SIGNAL(error(QNetworkReply::NetworkError)),
+            this, SLOT(prtTrackingSystemRequestError(QNetworkReply::NetworkError)));
+    connect(reply, SIGNAL(sslErrors(QList<QSslError>)),
+            this, SLOT(prtTrackingSystemRequestSslErrors(QList<QSslError>)));
+    connect(reply, SIGNAL(finished()), this, SLOT(prtTrackingSystemRequestFinished()));
 }
 
 void MainWindow::on_actionSearch_triggered()
@@ -397,6 +520,39 @@ void MainWindow::showEvent(QShowEvent *e)
 #endif
 
     e->accept();
+}
+
+void MainWindow::downloadPRT(const QString &u)
+{
+    QUrl url(u);
+    QNetworkRequest req(url);
+    req.setRawHeader("token", g_settings->prtTrackingSystemToken().toUtf8());
+    if (!m_nam)
+        m_nam = new QNetworkAccessManager(this);
+
+    QString tempDir = g_settings->temporaryDirectory();
+    if (tempDir.isEmpty())
+    {
+        tempDir = QStandardPaths::writableLocation(QStandardPaths::TempLocation) % "/CiscoJabberLogs";
+    }
+    QDir dir(tempDir);
+    if (!dir.exists())
+        dir.mkpath(tempDir);
+
+    int index = u.lastIndexOf(QChar(':'));
+    index = u.indexOf(QChar('_'), index);
+    QString f(u.mid(index+1));
+
+    m_prt = new QFile(tempDir % "/" % f);
+    m_prt->open(QIODevice::WriteOnly | QIODevice::Truncate);
+
+    QNetworkReply* reply = m_nam->get(req);
+    connect(reply, SIGNAL(readyRead()), this, SLOT(prtRequestReadyRead()));
+    connect(reply, SIGNAL(error(QNetworkReply::NetworkError)),
+            this, SLOT(prtTrackingSystemRequestError(QNetworkReply::NetworkError)));
+    connect(reply, SIGNAL(sslErrors(QList<QSslError>)),
+            this, SLOT(prtTrackingSystemRequestSslErrors(QList<QSslError>)));
+    connect(reply, SIGNAL(finished()), this, SLOT(prtRequestFinished()));
 }
 
 void MainWindow::on_actionHelpContent_triggered()

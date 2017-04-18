@@ -12,6 +12,7 @@ QT_BEGIN_NAMESPACE
 class QDragEnterEvent;
 class QDropEvent;
 class QWinThumbnailToolBar;
+class QNetworkAccessManager;
 #if defined(Q_OS_WIN)
 class QWinTaskbarButton;
 class QWinTaskbarProgress;
@@ -30,6 +31,12 @@ public:
 public slots:
     void onStatusBarMessageChanges(const QString& msg);
 private slots:
+    void prtRequestFinished();
+    void prtRequestReadyRead();
+    void prtTrackingSystemRequestFinished();
+    void prtTrackingSystemRequestReadyRead();
+    void prtTrackingSystemRequestError(QNetworkReply::NetworkError e);
+    void prtTrackingSystemRequestSslErrors(QList<QSslError> es);
     void onIPCMessageReceived(const QString &message, QObject *socket);
     void onExtensionScanned();
     void onExtensionRemoved(ExtensionPtr e);
@@ -43,6 +50,8 @@ private slots:
     void on_actionOpenLogFolder_triggered();
 
     void on_actionOpenCurrentInstalledJabberLogFolder_triggered();
+
+    void on_actionOpenFromPRTTrackingSystemURL_triggered();
 
     void on_actionSearch_triggered();
 
@@ -97,11 +106,15 @@ private slots:
 private:
     Ui::MainWindow *ui;
     QWinThumbnailToolBar *thumbbar;
+    QNetworkAccessManager *m_nam;
+    QFile *m_prt;
+    QByteArray m_prtInfo;
+
     void dragEnterEvent(QDragEnterEvent *e);
-
     void dropEvent(QDropEvent *e);
-
     void showEvent(QShowEvent *e);
+
+    void downloadPRT(const QString& u);
 };
 
 #if defined(Q_OS_WIN)

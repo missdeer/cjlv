@@ -20,7 +20,6 @@
 #include <QtCore>
 #include <QSettings>
 #include <QDir>
-#include <QUrl>
 #include <QFile>
 #include <QFileInfo>
 #include <QTemporaryFile>
@@ -55,6 +54,9 @@
 
 #include <QDomDocument>
 
+#include <QJsonDocument>
+#include <QJsonObject>
+
 #include <QtConcurrent>
 #include <QFuture>
 #include <QWaitCondition>
@@ -65,6 +67,11 @@
 #include <QSqlRecord>
 #include <QSqlError>
 #include <QSqlDriver>
+
+#include <QNetworkAccessManager>
+#include <QNetworkReply>
+#include <QNetworkRequest>
+#include <QUrl>
 
 #include <QCommandLineOption>
 #include <QCommandLineParser>
