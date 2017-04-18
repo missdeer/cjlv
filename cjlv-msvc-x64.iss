@@ -47,8 +47,6 @@ Name: enu; MessagesFile: compiler:Default.isl
 Name: desktopicon; Description: {cm:CreateDesktopIcon}; GroupDescription: {cm:AdditionalIcons}
 
 [Files]
-Source: "Cisco Jabber Log Viewer.exe"; DestDir: "{app}"
-Source: "ScintillaEdit3.dll"; DestDir: "{app}"
 Source: "iconengines\*"; DestDir: "{app}\iconengines"; Flags: recursesubdirs       
 Source: "imageformats\*"; DestDir: "{app}\imageformats"; Flags: recursesubdirs
 Source: "language\*"; DestDir: "{app}\language"; Flags: recursesubdirs
@@ -56,26 +54,14 @@ Source: "platforms\*"; DestDir: "{app}\platforms"; Flags: recursesubdirs
 Source: "sqldrivers\qsqlite.dll"; DestDir: "{app}\sqldrivers"; Flags: recursesubdirs
 Source: "themes\*"; DestDir: "{app}\themes"; Flags: recursesubdirs
 Source: "extensions\*"; DestDir: "{app}\extensions"; Flags: recursesubdirs
-Source: "langmap.xml"; DestDir: "{app}"
-Source: "d3dcompiler_47.dll"; DestDir: "{app}"
-Source: "Everything.dll"; DestDir: "{app}"
-Source: "Everything.exe"; DestDir: "{app}"
-Source: "lua51.dll"; DestDir: "{app}"
-Source: "libEGL.dll"; DestDir: "{app}"
-Source: "libGLESV2.dll"; DestDir: "{app}"
-Source: "opengl32sw.dll"; DestDir: "{app}"
-Source: "Qt5Core.dll"; DestDir: "{app}"
-Source: "Qt5Gui.dll"; DestDir: "{app}"
-Source: "Qt5Sql.dll"; DestDir: "{app}"
-Source: "Qt5Svg.dll"; DestDir: "{app}"
-Source: "Qt5Widgets.dll"; DestDir: "{app}"
-Source: "Qt5Xml.dll"; DestDir: "{app}"
-Source: "Qt5WinExtras.dll"; DestDir: "{app}"
+Source: "*.xml"; DestDir: "{app}"
+Source: "*.exe"; DestDir: "{app}"
+Source: "*.dll"; DestDir: "{app}"
 
 [Icons]
-Name: {commondesktop}\Cisco Jabber Log Viewer; Filename: {app}\Cisco Jabber Log Viewer.exe; WorkingDir: {app}; Tasks: desktopicon; Comment: Launch Cisco Jabber Log Viewer
-Name: {group}\Cisco Jabber; Filename: {app}\Cisco Jabber Log Viewer.exe; WorkingDir: {app}; Comment: Launch Cisco Jabber Log Viewer
-Name: {group}\{cm:UninstallProgram, Cisco Jabber Log Viewer}; Filename: {uninstallexe}; IconFilename: {app}\Cisco Jabber Log Viewer.exe; IconIndex: 0; 
+Name: {commondesktop}\Cisco Jabber Log Viewer; Filename: {app}\CJLV.exe; WorkingDir: {app}; Tasks: desktopicon; Comment: Launch Cisco Jabber Log Viewer
+Name: {group}\Cisco Jabber; Filename: {app}\CJLV.exe; WorkingDir: {app}; Comment: Launch Cisco Jabber Log Viewer
+Name: {group}\{cm:UninstallProgram, Cisco Jabber Log Viewer}; Filename: {uninstallexe}; IconFilename: {app}\CJLV.exe; IconIndex: 0; 
 
 [Messages]
 BeveledLabel=Powered by fyang3@cisco.com
