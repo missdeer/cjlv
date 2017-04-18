@@ -133,6 +133,9 @@ public:
         m_multiMonitorEnabled = multiMonitorEnabled;
     }
 
+    const QString &prtTrackingSystemToken() const;
+    void setPrtTrackingSystemToken(const QString &prtTrackingSystemToken);
+
 private:
     bool m_inMemoryDatabase;
     bool m_searchOrFitler;
@@ -147,6 +150,7 @@ private:
     QString m_lastOpenedDirectory;
     QString m_sourceDirectory;
     QString m_everythingPath;
+    QString m_prtTrackingSystemToken;
 };
 
 extern Settings *g_settings;

@@ -41,12 +41,23 @@ void Settings::initialize()
     }
 }
 
+const QString& Settings::prtTrackingSystemToken() const
+{
+    return m_prtTrackingSystemToken;
+}
+
+void Settings::setPrtTrackingSystemToken(const QString &prtTrackingSystemToken)
+{
+    m_prtTrackingSystemToken = prtTrackingSystemToken;
+}
+
 void Settings::save()
 {
     QSettings settings(QSettings::IniFormat, QSettings::UserScope, "cisco.com", "Cisco Jabber Log Viewer");
     settings.setValue("searchOrFilter", m_searchOrFitler);
     settings.setValue("temporaryDirectory", m_temporaryDirectory);
     settings.setValue("sourceDirectory", m_sourceDirectory);
+    settings.setValue("prtTrackingSystemToken", m_prtTrackingSystemToken);
     settings.setValue("lastOpenedDirectory",QDir::toNativeSeparators(m_lastOpenedDirectory));
     if (!m_everythingPath.isEmpty())
         settings.setValue("everythingPath", m_everythingPath);
@@ -59,6 +70,7 @@ void Settings::load()
     m_searchOrFitler = settings.value("searchOrFilter", false).toBool();
     m_temporaryDirectory = settings.value("temporaryDirectory").toString();
     m_sourceDirectory = settings.value("sourceDirectory").toString();
+    m_prtTrackingSystemToken = settings.value("prtTrackingSystemToken").toString();
     m_lastOpenedDirectory = settings.value("lastOpenedDirectory").toString();
     m_everythingPath = settings.value("everythingPath").toString();
     if (m_everythingPath.isEmpty())

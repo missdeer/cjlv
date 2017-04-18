@@ -6,14 +6,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>198</height>
+    <width>574</width>
+    <height>224</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Preference</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0,0,1,0">
+  <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0,0,0,0,0,0">
    <property name="spacing">
     <number>1</number>
    </property>
@@ -41,7 +41,7 @@
    <item>
     <widget class="QLabel" name="label_2">
      <property name="text">
-      <string>Source code directory</string>
+      <string>Source code directory:</string>
      </property>
     </widget>
    </item>
@@ -60,7 +60,27 @@
     </layout>
    </item>
    <item>
-    <widget class="QWidget" name="widget" native="true"/>
+    <widget class="QLabel" name="label_3">
+     <property name="text">
+      <string>PRT Tracking System Token:</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLineEdit" name="edtToken"/>
+   </item>
+   <item>
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
    </item>
    <item>
     <widget class="QDialogButtonBox" name="buttonBox">

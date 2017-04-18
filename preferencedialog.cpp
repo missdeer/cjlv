@@ -15,6 +15,7 @@ PreferenceDialog::PreferenceDialog(QWidget *parent) :
     setFixedSize( size() );
     ui->edtTemporaryDirectory->setText(g_settings->temporaryDirectory());
     ui->edtSourceCodeDirectory->setText(g_settings->sourceDirectory());
+    ui->edtToken->setText(g_settings->prtTrackingSystemToken());
 }
 
 PreferenceDialog::~PreferenceDialog()
@@ -26,6 +27,7 @@ void PreferenceDialog::accept()
 {
     g_settings->setTemporaryDirectory(ui->edtTemporaryDirectory->text());
     g_settings->setSourceDirectory(ui->edtSourceCodeDirectory->text());
+    g_settings->setPrtTrackingSystemToken(ui->edtToken->text());
     g_settings->save();
 }
 
@@ -73,4 +75,12 @@ void PreferenceDialog::on_buttonBox_accepted()
 {
     accept();
     QDialog::accept();
+}
+
+void PreferenceDialog::on_edtToken_textChanged(const QString &)
+{
+#if defined(Q_OS_MAC)
+    g_settings->setPrtTrackingSystemToken(ui->edtToken->text());
+    g_settings->save();
+#endif
 }

@@ -21,6 +21,8 @@ private slots:
 
     void on_buttonBox_accepted();
 
+    void on_edtToken_textChanged(const QString &);
+
 private:
     Ui::PreferenceDialog *ui;
 };
