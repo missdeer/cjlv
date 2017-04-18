@@ -50,7 +50,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(em, &ExtensionModel::extensionRemoved, this, &MainWindow::onExtensionRemoved);
     connect(em, &ExtensionModel::extensionScanned, this, &MainWindow::onExtensionScanned);
 
-    connect(QApplication::clipboard(), &QClipboard::dataChanged, this, &MainWindow::clipboardChanged);
+    connect(QApplication::clipboard(), &QClipboard::dataChanged, this, &MainWindow::onClipboardChanged);
     ui->actionSearch->setChecked(g_settings->searchOrFitler());
 }
 
@@ -110,7 +110,7 @@ void MainWindow::onStatusBarMessageChanges(const QString &msg)
     ui->statusBar->showMessage(msg);
 }
 
-void MainWindow::clipboardChanged()
+void MainWindow::onClipboardChanged()
 {
     QClipboard *clipboard = QApplication::clipboard();
     QString originalText = clipboard->text();
@@ -128,7 +128,7 @@ void MainWindow::clipboardChanged()
     }
 }
 
-void MainWindow::prtRequestFinished()
+void MainWindow::onPRTRequestFinished()
 {
     QNetworkReply* reply = qobject_cast<QNetworkReply*>(sender());
     reply->deleteLater();
@@ -136,7 +136,7 @@ void MainWindow::prtRequestFinished()
     ui->tabWidget->openZipBundle(m_prt->fileName());
 }
 
-void MainWindow::prtRequestReadyRead()
+void MainWindow::onPRTRequestReadyRead()
 {
     QNetworkReply* reply = qobject_cast<QNetworkReply*>(sender());
     int statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
@@ -146,7 +146,7 @@ void MainWindow::prtRequestReadyRead()
     }
 }
 
-void MainWindow::prtTrackingSystemRequestFinished()
+void MainWindow::onPRTTrackingSystemRequestFinished()
 {
     QNetworkReply* reply = qobject_cast<QNetworkReply*>(sender());
     reply->deleteLater();
@@ -204,7 +204,7 @@ void MainWindow::prtTrackingSystemRequestFinished()
     }
 }
 
-void MainWindow::prtTrackingSystemRequestReadyRead()
+void MainWindow::onPRTTrackingSystemRequestReadyRead()
 {
     QNetworkReply* reply = qobject_cast<QNetworkReply*>(sender());
     int statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
@@ -214,14 +214,14 @@ void MainWindow::prtTrackingSystemRequestReadyRead()
     }
 }
 
-void MainWindow::prtTrackingSystemRequestError(QNetworkReply::NetworkError e)
+void MainWindow::onPRTRequestError(QNetworkReply::NetworkError e)
 {
     QNetworkReply* reply = qobject_cast<QNetworkReply*>(sender());
 
     qDebug() << "network error:" << e << reply->errorString();
 }
 
-void MainWindow::prtTrackingSystemRequestSslErrors(const QList<QSslError> & es)
+void MainWindow::onPRTRequestSslErrors(const QList<QSslError> & es)
 {
     for(const QSslError &e : es)
     {
@@ -348,12 +348,12 @@ void MainWindow::openPRTFromURL(const QString &u)
         m_nam = new QNetworkAccessManager(this);
     m_prtInfo.clear();
     QNetworkReply* reply = m_nam->get(req);
-    connect(reply, SIGNAL(readyRead()), this, SLOT(prtTrackingSystemRequestReadyRead()));
+    connect(reply, SIGNAL(readyRead()), this, SLOT(onPRTTrackingSystemRequestReadyRead()));
     connect(reply, SIGNAL(error(QNetworkReply::NetworkError)),
-            this, SLOT(prtTrackingSystemRequestError(QNetworkReply::NetworkError)));
+            this, SLOT(onPRTRequestError(QNetworkReply::NetworkError)));
     connect(reply, SIGNAL(sslErrors(QList<QSslError>)),
-            this, SLOT(prtTrackingSystemRequestSslErrors(QList<QSslError>)));
-    connect(reply, SIGNAL(finished()), this, SLOT(prtTrackingSystemRequestFinished()));
+            this, SLOT(onPRTRequestSslErrors(QList<QSslError>)));
+    connect(reply, SIGNAL(finished()), this, SLOT(onPRTTrackingSystemRequestFinished()));
 }
 
 void MainWindow::on_actionOpenFromPRTTrackingSystemURL_triggered()
@@ -365,7 +365,8 @@ void MainWindow::on_actionOpenFromPRTTrackingSystemURL_triggered()
                                       QLineEdit::Normal,
                                       QString(),
                                       &ok);
-    if (ok && !u.isEmpty())
+
+    if (ok && u.startsWith("http://prt.jabberqa.cisco.com/#/conversations/"))
         openPRTFromURL(u);
 }
 
@@ -577,12 +578,12 @@ void MainWindow::downloadPRT(const QString &u)
     m_prt->open(QIODevice::WriteOnly | QIODevice::Truncate);
 
     QNetworkReply* reply = m_nam->get(req);
-    connect(reply, SIGNAL(readyRead()), this, SLOT(prtRequestReadyRead()));
+    connect(reply, SIGNAL(readyRead()), this, SLOT(onPRTRequestReadyRead()));
     connect(reply, SIGNAL(error(QNetworkReply::NetworkError)),
-            this, SLOT(prtTrackingSystemRequestError(QNetworkReply::NetworkError)));
+            this, SLOT(onPRTRequestError(QNetworkReply::NetworkError)));
     connect(reply, SIGNAL(sslErrors(QList<QSslError>)),
-            this, SLOT(prtTrackingSystemRequestSslErrors(QList<QSslError>)));
-    connect(reply, SIGNAL(finished()), this, SLOT(prtRequestFinished()));
+            this, SLOT(onPRTRequestSslErrors(QList<QSslError>)));
+    connect(reply, SIGNAL(finished()), this, SLOT(onPRTRequestFinished()));
 }
 
 void MainWindow::on_actionHelpContent_triggered()

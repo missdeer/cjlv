@@ -31,13 +31,13 @@ public:
 public slots:
     void onStatusBarMessageChanges(const QString& msg);
 private slots:
-    void clipboardChanged();
-    void prtRequestFinished();
-    void prtRequestReadyRead();
-    void prtTrackingSystemRequestFinished();
-    void prtTrackingSystemRequestReadyRead();
-    void prtTrackingSystemRequestError(QNetworkReply::NetworkError e);
-    void prtTrackingSystemRequestSslErrors(const QList<QSslError> &es);
+    void onClipboardChanged();
+    void onPRTRequestFinished();
+    void onPRTRequestReadyRead();
+    void onPRTTrackingSystemRequestFinished();
+    void onPRTTrackingSystemRequestReadyRead();
+    void onPRTRequestError(QNetworkReply::NetworkError e);
+    void onPRTRequestSslErrors(const QList<QSslError> &es);
     void onIPCMessageReceived(const QString &message, QObject *socket);
     void onExtensionScanned();
     void onExtensionRemoved(ExtensionPtr e);
