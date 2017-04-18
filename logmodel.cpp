@@ -738,7 +738,7 @@ void LogModel::saveRowsBetweenAnchorsInFolder(const QModelIndex &beginAnchor, co
         this_->m_queryMutex.unlock();
     } BOOST_SCOPE_EXIT_END
 
-    QString sql = generateSQLStatement(br->id, er->id);
+    QString sql = generateSQLStatement(qMin(br->id, er->id), qMax(br->id, er->id));
 
     QSqlDatabase db = QSqlDatabase::database(m_dbFile, true);
     if (!db.isValid()) {
