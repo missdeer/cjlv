@@ -828,7 +828,7 @@ void LogView::onOpenSelectedRowsInNewTab()
     {
         if (QMessageBox::question(this,
                               tr("Duplicated Name"),
-                              tr("There is a tab with the same name, overwrite it?"),
+                              tr("There is a PRT with the same name, overwrite it?"),
                               QMessageBox::Yes | QMessageBox::No,
                               QMessageBox::No) == QMessageBox::No)
         {
@@ -888,7 +888,7 @@ void LogView::onOpenRowsBetweenAnchorsInNewTab()
     {
         if (QMessageBox::question(this,
                               tr("Duplicated Name"),
-                              tr("There is a tab with the same name, overwrite it?"),
+                              tr("There is a PRT with the same name, overwrite it?"),
                               QMessageBox::Yes | QMessageBox::No,
                               QMessageBox::No) == QMessageBox::No)
         {
