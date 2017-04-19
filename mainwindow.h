@@ -32,10 +32,12 @@ public slots:
     void onStatusBarMessageChanges(const QString& msg);
 private slots:
     void onClipboardChanged();
-    void onPRTRequestFinished();
-    void onPRTRequestReadyRead();
-    void onPRTTrackingSystemRequestFinished();
-    void onPRTTrackingSystemRequestReadyRead();
+    void onPRTTrackingSystemLoginFinished();
+    void onPRTTrackingSystemLoginReadyRead();
+    void onPRTDownloadFinished();
+    void onPRTDownloadReadyRead();
+    void onPRTInfoRequestFinished();
+    void onPRTInfoRequestReadyRead();
     void onPRTRequestError(QNetworkReply::NetworkError e);
     void onPRTRequestSslErrors(const QList<QSslError> &es);
     void onIPCMessageReceived(const QString &message, QObject *socket);
@@ -110,6 +112,7 @@ private:
     QNetworkAccessManager *m_nam;
     QFile *m_prt;
     QByteArray m_prtInfo;
+    QByteArray m_ptrTrackingSystemLoginInfo;
 
     void dragEnterEvent(QDragEnterEvent *e);
     void dropEvent(QDropEvent *e);
@@ -117,6 +120,7 @@ private:
 
     void downloadPRT(const QString& u);
     void openPRTFromURL(const QString& u);
+    void getPRTTrackingSystemToken();
 };
 
 #if defined(Q_OS_WIN)

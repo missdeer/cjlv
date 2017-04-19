@@ -11,6 +11,7 @@ TEMPLATE = app
 CONFIG += c++11 precompile_header
 PRECOMPILED_HEADER = stdafx.h
 
+include($$PWD/3rdparty/qtkeychain/qt5keychain.pri)
 include($$PWD/3rdparty/quazip-0.7.2/quazip.pri)
 include($$PWD/3rdparty/qtsingleapplication/qtsingleapplication.pri)
 include($$PWD/3rdparty/lua-5.3.3/src/lua.pri)

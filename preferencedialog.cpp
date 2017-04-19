@@ -15,7 +15,8 @@ PreferenceDialog::PreferenceDialog(QWidget *parent) :
     setFixedSize( size() );
     ui->edtTemporaryDirectory->setText(g_settings->temporaryDirectory());
     ui->edtSourceCodeDirectory->setText(g_settings->sourceDirectory());
-    ui->edtToken->setText(g_settings->prtTrackingSystemToken());
+    ui->edtCECId->setText(g_settings->cecId());
+    ui->edtCECPassword->setText(g_settings->cecPassword());
 }
 
 PreferenceDialog::~PreferenceDialog()
@@ -27,7 +28,8 @@ void PreferenceDialog::accept()
 {
     g_settings->setTemporaryDirectory(ui->edtTemporaryDirectory->text());
     g_settings->setSourceDirectory(ui->edtSourceCodeDirectory->text());
-    g_settings->setPrtTrackingSystemToken(ui->edtToken->text());
+    g_settings->setCecId(ui->edtCECId->text());
+    g_settings->setCecPassword(ui->edtCECPassword->text());
     g_settings->save();
 }
 
@@ -77,10 +79,19 @@ void PreferenceDialog::on_buttonBox_accepted()
     QDialog::accept();
 }
 
-void PreferenceDialog::on_edtToken_textChanged(const QString &)
+
+void PreferenceDialog::on_edtCECId_textChanged(const QString &)
 {
 #if defined(Q_OS_MAC)
-    g_settings->setPrtTrackingSystemToken(ui->edtToken->text());
+    g_settings->setCecId(ui->edtCECId->text());
+    g_settings->save();
+#endif
+}
+
+void PreferenceDialog::on_edtCECPassword_textChanged(const QString &)
+{
+#if defined(Q_OS_MAC)
+    g_settings->setCecPassword(ui->edtCECPassword->text());
     g_settings->save();
 #endif
 }

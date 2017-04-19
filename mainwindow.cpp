@@ -16,7 +16,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
     thumbbar(nullptr),
-    m_nam(nullptr),
+    m_nam(new QNetworkAccessManager(this)),
     m_prt(nullptr)
 {
     ui->setupUi(this);
@@ -52,6 +52,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(QApplication::clipboard(), &QClipboard::dataChanged, this, &MainWindow::onClipboardChanged);
     ui->actionSearch->setChecked(g_settings->searchOrFitler());
+    getPRTTrackingSystemToken();
 }
 
 MainWindow::~MainWindow()
@@ -128,7 +129,41 @@ void MainWindow::onClipboardChanged()
     }
 }
 
-void MainWindow::onPRTRequestFinished()
+void MainWindow::onPRTTrackingSystemLoginFinished()
+{
+    QNetworkReply* reply = qobject_cast<QNetworkReply*>(sender());
+    reply->deleteLater();
+
+    QJsonDocument doc = QJsonDocument::fromJson(m_ptrTrackingSystemLoginInfo);
+    if (!doc.isObject())
+    {
+        qDebug() << "content received is not a json object" << QString(m_ptrTrackingSystemLoginInfo);
+        return;
+    }
+
+    QJsonObject docObj = doc.object();
+    QJsonValue tokenVal = docObj["token"];
+    if (!tokenVal.isString())
+    {
+        qDebug() << "token node is expected to be a string";
+        return;
+    }
+
+    QString token = tokenVal.toString();
+    g_settings->setPrtTrackingSystemToken(token);
+}
+
+void MainWindow::onPRTTrackingSystemLoginReadyRead()
+{
+    QNetworkReply* reply = qobject_cast<QNetworkReply*>(sender());
+    int statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+    if (statusCode >= 200 && statusCode < 300)
+    {
+        m_ptrTrackingSystemLoginInfo.append(reply->readAll());
+    }
+}
+
+void MainWindow::onPRTDownloadFinished()
 {
     QNetworkReply* reply = qobject_cast<QNetworkReply*>(sender());
     reply->deleteLater();
@@ -136,7 +171,7 @@ void MainWindow::onPRTRequestFinished()
     ui->tabWidget->openZipBundle(m_prt->fileName());
 }
 
-void MainWindow::onPRTRequestReadyRead()
+void MainWindow::onPRTDownloadReadyRead()
 {
     QNetworkReply* reply = qobject_cast<QNetworkReply*>(sender());
     int statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
@@ -146,7 +181,7 @@ void MainWindow::onPRTRequestReadyRead()
     }
 }
 
-void MainWindow::onPRTTrackingSystemRequestFinished()
+void MainWindow::onPRTInfoRequestFinished()
 {
     QNetworkReply* reply = qobject_cast<QNetworkReply*>(sender());
     reply->deleteLater();
@@ -204,7 +239,7 @@ void MainWindow::onPRTTrackingSystemRequestFinished()
     }
 }
 
-void MainWindow::onPRTTrackingSystemRequestReadyRead()
+void MainWindow::onPRTInfoRequestReadyRead()
 {
     QNetworkReply* reply = qobject_cast<QNetworkReply*>(sender());
     int statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
@@ -344,16 +379,31 @@ void MainWindow::openPRTFromURL(const QString &u)
     QUrl url(rawURL.replace("#", "api/v1"));
     QNetworkRequest req(url);
     req.setRawHeader("token", g_settings->prtTrackingSystemToken().toUtf8());
-    if (!m_nam)
-        m_nam = new QNetworkAccessManager(this);
     m_prtInfo.clear();
     QNetworkReply* reply = m_nam->get(req);
-    connect(reply, SIGNAL(readyRead()), this, SLOT(onPRTTrackingSystemRequestReadyRead()));
+    connect(reply, SIGNAL(readyRead()), this, SLOT(onPRTInfoRequestReadyRead()));
     connect(reply, SIGNAL(error(QNetworkReply::NetworkError)),
             this, SLOT(onPRTRequestError(QNetworkReply::NetworkError)));
     connect(reply, SIGNAL(sslErrors(QList<QSslError>)),
             this, SLOT(onPRTRequestSslErrors(QList<QSslError>)));
-    connect(reply, SIGNAL(finished()), this, SLOT(onPRTTrackingSystemRequestFinished()));
+    connect(reply, SIGNAL(finished()), this, SLOT(onPRTInfoRequestFinished()));
+}
+
+void MainWindow::getPRTTrackingSystemToken()
+{
+    QUrl url("http://prt.jabberqa.cisco.com/api/v1/login");
+    QNetworkRequest req(url);
+    req.setHeader(QNetworkRequest::ContentTypeHeader, "application/json;charset=UTF-8");
+    req.setRawHeader("Accept", "application/json, text/plain, */*");
+    QString postBody = QString("{\"username\":\"%1\",\"password\":\"%2\"}").arg(g_settings->cecId()).arg(g_settings->cecPassword());
+    m_ptrTrackingSystemLoginInfo.clear();
+    QNetworkReply* reply = m_nam->post(req, postBody.toUtf8());
+    connect(reply, SIGNAL(readyRead()), this, SLOT(onPRTTrackingSystemLoginReadyRead()));
+    connect(reply, SIGNAL(error(QNetworkReply::NetworkError)),
+            this, SLOT(onPRTRequestError(QNetworkReply::NetworkError)));
+    connect(reply, SIGNAL(sslErrors(QList<QSslError>)),
+            this, SLOT(onPRTRequestSslErrors(QList<QSslError>)));
+    connect(reply, SIGNAL(finished()), this, SLOT(onPRTTrackingSystemLoginFinished()));
 }
 
 void MainWindow::on_actionOpenFromPRTTrackingSystemURL_triggered()
@@ -387,6 +437,7 @@ void MainWindow::on_actionPreference_triggered()
 {
     PreferenceDialog dlg(this);
     dlg.exec();
+    getPRTTrackingSystemToken();
 }
 
 void MainWindow::on_actionAbout_triggered()
@@ -558,8 +609,6 @@ void MainWindow::downloadPRT(const QString &u)
     QUrl url(u);
     QNetworkRequest req(url);
     req.setRawHeader("token", g_settings->prtTrackingSystemToken().toUtf8());
-    if (!m_nam)
-        m_nam = new QNetworkAccessManager(this);
 
     QString tempDir = g_settings->temporaryDirectory();
     if (tempDir.isEmpty())
@@ -578,12 +627,12 @@ void MainWindow::downloadPRT(const QString &u)
     m_prt->open(QIODevice::WriteOnly | QIODevice::Truncate);
 
     QNetworkReply* reply = m_nam->get(req);
-    connect(reply, SIGNAL(readyRead()), this, SLOT(onPRTRequestReadyRead()));
+    connect(reply, SIGNAL(readyRead()), this, SLOT(onPRTDownloadReadyRead()));
     connect(reply, SIGNAL(error(QNetworkReply::NetworkError)),
             this, SLOT(onPRTRequestError(QNetworkReply::NetworkError)));
     connect(reply, SIGNAL(sslErrors(QList<QSslError>)),
             this, SLOT(onPRTRequestSslErrors(QList<QSslError>)));
-    connect(reply, SIGNAL(finished()), this, SLOT(onPRTRequestFinished()));
+    connect(reply, SIGNAL(finished()), this, SLOT(onPRTDownloadFinished()));
 }
 
 void MainWindow::on_actionHelpContent_triggered()

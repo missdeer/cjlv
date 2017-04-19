@@ -136,6 +136,12 @@ public:
     const QString &prtTrackingSystemToken() const;
     void setPrtTrackingSystemToken(const QString &prtTrackingSystemToken);
 
+    QString cecId() const;
+    void setCecId(const QString &cecId);
+
+    QString cecPassword() const;
+    void setCecPassword(const QString &cecPassword);
+
 private:
     bool m_inMemoryDatabase;
     bool m_searchOrFitler;
@@ -151,6 +157,8 @@ private:
     QString m_sourceDirectory;
     QString m_everythingPath;
     QString m_prtTrackingSystemToken;
+    QString m_cecId;
+    QString m_cecPassword;
 };
 
 extern Settings *g_settings;

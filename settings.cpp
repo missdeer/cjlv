@@ -1,5 +1,8 @@
 #include "stdafx.h"
+#include <keychain.h>
 #include "settings.h"
+
+using namespace QKeychain;
 
 Settings* g_settings = nullptr;
 
@@ -56,17 +59,51 @@ void Settings::setPrtTrackingSystemToken(const QString &prtTrackingSystemToken)
     m_prtTrackingSystemToken = prtTrackingSystemToken;
 }
 
+QString Settings::cecId() const
+{
+    return m_cecId;
+}
+
+void Settings::setCecId(const QString &cecId)
+{
+    m_cecId = cecId;
+}
+
+QString Settings::cecPassword() const
+{
+    return m_cecPassword;
+}
+
+void Settings::setCecPassword(const QString &cecPassword)
+{
+    m_cecPassword = cecPassword;
+}
+
 void Settings::save()
 {
     QSettings settings(QSettings::IniFormat, QSettings::UserScope, "cisco.com", "Cisco Jabber Log Viewer");
     settings.setValue("searchOrFilter", m_searchOrFitler);
     settings.setValue("temporaryDirectory", m_temporaryDirectory);
     settings.setValue("sourceDirectory", m_sourceDirectory);
-    settings.setValue("prtTrackingSystemToken", m_prtTrackingSystemToken);
     settings.setValue("lastOpenedDirectory",QDir::toNativeSeparators(m_lastOpenedDirectory));
     if (!m_everythingPath.isEmpty())
         settings.setValue("everythingPath", m_everythingPath);
     settings.sync();
+
+    WritePasswordJob job( QLatin1String("com.cisco.jabber.viewer") );
+    job.setAutoDelete( false );
+    QEventLoop loop;
+    job.connect( &job, SIGNAL(finished(QKeychain::Job*)), &loop, SLOT(quit()) );
+
+    job.setKey( "username");
+    job.setTextData( m_cecId);
+    job.start();
+    loop.exec();
+
+    job.setKey( "password");
+    job.setTextData( m_cecPassword);
+    job.start();
+    loop.exec();
 }
 
 void Settings::load()
@@ -75,11 +112,27 @@ void Settings::load()
     m_searchOrFitler = settings.value("searchOrFilter", false).toBool();
     m_temporaryDirectory = settings.value("temporaryDirectory").toString();
     m_sourceDirectory = settings.value("sourceDirectory").toString();
-    m_prtTrackingSystemToken = settings.value("prtTrackingSystemToken").toString();
     m_lastOpenedDirectory = settings.value("lastOpenedDirectory").toString();
     m_everythingPath = settings.value("everythingPath").toString();
     if (m_everythingPath.isEmpty())
         m_everythingPath = QApplication::applicationDirPath() % "/Everything.exe";
+
+    ReadPasswordJob job( QLatin1String("com.cisco.jabber.viewer") );
+    job.setAutoDelete( false );
+    QEventLoop loop;
+    job.connect( &job, SIGNAL(finished(QKeychain::Job*)), &loop, SLOT(quit()) );
+
+    job.setKey( "username");
+    job.start();
+    loop.exec();
+    if (!job.textData().isEmpty())
+        m_cecId = job.textData();
+
+    job.setKey( "password");
+    job.start();
+    loop.exec();
+    if (!job.textData().isEmpty())
+        m_cecPassword = job.textData();
 }
 
 

@@ -20,8 +20,9 @@ private slots:
     void on_btnSelectSourceCodeDirectory_clicked();
 
     void on_buttonBox_accepted();
+    void on_edtCECId_textChanged(const QString &);
 
-    void on_edtToken_textChanged(const QString &);
+    void on_edtCECPassword_textChanged(const QString &);
 
 private:
     Ui::PreferenceDialog *ui;

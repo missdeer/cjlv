@@ -7,13 +7,13 @@
     <x>0</x>
     <y>0</y>
     <width>574</width>
-    <height>224</height>
+    <height>244</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Preference</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0,0,0,0,0,0">
+  <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0,0,0,0,0,0,0,0">
    <property name="spacing">
     <number>1</number>
    </property>
@@ -60,14 +60,28 @@
     </layout>
    </item>
    <item>
-    <widget class="QLabel" name="label_3">
+    <widget class="QLabel" name="label_4">
      <property name="text">
-      <string>PRT Tracking System Token:</string>
+      <string>CEC ID(Used to login PRT Tracking System):</string>
      </property>
     </widget>
    </item>
    <item>
-    <widget class="QLineEdit" name="edtToken"/>
+    <widget class="QLineEdit" name="edtCECId"/>
+   </item>
+   <item>
+    <widget class="QLabel" name="label_5">
+     <property name="text">
+      <string>CEC Password(Used to login PRT Tracking System):</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLineEdit" name="edtCECPassword">
+     <property name="echoMode">
+      <enum>QLineEdit::Password</enum>
+     </property>
+    </widget>
    </item>
    <item>
     <spacer name="verticalSpacer">
