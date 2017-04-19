@@ -80,6 +80,7 @@ public slots:
     void onFilter(const QString& keyword);
 private:
     lua_State* m_L;
+    QString m_sqlWhereClause;
     QString m_searchField;
     QString m_searchFieldOption;
     QString m_sqlCount;

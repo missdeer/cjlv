@@ -348,6 +348,7 @@ void LogModel::onFilter(const QString &keyword)
     bool regexpMode = m_regexpMode;
     QString searchField = m_searchField;
     QString kw = keyword;
+    m_sqlWhereClause.clear();
 
     QStringList sl = keyword.split(">");
     if (sl.size() >= 2)
@@ -368,6 +369,12 @@ void LogModel::onFilter(const QString &keyword)
             {
                 regexpMode = false;
                 kw = keyword.mid(keyword.indexOf(">") + 1);
+            }
+            else if (ss.size() == 1 && prefix == "sql")
+            {
+                m_sqlWhereClause = keyword.mid(keyword.indexOf(">") + 1);
+                query(0);
+                return;
             }
             else
             {
@@ -1061,6 +1068,14 @@ void LogModel::generateSQLStatements(int offset, QString &sqlFetch, QString &sql
     //qWarning() << __FUNCTION__ << m_keyword << m_searchField << m_regexpMode;
     if (g_settings->allLogLevelEnabled() || m_searchField == "level")
     {
+        if (!m_sqlWhereClause.isEmpty())
+        {
+           // user input sql where clause
+            sqlCount = QString("SELECT COUNT(*) FROM logs WHERE %1;").arg(m_sqlWhereClause);
+            sqlFetch = QString("SELECT * FROM logs WHERE %1 ORDER BY epoch LIMIT %2, 200;").arg(m_sqlWhereClause).arg(offset);
+            return;
+        }
+
         if (m_luaMode)
         {
             // lua match
@@ -1096,6 +1111,14 @@ void LogModel::generateSQLStatements(int offset, QString &sqlFetch, QString &sql
         // simple keyword, SQL LIKE fitler
         sqlCount = QString("SELECT COUNT(*) FROM logs WHERE %1 LIKE '%'||?||'%'").arg(m_searchField);
         sqlFetch = QString("SELECT * FROM logs WHERE %1 LIKE '%'||?||'%' ORDER BY epoch LIMIT %2, 200;").arg(m_searchField).arg(offset);
+        return;
+    }
+
+    if (!m_sqlWhereClause.isEmpty())
+    {
+       // user input sql where clause
+        sqlCount = QString("SELECT COUNT(*) FROM logs WHERE %1 AND level GLOB 'dummy';").arg(m_sqlWhereClause);
+        sqlFetch = QString("SELECT * FROM logs WHERE %1 AND level GLOB 'dummy' ORDER BY epoch LIMIT %2, 200;").arg(m_sqlWhereClause).arg(offset);
         return;
     }
 
@@ -1140,6 +1163,11 @@ QString LogModel::generateSQLStatement(int from, int to)
 {
     if (g_settings->allLogLevelEnabled() || m_searchField == "level")
     {
+        if (!m_sqlWhereClause.isEmpty())
+        {
+            return QString("SELECT * FROM logs WHERE %1 ORDER BY epoch LIMIT 400000;").arg(m_sqlWhereClause);
+        }
+
         if (m_luaMode)
         {
             // lua match
@@ -1166,6 +1194,11 @@ QString LogModel::generateSQLStatement(int from, int to)
 
         // simple keyword, SQL LIKE fitler
         return QString("SELECT * FROM logs WHERE %1 LIKE '%'||?||'%' AND id >= %2 AND id <= %3 ORDER BY epoch LIMIT 400000;").arg(m_searchField).arg(from).arg(to);
+    }
+
+    if (!m_sqlWhereClause.isEmpty())
+    {
+        return QString("SELECT * FROM logs WHERE %1 AND level GLOB 'dummy' ORDER BY epoch LIMIT 400000;").arg(m_sqlWhereClause);
     }
 
     if (m_luaMode)
