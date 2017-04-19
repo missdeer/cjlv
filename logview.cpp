@@ -715,7 +715,6 @@ void LogView::onLogFilePreview()
 
 void LogView::onCbKeywordEditTextChanged(const QString &text)
 {
-    qDebug() << __FUNCTION__ << text << m_cbSearchKeyword->currentText();
     filter(text);
 }
 

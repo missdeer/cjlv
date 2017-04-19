@@ -348,7 +348,6 @@ void LogModel::onFilter(const QString &keyword)
     bool regexpMode = m_regexpMode;
     QString searchField = m_searchField;
     QString kw = keyword;
-    m_sqlWhereClause.clear();
 
     QStringList sl = keyword.split(">");
     if (sl.size() >= 2)
@@ -359,24 +358,20 @@ void LogModel::onFilter(const QString &keyword)
         if (ss.size() == 1 || (ss.size() == 2 && (ss.at(1) == "r" || ss.at(1) == "!r")))
         {
             prefix = ss.at(0);
+            kw = keyword.mid(keyword.indexOf(">") + 1);
 
             if (ss.size() == 1 && prefix == "r")
             {
                 regexpMode = true;
-                kw = keyword.mid(keyword.indexOf(">") + 1);
             }
             else if (ss.size() == 1 && prefix == "!r")
             {
                 regexpMode = false;
-                kw = keyword.mid(keyword.indexOf(">") + 1);
             }
             else if (ss.size() == 1 && prefix == "sql")
             {
-                m_keyword = "dummy";
-                m_searchField = "dummy";
-                m_sqlWhereClause = keyword.mid(keyword.indexOf(">") + 1);
-                query(0);
-                return;
+                // empty search field so that the keyword will be treated as SQL WHERE clause
+                searchField.clear();
             }
             else
             {
@@ -398,7 +393,6 @@ void LogModel::onFilter(const QString &keyword)
                     if (std::get<0>(t) == prefix || (prefix.size() > 1 && std::get<1>(t).startsWith(prefix)))
                     {
                         searchField = std::get<1>(t);
-                        kw = keyword.mid(keyword.indexOf(">") + 1);
                         if (ss.size() == 2 && ss.at(1) == "r")
                             regexpMode = true;
                         else if (ss.size() == 2 && ss.at(1) == "!r")
@@ -1086,14 +1080,6 @@ void LogModel::generateSQLStatements(int offset, QString &sqlFetch, QString &sql
     //qWarning() << __FUNCTION__ << m_keyword << m_searchField << m_regexpMode;
     if (g_settings->allLogLevelEnabled() || m_searchField == "level")
     {
-        if (!m_sqlWhereClause.isEmpty())
-        {
-           // user input sql where clause
-            sqlCount = QString("SELECT COUNT(*) FROM logs WHERE %1;").arg(m_sqlWhereClause);
-            sqlFetch = QString("SELECT * FROM logs WHERE %1 ORDER BY epoch LIMIT %2, 200;").arg(m_sqlWhereClause).arg(offset);
-            return;
-        }
-
         if (m_luaMode)
         {
             // lua match
@@ -1129,14 +1115,6 @@ void LogModel::generateSQLStatements(int offset, QString &sqlFetch, QString &sql
         // simple keyword, SQL LIKE fitler
         sqlCount = QString("SELECT COUNT(*) FROM logs WHERE %1 LIKE '%'||?||'%'").arg(m_searchField);
         sqlFetch = QString("SELECT * FROM logs WHERE %1 LIKE '%'||?||'%' ORDER BY epoch LIMIT %2, 200;").arg(m_searchField).arg(offset);
-        return;
-    }
-
-    if (!m_sqlWhereClause.isEmpty())
-    {
-       // user input sql where clause
-        sqlCount = QString("SELECT COUNT(*) FROM logs WHERE %1 AND level GLOB 'dummy';").arg(m_sqlWhereClause);
-        sqlFetch = QString("SELECT * FROM logs WHERE %1 AND level GLOB 'dummy' ORDER BY epoch LIMIT %2, 200;").arg(m_sqlWhereClause).arg(offset);
         return;
     }
 
@@ -1181,11 +1159,6 @@ QString LogModel::generateSQLStatement(int from, int to)
 {
     if (g_settings->allLogLevelEnabled() || m_searchField == "level")
     {
-        if (!m_sqlWhereClause.isEmpty())
-        {
-            return QString("SELECT * FROM logs WHERE %1 ORDER BY epoch LIMIT 400000;").arg(m_sqlWhereClause);
-        }
-
         if (m_luaMode)
         {
             // lua match
@@ -1212,11 +1185,6 @@ QString LogModel::generateSQLStatement(int from, int to)
 
         // simple keyword, SQL LIKE fitler
         return QString("SELECT * FROM logs WHERE %1 LIKE '%'||?||'%' AND id >= %2 AND id <= %3 ORDER BY epoch LIMIT 400000;").arg(m_searchField).arg(from).arg(to);
-    }
-
-    if (!m_sqlWhereClause.isEmpty())
-    {
-        return QString("SELECT * FROM logs WHERE %1 AND level GLOB 'dummy' ORDER BY epoch LIMIT 400000;").arg(m_sqlWhereClause);
     }
 
     if (m_luaMode)
