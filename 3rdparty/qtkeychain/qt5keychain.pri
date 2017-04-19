@@ -19,10 +19,7 @@ HEADERS += \
 SOURCES *= \
     $$QT5KEYCHAIN_PWD/keychain.cpp
 
-plaintextstore {
-    HEADERS += $$QT5KEYCHAIN_PWD/plaintextstore_p.h
-    SOURCES += $$QT5KEYCHAIN_PWD/plaintextstore.cpp
-} else {
+!plaintextstore {
     unix:!macx {
         QT += dbus
 
@@ -33,18 +30,23 @@ plaintextstore {
             $$QT5KEYCHAIN_PWD/keychain_unix.cpp
     }
 
-    win {
+    win32 {
+        DEFINES += USE_CREDENTIAL_STORE
         HEADERS += $$QT5KEYCHAIN_PWD/libsecret_p.h
 
         SOURCES += \
             $$QT5KEYCHAIN_PWD/keychain_win.cpp \
             $$QT5KEYCHAIN_PWD/libsecret.cpp
 
+        LIBS += -lAdvapi32
         #DBUS_INTERFACES += $$PWD/Keychain/org.kde.KWallet.xml
     }
 
-    mac {
+    macx {
         LIBS += "-framework Security" "-framework Foundation"
         SOURCES += $$QT5KEYCHAIN_PWD/keychain_mac.cpp
     }
+} else {
+    HEADERS += $$QT5KEYCHAIN_PWD/plaintextstore_p.h
+    SOURCES += $$QT5KEYCHAIN_PWD/plaintextstore.cpp
 }
