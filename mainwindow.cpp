@@ -234,6 +234,11 @@ void MainWindow::onPRTInfoRequestFinished()
                 qDebug() << "path or name is missing.";
                 continue;
             }
+            if (!name.toString().toLower().endsWith(".zip"))
+            {
+                qDebug() << "zip bundle is expected." << name.toString();
+                continue;
+            }
             QString u = QString("http://prt.jabberqa.cisco.com/download?path=%1&name=%2").arg(path.toString()).arg(name.toString());
             downloadPRT(u);
             return;
