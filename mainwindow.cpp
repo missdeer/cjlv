@@ -116,7 +116,7 @@ void MainWindow::onClipboardChanged()
     QClipboard *clipboard = QApplication::clipboard();
     QString originalText = clipboard->text();
 
-    if (originalText.startsWith("http://prt.jabberqa.cisco.com/#/conversations/"))
+    if (originalText.startsWith("http://prt.jabberqa.cisco.com/#/conversations/") || originalText.startsWith("http://prt.jabberqa.cisco.com/#conversations/"))
     {
         if (isMinimized())
             showMaximized();
@@ -390,7 +390,7 @@ void MainWindow::on_actionOpenCurrentInstalledJabberLogFolder_triggered()
 void MainWindow::openPRTFromURL(const QString &u)
 {
     QString rawURL(u);
-    QUrl url(rawURL.replace("#", "api/v1"));
+    QUrl url(rawURL.replace("#/", "api/v1/").replace("#", "api/v1/"));
     QNetworkRequest req(url);
     req.setRawHeader("token", g_settings->prtTrackingSystemToken().toUtf8());
     m_prtInfo.clear();
@@ -430,7 +430,7 @@ void MainWindow::on_actionOpenFromPRTTrackingSystemURL_triggered()
                                       QString(),
                                       &ok);
 
-    if (ok && u.startsWith("http://prt.jabberqa.cisco.com/#/conversations/"))
+    if (ok && (u.startsWith("http://prt.jabberqa.cisco.com/#/conversations/") || u.startsWith("http://prt.jabberqa.cisco.com/#conversations/") ) )
         openPRTFromURL(u);
 }
 
