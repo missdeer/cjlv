@@ -25,7 +25,7 @@ ExtensionDialog::ExtensionDialog(QWidget *parent) :
 
     ui->tableView->setModel(ExtensionModel::instance());
     ui->tableView->horizontalHeader()->setSectionResizeMode(5, QHeaderView::Stretch);
-    connect(ui->tableView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &ExtensionDialog::on_tableView_selectionChanged);
+    connect(ui->tableView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &ExtensionDialog::onTableViewSelectionChanged);
 
     m_currentExtension->setFrom("Custom");
     m_currentExtension->setUuid(QUuid::createUuid().toString());
@@ -37,7 +37,7 @@ ExtensionDialog::~ExtensionDialog()
     delete ui;
 }
 
-void ExtensionDialog::on_tableView_selectionChanged(const QItemSelection &selected, const QItemSelection &/*deselected*/)
+void ExtensionDialog::onTableViewSelectionChanged(const QItemSelection &selected, const QItemSelection &/*deselected*/)
 {
     QModelIndexList list = selected.indexes();
     for(const QModelIndex& index : list)

@@ -649,6 +649,10 @@ void LogView::onCustomContextMenuRequested(const QPoint &pos)
             connect(pOpenSelectedRowsInNewTabAction, &QAction::triggered, this, &LogView::onOpenSelectedRowsInNewTab);
             menu.addAction(pOpenSelectedRowsInNewTabAction);
 
+            QAction* pShowLogItemsBetweenSelectedRows = new QAction("Show Log Items Between Selected Rows", this);
+            connect(pShowLogItemsBetweenSelectedRows, &QAction::triggered, this, &LogView::onShowLogItemsBetweenSelectedRows);
+            menu.addAction(pShowLogItemsBetweenSelectedRows);
+
             QAction* pSetBeginAnchorAction = new QAction("Set Begin Anchor At The First Selected Row", this);
             connect(pSetBeginAnchorAction, &QAction::triggered, this, &LogView::onSetBeginAnchor);
             menu.addAction(pSetBeginAnchorAction);
@@ -661,6 +665,9 @@ void LogView::onCustomContextMenuRequested(const QPoint &pos)
         connect(pOpenRowsBetweenAnchorsInNewTabAction, &QAction::triggered, this, &LogView::onOpenRowsBetweenAnchorsInNewTab);
         menu.addAction(pOpenRowsBetweenAnchorsInNewTabAction);
 
+        QAction* pShowLogItemsBetweenAnchorsAction = new QAction("Show Log Items Between Anchors", this);
+        connect(pShowLogItemsBetweenAnchorsAction, &QAction::triggered, this, &LogView::onShowLogItemsBetweenAnchors);
+        menu.addAction(pShowLogItemsBetweenAnchorsAction);
 #if defined(Q_OS_WIN)
         CShellContextMenu scm;
         scm.ShowContextMenu(&menu, this, m_logsTableView->viewport()->mapToGlobal(pos), QDir::toNativeSeparators(m_path));
@@ -708,6 +715,7 @@ void LogView::onLogFilePreview()
 
 void LogView::onCbKeywordEditTextChanged(const QString &text)
 {
+    qDebug() << __FUNCTION__ << text << m_cbSearchKeyword->currentText();
     filter(text);
 }
 
@@ -841,6 +849,19 @@ void LogView::onOpenSelectedRowsInNewTab()
     tabWidget->openFolder(tempDir, false);
 }
 
+void LogView::onShowLogItemsBetweenSelectedRows()
+{
+    QItemSelectionModel* selected =  m_logsTableView->selectionModel();
+    if (!selected->hasSelection())
+        return;
+    QModelIndexList l = selected->selectedIndexes();
+
+    QString sqlWhereClause = m_logModel->getSqlWhereClause(l.at(0), l.last());
+
+    Q_ASSERT(m_cbSearchKeyword);
+    m_cbSearchKeyword->lineEdit()->setText(QString("sql>%1").arg(sqlWhereClause));
+}
+
 void LogView::onSetBeginAnchor()
 {
     QItemSelectionModel* selected =  m_logsTableView->selectionModel();
@@ -856,7 +877,7 @@ void LogView::onSetEndAnchor()
     if (!selected->hasSelection())
         return;
     QModelIndexList l = selected->selectedIndexes();
-    m_endAnchor = l.at(l.length()-1);
+    m_endAnchor = l.last();
 }
 
 void LogView::onOpenRowsBetweenAnchorsInNewTab()
@@ -899,6 +920,25 @@ void LogView::onOpenRowsBetweenAnchorsInNewTab()
     m_logModel->saveRowsBetweenAnchorsInFolder(m_beginAnchor, m_endAnchor, tempDir);
     TabWidget* tabWidget = getMainWindow()->getMainTabWidget();
     tabWidget->openFolder(tempDir, false);
+}
+
+void LogView::onShowLogItemsBetweenAnchors()
+{
+    if (!m_beginAnchor.isValid())
+    {
+        QMessageBox::warning(this, tr("Error"), tr("Begin Anchor hasn't been set."), QMessageBox::Ok);
+        return;
+    }
+
+    if (!m_endAnchor.isValid())
+    {
+        QMessageBox::warning(this, tr("Error"), tr("End Anchor hasn't been set."), QMessageBox::Ok);
+        return;
+    }
+
+    QString sqlWhereClause = m_logModel->getSqlWhereClause(m_beginAnchor, m_endAnchor);
+    Q_ASSERT(m_cbSearchKeyword);
+    m_cbSearchKeyword->lineEdit()->setText(QString("sql>%1").arg(sqlWhereClause));
 }
 
 bool LogView::event(QEvent* e)

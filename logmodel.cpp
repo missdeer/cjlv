@@ -372,6 +372,8 @@ void LogModel::onFilter(const QString &keyword)
             }
             else if (ss.size() == 1 && prefix == "sql")
             {
+                m_keyword = "dummy";
+                m_searchField = "dummy";
                 m_sqlWhereClause = keyword.mid(keyword.indexOf(">") + 1);
                 query(0);
                 return;
@@ -723,6 +725,22 @@ void LogModel::saveRowsInFolder(const QList<int> &rows, const QString &folderNam
         out << text;
         f.close();
     }
+}
+
+QString LogModel::getSqlWhereClause(const QModelIndex& beginAnchor, const QModelIndex& endAnchor)
+{
+    auto itBeginAnchor = m_logs.find(beginAnchor.row());
+    Q_ASSERT(m_logs.end() != itBeginAnchor);
+    QSharedPointer<LogItem> br = *itBeginAnchor;
+
+    auto itEndAnchor = m_logs.find(endAnchor.row());
+    Q_ASSERT(m_logs.end() != itEndAnchor);
+    QSharedPointer<LogItem> er = *itEndAnchor;
+
+    int beginId = qMin(br->id, er->id);
+    int endId = qMax(br->id, er->id);
+
+    return QString("id>=%1 and id<=%2").arg(beginId).arg(endId);
 }
 
 void LogModel::saveRowsBetweenAnchorsInFolder(const QModelIndex &beginAnchor, const QModelIndex &endAnchor, const QString &folderName)

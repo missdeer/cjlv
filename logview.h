@@ -87,9 +87,11 @@ private slots:
     void onCbKeywordCurrentIndexChanged(const QString &text);
     void onReloadSearchResult();
     void onOpenSelectedRowsInNewTab();
+    void onShowLogItemsBetweenSelectedRows();
     void onSetBeginAnchor();
     void onSetEndAnchor();
     void onOpenRowsBetweenAnchorsInNewTab();
+    void onShowLogItemsBetweenAnchors();
 public slots:
     void onClearKeyword();
 private:

@@ -18,7 +18,7 @@ public:
 signals:
     void runExtension(ExtensionPtr);
 private slots:
-    void on_tableView_selectionChanged(const QItemSelection &selected, const QItemSelection &deselected);
+    void onTableViewSelectionChanged(const QItemSelection &selected, const QItemSelection &deselected);
 
     void on_btnNewExtension_clicked();
 
