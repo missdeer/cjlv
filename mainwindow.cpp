@@ -118,6 +118,11 @@ void MainWindow::onClipboardChanged()
 
     if (originalText.startsWith("http://prt.jabberqa.cisco.com/#/conversations/"))
     {
+        if (isMinimized())
+            showMaximized();
+        raise();
+        activateWindow();
+
         if (QMessageBox::question(this,
                                   tr("Open PRT from URL"),
                                   QString(tr("URL %1 is detected from clipboard, open it now?")).arg(originalText),
@@ -275,6 +280,8 @@ void MainWindow::onIPCMessageReceived(const QString &message, QObject* /*socket*
 {
     QStringList logs = message.split('\n');
     openLogs(logs);
+    if (isMinimized())
+        showMaximized();
     raise();
     activateWindow();
 }
