@@ -151,6 +151,8 @@ void MainWindow::onPRTTrackingSystemLoginFinished()
 
     QString token = tokenVal.toString();
     g_settings->setPrtTrackingSystemToken(token);
+
+    QTimer::singleShot(60*60*1000, [this](){getPRTTrackingSystemToken(); });
 }
 
 void MainWindow::onPRTTrackingSystemLoginReadyRead()
