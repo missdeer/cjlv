@@ -556,6 +556,9 @@ void LogView::setChart(QtCharts::QChartView* chartView,const QList<QSharedPointe
     chart->legend()->setVisible(true);
     chart->legend()->setAlignment(Qt::AlignRight);
 
+    QChart *oldChart = chartView->chart();
+    if (!oldChart)
+        oldChart->deleteLater();
     chartView->setChart(chart);
     chartView->setRenderHint(QPainter::Antialiasing);
 }
