@@ -23,8 +23,7 @@ extern QWinTaskbarButton *g_winTaskbarButton;
 extern QWinTaskbarProgress *g_winTaskbarProgress;
 #endif
 SourceWindow* g_sourceWindow = nullptr;
-static QProgressDialog* g_progressDialog = nullptr;
-static QAtomicInt g_loadingReferenceCount;
+
 static const QEvent::Type EXTRACTED_EVENT = QEvent::Type(QEvent::User + 1);
 
 class ExtractedEvent : public QEvent
@@ -144,7 +143,7 @@ void LogView::openZipBundle(const QString &path)
     if (!dir.exists())
         dir.mkpath(m_extractDir);
 
-    showProgressDialog();
+    getMainWindow()->showProgressDialog(QString(tr("Loading logs from ZIP bundle %1...")).arg(path));
 
     QtConcurrent::run(this, &LogView::extract, this, path, m_extractDir);
 }
@@ -156,7 +155,7 @@ void LogView::openRawLogFile(const QStringList &paths)
     QFileInfo fi(path);
     setWindowTitle(fi.fileName());
 
-    showProgressDialog();
+    getMainWindow()->showProgressDialog(QString(tr("Loading logs from raw log files: %1...")).arg(paths.join(",")));
 
     m_logModel->loadFromFiles(paths);
 }
@@ -179,7 +178,7 @@ void LogView::openFolder(const QString &path)
     std::for_each(list.begin(), list.end(),
                   [&fileNames](const QFileInfo& fileInfo){fileNames << fileInfo.filePath();});
 
-    showProgressDialog();
+    getMainWindow()->showProgressDialog(QString(tr("Loading logs from folder %1...")).arg(path));
 
     m_logModel->loadFromFiles(fileNames);
 }
@@ -578,7 +577,7 @@ MainWindow *LogView::getMainWindow()
 
 void LogView::onDataLoaded()
 {
-    closeProgressDialog();
+    getMainWindow()->closeProgressDialog();
 }
 
 void LogView::onRowCountChanged()
@@ -976,47 +975,4 @@ void LogView::extract(LogView* v, const QString& fileName, const QString& dirNam
     ExtractedEvent* e = new ExtractedEvent;
     JlCompress::extractDir(fileName, dirName);
     QCoreApplication::postEvent(v, e);
-}
-
-void LogView::showProgressDialog()
-{
-    g_loadingReferenceCount.ref();
-#if defined(Q_OS_WIN)
-    g_winTaskbarButton->setOverlayIcon(QIcon(":/image/loading.png"));
-
-    g_winTaskbarProgress->setRange(0, 0);
-    g_winTaskbarProgress->setVisible(true);
-    qApp->processEvents();
-#endif
-    if (!g_progressDialog)
-    {
-        g_progressDialog = new QProgressDialog(this);
-        g_progressDialog->setLabelText("Loading logs from files...");
-        g_progressDialog->setWindowModality(Qt::WindowModal);
-        g_progressDialog->setAutoClose(true);
-        g_progressDialog->setAutoReset(true);
-        g_progressDialog->setCancelButton(nullptr);
-        g_progressDialog->setRange(0,0);
-        g_progressDialog->setMinimumDuration(0);
-    }
-    g_progressDialog->show();
-    qApp->processEvents();
-}
-
-void LogView::closeProgressDialog()
-{
-    if (!g_loadingReferenceCount.deref() && g_progressDialog)
-    {
-        g_progressDialog->setValue(200);
-        g_progressDialog->deleteLater();
-        g_progressDialog=nullptr;
-
-#if defined(Q_OS_WIN)
-        if (g_winTaskbarButton)
-            g_winTaskbarButton->clearOverlayIcon();
-
-        if (g_winTaskbarProgress)
-            g_winTaskbarProgress->setVisible(false);
-#endif
-    }
 }

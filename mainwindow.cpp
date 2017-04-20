@@ -11,6 +11,8 @@ QWinTaskbarButton *g_winTaskbarButton = nullptr;
 QWinTaskbarProgress *g_winTaskbarProgress = nullptr;
 #endif
 QTabWidget* g_mainTabWidget = nullptr;
+static QProgressDialog* g_progressDialog = nullptr;
+static QAtomicInt g_loadingReferenceCount;
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -174,6 +176,7 @@ void MainWindow::onPRTDownloadFinished()
 {
     QNetworkReply* reply = qobject_cast<QNetworkReply*>(sender());
     reply->deleteLater();
+    closeProgressDialog();
     m_prt->close();
     ui->tabWidget->openZipBundle(m_prt->fileName());
 }
@@ -190,6 +193,7 @@ void MainWindow::onPRTDownloadReadyRead()
 
 void MainWindow::onPRTInfoRequestFinished()
 {
+    closeProgressDialog();
     QNetworkReply* reply = qobject_cast<QNetworkReply*>(sender());
     reply->deleteLater();
 
@@ -391,6 +395,7 @@ void MainWindow::openPRTFromURL(const QString &u)
     connect(reply, SIGNAL(error(QNetworkReply::NetworkError)),
             this, SLOT(onPRTRequestError(QNetworkReply::NetworkError)));
     connect(reply, SIGNAL(finished()), this, SLOT(onPRTInfoRequestFinished()));
+    showProgressDialog(tr("Getting PRT information..."));
 }
 
 void MainWindow::getPRTTrackingSystemToken()
@@ -406,6 +411,49 @@ void MainWindow::getPRTTrackingSystemToken()
     connect(reply, SIGNAL(error(QNetworkReply::NetworkError)),
             this, SLOT(onPRTRequestError(QNetworkReply::NetworkError)));
     connect(reply, SIGNAL(finished()), this, SLOT(onPRTTrackingSystemLoginFinished()));
+}
+
+void MainWindow::showProgressDialog(const QString &title)
+{
+    g_loadingReferenceCount.ref();
+#if defined(Q_OS_WIN)
+    g_winTaskbarButton->setOverlayIcon(QIcon(":/image/loading.png"));
+
+    g_winTaskbarProgress->setRange(0, 0);
+    g_winTaskbarProgress->setVisible(true);
+    qApp->processEvents();
+#endif
+    if (!g_progressDialog)
+    {
+        g_progressDialog = new QProgressDialog(this);
+        g_progressDialog->setWindowModality(Qt::WindowModal);
+        g_progressDialog->setAutoClose(true);
+        g_progressDialog->setAutoReset(true);
+        g_progressDialog->setCancelButton(nullptr);
+        g_progressDialog->setRange(0,0);
+        g_progressDialog->setMinimumDuration(0);
+    }
+    g_progressDialog->setLabelText(title);
+    g_progressDialog->show();
+    qApp->processEvents();
+}
+
+void MainWindow::closeProgressDialog()
+{
+    if (!g_loadingReferenceCount.deref() && g_progressDialog)
+    {
+        g_progressDialog->setValue(200);
+        g_progressDialog->deleteLater();
+        g_progressDialog=nullptr;
+
+#if defined(Q_OS_WIN)
+        if (g_winTaskbarButton)
+            g_winTaskbarButton->clearOverlayIcon();
+
+        if (g_winTaskbarProgress)
+            g_winTaskbarProgress->setVisible(false);
+#endif
+    }
 }
 
 void MainWindow::on_actionOpenFromPRTTrackingSystemURL_triggered()
@@ -633,6 +681,7 @@ void MainWindow::downloadPRT(const QString &u)
     connect(reply, SIGNAL(error(QNetworkReply::NetworkError)),
             this, SLOT(onPRTRequestError(QNetworkReply::NetworkError)));
     connect(reply, SIGNAL(finished()), this, SLOT(onPRTDownloadFinished()));
+    showProgressDialog(tr("Downloading PRT..."));
 }
 
 void MainWindow::on_actionHelpContent_triggered()

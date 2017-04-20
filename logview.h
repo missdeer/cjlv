@@ -121,8 +121,6 @@ private:
     bool event(QEvent *e) Q_DECL_OVERRIDE;
 
     void extract(LogView* v, const QString& fileName, const QString& dirName);
-    void showProgressDialog();
-    void closeProgressDialog();
     void extractContent(const QModelIndex& index);
     void openSourceFile(const QModelIndex& index, bool openWithBuiltinEditor);
     void openLog(const QModelIndex& index);

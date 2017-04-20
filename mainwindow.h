@@ -28,6 +28,8 @@ public:
     ~MainWindow();
     void openLogs(const QStringList& logs);
     TabWidget* getMainTabWidget();
+    void showProgressDialog(const QString& title);
+    void closeProgressDialog();
 public slots:
     void onStatusBarMessageChanges(const QString& msg);
 private slots:
