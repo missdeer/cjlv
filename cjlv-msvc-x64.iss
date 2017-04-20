@@ -54,6 +54,7 @@ Source: "platforms\*"; DestDir: "{app}\platforms"; Flags: recursesubdirs
 Source: "sqldrivers\qsqlite.dll"; DestDir: "{app}\sqldrivers"; Flags: recursesubdirs
 Source: "themes\*"; DestDir: "{app}\themes"; Flags: recursesubdirs
 Source: "extensions\*"; DestDir: "{app}\extensions"; Flags: recursesubdirs
+Source: "Fonts\*"; DestDir: "{app}\Fonts"; Flags: recursesubdirs
 Source: "*.xml"; DestDir: "{app}"
 Source: "*.exe"; DestDir: "{app}"
 Source: "*.dll"; DestDir: "{app}"
