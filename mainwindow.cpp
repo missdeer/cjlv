@@ -268,14 +268,6 @@ void MainWindow::onPRTRequestError(QNetworkReply::NetworkError e)
     qDebug() << "network error:" << e << reply->errorString();
 }
 
-void MainWindow::onPRTRequestSslErrors(const QList<QSslError> & es)
-{
-    for(const QSslError &e : es)
-    {
-        qDebug() << "ssl error:" << e.errorString();
-    }
-}
-
 void MainWindow::onIPCMessageReceived(const QString &message, QObject* /*socket*/)
 {
     QStringList logs = message.split('\n');
@@ -398,8 +390,6 @@ void MainWindow::openPRTFromURL(const QString &u)
     connect(reply, SIGNAL(readyRead()), this, SLOT(onPRTInfoRequestReadyRead()));
     connect(reply, SIGNAL(error(QNetworkReply::NetworkError)),
             this, SLOT(onPRTRequestError(QNetworkReply::NetworkError)));
-    connect(reply, SIGNAL(sslErrors(QList<QSslError>)),
-            this, SLOT(onPRTRequestSslErrors(QList<QSslError>)));
     connect(reply, SIGNAL(finished()), this, SLOT(onPRTInfoRequestFinished()));
 }
 
@@ -415,8 +405,6 @@ void MainWindow::getPRTTrackingSystemToken()
     connect(reply, SIGNAL(readyRead()), this, SLOT(onPRTTrackingSystemLoginReadyRead()));
     connect(reply, SIGNAL(error(QNetworkReply::NetworkError)),
             this, SLOT(onPRTRequestError(QNetworkReply::NetworkError)));
-    connect(reply, SIGNAL(sslErrors(QList<QSslError>)),
-            this, SLOT(onPRTRequestSslErrors(QList<QSslError>)));
     connect(reply, SIGNAL(finished()), this, SLOT(onPRTTrackingSystemLoginFinished()));
 }
 
@@ -644,8 +632,6 @@ void MainWindow::downloadPRT(const QString &u)
     connect(reply, SIGNAL(readyRead()), this, SLOT(onPRTDownloadReadyRead()));
     connect(reply, SIGNAL(error(QNetworkReply::NetworkError)),
             this, SLOT(onPRTRequestError(QNetworkReply::NetworkError)));
-    connect(reply, SIGNAL(sslErrors(QList<QSslError>)),
-            this, SLOT(onPRTRequestSslErrors(QList<QSslError>)));
     connect(reply, SIGNAL(finished()), this, SLOT(onPRTDownloadFinished()));
 }
 

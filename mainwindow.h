@@ -39,7 +39,6 @@ private slots:
     void onPRTInfoRequestFinished();
     void onPRTInfoRequestReadyRead();
     void onPRTRequestError(QNetworkReply::NetworkError e);
-    void onPRTRequestSslErrors(const QList<QSslError> &es);
     void onIPCMessageReceived(const QString &message, QObject *socket);
     void onExtensionScanned();
     void onExtensionRemoved(ExtensionPtr e);
