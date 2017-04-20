@@ -69,7 +69,7 @@ int main(int argc, char *argv[])
     parser.addOption(QCommandLineOption(QStringList() << "f" << "file", "Save temporary database into local file system."));
     parser.addOption(QCommandLineOption(QStringList() << "t" << "temporary-directory", "Save temporary files into <directory>.", "directory"));
     parser.addOption(QCommandLineOption(QStringList() << "s" << "source-directory", "Source code stored in <directory>.", "directory"));
-    parser.addOption(QCommandLineOption(QStringList() << "m" << "multi-monitor", "Show log view and source code view in different monitors."));
+    parser.addOption(QCommandLineOption(QStringList() << "m" << "disable-multi-monitor", "Don't show log view and source code view in different monitors."));
     parser.addPositionalArgument("logs", "logs files, zip packages or folders.");
     // Process the actual command line arguments given by the user
     parser.process(a);
@@ -94,7 +94,7 @@ int main(int argc, char *argv[])
         g_settings->setSourceDirectory( parser.value("s"));
 
     g_settings->setInMemoryDatabase(!parser.isSet("f"));
-    g_settings->setMultiMonitorEnabled(parser.isSet("m") && QApplication::desktop()->screenCount() > 1);
+    g_settings->setMultiMonitorEnabled(!parser.isSet("m") && QApplication::desktop()->screenCount() > 1);
 
     const QStringList logs = parser.positionalArguments();
 
