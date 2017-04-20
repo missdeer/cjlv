@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include <functional>
 #include <JlCompress.h>
 #include <QPieSeries>
 #include <QPieSlice>
@@ -92,6 +93,9 @@ LogView::LogView(QWidget *parent)
     m_logTableChartTabWidget->addTab(m_categoryStatisticChart, "Category");
     m_logTableChartTabWidget->addTab(m_methodStatisticChart, "Method");
     m_logTableChartTabWidget->addTab(m_presenceWidget, "Presence");
+
+    connect(m_logTableChartTabWidget, &QTabWidget::currentChanged, this, &LogView::onLogTableChartTabWidgetCurrentChanged);
+
     m_logsTableView->setModel(m_logModel);
     m_logsTableView->horizontalHeader()->setSectionResizeMode(7, QHeaderView::Stretch);
     m_logsTableView->setContextMenuPolicy(Qt::CustomContextMenu);
@@ -572,39 +576,6 @@ MainWindow *LogView::getMainWindow()
 void LogView::onDataLoaded()
 {
     closeProgressDialog();
-    // draw charts
-
-    QList<QSharedPointer<StatisticItem>> sis;
-    if (m_logModel->getLevelStatistic(sis))
-    {
-        setChart(m_levelStatisticChart, sis, "Level Count Statistic");
-        sis.clear();
-    }
-    if (m_logModel->getThreadStatistic(sis))
-    {
-        setChart(m_threadStatisticChart, sis, "Thread Count Statistic");
-        sis.clear();
-    }
-    if (m_logModel->getSourceFileStatistic(sis))
-    {
-        setChart(m_sourceFileStatisticChart, sis, "Source File Count Statistic");
-        sis.clear();
-    }
-    if (m_logModel->getSourceLineStatistic(sis))
-    {
-        setChart(m_sourceLineStatisticChart, sis, "Source Line Count Statistic");
-        sis.clear();
-    }
-    if (m_logModel->getCategoryStatistic(sis))
-    {
-        setChart(m_categoryStatisticChart, sis, "Category Count Statistic");
-        sis.clear();
-    }
-    if (m_logModel->getMethodStatistic(sis))
-    {
-        setChart(m_methodStatisticChart, sis, "Method Count Statistic");
-        sis.clear();
-    }
 }
 
 void LogView::onRowCountChanged()
@@ -938,6 +909,34 @@ void LogView::onShowLogItemsBetweenAnchors()
     QString sqlWhereClause = m_logModel->getSqlWhereClause(m_beginAnchor, m_endAnchor);
     Q_ASSERT(m_cbSearchKeyword);
     m_cbSearchKeyword->lineEdit()->setText(QString("sql>%1").arg(sqlWhereClause));
+}
+
+void LogView::onLogTableChartTabWidgetCurrentChanged(int index)
+{
+    // draw charts
+    QList<QSharedPointer<StatisticItem>> sis;
+    struct {
+        int index;
+        std::function<bool(QList<QSharedPointer<StatisticItem>>&)> getter;
+        QtCharts::QChartView* chartView;
+        QString label;
+    }  m[] = {
+        {1, std::bind(&LogModel::getLevelStatistic,      m_logModel, std::placeholders::_1), m_levelStatisticChart,      "Level Count Statistic"},
+        {2, std::bind(&LogModel::getThreadStatistic,     m_logModel, std::placeholders::_1), m_threadStatisticChart,     "Thread Count Statistic"},
+        {3, std::bind(&LogModel::getSourceFileStatistic, m_logModel, std::placeholders::_1), m_sourceFileStatisticChart, "Source File Count Statistic"},
+        {4, std::bind(&LogModel::getSourceLineStatistic, m_logModel, std::placeholders::_1), m_sourceLineStatisticChart, "Source Line Count Statistic"},
+        {5, std::bind(&LogModel::getCategoryStatistic,   m_logModel, std::placeholders::_1), m_categoryStatisticChart,   "Category Count Statistic"},
+        {6, std::bind(&LogModel::getMethodStatistic,     m_logModel, std::placeholders::_1), m_methodStatisticChart,     "Method Count Statistic"},
+    };
+
+    for (const auto & t: m)
+    {
+        if (t.index == index && t.getter(sis))
+        {
+            setChart(t.chartView, sis, t.label);
+            break;
+        }
+    }
 }
 
 bool LogView::event(QEvent* e)

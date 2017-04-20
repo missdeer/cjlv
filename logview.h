@@ -92,6 +92,7 @@ private slots:
     void onSetEndAnchor();
     void onOpenRowsBetweenAnchorsInNewTab();
     void onShowLogItemsBetweenAnchors();
+    void onLogTableChartTabWidgetCurrentChanged(int index);
 public slots:
     void onClearKeyword();
 private:
