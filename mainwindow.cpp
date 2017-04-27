@@ -633,10 +633,17 @@ void MainWindow::showEvent(QShowEvent *e)
         openCurrentInstalledJabberLogFolderButton->setDismissOnClick(true);
         connect(openCurrentInstalledJabberLogFolderButton, SIGNAL(clicked()), ui->actionOpenCurrentInstalledJabberLogFolder, SIGNAL(triggered()));
 
+        QWinThumbnailToolButton *openPRTUrlButton = new QWinThumbnailToolButton(thumbbar);
+        openPRTUrlButton->setToolTip("Open From PRT Tracking System URL");
+        openPRTUrlButton->setIcon(QIcon(":/image/open-prt-url.png"));
+        openPRTUrlButton->setDismissOnClick(true);
+        connect(openPRTUrlButton, SIGNAL(clicked()), ui->actionOpenFromPRTTrackingSystemURL, SIGNAL(triggered()));
+
         thumbbar->addButton(openZipButton);
         thumbbar->addButton(openRawLogFileButton);
         thumbbar->addButton(openLogFolderButton);
         thumbbar->addButton(openCurrentInstalledJabberLogFolderButton);
+        thumbbar->addButton(openPRTUrlButton);
     }
 
     if (!g_winTaskbarButton)
