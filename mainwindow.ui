@@ -67,7 +67,7 @@
      <x>0</x>
      <y>0</y>
      <width>1156</width>
-     <height>18</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -192,6 +192,7 @@
    <addaction name="actionOpenRawLogFile"/>
    <addaction name="actionOpenLogFolder"/>
    <addaction name="actionOpenCurrentInstalledJabberLogFolder"/>
+   <addaction name="actionOpenFromPRTTrackingSystemURL"/>
    <addaction name="separator"/>
    <addaction name="actionScrollToTop"/>
    <addaction name="actionScrollToBottom"/>
@@ -817,6 +818,10 @@
    </property>
   </action>
   <action name="actionOpenFromPRTTrackingSystemURL">
+   <property name="icon">
+    <iconset resource="cjlv.qrc">
+     <normaloff>:/image/open-prt-url.png</normaloff>:/image/open-prt-url.png</iconset>
+   </property>
    <property name="text">
     <string>Open From PRT Tracking System URL...</string>
    </property>
