@@ -113,15 +113,17 @@ macx: {
 }
 
 win32: {
+    win32-msvc* {
+        QMAKE_LFLAGS += "/LTCG"
+        QMAKE_CXXFLAGS_RELEASE += /Zi
+        QMAKE_LFLAGS_RELEASE += /DEBUG
+    }
+
     DISTFILES += \
         cjlv.rc
     TARGET = CJLV
     QT += winextras
-    QMAKE_LFLAGS += "/LTCG"
     INCLUDEPATH += $$PWD/3rdparty/Everything-SDK/include $$PWD/3rdparty/Everything-SDK/ipc
-
-    QMAKE_CXXFLAGS_RELEASE += /Zi
-    QMAKE_LFLAGS_RELEASE += /DEBUG
 
     SOURCES += everythingwrapper.cpp ShellContextMenu.cpp
     HEADERS += everythingwrapper.h ShellContextMenu.h
