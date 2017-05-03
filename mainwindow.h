@@ -33,6 +33,12 @@ public:
 public slots:
     void onStatusBarMessageChanges(const QString& msg);
 private slots:
+    void onPRTListItemDoubleClicked(QListWidgetItem *item);
+    void onPRTListItemActivated(QListWidgetItem *item);
+    void onOpenPRTListByDefaultWebBrowser();
+    void onOpenConversationByDefaultWebBrowser();
+    void onOpenPRTViaListWidgetContextMenuItem();
+    void onListWidgetCustomContextMenuRequested(const QPoint &pos);
     void onClipboardChanged();
     void onPRTListFinished();
     void onPRTListReadyRead();

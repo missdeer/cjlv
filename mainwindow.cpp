@@ -114,6 +114,48 @@ void MainWindow::onStatusBarMessageChanges(const QString &msg)
     ui->statusBar->showMessage(msg);
 }
 
+void MainWindow::onPRTListItemDoubleClicked(QListWidgetItem *item)
+{
+
+}
+
+void MainWindow::onPRTListItemActivated(QListWidgetItem *item)
+{
+
+}
+
+void MainWindow::onOpenPRTListByDefaultWebBrowser()
+{
+
+}
+
+void MainWindow::onOpenConversationByDefaultWebBrowser()
+{
+
+}
+
+void MainWindow::onOpenPRTViaListWidgetContextMenuItem()
+{
+
+}
+
+void MainWindow::onListWidgetCustomContextMenuRequested(const QPoint &pos)
+{
+    QListWidget* list = qobject_cast<QListWidget*>(sender());
+    QMenu menu(this);
+
+    QAction* action = menu.addAction(tr("Open PRT"));
+    connect(action, &QAction::triggered, this, &MainWindow::onOpenPRTViaListWidgetContextMenuItem);
+
+    action = menu.addAction(tr("Open PRT list by default web browser..."));
+    connect(action, &QAction::triggered, this, &MainWindow::onOpenPRTListByDefaultWebBrowser);
+
+    action = menu.addAction(tr("Open Conversation by default web browser..."));
+    connect(action, &QAction::triggered, this, &MainWindow::onOpenConversationByDefaultWebBrowser);
+
+    menu.exec(list->viewport()->mapToGlobal(pos));
+}
+
 void MainWindow::onClipboardChanged()
 {
     QClipboard *clipboard = QApplication::clipboard();
@@ -167,12 +209,15 @@ void MainWindow::onPRTListFinished()
         { "Android", m_androidPRTList },
     };
     QListWidget* list = listWidgetMap[platform];
-
+    list->clear();
     QJsonArray conversations = conversationsVal.toArray();
     for (auto conversation : conversations)
     {
         QJsonObject con = conversation.toObject();
-        list->addItem(QString("%1\n%2").arg(con["topic"].toString()).arg(con["owner"].toString()));
+        QListWidgetItem* item = new QListWidgetItem(
+                    QString("%1\n%2").arg(con["topic"].toString()).arg(con["owner"].toString()),list);
+        item->setToolTip(con["content"].toString());
+        list->addItem(item);
     }
 
     // next platform
@@ -503,6 +548,10 @@ void MainWindow::createDockWindows()
         QDockWidget *dock = new QDockWidget(m.title, this);
         dock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::TopDockWidgetArea | Qt::BottomDockWidgetArea);
         m.listWidget = new QListWidget(dock);
+        m.listWidget->setContextMenuPolicy(Qt::CustomContextMenu);
+        connect(m.listWidget, &QWidget::customContextMenuRequested, this, &MainWindow::onListWidgetCustomContextMenuRequested);
+        connect(m.listWidget, &QListWidget::itemActivated, this, &MainWindow::onPRTListItemActivated);
+        connect(m.listWidget, &QListWidget::itemDoubleClicked, this, &MainWindow::onPRTListItemDoubleClicked);
         dock->setWidget(m.listWidget);
         addDockWidget(Qt::RightDockWidgetArea, dock);
         ui->menuWindow->addAction(dock->toggleViewAction());
