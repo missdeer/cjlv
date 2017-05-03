@@ -34,6 +34,8 @@ public slots:
     void onStatusBarMessageChanges(const QString& msg);
 private slots:
     void onClipboardChanged();
+    void onPRTListFinished();
+    void onPRTListReadyRead();
     void onPRTTrackingSystemLoginFinished();
     void onPRTTrackingSystemLoginReadyRead();
     void onPRTDownloadFinished();
@@ -117,7 +119,8 @@ private:
     QListWidget *m_iOSPRTList;
     QListWidget *m_androidPRTList;
     QByteArray m_prtInfo;
-    QByteArray m_ptrTrackingSystemLoginInfo;
+    QByteArray m_prtTrackingSystemLoginInfo;
+    QByteArray m_prtList;
 
     void dragEnterEvent(QDragEnterEvent *e);
     void dropEvent(QDropEvent *e);
@@ -128,6 +131,7 @@ private:
     void getPRTTrackingSystemToken();
 
     void createDockWindows();
+    void getPRTList(const QString& platform);
 };
 
 #if defined(Q_OS_WIN)

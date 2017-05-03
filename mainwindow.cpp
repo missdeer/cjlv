@@ -137,15 +137,81 @@ void MainWindow::onClipboardChanged()
     }
 }
 
+void MainWindow::onPRTListFinished()
+{
+    QNetworkReply* reply = qobject_cast<QNetworkReply*>(sender());
+    reply->deleteLater();
+
+    // parse json response
+    QJsonDocument doc = QJsonDocument::fromJson(m_prtList);
+    if (!doc.isObject())
+    {
+        qDebug() << "content received is not a json object" << QString(m_prtList);
+        return;
+    }
+
+    QJsonObject docObj = doc.object();
+    QJsonValue conversationsVal = docObj["conversations"];
+    if (!conversationsVal.isArray())
+    {
+        qDebug() << "conversation node is expected to be an array";
+        return;
+    }
+
+    QUrlQuery query(reply->request().url());
+    QString platform = query.queryItemValue("platform");
+    QMap<QString, QListWidget*> listWidgetMap = {
+        { "Windows", m_windowsPRTList },
+        { "Mac", m_macPRTList },
+        { "iOS", m_iOSPRTList },
+        { "Android", m_androidPRTList },
+    };
+    QListWidget* list = listWidgetMap[platform];
+
+    QJsonArray conversations = conversationsVal.toArray();
+    for (auto conversation : conversations)
+    {
+        QJsonObject con = conversation.toObject();
+        list->addItem(QString("%1\n%2").arg(con["topic"].toString()).arg(con["owner"].toString()));
+    }
+
+    // next platform
+    QMap<QString, QString> nextMap = {
+        { "Windows", "Mac" },
+        { "Mac", "iOS" },
+        { "iOS", "Android" },
+        { "Android", "Windows" },
+    };
+    const QString& nextPlatform = nextMap[platform];
+    if (nextPlatform != "Windows")
+    {
+        getPRTList(nextPlatform);
+    }
+    else
+    {
+        QTimer::singleShot(60 * 60 * 1000, [&]() { getPRTList(nextPlatform);});
+    }
+}
+
+void MainWindow::onPRTListReadyRead()
+{
+    QNetworkReply* reply = qobject_cast<QNetworkReply*>(sender());
+    int statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+    if (statusCode >= 200 && statusCode < 300)
+    {
+        m_prtList.append(reply->readAll());
+    }
+}
+
 void MainWindow::onPRTTrackingSystemLoginFinished()
 {
     QNetworkReply* reply = qobject_cast<QNetworkReply*>(sender());
     reply->deleteLater();
 
-    QJsonDocument doc = QJsonDocument::fromJson(m_ptrTrackingSystemLoginInfo);
+    QJsonDocument doc = QJsonDocument::fromJson(m_prtTrackingSystemLoginInfo);
     if (!doc.isObject())
     {
-        qDebug() << "content received is not a json object" << QString(m_ptrTrackingSystemLoginInfo);
+        qDebug() << "content received is not a json object" << QString(m_prtTrackingSystemLoginInfo);
         return;
     }
 
@@ -161,6 +227,9 @@ void MainWindow::onPRTTrackingSystemLoginFinished()
     g_settings->setPrtTrackingSystemToken(token);
 
     QTimer::singleShot(60*60*1000, [this](){getPRTTrackingSystemToken(); });
+
+    // get PRT list
+    getPRTList("Windows");
 }
 
 void MainWindow::onPRTTrackingSystemLoginReadyRead()
@@ -169,7 +238,7 @@ void MainWindow::onPRTTrackingSystemLoginReadyRead()
     int statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
     if (statusCode >= 200 && statusCode < 300)
     {
-        m_ptrTrackingSystemLoginInfo.append(reply->readAll());
+        m_prtTrackingSystemLoginInfo.append(reply->readAll());
     }
 }
 
@@ -406,7 +475,7 @@ void MainWindow::getPRTTrackingSystemToken()
     req.setHeader(QNetworkRequest::ContentTypeHeader, "application/json;charset=UTF-8");
     req.setRawHeader("Accept", "application/json, text/plain, */*");
     QString postBody = QString("{\"username\":\"%1\",\"password\":\"%2\"}").arg(g_settings->cecId()).arg(g_settings->cecPassword());
-    m_ptrTrackingSystemLoginInfo.clear();
+    m_prtTrackingSystemLoginInfo.clear();
     QNetworkReply* reply = m_nam->post(req, postBody.toUtf8());
     connect(reply, SIGNAL(readyRead()), this, SLOT(onPRTTrackingSystemLoginReadyRead()));
     connect(reply, SIGNAL(error(QNetworkReply::NetworkError)),
@@ -441,6 +510,24 @@ void MainWindow::createDockWindows()
         action->setShortcut(m.shortcut);
         dock->close();
     }
+}
+
+void MainWindow::getPRTList(const QString& platform)
+{
+    QUrl url("http://prt.jabberqa.cisco.com/api/v1/conversations/page/1");
+    QUrlQuery query;
+    query.addQueryItem("platform",  platform);
+    url.setQuery(query);
+    QNetworkRequest req(url);
+    req.setHeader(QNetworkRequest::ContentTypeHeader, "application/json;charset=UTF-8");
+    req.setRawHeader("Accept", "application/json, text/plain, */*");
+    req.setRawHeader("token", g_settings->prtTrackingSystemToken().toUtf8());
+    m_prtList.clear();
+    QNetworkReply* reply = m_nam->get(req);
+    connect(reply, SIGNAL(readyRead()), this, SLOT(onPRTListReadyRead()));
+    connect(reply, SIGNAL(error(QNetworkReply::NetworkError)),
+            this, SLOT(onPRTRequestError(QNetworkReply::NetworkError)));
+    connect(reply, SIGNAL(finished()), this, SLOT(onPRTListFinished()));
 }
 
 void MainWindow::showProgressDialog(const QString &title)
