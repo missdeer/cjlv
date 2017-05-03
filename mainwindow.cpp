@@ -55,6 +55,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(QApplication::clipboard(), &QClipboard::dataChanged, this, &MainWindow::onClipboardChanged);
     ui->actionSearch->setChecked(g_settings->searchOrFitler());
     getPRTTrackingSystemToken();
+    createDockWindows();
 }
 
 MainWindow::~MainWindow()
@@ -411,6 +412,35 @@ void MainWindow::getPRTTrackingSystemToken()
     connect(reply, SIGNAL(error(QNetworkReply::NetworkError)),
             this, SLOT(onPRTRequestError(QNetworkReply::NetworkError)));
     connect(reply, SIGNAL(finished()), this, SLOT(onPRTTrackingSystemLoginFinished()));
+}
+
+void MainWindow::createDockWindows()
+{
+    ui->menuWindow->addSeparator();
+
+    struct {
+        QString title;
+        QListWidget*& listWidget;
+        QKeySequence shortcut;
+    } mm [] = {
+        {tr("Windows PRT"), m_windowsPRTList, QKeySequence("Shift+W")},
+        {tr("macOS PRT"),   m_macPRTList,     QKeySequence("Shift+M")},
+        {tr("iOS PRT"),     m_iOSPRTList,     QKeySequence("Shift+I")},
+        {tr("Android PRT"), m_androidPRTList, QKeySequence("Shift+A")},
+    };
+
+    for ( auto m : mm)
+    {
+        QDockWidget *dock = new QDockWidget(m.title, this);
+        dock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::TopDockWidgetArea | Qt::BottomDockWidgetArea);
+        m.listWidget = new QListWidget(dock);
+        dock->setWidget(m.listWidget);
+        addDockWidget(Qt::RightDockWidgetArea, dock);
+        ui->menuWindow->addAction(dock->toggleViewAction());
+        QAction* action = dock->toggleViewAction();
+        action->setShortcut(m.shortcut);
+        dock->close();
+    }
 }
 
 void MainWindow::showProgressDialog(const QString &title)

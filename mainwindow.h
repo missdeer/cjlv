@@ -112,6 +112,10 @@ private:
     QWinThumbnailToolBar *thumbbar;
     QNetworkAccessManager *m_nam;
     QFile *m_prt;
+    QListWidget *m_windowsPRTList;
+    QListWidget *m_macPRTList;
+    QListWidget *m_iOSPRTList;
+    QListWidget *m_androidPRTList;
     QByteArray m_prtInfo;
     QByteArray m_ptrTrackingSystemLoginInfo;
 
@@ -122,6 +126,8 @@ private:
     void downloadPRT(const QString& u);
     void openPRTFromURL(const QString& u);
     void getPRTTrackingSystemToken();
+
+    void createDockWindows();
 };
 
 #if defined(Q_OS_WIN)
