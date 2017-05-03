@@ -553,7 +553,7 @@ void MainWindow::createDockWindows()
         connect(m.listWidget, &QListWidget::itemActivated, this, &MainWindow::onPRTListItemActivated);
         connect(m.listWidget, &QListWidget::itemDoubleClicked, this, &MainWindow::onPRTListItemDoubleClicked);
         dock->setWidget(m.listWidget);
-        addDockWidget(Qt::RightDockWidgetArea, dock);
+        addDockWidget(Qt::LeftDockWidgetArea, dock);
         ui->menuWindow->addAction(dock->toggleViewAction());
         QAction* action = dock->toggleViewAction();
         action->setShortcut(m.shortcut);
