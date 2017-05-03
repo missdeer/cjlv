@@ -116,33 +116,59 @@ void MainWindow::onStatusBarMessageChanges(const QString &msg)
 
 void MainWindow::onPRTListItemDoubleClicked(QListWidgetItem *item)
 {
-
+    QVariant d = item->data(Qt::UserRole);
+    openPRTFromURL(QString("http://prt.jabberqa.cisco.com/#/conversations/%1").arg(d.toString()));
 }
 
 void MainWindow::onPRTListItemActivated(QListWidgetItem *item)
 {
-
+    QVariant d = item->data(Qt::UserRole);
+    openPRTFromURL(QString("http://prt.jabberqa.cisco.com/#/conversations/%1").arg(d.toString()));
 }
 
 void MainWindow::onOpenPRTListByDefaultWebBrowser()
 {
+    QAction* action = qobject_cast<QAction*>(sender());
+    QListWidget* list = qobject_cast<QListWidget*>(action->parentWidget()->parentWidget());
 
+    if (list == m_windowsPRTList)
+        QDesktopServices::openUrl(QUrl("http://prt.jabberqa.cisco.com/api/v1/conversations/page/1?platform=Windows"));
+    if (list == m_macPRTList)
+        QDesktopServices::openUrl(QUrl("http://prt.jabberqa.cisco.com/api/v1/conversations/page/1?platform=Mac"));
+    if (list == m_iOSPRTList)
+        QDesktopServices::openUrl(QUrl("http://prt.jabberqa.cisco.com/api/v1/conversations/page/1?platform=iOS"));
+    if (list == m_androidPRTList)
+        QDesktopServices::openUrl(QUrl("http://prt.jabberqa.cisco.com/api/v1/conversations/page/1?platform=Android"));
 }
 
 void MainWindow::onOpenConversationByDefaultWebBrowser()
 {
-
+    QAction* action = qobject_cast<QAction*>(sender());
+    QListWidget* list = qobject_cast<QListWidget*>(action->parentWidget()->parentWidget());
+    QListWidgetItem* item = list->currentItem();
+    if (item)
+    {
+        QVariant d = item->data(Qt::UserRole);
+        QDesktopServices::openUrl(QUrl(QString("http://prt.jabberqa.cisco.com/#/conversations/%1").arg(d.toString())));
+    }
 }
 
 void MainWindow::onOpenPRTViaListWidgetContextMenuItem()
 {
-
+    QAction* action = qobject_cast<QAction*>(sender());
+    QListWidget* list = qobject_cast<QListWidget*>(action->parentWidget()->parentWidget());
+    QListWidgetItem* item = list->currentItem();
+    if (item)
+    {
+        QVariant d = item->data(Qt::UserRole);
+        openPRTFromURL(QString("http://prt.jabberqa.cisco.com/#/conversations/%1").arg(d.toString()));
+    }
 }
 
 void MainWindow::onListWidgetCustomContextMenuRequested(const QPoint &pos)
 {
     QListWidget* list = qobject_cast<QListWidget*>(sender());
-    QMenu menu(this);
+    QMenu menu(list);
 
     QAction* action = menu.addAction(tr("Open PRT"));
     connect(action, &QAction::triggered, this, &MainWindow::onOpenPRTViaListWidgetContextMenuItem);
@@ -150,7 +176,7 @@ void MainWindow::onListWidgetCustomContextMenuRequested(const QPoint &pos)
     action = menu.addAction(tr("Open PRT list by default web browser..."));
     connect(action, &QAction::triggered, this, &MainWindow::onOpenPRTListByDefaultWebBrowser);
 
-    action = menu.addAction(tr("Open Conversation by default web browser..."));
+    action = menu.addAction(tr("Open conversation by default web browser..."));
     connect(action, &QAction::triggered, this, &MainWindow::onOpenConversationByDefaultWebBrowser);
 
     menu.exec(list->viewport()->mapToGlobal(pos));
@@ -217,6 +243,10 @@ void MainWindow::onPRTListFinished()
         QListWidgetItem* item = new QListWidgetItem(
                     QString("%1\n%2").arg(con["topic"].toString()).arg(con["owner"].toString()),list);
         item->setToolTip(con["content"].toString());
+        item->setData(Qt::UserRole, con["id"].toString());
+        item->setData(Qt::UserRole + 1, con["topic"].toString());
+        item->setData(Qt::UserRole + 2, con["owner"].toString());
+        item->setData(Qt::UserRole + 3, con["content"].toString());
         list->addItem(item);
     }
 
