@@ -40,14 +40,17 @@ int main(int argc, char *argv[])
     dir.cd("Resources");
 #endif
     dir.cd("Fonts");
+    QStringList missingFonts;
     foreach(const QString& f, fonts)
     {
         fontPath = dir.absolutePath() + QDir::separator() + f;
         if (QFile::exists(fontPath))
             QFontDatabase::addApplicationFont(fontPath);
         else
-            QMessageBox::critical(NULL, "Font missing", fontPath, QMessageBox::Ok);
+            missingFonts.push_back(fontPath);
     }
+    if (!missingFonts.isEmpty())
+        QMessageBox::critical(NULL, "Font missing", missingFonts.join("\n"), QMessageBox::Ok);
 
     QCoreApplication::setAttribute(Qt::AA_UseHighDpiPixmaps, true);
 	
