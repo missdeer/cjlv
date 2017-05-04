@@ -128,17 +128,7 @@ void MainWindow::onPRTListItemActivated(QListWidgetItem *item)
 
 void MainWindow::onOpenPRTListByDefaultWebBrowser()
 {
-    QAction* action = qobject_cast<QAction*>(sender());
-    QListWidget* list = qobject_cast<QListWidget*>(action->parentWidget()->parentWidget());
-
-    if (list == m_windowsPRTList)
-        QDesktopServices::openUrl(QUrl("http://prt.jabberqa.cisco.com/api/v1/conversations/page/1?platform=Windows"));
-    if (list == m_macPRTList)
-        QDesktopServices::openUrl(QUrl("http://prt.jabberqa.cisco.com/api/v1/conversations/page/1?platform=Mac"));
-    if (list == m_iOSPRTList)
-        QDesktopServices::openUrl(QUrl("http://prt.jabberqa.cisco.com/api/v1/conversations/page/1?platform=iOS"));
-    if (list == m_androidPRTList)
-        QDesktopServices::openUrl(QUrl("http://prt.jabberqa.cisco.com/api/v1/conversations/page/1?platform=Android"));
+    QDesktopServices::openUrl(QUrl("http://prt.jabberqa.cisco.com/#/conversations/page/1"));
 }
 
 void MainWindow::onOpenConversationByDefaultWebBrowser()
