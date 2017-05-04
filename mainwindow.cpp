@@ -163,11 +163,11 @@ void MainWindow::onListWidgetCustomContextMenuRequested(const QPoint &pos)
     QAction* action = menu.addAction(tr("Open PRT"));
     connect(action, &QAction::triggered, this, &MainWindow::onOpenPRTViaListWidgetContextMenuItem);
 
-    action = menu.addAction(tr("Open PRT list by default web browser..."));
-    connect(action, &QAction::triggered, this, &MainWindow::onOpenPRTListByDefaultWebBrowser);
-
-    action = menu.addAction(tr("Open conversation by default web browser..."));
+    action = menu.addAction(tr("Browse PRT information..."));
     connect(action, &QAction::triggered, this, &MainWindow::onOpenConversationByDefaultWebBrowser);
+
+    action = menu.addAction(tr("Browse PRT list..."));
+    connect(action, &QAction::triggered, this, &MainWindow::onOpenPRTListByDefaultWebBrowser);
 
     menu.exec(list->viewport()->mapToGlobal(pos));
 }
