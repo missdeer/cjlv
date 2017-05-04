@@ -432,9 +432,12 @@ void MainWindow::onExtensionRemoved(ExtensionPtr e)
 
 void MainWindow::onExtensionCreated(ExtensionPtr e)
 {
+    static int extensionCount = 1;
     QAction* action = new QAction(QString("%1 by %2").arg(e->title()).arg(e->author()), this);
     connect(action, &QAction::triggered, ui->tabWidget, &TabWidget::onExtensionActionTriggered);
     action->setData(e->uuid());
+    if (extensionCount < 10)
+        action->setShortcut(QKeySequence(QString("Ctrl+%1").arg(extensionCount++)));
     ui->menuExtension->addAction(action);
 }
 
