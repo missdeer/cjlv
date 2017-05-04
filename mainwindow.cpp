@@ -232,7 +232,7 @@ void MainWindow::onPRTListFinished()
         QJsonObject con = conversation.toObject();
         QListWidgetItem* item = new QListWidgetItem(
                     QString("%1\n%2").arg(con["topic"].toString()).arg(con["owner"].toString()),list);
-        item->setToolTip(con["content"].toString());
+        item->setToolTip(con["content"].toString().replace(" [", " \n["));
         item->setData(Qt::UserRole, con["id"].toString());
         item->setData(Qt::UserRole + 1, con["topic"].toString());
         item->setData(Qt::UserRole + 2, con["owner"].toString());
