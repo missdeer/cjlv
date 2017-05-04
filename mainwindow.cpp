@@ -175,7 +175,7 @@ void MainWindow::onListWidgetCustomContextMenuRequested(const QPoint &pos)
 void MainWindow::onClipboardChanged()
 {
     QClipboard *clipboard = QApplication::clipboard();
-    QString originalText = clipboard->text();
+    QString originalText = clipboard->text().trimmed();
 
     if (originalText.startsWith("http://prt.jabberqa.cisco.com/#/conversations/") || originalText.startsWith("http://prt.jabberqa.cisco.com/#conversations/"))
     {
@@ -659,7 +659,7 @@ void MainWindow::on_actionOpenFromPRTTrackingSystemURL_triggered()
                                       tr("Input a valid PRT Tracking System URL"),
                                       QLineEdit::Normal,
                                       QString(),
-                                      &ok);
+                                      &ok).trimmed();
 
     if (ok && (u.startsWith("http://prt.jabberqa.cisco.com/#/conversations/") || u.startsWith("http://prt.jabberqa.cisco.com/#conversations/") ) )
         openPRTFromURL(u);
