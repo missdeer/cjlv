@@ -117,6 +117,9 @@ win32: {
         QMAKE_LFLAGS += "/LTCG"
         QMAKE_CXXFLAGS_RELEASE += /Zi
         QMAKE_LFLAGS_RELEASE += /DEBUG
+        LIBS += -L$$PWD/3rdparty/zlib-1.2.8 -lzlib
+    } else {
+        LIBS += -lz
     }
 
     DISTFILES += \
@@ -128,7 +131,7 @@ win32: {
     SOURCES += everythingwrapper.cpp ShellContextMenu.cpp
     HEADERS += everythingwrapper.h ShellContextMenu.h
 
-    LIBS+=-L$$PWD/3rdparty/zlib-1.2.8 -L$$PWD/3rdparty/Everything-SDK/lib -lzlib -lUser32 -lShell32 -lpsapi -lOle32
+    LIBS+=-L$$PWD/3rdparty/Everything-SDK/lib -lUser32 -lShell32 -lpsapi -lOle32
 
     contains(QMAKE_HOST.arch, x86_64): LIBS += -lEverything64
     else: LIBS += -lEverything32

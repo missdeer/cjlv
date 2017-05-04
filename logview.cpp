@@ -643,7 +643,8 @@ void LogView::onCustomContextMenuRequested(const QPoint &pos)
         menu.addAction(pShowLogItemsBetweenAnchorsAction);
 #if defined(Q_OS_WIN)
         CShellContextMenu scm;
-        scm.ShowContextMenu(&menu, this, m_logsTableView->viewport()->mapToGlobal(pos), QDir::toNativeSeparators(m_path));
+        QPoint p = m_logsTableView->viewport()->mapToGlobal(pos);
+        scm.ShowContextMenu(&menu, this, p, QDir::toNativeSeparators(m_path));
 #else
         menu.exec(m_logsTableView->viewport()->mapToGlobal(pos));
 #endif

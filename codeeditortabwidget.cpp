@@ -200,7 +200,8 @@ void CodeEditorTabWidget::onCustomContextMenuRequested(const QPoint &pos)
         menu.addAction(pOpenContainerFolderAction);
 #if defined(Q_OS_WIN)
         CShellContextMenu scm;
-        scm.ShowContextMenu(&menu, this, mapToGlobal(pos), QDir::toNativeSeparators(tabToolTip(currentIndex())));
+        QPoint p = mapToGlobal(pos);
+        scm.ShowContextMenu(&menu, this, p, QDir::toNativeSeparators(tabToolTip(currentIndex())));
         return;
 #endif
     }
