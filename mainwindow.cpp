@@ -436,8 +436,14 @@ void MainWindow::onExtensionCreated(ExtensionPtr e)
     QAction* action = new QAction(QString("%1 by %2").arg(e->title()).arg(e->author()), this);
     connect(action, &QAction::triggered, ui->tabWidget, &TabWidget::onExtensionActionTriggered);
     action->setData(e->uuid());
-    if (extensionCount < 10)
+    if (extensionCount <= 10)
         action->setShortcut(QKeySequence(QString("Ctrl+%1").arg(extensionCount++)));
+    else if (extensionCount <= 20)
+        action->setShortcut(QKeySequence(QString("Ctrl+Shift+%1").arg(extensionCount++%10)));
+    else if (extensionCount <= 30)
+        action->setShortcut(QKeySequence(QString("Ctrl+Alt+%1").arg(extensionCount++%10)));
+    else if (extensionCount <= 40)
+        action->setShortcut(QKeySequence(QString("Shift+Alt+%1").arg(extensionCount++%10)));
     ui->menuExtension->addAction(action);
 }
 
