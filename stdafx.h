@@ -4,7 +4,6 @@
 
 #if defined(_WIN32)
 #define NOMINMAX
-#define STRSAFE_NO_DEPRECATE 1
 #include <Windows.h>
 #include <Shellapi.h>
 #include <shobjidl.h>

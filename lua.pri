@@ -29,6 +29,7 @@ HEADERS += \
     $$PWD/lvm.h \
     $$PWD/lzio.h
 
+win32-msvc* {
 SOURCES += \
     $$PWD/lapi.c \
     $$PWD/lauxlib.c \
@@ -63,3 +64,7 @@ SOURCES += \
     $$PWD/lutf8lib.c \
     $$PWD/lvm.c \
     $$PWD/lzio.c
+} else {
+    DEFINES += STRSAFE_NO_DEPRECATE
+    LIBS += -llua
+}
