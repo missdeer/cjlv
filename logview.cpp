@@ -578,6 +578,53 @@ MainWindow *LogView::getMainWindow()
 void LogView::onDataLoaded()
 {
     getMainWindow()->closeProgressDialog();
+
+//    QString dirPath;
+//    if (QFileInfo(m_path).isDir())
+//        dirPath = m_path;
+//    if (QFileInfo(m_path).suffix() == "zip")
+//        dirPath = m_extractDir;
+
+//    QDir dir(dirPath);
+//    dir.setFilter(QDir::Files | QDir::NoSymLinks);
+//    dir.setSorting(QDir::Name);
+//    QStringList filters;
+//    filters << "*.crash";
+//    dir.setNameFilters(filters);
+
+//    QStringList fileNames;
+//    QFileInfoList list = dir.entryInfoList();
+//    if (!list.isEmpty())
+//    {
+//        QStringList fileNames;
+//        std::for_each(list.begin(), list.end(), [&](const QFileInfo& fi) { fileNames << fi.absoluteFilePath();});
+//        if (QMessageBox::question(this, tr("Found crash report"),
+//                              QString(tr("Found crash report %1, open it now?")).arg(fileNames.join(", ")),
+//                              QMessageBox::Yes | QMessageBox::No,
+//                              QMessageBox::Yes) == QMessageBox::Yes)
+//        {
+//        }
+//    }
+
+//#if defined(Q_OS_WIN)
+//    filters.clear();
+//    filters << "*.dmp";
+//    dir.setNameFilters(filters);
+
+//    QStringList fileNames;
+//    QFileInfoList list = dir.entryInfoList();
+//    if (!list.isEmpty())
+//    {
+//        QStringList fileNames;
+//        std::for_each(list.begin(), list.end(), [&](const QFileInfo& fi) { fileNames << fi.absoluteFilePath();});
+//        if (QMessageBox::question(this, tr("Found crash report"),
+//                              QString(tr("Found crash report %1, open it by WinDBG now?")).arg(fileNames.join(", ")),
+//                              QMessageBox::Yes | QMessageBox::No,
+//                              QMessageBox::Yes) == QMessageBox::Yes)
+//        {
+//        }
+//    }
+//#endif
 }
 
 void LogView::onRowCountChanged()
