@@ -13,7 +13,7 @@
   <property name="windowTitle">
    <string>Preference</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0,0,0,0,0,0,0,0">
+  <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0,0,0,0,0,0,0,0,0,0">
    <property name="spacing">
     <number>1</number>
    </property>
@@ -52,6 +52,27 @@
      </item>
      <item>
       <widget class="QPushButton" name="btnSelectSourceCodeDirectory">
+       <property name="text">
+        <string>...</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QLabel" name="labelWinDBGPath">
+     <property name="text">
+      <string>WinDBG Path:</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="0,0">
+     <item>
+      <widget class="QLineEdit" name="edtWinDBG"/>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btnSelectWinDBGPath">
        <property name="text">
         <string>...</string>
        </property>

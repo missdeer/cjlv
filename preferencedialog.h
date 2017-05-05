@@ -24,6 +24,8 @@ private slots:
 
     void on_edtCECPassword_textChanged(const QString &);
 
+    void on_btnSelectWinDBGPath_clicked();
+
 private:
     Ui::PreferenceDialog *ui;
 };

@@ -54,7 +54,7 @@ void Settings::setPrtTrackingSystemToken(const QString &prtTrackingSystemToken)
     m_prtTrackingSystemToken = prtTrackingSystemToken;
 }
 
-QString Settings::cecId() const
+const QString &Settings::cecId() const
 {
     return m_cecId;
 }
@@ -64,7 +64,7 @@ void Settings::setCecId(const QString &cecId)
     m_cecId = cecId;
 }
 
-QString Settings::cecPassword() const
+const QString &Settings::cecPassword() const
 {
     return m_cecPassword;
 }
@@ -72,6 +72,16 @@ QString Settings::cecPassword() const
 void Settings::setCecPassword(const QString &cecPassword)
 {
     m_cecPassword = cecPassword;
+}
+
+const QString &Settings::windbgPath() const
+{
+    return m_windbgPath;
+}
+
+void Settings::setWindbgPath(const QString &windbgPath)
+{
+    m_windbgPath = windbgPath;
 }
 
 void Settings::save()
@@ -83,6 +93,8 @@ void Settings::save()
     settings.setValue("lastOpenedDirectory",QDir::toNativeSeparators(m_lastOpenedDirectory));
     if (!m_everythingPath.isEmpty())
         settings.setValue("everythingPath", m_everythingPath);
+    if (!m_windbgPath.isEmpty())
+        settings.setValue("windbgPath", m_windbgPath);
     settings.sync();
 
     WritePasswordJob job( QLatin1String("com.cisco.jabber.viewer") );
@@ -111,6 +123,7 @@ void Settings::load()
     m_everythingPath = settings.value("everythingPath").toString();
     if (m_everythingPath.isEmpty())
         m_everythingPath = QApplication::applicationDirPath() % "/Everything.exe";
+    //m_windbgPath = settings.value("windbgPath").toString();
 
     ReadPasswordJob job( QLatin1String("com.cisco.jabber.viewer") );
     job.setAutoDelete( false );
