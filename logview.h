@@ -128,6 +128,7 @@ private:
     void showCodeEditorPane();
     void setChart(QtCharts::QChartView* chartView, const QList<QSharedPointer<StatisticItem> >& sis, const QString& label);
     MainWindow *getMainWindow();
+    void openCrashReport();
 };
 
 class SourceWindow;

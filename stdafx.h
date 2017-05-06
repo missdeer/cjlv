@@ -52,6 +52,8 @@
 #include <QMainWindow>
 #include <QTableView>
 
+#include <QTimer>
+#include <QProcess>
 #include <QDomDocument>
 
 #include <QJsonDocument>

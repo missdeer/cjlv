@@ -123,7 +123,7 @@ void Settings::load()
     m_everythingPath = settings.value("everythingPath").toString();
     if (m_everythingPath.isEmpty())
         m_everythingPath = QApplication::applicationDirPath() % "/Everything.exe";
-    //m_windbgPath = settings.value("windbgPath").toString();
+    m_windbgPath = settings.value("windbgPath").toString();
 
     ReadPasswordJob job( QLatin1String("com.cisco.jabber.viewer") );
     job.setAutoDelete( false );

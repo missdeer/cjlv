@@ -3,11 +3,11 @@
 #include <JlCompress.h>
 #include <QPieSeries>
 #include <QPieSlice>
-#include <QTimer>
 #if defined(Q_OS_WIN)
 #include "ShellContextMenu.h"
 #endif
 #include "mainwindow.h"
+#include "preferencedialog.h"
 #include "tabwidget.h"
 #include "sourcewindow.h"
 #include "settings.h"
@@ -576,65 +576,94 @@ MainWindow *LogView::getMainWindow()
     return (MainWindow*)mainWindow;
 }
 
+void LogView::openCrashReport()
+{
+    QString dirPath;
+    if (QFileInfo(m_path).isDir())
+        dirPath = m_path;
+    if (QFileInfo(m_path).suffix() == "zip")
+        dirPath = m_extractDir;
+
+    QDir dir(dirPath);
+    dir.setFilter(QDir::Files | QDir::NoSymLinks);
+    dir.setSorting(QDir::Name);
+    QStringList filters;
+    filters << "*.crash";
+    dir.setNameFilters(filters);
+
+    QFileInfoList list = dir.entryInfoList();
+    if (!list.isEmpty())
+    {
+        QStringList fileNames;
+        std::for_each(list.begin(), list.end(), [&](const QFileInfo& fi) {
+            fileNames << fi.fileName();
+        });
+        if (QMessageBox::question(this, tr("Found crash report"),
+                                  QString(tr("Found crash report %1, open it now?")).arg(fileNames.join(", ")),
+                                  QMessageBox::Yes | QMessageBox::No,
+                                  QMessageBox::Yes) == QMessageBox::Yes)
+        {
+            showCodeEditorPane();
+            std::for_each(list.begin(), list.end(), [&](const QFileInfo& fi) {
+                if (g_settings->multiMonitorEnabled())
+                {
+                    g_sourceWindow->getSourceViewTabWidget()->gotoLine(m_path, fi.absoluteFilePath());
+                }
+                else
+                {
+                    m_codeEditorTabWidget->gotoLine(fi.absoluteFilePath());
+                }
+            });
+        }
+    }
+
+#if defined(Q_OS_WIN)
+    filters.clear();
+    filters << "*.dmp";
+    dir.setNameFilters(filters);
+
+    list = dir.entryInfoList();
+    if (!list.isEmpty())
+    {
+        QStringList fileNames;
+        std::for_each(list.begin(), list.end(), [&](const QFileInfo& fi) {
+            fileNames << fi.fileName();
+        });
+        if (QMessageBox::question(this, tr("Found crash report"),
+                                  QString(tr("Found crash report %1, open it by WinDBG now?")).arg(fileNames.join(", ")),
+                                  QMessageBox::Yes | QMessageBox::No,
+                                  QMessageBox::Yes) == QMessageBox::Yes)
+        {
+            const QString& windbgPath = g_settings->windbgPath();
+            if (windbgPath.isEmpty())
+            {
+                QMessageBox::warning(this, tr("WinDBG path not found"),
+                                     tr("Please set WinDBG path first."),
+                                     QMessageBox::Ok);
+                PreferenceDialog dlg(this);
+                dlg.exec();
+                if (windbgPath.isEmpty())
+                    return;
+            }
+            std::for_each(list.begin(), list.end(), [&](const QFileInfo& fi) {
+                QStringList args;
+                args << "-z" << fi.absoluteFilePath().replace('/', QDir::separator()) << "-c" << "!analyze -v";
+                const QString& srcPath = g_settings->sourceDirectory();
+                if (!srcPath.isEmpty())
+                    args << "-srcpath" << srcPath;
+                QProcess::startDetached(windbgPath, args);
+            });
+        }
+    }
+#endif
+}
+
 void LogView::onDataLoaded()
 {
     getMainWindow()->closeProgressDialog();
 
     // let it run in main thread, so QMessageBox could work as expected
-    QTimer::singleShot(100, [&](){
-        QString dirPath;
-        if (QFileInfo(m_path).isDir())
-            dirPath = m_path;
-        if (QFileInfo(m_path).suffix() == "zip")
-            dirPath = m_extractDir;
-
-        QDir dir(dirPath);
-        dir.setFilter(QDir::Files | QDir::NoSymLinks);
-        dir.setSorting(QDir::Name);
-        QStringList filters;
-        filters << "*.crash";
-        dir.setNameFilters(filters);
-
-        QFileInfoList list = dir.entryInfoList();
-        if (!list.isEmpty())
-        {
-            QStringList fileNames;
-            QStringList filePaths;
-            std::for_each(list.begin(), list.end(), [&](const QFileInfo& fi) {
-                filePaths << fi.absoluteFilePath();
-                fileNames << fi.fileName();
-            });
-            if (QMessageBox::question(this, tr("Found crash report"),
-                                      QString(tr("Found crash report %1, open it now?")).arg(fileNames.join(", ")),
-                                      QMessageBox::Yes | QMessageBox::No,
-                                      QMessageBox::Yes) == QMessageBox::Yes)
-            {
-            }
-        }
-
-#if defined(Q_OS_WIN)
-        filters.clear();
-        filters << "*.dmp";
-        dir.setNameFilters(filters);
-
-        list = dir.entryInfoList();
-        if (!list.isEmpty())
-        {
-            QStringList fileNames;
-            QStringList filePaths;
-            std::for_each(list.begin(), list.end(), [&](const QFileInfo& fi) {
-                filePaths << fi.absoluteFilePath();
-                fileNames << fi.fileName();
-            });
-            if (QMessageBox::question(this, tr("Found crash report"),
-                                      QString(tr("Found crash report %1, open it by WinDBG now?")).arg(fileNames.join(", ")),
-                                      QMessageBox::Yes | QMessageBox::No,
-                                      QMessageBox::Yes) == QMessageBox::Yes)
-            {
-            }
-        }
-#endif
-    });
+    QTimer::singleShot(100, [&](){ openCrashReport(); });
 }
 
 void LogView::onRowCountChanged()
