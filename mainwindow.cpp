@@ -177,7 +177,9 @@ void MainWindow::onClipboardChanged()
     QClipboard *clipboard = QApplication::clipboard();
     QString originalText = clipboard->text().trimmed();
 
-    if (originalText.startsWith("http://prt.jabberqa.cisco.com/#/conversations/") || originalText.startsWith("http://prt.jabberqa.cisco.com/#conversations/"))
+    QString pattern = "http:\\/\\/prt\\.jabberqa\\.cisco.com\\/#\\/?conversations\\/[0-9a-zA-Z]{16,16}";
+    QRegularExpression regex(pattern, QRegularExpression::CaseInsensitiveOption);
+    if (regex.match(originalText).hasMatch())
     {
         if (isMinimized())
             showMaximized();
@@ -661,7 +663,9 @@ void MainWindow::on_actionOpenFromPRTTrackingSystemURL_triggered()
                                       QString(),
                                       &ok).trimmed();
 
-    if (ok && (u.startsWith("http://prt.jabberqa.cisco.com/#/conversations/") || u.startsWith("http://prt.jabberqa.cisco.com/#conversations/") ) )
+    QString pattern = "http:\\/\\/prt\\.jabberqa\\.cisco.com\\/#\\/?conversations\\/[0-9a-zA-Z]{16,16}";
+    QRegularExpression regex(pattern, QRegularExpression::CaseInsensitiveOption);
+    if (ok && regex.match(u).hasMatch())
         openPRTFromURL(u);
 }
 
