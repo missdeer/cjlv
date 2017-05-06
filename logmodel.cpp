@@ -258,7 +258,7 @@ QVariant LogModel::data(const QModelIndex &index, int role) const
     case 0:
         return QVariant(r->id);
     case 1:
-        return QVariant(r->time.toString("yyyy-MM-dd hh:mm:ss.zzz"));
+        return QVariant(r->time.toString("yyyy-MM-dd hh:mm:ss,zzz"));
     case 2:
         return QVariant(r->level);
     case 3:
@@ -1112,6 +1112,25 @@ void LogModel::generateSQLStatements(int offset, QString &sqlFetch, QString &sql
             return;
         }
 
+        if (m_searchField == "datetime")
+        {
+            QString begin = "1970-01-01 00:00:00,000";
+            QString end = "1970-12-31 23:59:59,999";
+            if (m_keyword.length() < begin.length())
+            {
+                begin.replace(0, m_keyword.length(), m_keyword);
+                end.replace(0, m_keyword.length(), m_keyword);
+                sqlCount = QString("SELECT COUNT(*) FROM logs WHERE epoch >= %1 AND epoch <= %2")
+                        .arg(QDateTime::fromString(begin,"yyyy-MM-dd hh:mm:ss,zzz").toMSecsSinceEpoch())
+                        .arg(QDateTime::fromString(end,"yyyy-MM-dd hh:mm:ss,zzz").toMSecsSinceEpoch());
+                sqlFetch = QString("SELECT * FROM logs WHERE epoch >= %1 AND epoch <= %2 ORDER BY epoch LIMIT %3, 200;")
+                        .arg(QDateTime::fromString(begin,"yyyy-MM-dd hh:mm:ss,zzz").toMSecsSinceEpoch())
+                        .arg(QDateTime::fromString(end,"yyyy-MM-dd hh:mm:ss,zzz").toMSecsSinceEpoch())
+                        .arg(offset);
+                return;
+            }
+        }
+
         // simple keyword, SQL LIKE fitler
         sqlCount = QString("SELECT COUNT(*) FROM logs WHERE %1 LIKE '%'||?||'%'").arg(m_searchField);
         sqlFetch = QString("SELECT * FROM logs WHERE %1 LIKE '%'||?||'%' ORDER BY epoch LIMIT %2, 200;").arg(m_searchField).arg(offset);
@@ -1150,6 +1169,26 @@ void LogModel::generateSQLStatements(int offset, QString &sqlFetch, QString &sql
         return;
     }
 
+
+    if (m_searchField == "datetime")
+    {
+        QString begin = "1970-01-01 00:00:00,000";
+        QString end = "1970-12-31 23:59:59,999";
+        if (m_keyword.length() < begin.length())
+        {
+            begin.replace(0, m_keyword.length(), m_keyword);
+            end.replace(0, m_keyword.length(), m_keyword);
+            sqlCount = QString("SELECT COUNT(*) FROM logs WHERE epoch >= %1 AND epoch <= %2 AND level GLOB 'dummy'")
+                    .arg(QDateTime::fromString(begin,"yyyy-MM-dd hh:mm:ss,zzz").toMSecsSinceEpoch())
+                    .arg(QDateTime::fromString(end,"yyyy-MM-dd hh:mm:ss,zzz").toMSecsSinceEpoch());
+            sqlFetch = QString("SELECT * FROM logs WHERE epoch >= %1 AND epoch <= %2 AND level GLOB 'dummy' ORDER BY epoch LIMIT %3, 200;")
+                    .arg(QDateTime::fromString(begin,"yyyy-MM-dd hh:mm:ss,zzz").toMSecsSinceEpoch())
+                    .arg(QDateTime::fromString(end,"yyyy-MM-dd hh:mm:ss,zzz").toMSecsSinceEpoch())
+                    .arg(offset);
+            return;
+        }
+    }
+
     // simple keyword, SQL LIKE fitler
     sqlCount = QString("SELECT COUNT(*) FROM logs WHERE %1 LIKE '%'||?||'%' AND level GLOB 'dummy'").arg(m_searchField);
     sqlFetch = QString("SELECT * FROM logs WHERE %1 LIKE '%'||?||'%' AND level GLOB 'dummy' ORDER BY epoch LIMIT %2, 200;").arg(m_searchField).arg(offset);
@@ -1183,6 +1222,20 @@ QString LogModel::generateSQLStatement(int from, int to)
             return QString("SELECT * FROM logs WHERE %1 AND id >= %2 AND id <= %3 REGEXP ? ORDER BY epoch LIMIT 400000;").arg(m_searchField).arg(from).arg(to);
         }
 
+        if (m_searchField == "datetime")
+        {
+            QString begin = "1970-01-01 00:00:00,000";
+            QString end = "1970-12-31 23:59:59,999";
+            if (m_keyword.length() < begin.length())
+            {
+                begin.replace(0, m_keyword.length(), m_keyword);
+                end.replace(0, m_keyword.length(), m_keyword);
+                return QString("SELECT * FROM logs WHERE epoch >= %1 AND epoch <= %2 AND id >= %3 AND id <= %4 ORDER BY epoch LIMIT 400000;")
+                        .arg(QDateTime::fromString(begin,"yyyy-MM-dd hh:mm:ss,zzz").toMSecsSinceEpoch())
+                        .arg(QDateTime::fromString(end,"yyyy-MM-dd hh:mm:ss,zzz").toMSecsSinceEpoch())
+                        .arg(from).arg(to);;
+            }
+        }
         // simple keyword, SQL LIKE fitler
         return QString("SELECT * FROM logs WHERE %1 LIKE '%'||?||'%' AND id >= %2 AND id <= %3 ORDER BY epoch LIMIT 400000;").arg(m_searchField).arg(from).arg(to);
     }
@@ -1211,6 +1264,20 @@ QString LogModel::generateSQLStatement(int from, int to)
         return QString("SELECT * FROM logs WHERE %1 REGEXP ? AND level GLOB 'dummy' AND id >= %2 AND id <= %3 ORDER BY epoch LIMIT 400000;").arg(m_searchField).arg(from).arg(to);
     }
 
+    if (m_searchField == "datetime")
+    {
+        QString begin = "1970-01-01 00:00:00,000";
+        QString end = "1970-12-31 23:59:59,999";
+        if (m_keyword.length() < begin.length())
+        {
+            begin.replace(0, m_keyword.length(), m_keyword);
+            end.replace(0, m_keyword.length(), m_keyword);
+            return QString("SELECT * FROM logs WHERE epoch >= %1 AND epoch <= %2 AND level GLOB 'dummy' AND id >= %3 AND id <= %4 ORDER BY epoch LIMIT 400000;")
+                    .arg(QDateTime::fromString(begin,"yyyy-MM-dd hh:mm:ss,zzz").toMSecsSinceEpoch())
+                    .arg(QDateTime::fromString(end,"yyyy-MM-dd hh:mm:ss,zzz").toMSecsSinceEpoch())
+                    .arg(from).arg(to);;
+        }
+    }
     // simple keyword, SQL LIKE fitler
     return QString("SELECT * FROM logs WHERE %1 LIKE '%'||?||'%' AND level GLOB 'dummy' AND id >= %2 AND id <= %3 ORDER BY epoch LIMIT 400000;").arg(m_searchField).arg(from).arg(to);
 }
