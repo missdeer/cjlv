@@ -593,7 +593,7 @@ void MainWindow::openPRTFromURL(const QString &u)
     connect(reply, SIGNAL(error(QNetworkReply::NetworkError)),
             this, SLOT(onPRTRequestError(QNetworkReply::NetworkError)));
     connect(reply, SIGNAL(finished()), this, SLOT(onPRTInfoRequestFinished()));
-    showProgressDialog(tr("Getting PRT information..."));
+    showProgressDialog(QString(tr("Getting PRT information of %1...")).arg(u));
 }
 
 void MainWindow::getPRTTrackingSystemToken()
@@ -678,7 +678,7 @@ void MainWindow::getJabberWinPRTInfo(const QString &id)
     connect(reply, SIGNAL(error(QNetworkReply::NetworkError)),
             this, SLOT(onPRTRequestError(QNetworkReply::NetworkError)));
     connect(reply, SIGNAL(finished()), this, SLOT(onJabberWinPRTInfoRequestFinished()));
-    showProgressDialog(tr("Getting Jabber Win PRT information..."));
+    showProgressDialog(QString(tr("Getting Jabber Win PRT information of ID %1...")).arg(id));
 }
 
 void MainWindow::showProgressDialog(const QString &title)
@@ -958,7 +958,7 @@ void MainWindow::downloadPRT(const QString &u)
     connect(reply, SIGNAL(error(QNetworkReply::NetworkError)),
             this, SLOT(onPRTRequestError(QNetworkReply::NetworkError)));
     connect(reply, SIGNAL(finished()), this, SLOT(onPRTDownloadFinished()));
-    showProgressDialog(tr("Downloading PRT..."));
+    showProgressDialog(QString(tr("Downloading PRT from %1...")).arg(u));
 }
 
 void MainWindow::on_actionHelpContent_triggered()
