@@ -631,6 +631,8 @@ void MainWindow::createDockWindows()
         QDockWidget *dock = new QDockWidget(m.title, this);
         dock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::TopDockWidgetArea | Qt::BottomDockWidgetArea);
         m.listWidget = new QListWidget(dock);
+        m.listWidget->setResizeMode(QListView::Adjust);
+        m.listWidget->setWordWrap(true);
         m.listWidget->setContextMenuPolicy(Qt::CustomContextMenu);
         m.listWidget->setItemDelegate(new PRTListItemDelegate(m.listWidget));
         connect(m.listWidget, &QWidget::customContextMenuRequested, this, &MainWindow::onListWidgetCustomContextMenuRequested);

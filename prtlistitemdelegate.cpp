@@ -70,16 +70,19 @@ void PRTListItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &o
     QString content = index.data(Qt::UserRole + 3).toString();
 
     painter->setFont(QFont(globalDefaultFontFamily, 12, QFont::Normal));
-    painter->drawText(r.left(), r.top(), r.width(), r.height(), Qt::AlignLeft | Qt::AlignVCenter | Qt::TextWordWrap, title, &r);
+    painter->drawText(r, Qt::AlignLeft | Qt::AlignVCenter | Qt::TextWordWrap, title, &r);
 }
 
-QSize PRTListItemDelegate::sizeHint(const QStyleOptionViewItem &/*option*/, const QModelIndex &/*index*/) const
+QSize PRTListItemDelegate::sizeHint(const QStyleOptionViewItem &/*option*/, const QModelIndex &index) const
 {
-    return QSize(m_parentListWidget->width() - 4,
-             #if defined(Q_OS_WIN)
-                 105
-             #else
-                 60
-             #endif
-                 );
+    QFontMetrics fm(QFont(globalDefaultFontFamily, 12, QFont::Normal));
+    QString title = index.data(Qt::DisplayRole).toString();
+    QRect rc = fm.boundingRect(title + "paddingpadding"); // since this method doesn't support word wrap detection
+    int width = m_parentListWidget->width() -4;
+#if defined(Q_OS_WIN)
+    if (m_parentListWidget->verticalScrollBar() && m_parentListWidget->verticalScrollBar()->isVisible())
+        width -= m_parentListWidget->verticalScrollBar()->width();
+#endif
+    int height = (rc.width() /width +1)* rc.height();
+    return QSize(width, height);
 }
