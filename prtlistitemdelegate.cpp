@@ -84,5 +84,5 @@ QSize PRTListItemDelegate::sizeHint(const QStyleOptionViewItem &/*option*/, cons
         width -= m_parentListWidget->verticalScrollBar()->width();
 #endif
     int height = (rc.width() /width +1)* rc.height();
-    return QSize(width, height);
+    return QSize(width+4, height+4);
 }
