@@ -39,7 +39,8 @@ SOURCES += main.cpp\
     sourcewindow.cpp \
     sourceviewtabwidget.cpp \
     presencemodel.cpp \
-    presencewidget.cpp
+    presencewidget.cpp \
+    prtlistitemdelegate.cpp
 
 HEADERS  += mainwindow.h \
     logview.h \
@@ -57,7 +58,8 @@ HEADERS  += mainwindow.h \
     sourcewindow.h \
     sourceviewtabwidget.h \
     presencemodel.h \
-    presencewidget.h
+    presencewidget.h \
+    prtlistitemdelegate.h
 
 FORMS    += mainwindow.ui \
     preferencedialog.ui \

@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "prtlistitemdelegate.h"
 #include "settings.h"
 #include "preferencedialog.h"
 #include "extensiondialog.h"
@@ -232,8 +233,7 @@ void MainWindow::onPRTListFinished()
     for (auto conversation : conversations)
     {
         QJsonObject con = conversation.toObject();
-        QListWidgetItem* item = new QListWidgetItem(
-                    QString("%1\n%2").arg(con["topic"].toString()).arg(con["owner"].toString()),list);
+        QListWidgetItem* item = new QListWidgetItem(con["topic"].toString(),list);
         item->setToolTip(con["content"].toString().replace(" [", " \n["));
         item->setData(Qt::UserRole, con["id"].toString());
         item->setData(Qt::UserRole + 1, con["topic"].toString());
@@ -343,10 +343,12 @@ void MainWindow::onPRTInfoRequestFinished()
 
     QJsonObject docObj = doc.object();
 
+#if defined(Q_OS_WIN)
     QJsonValue tagName = docObj["tagName"];
     bool isCrash = false;
     if (tagName.isString() && tagName.toString() == "Crash")
         isCrash = true;
+#endif
 
     QJsonValue emailsObj = docObj["emails"];
     if (!emailsObj.isArray())
@@ -365,6 +367,7 @@ void MainWindow::onPRTInfoRequestFinished()
         }
         QJsonObject ele = email.toObject();
 
+#if defined(Q_OS_WIN)
         if (isCrash)
         {
             QJsonValue bodyConvertVal = ele["body_converted"];
@@ -389,6 +392,7 @@ void MainWindow::onPRTInfoRequestFinished()
                 }
             }
         }
+#endif
 
         QJsonValue attachmentsObj = ele["attachments"];
         if (!attachmentsObj.isArray())
@@ -628,6 +632,7 @@ void MainWindow::createDockWindows()
         dock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::TopDockWidgetArea | Qt::BottomDockWidgetArea);
         m.listWidget = new QListWidget(dock);
         m.listWidget->setContextMenuPolicy(Qt::CustomContextMenu);
+        m.listWidget->setItemDelegate(new PRTListItemDelegate(m.listWidget));
         connect(m.listWidget, &QWidget::customContextMenuRequested, this, &MainWindow::onListWidgetCustomContextMenuRequested);
         connect(m.listWidget, &QListWidget::itemActivated, this, &MainWindow::onPRTListItemActivated);
         connect(m.listWidget, &QListWidget::itemDoubleClicked, this, &MainWindow::onPRTListItemDoubleClicked);
