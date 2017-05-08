@@ -444,7 +444,7 @@ void MainWindow::onJabberWinPRTInfoRequestFinished()
     QNetworkReply* reply = qobject_cast<QNetworkReply*>(sender());
     reply->deleteLater();
 
-    QString pattern = "http:\\/\\/jabber\\-prt\\.cisco\\.com\\/jabberPrtReport\\/uploads\\/[0-9a-zA-Z_]+\\.zip";
+    QString pattern = "http:\\/\\/jabber\\-prt\\.cisco\\.com\\/jabberPrtReport\\/uploads\\/[0-9a-zA-Z_\\-]+\\.zip";
     QRegularExpression re(pattern);
     QRegularExpressionMatch match = re.match(QString(m_prtInfo));
     QString u = match.captured();
