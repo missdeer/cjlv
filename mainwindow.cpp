@@ -342,6 +342,12 @@ void MainWindow::onPRTInfoRequestFinished()
     }
 
     QJsonObject docObj = doc.object();
+
+    QJsonValue tagName = docObj["tagName"];
+    bool isCrash = false;
+    if (tagName.isString() && tagName.toString() == "Crash")
+        isCrash = true;
+
     QJsonValue emailsObj = docObj["emails"];
     if (!emailsObj.isArray())
     {
@@ -358,6 +364,32 @@ void MainWindow::onPRTInfoRequestFinished()
             continue;
         }
         QJsonObject ele = email.toObject();
+
+        if (isCrash)
+        {
+            QJsonValue bodyConvertVal = ele["body_converted"];
+            if (bodyConvertVal.isString())
+            {
+                QString bodyConverted = bodyConvertVal.toString();
+                QString pattern = "http:\\/\\/jabber\\-prt\\.cisco\\.com\\/ProblemReportTriageTool\\/\\?prt_id=(\\d+)";
+                QRegularExpression re(pattern);
+                QRegularExpressionMatch match = re.match(bodyConverted);
+                QString captured = match.captured(1);
+
+                if (!captured.isEmpty())
+                {
+                    if (QMessageBox::question(this, tr("Found PRT with dump"),
+                                          tr("It seems to be a crash PRT, do you want to download the PRT with dump file?"),
+                                          QMessageBox::Yes | QMessageBox::No,
+                                          QMessageBox::Yes) == QMessageBox::Yes)
+                    {
+                        getJabberWinPRTInfo(captured);
+                        return;
+                    }
+                }
+            }
+        }
+
         QJsonValue attachmentsObj = ele["attachments"];
         if (!attachmentsObj.isArray())
         {
@@ -400,6 +432,22 @@ void MainWindow::onPRTInfoRequestReadyRead()
     {
         m_prtInfo.append(reply->readAll());
     }
+}
+
+void MainWindow::onJabberWinPRTInfoRequestFinished()
+{
+    closeProgressDialog();
+    QNetworkReply* reply = qobject_cast<QNetworkReply*>(sender());
+    reply->deleteLater();
+
+    QString pattern = "http:\\/\\/jabber\\-prt\\.cisco\\.com\\/jabberPrtReport\\/uploads\\/[0-9a-zA-Z_]+\\.zip";
+    QRegularExpression re(pattern);
+    QRegularExpressionMatch match = re.match(QString(m_prtInfo));
+    QString u = match.captured();
+    if (!u.isEmpty())
+        downloadPRT(u);
+    else
+        qDebug() << "can't find PRT link";
 }
 
 void MainWindow::onPRTRequestError(QNetworkReply::NetworkError e)
@@ -608,6 +656,22 @@ void MainWindow::getPRTList(const QString& platform)
     connect(reply, SIGNAL(error(QNetworkReply::NetworkError)),
             this, SLOT(onPRTRequestError(QNetworkReply::NetworkError)));
     connect(reply, SIGNAL(finished()), this, SLOT(onPRTListFinished()));
+}
+
+void MainWindow::getJabberWinPRTInfo(const QString &id)
+{
+    QUrl url("http://jabber-prt.cisco.com/ProblemReportTriageTool/scripts/getReportById.php");
+    QUrlQuery query;
+    query.addQueryItem("reportID", id);
+    url.setQuery(query);
+    QNetworkRequest req(url);
+    m_prtInfo.clear();
+    QNetworkReply* reply = m_nam->get(req);
+    connect(reply, SIGNAL(readyRead()), this, SLOT(onPRTInfoRequestReadyRead()));
+    connect(reply, SIGNAL(error(QNetworkReply::NetworkError)),
+            this, SLOT(onPRTRequestError(QNetworkReply::NetworkError)));
+    connect(reply, SIGNAL(finished()), this, SLOT(onJabberWinPRTInfoRequestFinished()));
+    showProgressDialog(tr("Getting Jabber Win PRT information..."));
 }
 
 void MainWindow::showProgressDialog(const QString &title)

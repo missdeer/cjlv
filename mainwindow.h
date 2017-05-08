@@ -48,6 +48,7 @@ private slots:
     void onPRTDownloadReadyRead();
     void onPRTInfoRequestFinished();
     void onPRTInfoRequestReadyRead();
+    void onJabberWinPRTInfoRequestFinished();
     void onPRTRequestError(QNetworkReply::NetworkError e);
     void onIPCMessageReceived(const QString &message, QObject *socket);
     void onExtensionScanned();
@@ -138,6 +139,7 @@ private:
 
     void createDockWindows();
     void getPRTList(const QString& platform);
+    void getJabberWinPRTInfo(const QString& id);
 };
 
 #if defined(Q_OS_WIN)
