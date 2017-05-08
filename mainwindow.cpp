@@ -631,6 +631,7 @@ void MainWindow::createDockWindows()
         QDockWidget *dock = new QDockWidget(m.title, this);
         dock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::TopDockWidgetArea | Qt::BottomDockWidgetArea);
         m.listWidget = new QListWidget(dock);
+        m.listWidget->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
         m.listWidget->setResizeMode(QListView::Adjust);
         m.listWidget->setWordWrap(true);
         m.listWidget->setContextMenuPolicy(Qt::CustomContextMenu);
