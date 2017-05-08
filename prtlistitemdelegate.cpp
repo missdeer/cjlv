@@ -69,13 +69,25 @@ void PRTListItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &o
     QString owner = index.data(Qt::UserRole + 2).toString();
     QString content = index.data(Qt::UserRole + 3).toString();
 
-    painter->setFont(QFont(globalDefaultFontFamily, 12, QFont::Normal));
+    painter->setFont(QFont(globalDefaultFontFamily,
+                       #if defined(Q_OS_WIN)
+                           12,
+                       #else
+                           14,
+                       #endif
+                           QFont::Normal));
     painter->drawText(r, Qt::AlignLeft | Qt::AlignVCenter | Qt::TextWordWrap, title, &r);
 }
 
 QSize PRTListItemDelegate::sizeHint(const QStyleOptionViewItem &/*option*/, const QModelIndex &index) const
 {
-    QFontMetrics fm(QFont(globalDefaultFontFamily, 12, QFont::Normal));
+    QFontMetrics fm(QFont(globalDefaultFontFamily,
+                      #if defined(Q_OS_WIN)
+                          12,
+                      #else
+                          14,
+                      #endif
+                          QFont::Normal));
     QString title = index.data(Qt::DisplayRole).toString();
     QRect rc = fm.boundingRect(title + "paddingpadding"); // since this method doesn't support word wrap detection
     int width = m_parentListWidget->width() -4;
