@@ -70,10 +70,16 @@ void PRTListItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &o
     QString content = index.data(Qt::UserRole + 3).toString();
 
     painter->setFont(QFont(globalDefaultFontFamily, 12, QFont::Normal));
-    painter->drawText(r.left(), r.top(), r.width(), r.height(), Qt::AlignLeft | Qt::AlignTop | Qt::TextWordWrap, title, &r);
+    painter->drawText(r.left(), r.top(), r.width(), r.height(), Qt::AlignLeft | Qt::AlignVCenter | Qt::TextWordWrap, title, &r);
 }
 
 QSize PRTListItemDelegate::sizeHint(const QStyleOptionViewItem &/*option*/, const QModelIndex &/*index*/) const
 {
-    return QSize(m_parentListWidget->width() - 4, 60);
+    return QSize(m_parentListWidget->width() - 4,
+             #if defined(Q_OS_WIN)
+                 105
+             #else
+                 60
+             #endif
+                 );
 }
