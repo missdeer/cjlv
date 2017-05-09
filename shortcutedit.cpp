@@ -46,6 +46,7 @@ bool ShortcutEdit::event(QEvent *e)
             keyInt += Qt::META;
 
         setText( QKeySequence(keyInt).toString(QKeySequence::NativeText));
+        return true;
     }
     return QLineEdit::event(e);
 }
