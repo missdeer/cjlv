@@ -35,16 +35,18 @@ bool ShortcutEdit::event(QEvent *e)
         // if the keyText is empty than it's a special key like F1, F5, ...
         qDebug() << "Pressed Key:" << keyText;
 
-        QList<Qt::Key> modifiersList;
-        if(modifiers & Qt::ShiftModifier)
-            keyInt += Qt::SHIFT;
-        if(modifiers & Qt::ControlModifier)
-            keyInt += Qt::CTRL;
-        if(modifiers & Qt::AltModifier)
-            keyInt += Qt::ALT;
-        if(modifiers & Qt::MetaModifier)
-            keyInt += Qt::META;
+        std::map<Qt::KeyboardModifier, Qt::Modifier> m = {
+            { Qt::ShiftModifier, Qt::SHIFT},
+            { Qt::ControlModifier, Qt::CTRL},
+            { Qt::AltModifier, Qt::ALT},
+            { Qt::MetaModifier, Qt::META},
+        };
 
+        for (auto k : m)
+        {
+            if (modifiers & k.first)
+                keyInt += k.second;
+        }
         setText( QKeySequence(keyInt).toString(QKeySequence::NativeText));
         return true;
     }
