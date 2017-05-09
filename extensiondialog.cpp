@@ -24,7 +24,7 @@ ExtensionDialog::ExtensionDialog(QWidget *parent) :
     ui->codeEditorPlaceholder->setLayout(m_mainLayout);
 
     ui->tableView->setModel(ExtensionModel::instance());
-    ui->tableView->horizontalHeader()->setSectionResizeMode(5, QHeaderView::Stretch);
+    ui->tableView->horizontalHeader()->setSectionResizeMode(7, QHeaderView::Stretch);
     connect(ui->tableView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &ExtensionDialog::onTableViewSelectionChanged);
 
     m_currentExtension->setFrom("Custom");
