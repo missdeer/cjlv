@@ -25,7 +25,7 @@ bool ShortcutEdit::event(QEvent *e)
                 key == Qt::Key_Meta)
         {
             qDebug() << "Single click of special key: Ctrl, Shift, Alt or Meta";
-            setText( QKeySequence(keyInt).toString(QKeySequence::NativeText));
+            setText( QKeySequence(keyInt).toString());
             return true;
         }
 
@@ -47,7 +47,7 @@ bool ShortcutEdit::event(QEvent *e)
             if (modifiers & k.first)
                 keyInt += k.second;
         }
-        setText( QKeySequence(keyInt).toString(QKeySequence::NativeText));
+        setText( QKeySequence(keyInt).toString());
         return true;
     }
     return QLineEdit::event(e);
