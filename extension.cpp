@@ -5,6 +5,8 @@ Extension::Extension(const Extension &e)
 {
     m_title = e.m_title;
     m_author = e.m_author;
+    m_comment = e.m_comment;
+    m_shortcut = e.m_shortcut;
     m_field = e.m_field;
     m_method = e.m_method;
     m_content = e.m_content;
@@ -20,6 +22,8 @@ Extension &Extension::operator=(const Extension &e)
 {
     m_title = e.m_title;
     m_author = e.m_author;
+    m_comment = e.m_comment;
+    m_shortcut = e.m_shortcut;
     m_field = e.m_field;
     m_method = e.m_method;
     m_content = e.m_content;
@@ -50,6 +54,8 @@ bool Extension::load(const QString& path)
     setField(docElem.attribute("field"));
     setAuthor(docElem.attribute("author"));
     setTitle(docElem.attribute("title"));
+    setComment(docElem.attribute("comment"));
+    setShortcut(docElem.attribute("shortcut"));
     setMethod(docElem.attribute("method"));
     setCreatedAt(docElem.attribute("createAt"));
     setLastModifiedAt(docElem.attribute("lastModifiedAt"));
@@ -71,6 +77,8 @@ void Extension::save()
     root.setAttribute("field", m_field);
     root.setAttribute("author", m_author);
     root.setAttribute("title", m_title);
+    root.setAttribute("comment", m_comment);
+    root.setAttribute("shortcut", m_shortcut);
     root.setAttribute("method", m_method);
     root.setAttribute("createAt", m_createdAt);
     root.setAttribute("lastModifiedAt", m_lastModifiedAt);
@@ -93,6 +101,116 @@ void Extension::destroy()
 {
     QFile file(m_path);
     file.remove();
+}
+
+const QString &Extension::title() const
+{
+    return m_title;
+}
+
+void Extension::setTitle(const QString &title)
+{
+    m_title = title;
+}
+
+const QString &Extension::author() const
+{
+    return m_author;
+}
+
+void Extension::setAuthor(const QString &author)
+{
+    m_author = author;
+}
+
+const QString &Extension::field() const
+{
+    return m_field;
+}
+
+void Extension::setField(const QString &field)
+{
+    m_field = field;
+}
+
+const QString &Extension::method() const
+{
+    return m_method;
+}
+
+void Extension::setMethod(const QString &method)
+{
+    m_method = method;
+}
+
+const QString &Extension::content() const
+{
+    return m_content;
+}
+
+void Extension::setContent(const QString &content)
+{
+    m_content = content;
+}
+
+const QString &Extension::createdAt() const
+{
+    return m_createdAt;
+}
+
+void Extension::setCreatedAt(const QString &createdAt)
+{
+    m_createdAt = createdAt;
+}
+
+const QString &Extension::lastModifiedAt() const
+{
+    return m_lastModifiedAt;
+}
+
+void Extension::setLastModifiedAt(const QString &lastModifiedAt)
+{
+    m_lastModifiedAt = lastModifiedAt;
+}
+
+const QString &Extension::uuid() const
+{
+    return m_uuid;
+}
+
+void Extension::setUuid(const QString &uuid)
+{
+    m_uuid = uuid;
+}
+
+const QString &Extension::from() const
+{
+    return m_from;
+}
+
+void Extension::setFrom(const QString &from)
+{
+    m_from = from;
+}
+
+const QString &Extension::shortcut() const
+{
+    return m_shortcut;
+}
+
+void Extension::setShortcut(const QString &shortcut)
+{
+    m_shortcut = shortcut;
+}
+
+const QString &Extension::comment() const
+{
+    return m_comment;
+}
+
+void Extension::setComment(const QString &comment)
+{
+    m_comment = comment;
 }
 
 void Extension::changePathToCustomExtensionDirectory()

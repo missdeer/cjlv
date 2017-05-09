@@ -47,6 +47,8 @@ void ExtensionDialog::onTableViewSelectionChanged(const QItemSelection &selected
             continue;
         ui->edtAuthor->setText(m_currentExtension->author());
         ui->edtTitle->setText(m_currentExtension->title());
+        ui->edtComment->setText(m_currentExtension->comment());
+        ui->edtShortcut->setText(m_currentExtension->shortcut());
         ui->cbField->setCurrentText(m_currentExtension->field());
         ui->cbMethod->setCurrentText(m_currentExtension->method());
         m_contentEditor->setText(m_currentExtension->content().toStdString().c_str());
@@ -69,6 +71,8 @@ void ExtensionDialog::on_btnNewExtension_clicked()
     m_currentExtension->setCreatedAt(QDateTime::currentDateTime().toString(Qt::ISODate));
     ui->edtAuthor->clear();
     ui->edtTitle->clear();
+    ui->edtComment->clear();
+    ui->edtShortcut->clear();
     m_contentEditor->clear();
     m_contentEditor->setSavePoint();
     ui->cbField->setCurrentIndex(0);
@@ -97,6 +101,8 @@ void ExtensionDialog::on_btnDeleteExtension_clicked()
         m_currentExtension.reset();
         ui->edtAuthor->clear();
         ui->edtTitle->clear();
+        ui->edtComment->clear();
+        ui->edtShortcut->clear();
         m_contentEditor->setText("");
         m_contentEditor->setSavePoint();
         ui->cbField->setCurrentIndex(0);
@@ -141,6 +147,8 @@ void ExtensionDialog::on_btnApplyModification_clicked()
 
     m_currentExtension->setAuthor(ui->edtAuthor->text());
     m_currentExtension->setTitle(ui->edtTitle->text());
+    m_currentExtension->setComment(ui->edtComment->text());
+    m_currentExtension->setShortcut(ui->edtShortcut->text());
     m_currentExtension->setField(ui->cbField->currentText());
     m_currentExtension->setMethod(ui->cbMethod->currentText());
     m_currentExtension->setContent(m_contentEditor->getText(m_contentEditor->textLength() + 1));
@@ -195,4 +203,14 @@ void ExtensionDialog::on_cbMethod_currentIndexChanged(int /*index*/)
         ui->cbField->setCurrentIndex(0);
         m_contentEditor->setLanguage("sql");
     }
+}
+
+void ExtensionDialog::on_edtComment_textChanged(const QString &/*arg1*/)
+{
+    m_modified = true;
+}
+
+void ExtensionDialog::on_edtShortcut_textChanged(const QString &/*arg1*/)
+{
+    m_modified = true;
 }

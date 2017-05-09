@@ -1,6 +1,8 @@
 #ifndef EXTENSION_H
 #define EXTENSION_H
 
+#include <QString>
+
 class Extension
 {
 public:
@@ -13,86 +15,38 @@ public:
     void save();
     void destroy();
 
-    const QString& title() const
-    {
-        return m_title;
-    }
-    void setTitle(const QString& title)
-    {
-        m_title = title;
-    }
+    const QString& title() const;
+    void setTitle(const QString& title);
 
-    const QString& author() const
-    {
-        return m_author;
-    }
-    void setAuthor(const QString& author)
-    {
-        m_author = author;
-    }
+    const QString& author() const;
+    void setAuthor(const QString& author);
 
-    const QString& field() const
-    {
-        return m_field;
-    }
-    void setField(const QString& field)
-    {
-        m_field = field;
-    }
+    const QString& field() const;
+    void setField(const QString& field);
 
-    const QString& method() const
-    {
-        return m_method;
-    }
-    void setMethod(const QString& method)
-    {
-        m_method = method;
-    }
+    const QString& method() const;
+    void setMethod(const QString& method);
 
-    const QString& content() const
-    {
-        return m_content;
-    }
-    void setContent(const QString& content)
-    {
-        m_content = content;
-    }
+    const QString& content() const;
+    void setContent(const QString& content);
 
-    const QString& createdAt() const
-    {
-        return m_createdAt;
-    }
-    void setCreatedAt(const QString& createdAt)
-    {
-        m_createdAt = createdAt;
-    }
+    const QString& createdAt() const;
+    void setCreatedAt(const QString& createdAt);
 
-    const QString& lastModifiedAt() const
-    {
-        return m_lastModifiedAt;
-    }
-    void setLastModifiedAt(const QString& lastModifiedAt)
-    {
-        m_lastModifiedAt = lastModifiedAt;
-    }
+    const QString& lastModifiedAt() const;
+    void setLastModifiedAt(const QString& lastModifiedAt);
 
-    const QString& uuid() const
-    {
-        return m_uuid;
-    }
-    void setUuid(const QString& uuid)
-    {
-        m_uuid = uuid;
-    }
+    const QString& uuid() const;
+    void setUuid(const QString& uuid);
 
-    const QString& from() const
-    {
-        return m_from;
-    }
-    void setFrom(const QString& from)
-    {
-        m_from = from;
-    }
+    const QString& from() const;
+    void setFrom(const QString& from);
+
+    const QString& shortcut() const;
+    void setShortcut(const QString& shortcut);
+
+    const QString& comment() const;
+    void setComment(const QString& comment);
 
     void changePathToCustomExtensionDirectory();
 
@@ -106,6 +60,8 @@ private:
     QString m_lastModifiedAt;
     QString m_uuid;
     QString m_from;
+    QString m_comment;
+    QString m_shortcut;
 
     QString m_path;
 };

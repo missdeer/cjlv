@@ -28,7 +28,7 @@ int ExtensionModel::rowCount(const QModelIndex& /*parent*/) const
 
 int ExtensionModel::columnCount(const QModelIndex& /*parent*/) const
 {
-    return 6;
+    return 8;
 }
 
 QVariant ExtensionModel::data(const QModelIndex& index, int role) const
@@ -56,6 +56,10 @@ QVariant ExtensionModel::data(const QModelIndex& index, int role) const
     case 4:
         return QVariant(r->from());
     case 5:
+        return QVariant(r->shortcut());
+    case 6:
+        return QVariant(r->comment());
+    case 7:
         return QVariant(r->content());
     default:
         break;
@@ -90,6 +94,10 @@ QVariant ExtensionModel::headerData(int section, Qt::Orientation orientation, in
         case 4:
             return QVariant(tr("From"));
         case 5:
+            return QVariant(tr("Shortcut"));
+        case 6:
+            return QVariant(tr("Comment"));
+        case 7:
             return QVariant(tr("Content"));
         default:
             break;

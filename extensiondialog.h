@@ -36,6 +36,10 @@ private slots:
 
     void on_cbMethod_currentIndexChanged(int index);
 
+    void on_edtComment_textChanged(const QString &arg1);
+
+    void on_edtShortcut_textChanged(const QString &arg1);
+
 private:
     Ui::ExtensionDialog *ui;
     CodeEditor* m_contentEditor;
