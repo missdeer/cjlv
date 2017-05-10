@@ -210,7 +210,29 @@ void ExtensionDialog::on_edtComment_textChanged(const QString &/*arg1*/)
     m_modified = true;
 }
 
-void ExtensionDialog::on_edtShortcut_textChanged(const QString &/*arg1*/)
+void ExtensionDialog::on_edtShortcut_textChanged(const QString & text)
 {
+    if (!text.isEmpty())
+    {
+        QWidget* parent = parentWidget();
+        Q_ASSERT(parent);
+        auto actions = parent->findChildren<QAction*>();
+        QList<QShortcut*> shortcuts;
+        for(auto a: actions)
+        {
+            shortcuts << a->findChildren<QShortcut*>();
+        }
+        qDebug() << "shortcut count:" << shortcuts.length();
+        auto it = std::find_if(shortcuts.begin(), shortcuts.end(), [&text](QShortcut* s){
+                return s->key() == QKeySequence(text); });
+        if (shortcuts.end() != it)
+        {
+            QMessageBox::warning(this, tr("Shortcut is used"),
+                                 QString("Shortcut %1 is used already, please choose another one."),
+                                 QMessageBox::Ok);
+            ui->edtShortcut->clear();
+            return;
+        }
+    }
     m_modified = true;
 }

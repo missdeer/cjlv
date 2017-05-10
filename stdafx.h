@@ -51,6 +51,7 @@
 #include <QAbstractTableModel>
 #include <QMainWindow>
 #include <QTableView>
+#include <QShortcut>
 
 #include <QTimer>
 #include <QProcess>
