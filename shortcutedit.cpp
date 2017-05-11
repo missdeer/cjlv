@@ -9,12 +9,14 @@ ShortcutEdit::ShortcutEdit(QWidget *parent)
 
 bool ShortcutEdit::event(QEvent *e)
 {
-    if (e->type() == QEvent::KeyPress){
+    if (e->type() == QEvent::KeyPress)
+    {
         QKeyEvent *keyEvent = static_cast<QKeyEvent*>(e);
 
         int keyInt = keyEvent->key();
         Qt::Key key = static_cast<Qt::Key>(keyInt);
-        if(key == Qt::Key_unknown){
+        if(key == Qt::Key_unknown)
+        {
             qDebug() << "Unknown key from a macro probably";
             return false;
         }
@@ -25,8 +27,7 @@ bool ShortcutEdit::event(QEvent *e)
                 key == Qt::Key_Meta)
         {
             qDebug() << "Single click of special key: Ctrl, Shift, Alt or Meta";
-            setText( QKeySequence(keyInt).toString());
-            return true;
+            return false;
         }
 
         // check for a combination of user clicks
@@ -47,7 +48,11 @@ bool ShortcutEdit::event(QEvent *e)
             if (modifiers & k.first)
                 keyInt += k.second;
         }
-        setText( QKeySequence(keyInt).toString());
+        QString shortcut = text();
+        if (shortcut.contains(", ") || shortcut.isEmpty())
+            setText( QKeySequence(keyInt).toString());
+        else
+            setText( shortcut % ", " % QKeySequence(keyInt).toString());
         return true;
     }
     return QLineEdit::event(e);
