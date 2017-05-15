@@ -14,6 +14,7 @@ Extension::Extension(const Extension &e)
     m_lastModifiedAt = e.m_lastModifiedAt;
     m_uuid = e.m_uuid;
     m_from = e.m_from;
+    m_category = e.m_category;
 
     m_path = e.m_path;
 }
@@ -31,6 +32,7 @@ Extension &Extension::operator=(const Extension &e)
     m_lastModifiedAt = e.m_lastModifiedAt;
     m_uuid = e.m_uuid;
     m_from = e.m_from;
+    m_category = e.m_category;
 
     m_path = e.m_path;
     return *this;
@@ -59,6 +61,7 @@ bool Extension::load(const QString& path)
     setMethod(docElem.attribute("method"));
     setCreatedAt(docElem.attribute("createAt"));
     setLastModifiedAt(docElem.attribute("lastModifiedAt"));
+    setCategory(docElem.attribute("category"));
 
     QDomElement contentElem = docElem.firstChildElement("content");
     if (!contentElem.isNull())
@@ -82,6 +85,7 @@ void Extension::save()
     root.setAttribute("method", m_method);
     root.setAttribute("createAt", m_createdAt);
     root.setAttribute("lastModifiedAt", m_lastModifiedAt);
+    root.setAttribute("category", m_category);
 
     QDomElement contentElem = doc.createElement("content");
     QDomCDATASection contentCData = doc.createCDATASection(m_content);
@@ -220,4 +224,14 @@ void Extension::changePathToCustomExtensionDirectory()
     if (!dir.exists())
         dir.mkpath(m_path);
     m_path.append("/" % m_uuid % ".xml");
+}
+
+const QString &Extension::category() const
+{
+    return m_category;
+}
+
+void Extension::setCategory(const QString &category)
+{
+    m_category = category;
 }

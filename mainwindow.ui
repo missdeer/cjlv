@@ -141,6 +141,9 @@
     <property name="title">
      <string>Extension</string>
     </property>
+    <property name="toolTipsVisible">
+     <bool>true</bool>
+    </property>
     <addaction name="actionEditExtensions"/>
    </widget>
    <widget class="QMenu" name="menuWindow">

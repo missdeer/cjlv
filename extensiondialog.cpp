@@ -49,6 +49,7 @@ void ExtensionDialog::onTableViewSelectionChanged(const QItemSelection &selected
         ui->edtTitle->setText(m_currentExtension->title());
         ui->edtComment->setText(m_currentExtension->comment());
         ui->edtShortcut->setText(m_currentExtension->shortcut());
+        ui->edtCategory->setText(m_currentExtension->category());
         ui->cbField->setCurrentText(m_currentExtension->field());
         ui->cbMethod->setCurrentText(m_currentExtension->method());
         m_contentEditor->setText(m_currentExtension->content().toStdString().c_str());
@@ -73,6 +74,7 @@ void ExtensionDialog::on_btnNewExtension_clicked()
     ui->edtTitle->clear();
     ui->edtComment->clear();
     ui->edtShortcut->clear();
+    ui->edtCategory->clear();
     m_contentEditor->clear();
     m_contentEditor->setSavePoint();
     ui->cbField->setCurrentIndex(0);
@@ -103,6 +105,7 @@ void ExtensionDialog::on_btnDeleteExtension_clicked()
         ui->edtTitle->clear();
         ui->edtComment->clear();
         ui->edtShortcut->clear();
+        ui->edtCategory->clear();
         m_contentEditor->setText("");
         m_contentEditor->setSavePoint();
         ui->cbField->setCurrentIndex(0);
@@ -153,6 +156,7 @@ void ExtensionDialog::on_btnApplyModification_clicked()
     m_currentExtension->setMethod(ui->cbMethod->currentText());
     m_currentExtension->setContent(m_contentEditor->getText(m_contentEditor->textLength() + 1));
     m_currentExtension->setLastModifiedAt(QDateTime::currentDateTime().toString(Qt::ISODate));
+    m_currentExtension->setCategory(ui->edtCategory->text());
     m_currentExtension->save();
     ExtensionModel::instance()->updateExtension(m_currentExtension);
     m_modified = false;
@@ -234,5 +238,10 @@ void ExtensionDialog::on_edtShortcut_textChanged(const QString & text)
             return;
         }
     }
+    m_modified = true;
+}
+
+void ExtensionDialog::on_edtCategory_textChanged(const QString &/*arg1*/)
+{
     m_modified = true;
 }

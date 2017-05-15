@@ -50,6 +50,9 @@ public:
 
     void changePathToCustomExtensionDirectory();
 
+    const QString& category() const;
+    void setCategory(const QString &category);
+
 private:
     QString m_title;
     QString m_author;
@@ -62,6 +65,7 @@ private:
     QString m_from;
     QString m_comment;
     QString m_shortcut;
+    QString m_category;
 
     QString m_path;
 };

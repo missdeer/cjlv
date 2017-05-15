@@ -40,6 +40,8 @@ private slots:
 
     void on_edtShortcut_textChanged(const QString &arg1);
 
+    void on_edtCategory_textChanged(const QString &arg1);
+
 private:
     Ui::ExtensionDialog *ui;
     CodeEditor* m_contentEditor;

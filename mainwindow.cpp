@@ -504,7 +504,25 @@ void MainWindow::onExtensionCreated(ExtensionPtr e)
         else if (extensionCount <= 40)
             action->setShortcut(QKeySequence(QString("Shift+Alt+%1").arg(extensionCount++%10)));
     }
-    ui->menuExtension->addAction(action);
+    if (e->category().isEmpty())
+    {
+        ui->menuExtension->addAction(action);
+    }
+    else
+    {
+        auto it = m_extensionMenu.find(e->category());
+        if (m_extensionMenu.end() != it)
+        {
+            QMenu* pMenu = *it;
+            pMenu->addAction(action);
+        }
+        else
+        {
+            QMenu* pMenu = ui->menuExtension->addMenu(e->category());
+            m_extensionMenu.insert(e->category(), pMenu);
+            pMenu->addAction(action);
+        }
+    }
 }
 
 void MainWindow::onExtensionModified(ExtensionPtr e)

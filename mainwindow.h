@@ -128,6 +128,7 @@ private:
     QByteArray m_prtInfo;
     QByteArray m_prtTrackingSystemLoginInfo;
     QByteArray m_prtList;
+    QMap<QString, QMenu*> m_extensionMenu;
 
     void dragEnterEvent(QDragEnterEvent *e);
     void dropEvent(QDropEvent *e);
