@@ -473,19 +473,26 @@ void MainWindow::onIPCMessageReceived(const QString &message, QObject* /*socket*
 
 void MainWindow::onExtensionRemoved(ExtensionPtr e)
 {
+    QList<QAction*> actions;
+    QMenu* pMenu = nullptr;
     auto itMenu = m_extensionMenu.find(e->category());
     if (m_extensionMenu.end() != itMenu)
     {
-        QMenu* pMenu = *itMenu;
-        QList<QAction*> actions = pMenu->actions();
-        auto it = std::find_if(actions.begin(), actions.end(),
-                               [e](QAction* action) { return (action->data().toString() == e->uuid());});
+        pMenu = *itMenu;
+        actions.append(pMenu->actions());
+    }
+    else
+    {
+        pMenu = ui->menuExtension;
+        actions.append(ui->menuExtension->actions());
+    }
+    auto it = std::find_if(actions.begin(), actions.end(),
+                           [e](QAction* action) { return (action->data().toString() == e->uuid());});
 
-        if (actions.end() != it)
-        {
-            pMenu->removeAction(*it);
-            (*it)->deleteLater();
-        }
+    if (actions.end() != it)
+    {
+        pMenu->removeAction(*it);
+        (*it)->deleteLater();
     }
 }
 
@@ -532,19 +539,26 @@ void MainWindow::onExtensionCreated(ExtensionPtr e)
 
 void MainWindow::onExtensionModified(ExtensionPtr e)
 {
+    QList<QAction*> actions;
+    QMenu* pMenu = nullptr;
     auto itMenu = m_extensionMenu.find(e->category());
     if (m_extensionMenu.end() != itMenu)
     {
-        QMenu* pMenu = *itMenu;
+        pMenu = *itMenu;
+        actions.append(pMenu->actions());
+    }
+    else
+    {
+        pMenu = ui->menuExtension;
+        actions.append(ui->menuExtension->actions());
+    }
 
-        QList<QAction*> actions = pMenu->actions();
-        auto it = std::find_if(actions.begin(), actions.end(),
-                     [e](QAction* action) { return (action->data().toString() == e->uuid());});
+    auto it = std::find_if(actions.begin(), actions.end(),
+                           [e](QAction* action) { return (action->data().toString() == e->uuid());});
 
-        if (actions.end() != it)
-        {
-            (*it)->setText(QString("%1 by %2").arg(e->title()).arg(e->author()));
-        }
+    if (actions.end() != it)
+    {
+        (*it)->setText(QString("%1 by %2").arg(e->title()).arg(e->author()));
     }
 }
 
