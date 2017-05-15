@@ -256,7 +256,7 @@ void MainWindow::onPRTListFinished()
     }
     else
     {
-        QTimer::singleShot(60 * 60 * 1000, [&]() { getPRTList(nextPlatform);});
+        QTimer::singleShot(60 * 60 * 1000, [this, nextPlatform]() { getPRTList(nextPlatform);});
     }
 }
 
