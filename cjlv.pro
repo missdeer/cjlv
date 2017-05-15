@@ -142,11 +142,11 @@ win32: {
 
     CONFIG(release, debug|release): {
         WINDEPLOYQT = $$[QT_INSTALL_BINS]/windeployqt.exe
-        copy_extensions.commands = '$(COPY_DIR) $$shell_path($$PWD/extensions) $$shell_path($$OUT_PWD/Release/extensions/)'
-        copy_themes.commands = '$(COPY_DIR) $$shell_path($$PWD/resource/themes) $$shell_path($$OUT_PWD/Release/themes/)'
-        copy_language.commands = '$(COPY_DIR) $$shell_path($$PWD/resource/language) $$shell_path($$OUT_PWD/Release/language/)'
+        copy_extensions.commands = '$(COPY_DIR) $$shell_path($$PWD/extensions) $$shell_path($$OUT_PWD/Release/)'
+        copy_themes.commands = '$(COPY_DIR) $$shell_path($$PWD/resource/themes) $$shell_path($$OUT_PWD/Release/)'
+        copy_language.commands = '$(COPY_DIR) $$shell_path($$PWD/resource/language) $$shell_path($$OUT_PWD/Release/)'
         copy_langmap.commands = '$(COPY_FILE) $$shell_path($$PWD/resource/langmap.xml) $$shell_path($$OUT_PWD/Release/langmap.xml)'
-        copy_fonts.commands = '$(COPY_DIR) $$shell_path($$PWD/Fonts) $$shell_path($$OUT_PWD/Release/Fonts/)'
+        copy_fonts.commands = '$(COPY_DIR) $$shell_path($$PWD/Fonts) $$shell_path($$OUT_PWD/Release/)'
 
         contains(QMAKE_HOST.arch, x86_64): {
             copy_everything_dll.commands = '$(COPY_FILE) $$shell_path($$PWD/3rdparty/Everything-SDK/dll/Everything64.dll) $$shell_path($$OUT_PWD/Release/Everything.dll)'
