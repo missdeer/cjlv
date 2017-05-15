@@ -473,14 +473,19 @@ void MainWindow::onIPCMessageReceived(const QString &message, QObject* /*socket*
 
 void MainWindow::onExtensionRemoved(ExtensionPtr e)
 {
-    QList<QAction*> actions = ui->menuExtension->actions();
-    auto it = std::find_if(actions.begin(), actions.end(),
-                 [e](QAction* action) { return (action->data().toString() == e->uuid());});
-
-    if (actions.end() != it)
+    auto itMenu = m_extensionMenu.find(e->category());
+    if (m_extensionMenu.end() != itMenu)
     {
-        ui->menuExtension->removeAction(*it);
-        (*it)->deleteLater();
+        QMenu* pMenu = *itMenu;
+        QList<QAction*> actions = pMenu->actions();
+        auto it = std::find_if(actions.begin(), actions.end(),
+                               [e](QAction* action) { return (action->data().toString() == e->uuid());});
+
+        if (actions.end() != it)
+        {
+            pMenu->removeAction(*it);
+            (*it)->deleteLater();
+        }
     }
 }
 
@@ -527,13 +532,19 @@ void MainWindow::onExtensionCreated(ExtensionPtr e)
 
 void MainWindow::onExtensionModified(ExtensionPtr e)
 {
-    QList<QAction*> actions = ui->menuExtension->actions();
-    auto it = std::find_if(actions.begin(), actions.end(),
-                 [e](QAction* action) { return (action->data().toString() == e->uuid());});
-
-    if (actions.end() != it)
+    auto itMenu = m_extensionMenu.find(e->category());
+    if (m_extensionMenu.end() != itMenu)
     {
-        (*it)->setText(QString("%1 by %2").arg(e->title()).arg(e->author()));
+        QMenu* pMenu = *itMenu;
+
+        QList<QAction*> actions = pMenu->actions();
+        auto it = std::find_if(actions.begin(), actions.end(),
+                     [e](QAction* action) { return (action->data().toString() == e->uuid());});
+
+        if (actions.end() != it)
+        {
+            (*it)->setText(QString("%1 by %2").arg(e->title()).arg(e->author()));
+        }
     }
 }
 
