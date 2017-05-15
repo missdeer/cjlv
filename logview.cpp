@@ -116,7 +116,7 @@ LogView::LogView(QWidget *parent)
     connect(m_logModel, &LogModel::dataLoaded, this, &LogView::onDataLoaded);
     connect(m_logModel, &LogModel::rowCountChanged, this, &LogView::onRowCountChanged);
     connect(m_logModel, &LogModel::databaseCreated, m_presenceWidget, &PresenceWidget::databaseCreated);
-    connect(this, &LogView::runExtension, m_logModel, &LogModel::runExtension);
+    connect(this, &LogView::runExtension, m_logModel, &LogModel::runLuaExtension);
 }
 
 LogView::~LogView()
@@ -847,6 +847,47 @@ void LogView::searchFieldLevel()
 {
     m_cbSearchKeyword->lineEdit()->setPlaceholderText(tr("Search Field Level"));
     m_logModel->setSearchField("level");
+}
+
+void LogView::onRunExtension(ExtensionPtr e)
+{
+    if (e->method() == "Regexp")
+    {
+        m_cbSearchKeyword->lineEdit()->setText("r>" + e->content());
+    }
+    else if (e->method() == "Keyword")
+    {
+        QMap<QString, QString> m = {
+            { "id"      , "i"},
+            { "datetime", "d"},
+            { "level"   , "v"},
+            { "thread"  , "t"},
+            { "source"  , "s"},
+            { "category", "a"},
+            { "method"  , "m"},
+            { "content" , "c"},
+            { "logfile" , "f"},
+            { "line"    , "l"},
+        };
+
+        auto it = std::find(m.begin(), m.end(), e->field());
+
+        if (m.end() != it)
+        {
+            m_cbSearchKeyword->lineEdit()->setText(*it % ">" % e->content());
+        }
+    }
+    else if (e->method() == "SQL WHERE clause")
+    {
+        m_cbSearchKeyword->lineEdit()->setText("sql>" + e->content());
+    }
+    else
+    {
+        m_cbSearchKeyword->lineEdit()->clear();
+        emit runExtension(e);
+    }
+    m_cbSearchKeyword->setFocus();
+    m_cbSearchKeyword->lineEdit()->end(false);
 }
 
 void LogView::onClearKeyword()

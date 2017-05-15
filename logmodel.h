@@ -55,7 +55,7 @@ public:
     QString getLogFileName(const QModelIndex &index);
     int getLogFileLine(const QModelIndex &index, QString& fileName);
     int getId(const QModelIndex &index);
-    void runExtension(ExtensionPtr e);
+    void runLuaExtension(ExtensionPtr e);
 
     void saveRowsInFolder(const QList<int>& rows, const QString& folderName);
     void saveRowsBetweenAnchorsInFolder(const QModelIndex& beginAnchor, const QModelIndex& endAnchor, const QString& folderName);

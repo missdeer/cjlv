@@ -650,43 +650,27 @@ int LogModel::getId(const QModelIndex &index)
     return r->id;
 }
 
-void LogModel::runExtension(ExtensionPtr e)
+void LogModel::runLuaExtension(ExtensionPtr e)
 {
-    if (e->method() == "Regexp")
+    // load lua script
+    if (!m_L)
     {
-        doFilter(e->content(), e->field(), true, false);
+        m_L = luaL_newstate();
+        luaL_openlibs(m_L);
     }
-    else if (e->method() == "Keyword")
+    int error = luaL_loadbuffer(m_L, e->content().toStdString().c_str(), e->content().toStdString().size(), "match") ||
+            lua_pcall(m_L, 0, 0, 0);
+    if (error)
     {
-        doFilter(e->content(), e->field(), false, false);
+        QString msg(lua_tostring(m_L, -1));
+        lua_pop(m_L, 1);  /* pop error message from the stack */
+        QWidget* p = QApplication::desktop()->screen();
+        QMessageBox::warning(p, tr("Warning"), msg, QMessageBox::Ok);
+        return;
     }
-    else if (e->method() == "SQL WHERE clause")
-    {
-        // empty field, and regexp mode is ignored
-        doFilter(e->content(), e->field(), false, false);
-    }
-    else // Lua
-    {
-        // load lua script
-        if (!m_L)
-        {
-            m_L = luaL_newstate();
-            luaL_openlibs(m_L);
-        }
-        int error = luaL_loadbuffer(m_L, e->content().toStdString().c_str(), e->content().toStdString().size(), "match") ||
-                lua_pcall(m_L, 0, 0, 0);
-        if (error)
-        {
-            QString msg(lua_tostring(m_L, -1));
-            lua_pop(m_L, 1);  /* pop error message from the stack */
-            QWidget* p = QApplication::desktop()->screen();
-            QMessageBox::warning(p, tr("Warning"), msg, QMessageBox::Ok);
-            return;
-        }
-        g_L = m_L;
-        // regexp mode is ignored
-        doFilter(e->content(), e->field(), false, true);
-    }
+    g_L = m_L;
+    // regexp mode is ignored
+    doFilter(e->content(), e->field(), false, true);
 }
 
 void LogModel::saveRowsInFolder(const QList<int> &rows, const QString &folderName)

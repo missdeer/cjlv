@@ -69,6 +69,8 @@ public:
     void searchFieldLine();
 
     void searchFieldLevel();
+
+    void onRunExtension(ExtensionPtr e);
 signals:
     void rowCountChanged();
     void runExtension(ExtensionPtr e);

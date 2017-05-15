@@ -324,7 +324,8 @@ void TabWidget::onRunExtension(ExtensionPtr e)
     if (w)
     {
         LogView* v = qobject_cast<LogView*>(w);
-        emit v->runExtension(e);
+        v->onRunExtension(e);
+//        emit v->runExtension(e);
     }
 }
 
