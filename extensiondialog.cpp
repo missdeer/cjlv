@@ -31,6 +31,10 @@ ExtensionDialog::ExtensionDialog(QWidget *parent) :
     m_currentExtension->setFrom("Custom");
     m_currentExtension->setUuid(QUuid::createUuid().toString());
     m_currentExtension->setCreatedAt(QDateTime::currentDateTime().toString(Qt::ISODate));
+
+    m_defaultUserName = qgetenv("USER");
+    if (m_defaultUserName.isEmpty())
+        m_defaultUserName = qgetenv("USERNAME");
 }
 
 ExtensionDialog::~ExtensionDialog()
@@ -73,7 +77,7 @@ void ExtensionDialog::on_btnNewExtension_clicked()
     m_currentExtension->setUuid(QUuid::createUuid().toString());
     m_currentExtension->setCreatedAt(QDateTime::currentDateTime().toString(Qt::ISODate));
     m_currentExtension->changePathToCustomExtensionDirectory();
-    ui->edtAuthor->clear();
+    ui->edtAuthor->setText(m_defaultUserName);
     ui->edtTitle->clear();
     ui->edtComment->clear();
     ui->edtShortcut->clear();
@@ -104,7 +108,7 @@ void ExtensionDialog::on_btnDeleteExtension_clicked()
         m_currentExtension->destroy();
         ExtensionModel::instance()->removeExtension(m_currentExtension);
         m_currentExtension.reset();
-        ui->edtAuthor->clear();
+        ui->edtAuthor->setText(m_defaultUserName);
         ui->edtTitle->clear();
         ui->edtComment->clear();
         ui->edtShortcut->clear();

@@ -48,6 +48,7 @@ private:
     ExtensionPtr m_currentExtension;
     bool m_modified;
     bool m_notModifying;
+    QString m_defaultUserName;
 };
 
 extern ExtensionDialog* g_extensionDialog;
