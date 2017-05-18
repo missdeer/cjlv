@@ -72,6 +72,7 @@ void ExtensionDialog::on_btnNewExtension_clicked()
     m_currentExtension->setFrom("Custom");
     m_currentExtension->setUuid(QUuid::createUuid().toString());
     m_currentExtension->setCreatedAt(QDateTime::currentDateTime().toString(Qt::ISODate));
+    m_currentExtension->changePathToCustomExtensionDirectory();
     ui->edtAuthor->clear();
     ui->edtTitle->clear();
     ui->edtComment->clear();
@@ -159,7 +160,8 @@ void ExtensionDialog::on_btnApplyModification_clicked()
     m_currentExtension->setContent(m_contentEditor->getText(m_contentEditor->textLength() + 1));
     m_currentExtension->setLastModifiedAt(QDateTime::currentDateTime().toString(Qt::ISODate));
     m_currentExtension->setCategory(ui->edtCategory->text());
-    m_currentExtension->save();
+    if (!m_currentExtension->save())
+        QMessageBox::warning(this, tr("Error"), tr("Saving extension failed."), QMessageBox::Ok);
     ExtensionModel::instance()->updateExtension(m_currentExtension);
     m_modified = false;
     m_contentEditor->setSavePoint();

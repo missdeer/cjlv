@@ -71,7 +71,7 @@ bool Extension::load(const QString& path)
     return true;
 }
 
-void Extension::save()
+bool Extension::save()
 {
     QDomDocument doc;
     QDomElement root = doc.createElement("extension");
@@ -94,11 +94,13 @@ void Extension::save()
 
     QFile file(m_path);
     if (!file.open(QIODevice::WriteOnly))
-        return ;
+        return false;
+
     QTextStream out(&file);
     const int IndentSize = 4;
     doc.save(out, IndentSize);
     file.close();
+    return true;
 }
 
 void Extension::destroy()

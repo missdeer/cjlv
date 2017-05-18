@@ -12,7 +12,7 @@ public:
     Extension& operator=(const Extension& e);
 
     bool load(const QString& path);
-    void save();
+    bool save();
     void destroy();
 
     const QString& title() const;
