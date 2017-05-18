@@ -77,7 +77,7 @@ void ExtensionDialog::on_btnNewExtension_clicked()
     ui->edtComment->clear();
     ui->edtShortcut->clear();
     ui->edtCategory->clear();
-    m_contentEditor->clear();
+    m_contentEditor->setText("");
     m_contentEditor->setSavePoint();
     ui->cbField->setCurrentIndex(0);
     ui->cbMethod->setCurrentIndex(0);
