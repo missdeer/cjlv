@@ -870,7 +870,7 @@ void LogView::onRunExtension(ExtensionPtr e)
             { "line"    , "l"},
         };
 
-        auto it = std::find(m.begin(), m.end(), e->field());
+        auto it = m.find(e->field());
 
         if (m.end() != it)
         {
