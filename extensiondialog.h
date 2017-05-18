@@ -47,6 +47,7 @@ private:
     CodeEditor* m_contentEditor;
     ExtensionPtr m_currentExtension;
     bool m_modified;
+    bool m_notModifying;
 };
 
 extern ExtensionDialog* g_extensionDialog;

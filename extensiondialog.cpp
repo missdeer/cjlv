@@ -10,7 +10,8 @@ ExtensionDialog::ExtensionDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::ExtensionDialog),
     m_currentExtension(new Extension),
-    m_modified(false)
+    m_modified(false),
+    m_notModifying(false)
 {
     ui->setupUi(this);
     setWindowFlags(Qt::Window);
@@ -48,6 +49,7 @@ void ExtensionDialog::onTableViewSelectionChanged(const QItemSelection &selected
         ui->edtAuthor->setText(m_currentExtension->author());
         ui->edtTitle->setText(m_currentExtension->title());
         ui->edtComment->setText(m_currentExtension->comment());
+        m_notModifying = true;
         ui->edtShortcut->setText(m_currentExtension->shortcut());
         ui->edtCategory->setText(m_currentExtension->category());
         ui->cbField->setCurrentText(m_currentExtension->field());
@@ -227,9 +229,7 @@ void ExtensionDialog::on_edtShortcut_textChanged(const QString & text)
             shortcuts.append(a->shortcuts());
         }
 
-        auto it = std::find_if(shortcuts.begin(), shortcuts.end(), [&text](const QKeySequence& s){
-                return s == QKeySequence(text); });
-        if (shortcuts.end() != it)
+        if (!m_notModifying && shortcuts.contains(QKeySequence(text)))
         {
             QMessageBox::warning(this, tr("Shortcut is used"),
                                  QString("Shortcut %1 is used already, please choose another one.").arg(text),
@@ -237,6 +237,7 @@ void ExtensionDialog::on_edtShortcut_textChanged(const QString & text)
             ui->edtShortcut->clear();
             return;
         }
+        m_notModifying = false;
     }
     m_modified = true;
 }

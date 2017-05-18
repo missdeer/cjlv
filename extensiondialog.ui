@@ -203,6 +203,9 @@
        <property name="placeholderText">
         <string>Extension comment, show as tool tip</string>
        </property>
+       <property name="clearButtonEnabled">
+        <bool>true</bool>
+       </property>
       </widget>
      </item>
      <item row="3" column="0">
