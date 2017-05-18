@@ -1,0 +1,3 @@
+<extension uuid="{a4471b2a-c791-4207-8b47-e0b8635e20cc}" comment="JWCPP set presence" shortcut="" lastModifiedAt="2017-05-18T15:35:20" field="method" createAt="2017-05-18T15:35:01" method="Keyword" title="JWCPP set presence" category="Presence" author="fyang3">
+    <content><![CDATA[CXmppPresence::put_Status]]></content>
+</extension>

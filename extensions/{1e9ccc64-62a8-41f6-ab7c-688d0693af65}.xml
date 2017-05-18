@@ -1,0 +1,3 @@
+<extension uuid="{1e9ccc64-62a8-41f6-ab7c-688d0693af65}" comment="CXmppPresenceDoc::OnPresenceChange" shortcut="" lastModifiedAt="2017-05-18T15:33:58" field="method" createAt="2017-05-18T15:33:49" method="Keyword" title="CXmppPresenceDoc::OnPresenceChange" category="Presence" author="fyang3">
+    <content><![CDATA[CXmppPresenceDoc::OnPresenceChange]]></content>
+</extension>

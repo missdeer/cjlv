@@ -1,0 +1,3 @@
+<extension uuid="{1fde76ab-90b0-4deb-aad9-667a1f7a60dc}" comment="Check the network indication from JWCPP" shortcut="" lastModifiedAt="2017-05-18T15:36:53" field="content" createAt="2017-05-18T15:36:35" method="Keyword" title="Check the network indication from JWCPP" category="Presence" author="fyang3">
+    <content><![CDATA[Outage::setCapabilities]]></content>
+</extension>

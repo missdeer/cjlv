@@ -1,0 +1,3 @@
+<extension uuid="{627bdc0b-09e1-4d02-b848-583d7b85c0e0}" comment="CXmppPresenceMgr::GetStatusIconAndText" shortcut="" lastModifiedAt="2017-05-18T15:38:46" field="method" createAt="2017-05-18T15:34:06" method="Keyword" title="CXmppPresenceMgr::GetStatusIconAndText" category="Presence" author="fyang3">
+    <content><![CDATA[CXmppPresenceMgr::GetStatusIconAndText]]></content>
+</extension>

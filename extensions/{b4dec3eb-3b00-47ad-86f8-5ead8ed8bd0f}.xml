@@ -1,0 +1,3 @@
+<extension uuid="{b4dec3eb-3b00-47ad-86f8-5ead8ed8bd0f}" comment="CSFUnified::PresenceEventListenerImpl::OnPresenceChange" shortcut="" lastModifiedAt="2017-05-18T15:33:15" field="method" createAt="2017-05-18T15:32:58" method="Keyword" title="CSFUnified::PresenceEventListenerImpl::OnPresenceChange" category="Presence" author="fyang3">
+    <content><![CDATA[CSFUnified::PresenceEventListenerImpl::OnPresenceChange]]></content>
+</extension>

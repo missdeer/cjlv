@@ -1,0 +1,3 @@
+<extension uuid="{3615208c-4d0a-4cc3-8bbb-abe2f34ff100}" comment="rich presence" shortcut="" lastModifiedAt="2017-05-18T15:37:47" field="content" createAt="2017-05-18T15:37:22" method="Keyword" title="rich presence" category="Presence" author="fyang3">
+    <content><![CDATA[richState:]]></content>
+</extension>

@@ -1,0 +1,3 @@
+<extension uuid="{106265d1-29c4-48c0-bcb5-928698321a18}" comment="restore presence after JWCPP reconnect successfully" shortcut="" lastModifiedAt="2017-05-18T15:36:25" field="method" createAt="2017-05-18T15:36:09" method="Keyword" title="restore presence after JWCPP reconnect successfully" category="Presence" author="fyang3">
+    <content><![CDATA[doRestorePresence]]></content>
+</extension>

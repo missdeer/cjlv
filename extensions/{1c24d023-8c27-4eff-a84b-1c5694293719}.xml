@@ -1,0 +1,3 @@
+<extension uuid="{1c24d023-8c27-4eff-a84b-1c5694293719}" comment="CXmppPresence::FireXmppPresenceChanged" shortcut="" lastModifiedAt="2017-05-18T15:34:43" field="method" createAt="2017-05-18T15:34:34" method="Keyword" title="CXmppPresence::FireXmppPresenceChanged" category="Presence" author="fyang3">
+    <content><![CDATA[CXmppPresence::FireXmppPresenceChanged]]></content>
+</extension>

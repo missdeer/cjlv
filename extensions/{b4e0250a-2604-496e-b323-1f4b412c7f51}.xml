@@ -1,0 +1,3 @@
+<extension uuid="{b4e0250a-2604-496e-b323-1f4b412c7f51}" comment="CSFUnified::IMPStackCap::Presence::doPresenceUpdate" shortcut="" lastModifiedAt="2017-05-18T15:33:34" field="method" createAt="2017-05-18T15:33:24" method="Keyword" title="CSFUnified::IMPStackCap::Presence::doPresenceUpdate" category="Presence" author="fyang3">
+    <content><![CDATA[CSFUnified::IMPStackCap::Presence::doPresenceUpdate]]></content>
+</extension>

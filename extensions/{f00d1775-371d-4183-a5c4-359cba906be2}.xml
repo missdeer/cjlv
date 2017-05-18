@@ -1,0 +1,3 @@
+<extension uuid="{f00d1775-371d-4183-a5c4-359cba906be2}" comment="set manual presence" shortcut="" lastModifiedAt="2017-05-18T15:38:14" field="content" createAt="2017-05-18T15:37:55" method="Keyword" title="set manual presence" category="Presence" author="fyang3">
+    <content><![CDATA[presenceState:]]></content>
+</extension>

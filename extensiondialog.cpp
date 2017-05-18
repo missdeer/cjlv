@@ -35,6 +35,7 @@ ExtensionDialog::ExtensionDialog(QWidget *parent) :
     m_defaultUserName = qgetenv("USER");
     if (m_defaultUserName.isEmpty())
         m_defaultUserName = qgetenv("USERNAME");
+    ui->edtAuthor->setText(m_defaultUserName);
 }
 
 ExtensionDialog::~ExtensionDialog()
