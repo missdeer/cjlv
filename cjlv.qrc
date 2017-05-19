@@ -35,5 +35,1169 @@
         <file>image/search.png</file>
         <file>image/exit.png</file>
         <file>image/loading.png</file>
+        <file>extensions/{106265d1-29c4-48c0-bcb5-928698321a18}.xml</file>
+        <file>extensions/{1c24d023-8c27-4eff-a84b-1c5694293719}.xml</file>
+        <file>extensions/{1db19772-b066-46d8-a4e5-96c6f0d6d3e6}.xml</file>
+        <file>extensions/{1e9ccc64-62a8-41f6-ab7c-688d0693af65}.xml</file>
+        <file>extensions/{1fde76ab-90b0-4deb-aad9-667a1f7a60dc}.xml</file>
+        <file>extensions/{3615208c-4d0a-4cc3-8bbb-abe2f34ff100}.xml</file>
+        <file>extensions/{512049fe-a514-4933-a488-6f19c5b2a66c}.xml</file>
+        <file>extensions/{627bdc0b-09e1-4d02-b848-583d7b85c0e0}.xml</file>
+        <file>extensions/{75ed69ce-13d7-43e2-af0d-2206a247cb5d}.xml</file>
+        <file>extensions/{a4471b2a-c791-4207-8b47-e0b8635e20cc}.xml</file>
+        <file>extensions/{b4dec3eb-3b00-47ad-86f8-5ead8ed8bd0f}.xml</file>
+        <file>extensions/{b4e0250a-2604-496e-b323-1f4b412c7f51}.xml</file>
+        <file>extensions/{dc650d95-2bb7-4c79-b307-cff8a8fde197}.xml</file>
+        <file>extensions/{dc95880d-371e-46c9-81ba-f15576a64c50}.xml</file>
+        <file>extensions/{f00d1775-371d-4183-a5c4-359cba906be2}.xml</file>
+        <file>extensions/{f84213cd-c8ee-44af-964a-e5190168a8f0}.xml</file>
+        <file>resource/language/actionscript.xml</file>
+        <file>resource/language/ada.xml</file>
+        <file>resource/language/asm.xml</file>
+        <file>resource/language/asp.xml</file>
+        <file>resource/language/autoit.xml</file>
+        <file>resource/language/bash.xml</file>
+        <file>resource/language/batch.xml</file>
+        <file>resource/language/c.xml</file>
+        <file>resource/language/caml.xml</file>
+        <file>resource/language/cmake.xml</file>
+        <file>resource/language/cobol.xml</file>
+        <file>resource/language/cpp.xml</file>
+        <file>resource/language/cs.xml</file>
+        <file>resource/language/css.xml</file>
+        <file>resource/language/d.xml</file>
+        <file>resource/language/diff.xml</file>
+        <file>resource/language/fortran.xml</file>
+        <file>resource/language/gui4cli.xml</file>
+        <file>resource/language/haskell.xml</file>
+        <file>resource/language/html.xml</file>
+        <file>resource/language/ini.xml</file>
+        <file>resource/language/inno.xml</file>
+        <file>resource/language/java.xml</file>
+        <file>resource/language/javascript.xml</file>
+        <file>resource/language/jsp.xml</file>
+        <file>resource/language/kix.xml</file>
+        <file>resource/language/lisp.xml</file>
+        <file>resource/language/lua.xml</file>
+        <file>resource/language/matlab.xml</file>
+        <file>resource/language/nfo.xml</file>
+        <file>resource/language/normal.xml</file>
+        <file>resource/language/nsis.xml</file>
+        <file>resource/language/objc.xml</file>
+        <file>resource/language/pascal.xml</file>
+        <file>resource/language/perl.xml</file>
+        <file>resource/language/php.xml</file>
+        <file>resource/language/postscript.xml</file>
+        <file>resource/language/powershell.xml</file>
+        <file>resource/language/props.xml</file>
+        <file>resource/language/python.xml</file>
+        <file>resource/language/r.xml</file>
+        <file>resource/language/rc.xml</file>
+        <file>resource/language/ruby.xml</file>
+        <file>resource/language/scheme.xml</file>
+        <file>resource/language/searchResult.xml</file>
+        <file>resource/language/smalltalk.xml</file>
+        <file>resource/language/sql.xml</file>
+        <file>resource/language/tcl.xml</file>
+        <file>resource/language/tex.xml</file>
+        <file>resource/language/vb.xml</file>
+        <file>resource/language/verilog.xml</file>
+        <file>resource/language/vhdl.xml</file>
+        <file>resource/language/xml.xml</file>
+        <file>resource/language/yaml.xml</file>
+        <file>resource/themes/Bespin.asTheme/actionscript.xml</file>
+        <file>resource/themes/Bespin.asTheme/ada.xml</file>
+        <file>resource/themes/Bespin.asTheme/asm.xml</file>
+        <file>resource/themes/Bespin.asTheme/asp.xml</file>
+        <file>resource/themes/Bespin.asTheme/autoit.xml</file>
+        <file>resource/themes/Bespin.asTheme/bash.xml</file>
+        <file>resource/themes/Bespin.asTheme/batch.xml</file>
+        <file>resource/themes/Bespin.asTheme/c.xml</file>
+        <file>resource/themes/Bespin.asTheme/caml.xml</file>
+        <file>resource/themes/Bespin.asTheme/cmake.xml</file>
+        <file>resource/themes/Bespin.asTheme/cpp.xml</file>
+        <file>resource/themes/Bespin.asTheme/cs.xml</file>
+        <file>resource/themes/Bespin.asTheme/css.xml</file>
+        <file>resource/themes/Bespin.asTheme/diff.xml</file>
+        <file>resource/themes/Bespin.asTheme/fortran.xml</file>
+        <file>resource/themes/Bespin.asTheme/global_style.xml</file>
+        <file>resource/themes/Bespin.asTheme/haskell.xml</file>
+        <file>resource/themes/Bespin.asTheme/html.xml</file>
+        <file>resource/themes/Bespin.asTheme/ini.xml</file>
+        <file>resource/themes/Bespin.asTheme/inno.xml</file>
+        <file>resource/themes/Bespin.asTheme/java.xml</file>
+        <file>resource/themes/Bespin.asTheme/javascript.xml</file>
+        <file>resource/themes/Bespin.asTheme/kix.xml</file>
+        <file>resource/themes/Bespin.asTheme/lisp.xml</file>
+        <file>resource/themes/Bespin.asTheme/lua.xml</file>
+        <file>resource/themes/Bespin.asTheme/matlab.xml</file>
+        <file>resource/themes/Bespin.asTheme/nfo.xml</file>
+        <file>resource/themes/Bespin.asTheme/nsis.xml</file>
+        <file>resource/themes/Bespin.asTheme/objc.xml</file>
+        <file>resource/themes/Bespin.asTheme/pascal.xml</file>
+        <file>resource/themes/Bespin.asTheme/perl.xml</file>
+        <file>resource/themes/Bespin.asTheme/php.xml</file>
+        <file>resource/themes/Bespin.asTheme/postscript.xml</file>
+        <file>resource/themes/Bespin.asTheme/props.xml</file>
+        <file>resource/themes/Bespin.asTheme/python.xml</file>
+        <file>resource/themes/Bespin.asTheme/rc.xml</file>
+        <file>resource/themes/Bespin.asTheme/ruby.xml</file>
+        <file>resource/themes/Bespin.asTheme/searchResult.xml</file>
+        <file>resource/themes/Bespin.asTheme/smalltalk.xml</file>
+        <file>resource/themes/Bespin.asTheme/sql.xml</file>
+        <file>resource/themes/Bespin.asTheme/tcl.xml</file>
+        <file>resource/themes/Bespin.asTheme/tex.xml</file>
+        <file>resource/themes/Bespin.asTheme/vb.xml</file>
+        <file>resource/themes/Bespin.asTheme/verilog.xml</file>
+        <file>resource/themes/Bespin.asTheme/vhdl.xml</file>
+        <file>resource/themes/Bespin.asTheme/xml.xml</file>
+        <file>resource/themes/Black board.asTheme/actionscript.xml</file>
+        <file>resource/themes/Black board.asTheme/ada.xml</file>
+        <file>resource/themes/Black board.asTheme/asm.xml</file>
+        <file>resource/themes/Black board.asTheme/asp.xml</file>
+        <file>resource/themes/Black board.asTheme/autoit.xml</file>
+        <file>resource/themes/Black board.asTheme/bash.xml</file>
+        <file>resource/themes/Black board.asTheme/batch.xml</file>
+        <file>resource/themes/Black board.asTheme/c.xml</file>
+        <file>resource/themes/Black board.asTheme/caml.xml</file>
+        <file>resource/themes/Black board.asTheme/cmake.xml</file>
+        <file>resource/themes/Black board.asTheme/cpp.xml</file>
+        <file>resource/themes/Black board.asTheme/cs.xml</file>
+        <file>resource/themes/Black board.asTheme/css.xml</file>
+        <file>resource/themes/Black board.asTheme/diff.xml</file>
+        <file>resource/themes/Black board.asTheme/fortran.xml</file>
+        <file>resource/themes/Black board.asTheme/global_style.xml</file>
+        <file>resource/themes/Black board.asTheme/haskell.xml</file>
+        <file>resource/themes/Black board.asTheme/html.xml</file>
+        <file>resource/themes/Black board.asTheme/ini.xml</file>
+        <file>resource/themes/Black board.asTheme/inno.xml</file>
+        <file>resource/themes/Black board.asTheme/java.xml</file>
+        <file>resource/themes/Black board.asTheme/javascript.xml</file>
+        <file>resource/themes/Black board.asTheme/kix.xml</file>
+        <file>resource/themes/Black board.asTheme/lisp.xml</file>
+        <file>resource/themes/Black board.asTheme/lua.xml</file>
+        <file>resource/themes/Black board.asTheme/matlab.xml</file>
+        <file>resource/themes/Black board.asTheme/nfo.xml</file>
+        <file>resource/themes/Black board.asTheme/nsis.xml</file>
+        <file>resource/themes/Black board.asTheme/objc.xml</file>
+        <file>resource/themes/Black board.asTheme/pascal.xml</file>
+        <file>resource/themes/Black board.asTheme/perl.xml</file>
+        <file>resource/themes/Black board.asTheme/php.xml</file>
+        <file>resource/themes/Black board.asTheme/postscript.xml</file>
+        <file>resource/themes/Black board.asTheme/props.xml</file>
+        <file>resource/themes/Black board.asTheme/python.xml</file>
+        <file>resource/themes/Black board.asTheme/rc.xml</file>
+        <file>resource/themes/Black board.asTheme/ruby.xml</file>
+        <file>resource/themes/Black board.asTheme/searchResult.xml</file>
+        <file>resource/themes/Black board.asTheme/smalltalk.xml</file>
+        <file>resource/themes/Black board.asTheme/sql.xml</file>
+        <file>resource/themes/Black board.asTheme/tcl.xml</file>
+        <file>resource/themes/Black board.asTheme/tex.xml</file>
+        <file>resource/themes/Black board.asTheme/vb.xml</file>
+        <file>resource/themes/Black board.asTheme/verilog.xml</file>
+        <file>resource/themes/Black board.asTheme/vhdl.xml</file>
+        <file>resource/themes/Black board.asTheme/xml.xml</file>
+        <file>resource/themes/Choco.asTheme/actionscript.xml</file>
+        <file>resource/themes/Choco.asTheme/ada.xml</file>
+        <file>resource/themes/Choco.asTheme/asm.xml</file>
+        <file>resource/themes/Choco.asTheme/asp.xml</file>
+        <file>resource/themes/Choco.asTheme/autoit.xml</file>
+        <file>resource/themes/Choco.asTheme/bash.xml</file>
+        <file>resource/themes/Choco.asTheme/batch.xml</file>
+        <file>resource/themes/Choco.asTheme/c.xml</file>
+        <file>resource/themes/Choco.asTheme/caml.xml</file>
+        <file>resource/themes/Choco.asTheme/cmake.xml</file>
+        <file>resource/themes/Choco.asTheme/cpp.xml</file>
+        <file>resource/themes/Choco.asTheme/cs.xml</file>
+        <file>resource/themes/Choco.asTheme/css.xml</file>
+        <file>resource/themes/Choco.asTheme/diff.xml</file>
+        <file>resource/themes/Choco.asTheme/fortran.xml</file>
+        <file>resource/themes/Choco.asTheme/global_style.xml</file>
+        <file>resource/themes/Choco.asTheme/haskell.xml</file>
+        <file>resource/themes/Choco.asTheme/html.xml</file>
+        <file>resource/themes/Choco.asTheme/ini.xml</file>
+        <file>resource/themes/Choco.asTheme/inno.xml</file>
+        <file>resource/themes/Choco.asTheme/java.xml</file>
+        <file>resource/themes/Choco.asTheme/javascript.xml</file>
+        <file>resource/themes/Choco.asTheme/kix.xml</file>
+        <file>resource/themes/Choco.asTheme/lisp.xml</file>
+        <file>resource/themes/Choco.asTheme/lua.xml</file>
+        <file>resource/themes/Choco.asTheme/matlab.xml</file>
+        <file>resource/themes/Choco.asTheme/nfo.xml</file>
+        <file>resource/themes/Choco.asTheme/nsis.xml</file>
+        <file>resource/themes/Choco.asTheme/objc.xml</file>
+        <file>resource/themes/Choco.asTheme/pascal.xml</file>
+        <file>resource/themes/Choco.asTheme/perl.xml</file>
+        <file>resource/themes/Choco.asTheme/php.xml</file>
+        <file>resource/themes/Choco.asTheme/postscript.xml</file>
+        <file>resource/themes/Choco.asTheme/props.xml</file>
+        <file>resource/themes/Choco.asTheme/python.xml</file>
+        <file>resource/themes/Choco.asTheme/rc.xml</file>
+        <file>resource/themes/Choco.asTheme/ruby.xml</file>
+        <file>resource/themes/Choco.asTheme/searchResult.xml</file>
+        <file>resource/themes/Choco.asTheme/smalltalk.xml</file>
+        <file>resource/themes/Choco.asTheme/sql.xml</file>
+        <file>resource/themes/Choco.asTheme/tcl.xml</file>
+        <file>resource/themes/Choco.asTheme/tex.xml</file>
+        <file>resource/themes/Choco.asTheme/vb.xml</file>
+        <file>resource/themes/Choco.asTheme/verilog.xml</file>
+        <file>resource/themes/Choco.asTheme/vhdl.xml</file>
+        <file>resource/themes/Choco.asTheme/xml.xml</file>
+        <file>resource/themes/Deep Black.asTheme/actionscript.xml</file>
+        <file>resource/themes/Deep Black.asTheme/ada.xml</file>
+        <file>resource/themes/Deep Black.asTheme/asm.xml</file>
+        <file>resource/themes/Deep Black.asTheme/asp.xml</file>
+        <file>resource/themes/Deep Black.asTheme/autoit.xml</file>
+        <file>resource/themes/Deep Black.asTheme/bash.xml</file>
+        <file>resource/themes/Deep Black.asTheme/batch.xml</file>
+        <file>resource/themes/Deep Black.asTheme/c.xml</file>
+        <file>resource/themes/Deep Black.asTheme/caml.xml</file>
+        <file>resource/themes/Deep Black.asTheme/cmake.xml</file>
+        <file>resource/themes/Deep Black.asTheme/cpp.xml</file>
+        <file>resource/themes/Deep Black.asTheme/cs.xml</file>
+        <file>resource/themes/Deep Black.asTheme/css.xml</file>
+        <file>resource/themes/Deep Black.asTheme/diff.xml</file>
+        <file>resource/themes/Deep Black.asTheme/fortran.xml</file>
+        <file>resource/themes/Deep Black.asTheme/global_style.xml</file>
+        <file>resource/themes/Deep Black.asTheme/haskell.xml</file>
+        <file>resource/themes/Deep Black.asTheme/html.xml</file>
+        <file>resource/themes/Deep Black.asTheme/ini.xml</file>
+        <file>resource/themes/Deep Black.asTheme/inno.xml</file>
+        <file>resource/themes/Deep Black.asTheme/java.xml</file>
+        <file>resource/themes/Deep Black.asTheme/javascript.xml</file>
+        <file>resource/themes/Deep Black.asTheme/kix.xml</file>
+        <file>resource/themes/Deep Black.asTheme/lisp.xml</file>
+        <file>resource/themes/Deep Black.asTheme/lua.xml</file>
+        <file>resource/themes/Deep Black.asTheme/matlab.xml</file>
+        <file>resource/themes/Deep Black.asTheme/nfo.xml</file>
+        <file>resource/themes/Deep Black.asTheme/nsis.xml</file>
+        <file>resource/themes/Deep Black.asTheme/objc.xml</file>
+        <file>resource/themes/Deep Black.asTheme/pascal.xml</file>
+        <file>resource/themes/Deep Black.asTheme/perl.xml</file>
+        <file>resource/themes/Deep Black.asTheme/php.xml</file>
+        <file>resource/themes/Deep Black.asTheme/postscript.xml</file>
+        <file>resource/themes/Deep Black.asTheme/props.xml</file>
+        <file>resource/themes/Deep Black.asTheme/python.xml</file>
+        <file>resource/themes/Deep Black.asTheme/rc.xml</file>
+        <file>resource/themes/Deep Black.asTheme/ruby.xml</file>
+        <file>resource/themes/Deep Black.asTheme/searchResult.xml</file>
+        <file>resource/themes/Deep Black.asTheme/smalltalk.xml</file>
+        <file>resource/themes/Deep Black.asTheme/sql.xml</file>
+        <file>resource/themes/Deep Black.asTheme/tcl.xml</file>
+        <file>resource/themes/Deep Black.asTheme/tex.xml</file>
+        <file>resource/themes/Deep Black.asTheme/vb.xml</file>
+        <file>resource/themes/Deep Black.asTheme/verilog.xml</file>
+        <file>resource/themes/Deep Black.asTheme/vhdl.xml</file>
+        <file>resource/themes/Deep Black.asTheme/xml.xml</file>
+        <file>resource/themes/Deep Black.asTheme/yaml.xml</file>
+        <file>resource/themes/Default.asTheme/actionscript.xml</file>
+        <file>resource/themes/Default.asTheme/ada.xml</file>
+        <file>resource/themes/Default.asTheme/asm.xml</file>
+        <file>resource/themes/Default.asTheme/asp.xml</file>
+        <file>resource/themes/Default.asTheme/autoit.xml</file>
+        <file>resource/themes/Default.asTheme/bash.xml</file>
+        <file>resource/themes/Default.asTheme/batch.xml</file>
+        <file>resource/themes/Default.asTheme/c.xml</file>
+        <file>resource/themes/Default.asTheme/caml.xml</file>
+        <file>resource/themes/Default.asTheme/cmake.xml</file>
+        <file>resource/themes/Default.asTheme/cobol.xml</file>
+        <file>resource/themes/Default.asTheme/cpp.xml</file>
+        <file>resource/themes/Default.asTheme/cs.xml</file>
+        <file>resource/themes/Default.asTheme/css.xml</file>
+        <file>resource/themes/Default.asTheme/d.xml</file>
+        <file>resource/themes/Default.asTheme/diff.xml</file>
+        <file>resource/themes/Default.asTheme/fortran.xml</file>
+        <file>resource/themes/Default.asTheme/global_style.xml</file>
+        <file>resource/themes/Default.asTheme/gui4cli.xml</file>
+        <file>resource/themes/Default.asTheme/haskell.xml</file>
+        <file>resource/themes/Default.asTheme/html.xml</file>
+        <file>resource/themes/Default.asTheme/ini.xml</file>
+        <file>resource/themes/Default.asTheme/inno.xml</file>
+        <file>resource/themes/Default.asTheme/java.xml</file>
+        <file>resource/themes/Default.asTheme/javascript.xml</file>
+        <file>resource/themes/Default.asTheme/kix.xml</file>
+        <file>resource/themes/Default.asTheme/lisp.xml</file>
+        <file>resource/themes/Default.asTheme/lua.xml</file>
+        <file>resource/themes/Default.asTheme/matlab.xml</file>
+        <file>resource/themes/Default.asTheme/nfo.xml</file>
+        <file>resource/themes/Default.asTheme/nsis.xml</file>
+        <file>resource/themes/Default.asTheme/objc.xml</file>
+        <file>resource/themes/Default.asTheme/pascal.xml</file>
+        <file>resource/themes/Default.asTheme/perl.xml</file>
+        <file>resource/themes/Default.asTheme/php.xml</file>
+        <file>resource/themes/Default.asTheme/postscript.xml</file>
+        <file>resource/themes/Default.asTheme/powershell.xml</file>
+        <file>resource/themes/Default.asTheme/props.xml</file>
+        <file>resource/themes/Default.asTheme/python.xml</file>
+        <file>resource/themes/Default.asTheme/r.xml</file>
+        <file>resource/themes/Default.asTheme/rc.xml</file>
+        <file>resource/themes/Default.asTheme/ruby.xml</file>
+        <file>resource/themes/Default.asTheme/scheme.xml</file>
+        <file>resource/themes/Default.asTheme/searchResult.xml</file>
+        <file>resource/themes/Default.asTheme/smalltalk.xml</file>
+        <file>resource/themes/Default.asTheme/sql.xml</file>
+        <file>resource/themes/Default.asTheme/tcl.xml</file>
+        <file>resource/themes/Default.asTheme/tex.xml</file>
+        <file>resource/themes/Default.asTheme/vb.xml</file>
+        <file>resource/themes/Default.asTheme/verilog.xml</file>
+        <file>resource/themes/Default.asTheme/vhdl.xml</file>
+        <file>resource/themes/Default.asTheme/xml.xml</file>
+        <file>resource/themes/Default.asTheme/yaml.xml</file>
+        <file>resource/themes/Hello Kitty.asTheme/actionscript.xml</file>
+        <file>resource/themes/Hello Kitty.asTheme/ada.xml</file>
+        <file>resource/themes/Hello Kitty.asTheme/asm.xml</file>
+        <file>resource/themes/Hello Kitty.asTheme/asp.xml</file>
+        <file>resource/themes/Hello Kitty.asTheme/autoit.xml</file>
+        <file>resource/themes/Hello Kitty.asTheme/bash.xml</file>
+        <file>resource/themes/Hello Kitty.asTheme/batch.xml</file>
+        <file>resource/themes/Hello Kitty.asTheme/c.xml</file>
+        <file>resource/themes/Hello Kitty.asTheme/caml.xml</file>
+        <file>resource/themes/Hello Kitty.asTheme/cmake.xml</file>
+        <file>resource/themes/Hello Kitty.asTheme/cpp.xml</file>
+        <file>resource/themes/Hello Kitty.asTheme/cs.xml</file>
+        <file>resource/themes/Hello Kitty.asTheme/css.xml</file>
+        <file>resource/themes/Hello Kitty.asTheme/diff.xml</file>
+        <file>resource/themes/Hello Kitty.asTheme/fortran.xml</file>
+        <file>resource/themes/Hello Kitty.asTheme/global_style.xml</file>
+        <file>resource/themes/Hello Kitty.asTheme/haskell.xml</file>
+        <file>resource/themes/Hello Kitty.asTheme/html.xml</file>
+        <file>resource/themes/Hello Kitty.asTheme/ini.xml</file>
+        <file>resource/themes/Hello Kitty.asTheme/inno.xml</file>
+        <file>resource/themes/Hello Kitty.asTheme/java.xml</file>
+        <file>resource/themes/Hello Kitty.asTheme/javascript.xml</file>
+        <file>resource/themes/Hello Kitty.asTheme/kix.xml</file>
+        <file>resource/themes/Hello Kitty.asTheme/lisp.xml</file>
+        <file>resource/themes/Hello Kitty.asTheme/lua.xml</file>
+        <file>resource/themes/Hello Kitty.asTheme/matlab.xml</file>
+        <file>resource/themes/Hello Kitty.asTheme/nfo.xml</file>
+        <file>resource/themes/Hello Kitty.asTheme/nsis.xml</file>
+        <file>resource/themes/Hello Kitty.asTheme/objc.xml</file>
+        <file>resource/themes/Hello Kitty.asTheme/pascal.xml</file>
+        <file>resource/themes/Hello Kitty.asTheme/perl.xml</file>
+        <file>resource/themes/Hello Kitty.asTheme/php.xml</file>
+        <file>resource/themes/Hello Kitty.asTheme/postscript.xml</file>
+        <file>resource/themes/Hello Kitty.asTheme/props.xml</file>
+        <file>resource/themes/Hello Kitty.asTheme/python.xml</file>
+        <file>resource/themes/Hello Kitty.asTheme/rc.xml</file>
+        <file>resource/themes/Hello Kitty.asTheme/ruby.xml</file>
+        <file>resource/themes/Hello Kitty.asTheme/searchResult.xml</file>
+        <file>resource/themes/Hello Kitty.asTheme/smalltalk.xml</file>
+        <file>resource/themes/Hello Kitty.asTheme/sql.xml</file>
+        <file>resource/themes/Hello Kitty.asTheme/tcl.xml</file>
+        <file>resource/themes/Hello Kitty.asTheme/tex.xml</file>
+        <file>resource/themes/Hello Kitty.asTheme/vb.xml</file>
+        <file>resource/themes/Hello Kitty.asTheme/verilog.xml</file>
+        <file>resource/themes/Hello Kitty.asTheme/vhdl.xml</file>
+        <file>resource/themes/Hello Kitty.asTheme/xml.xml</file>
+        <file>resource/themes/Hello Kitty.asTheme/yaml.xml</file>
+        <file>resource/themes/HotFudgeSundae.asTheme/actionscript.xml</file>
+        <file>resource/themes/HotFudgeSundae.asTheme/ada.xml</file>
+        <file>resource/themes/HotFudgeSundae.asTheme/asm.xml</file>
+        <file>resource/themes/HotFudgeSundae.asTheme/asp.xml</file>
+        <file>resource/themes/HotFudgeSundae.asTheme/autoit.xml</file>
+        <file>resource/themes/HotFudgeSundae.asTheme/bash.xml</file>
+        <file>resource/themes/HotFudgeSundae.asTheme/batch.xml</file>
+        <file>resource/themes/HotFudgeSundae.asTheme/c.xml</file>
+        <file>resource/themes/HotFudgeSundae.asTheme/caml.xml</file>
+        <file>resource/themes/HotFudgeSundae.asTheme/cmake.xml</file>
+        <file>resource/themes/HotFudgeSundae.asTheme/cobol.xml</file>
+        <file>resource/themes/HotFudgeSundae.asTheme/cpp.xml</file>
+        <file>resource/themes/HotFudgeSundae.asTheme/cs.xml</file>
+        <file>resource/themes/HotFudgeSundae.asTheme/css.xml</file>
+        <file>resource/themes/HotFudgeSundae.asTheme/d.xml</file>
+        <file>resource/themes/HotFudgeSundae.asTheme/diff.xml</file>
+        <file>resource/themes/HotFudgeSundae.asTheme/fortran.xml</file>
+        <file>resource/themes/HotFudgeSundae.asTheme/global_style.xml</file>
+        <file>resource/themes/HotFudgeSundae.asTheme/gui4cli.xml</file>
+        <file>resource/themes/HotFudgeSundae.asTheme/haskell.xml</file>
+        <file>resource/themes/HotFudgeSundae.asTheme/html.xml</file>
+        <file>resource/themes/HotFudgeSundae.asTheme/ini.xml</file>
+        <file>resource/themes/HotFudgeSundae.asTheme/inno.xml</file>
+        <file>resource/themes/HotFudgeSundae.asTheme/java.xml</file>
+        <file>resource/themes/HotFudgeSundae.asTheme/javascript.xml</file>
+        <file>resource/themes/HotFudgeSundae.asTheme/kix.xml</file>
+        <file>resource/themes/HotFudgeSundae.asTheme/lisp.xml</file>
+        <file>resource/themes/HotFudgeSundae.asTheme/lua.xml</file>
+        <file>resource/themes/HotFudgeSundae.asTheme/matlab.xml</file>
+        <file>resource/themes/HotFudgeSundae.asTheme/nfo.xml</file>
+        <file>resource/themes/HotFudgeSundae.asTheme/nsis.xml</file>
+        <file>resource/themes/HotFudgeSundae.asTheme/objc.xml</file>
+        <file>resource/themes/HotFudgeSundae.asTheme/pascal.xml</file>
+        <file>resource/themes/HotFudgeSundae.asTheme/perl.xml</file>
+        <file>resource/themes/HotFudgeSundae.asTheme/php.xml</file>
+        <file>resource/themes/HotFudgeSundae.asTheme/postscript.xml</file>
+        <file>resource/themes/HotFudgeSundae.asTheme/powershell.xml</file>
+        <file>resource/themes/HotFudgeSundae.asTheme/props.xml</file>
+        <file>resource/themes/HotFudgeSundae.asTheme/python.xml</file>
+        <file>resource/themes/HotFudgeSundae.asTheme/r.xml</file>
+        <file>resource/themes/HotFudgeSundae.asTheme/rc.xml</file>
+        <file>resource/themes/HotFudgeSundae.asTheme/ruby.xml</file>
+        <file>resource/themes/HotFudgeSundae.asTheme/scheme.xml</file>
+        <file>resource/themes/HotFudgeSundae.asTheme/searchResult.xml</file>
+        <file>resource/themes/HotFudgeSundae.asTheme/smalltalk.xml</file>
+        <file>resource/themes/HotFudgeSundae.asTheme/sql.xml</file>
+        <file>resource/themes/HotFudgeSundae.asTheme/tcl.xml</file>
+        <file>resource/themes/HotFudgeSundae.asTheme/tex.xml</file>
+        <file>resource/themes/HotFudgeSundae.asTheme/vb.xml</file>
+        <file>resource/themes/HotFudgeSundae.asTheme/verilog.xml</file>
+        <file>resource/themes/HotFudgeSundae.asTheme/vhdl.xml</file>
+        <file>resource/themes/HotFudgeSundae.asTheme/xml.xml</file>
+        <file>resource/themes/HotFudgeSundae.asTheme/yaml.xml</file>
+        <file>resource/themes/khaki.asTheme/actionscript.xml</file>
+        <file>resource/themes/khaki.asTheme/ada.xml</file>
+        <file>resource/themes/khaki.asTheme/asm.xml</file>
+        <file>resource/themes/khaki.asTheme/asp.xml</file>
+        <file>resource/themes/khaki.asTheme/autoit.xml</file>
+        <file>resource/themes/khaki.asTheme/bash.xml</file>
+        <file>resource/themes/khaki.asTheme/batch.xml</file>
+        <file>resource/themes/khaki.asTheme/c.xml</file>
+        <file>resource/themes/khaki.asTheme/caml.xml</file>
+        <file>resource/themes/khaki.asTheme/cmake.xml</file>
+        <file>resource/themes/khaki.asTheme/cobol.xml</file>
+        <file>resource/themes/khaki.asTheme/cpp.xml</file>
+        <file>resource/themes/khaki.asTheme/cs.xml</file>
+        <file>resource/themes/khaki.asTheme/css.xml</file>
+        <file>resource/themes/khaki.asTheme/d.xml</file>
+        <file>resource/themes/khaki.asTheme/diff.xml</file>
+        <file>resource/themes/khaki.asTheme/fortran.xml</file>
+        <file>resource/themes/khaki.asTheme/global_style.xml</file>
+        <file>resource/themes/khaki.asTheme/gui4cli.xml</file>
+        <file>resource/themes/khaki.asTheme/haskell.xml</file>
+        <file>resource/themes/khaki.asTheme/html.xml</file>
+        <file>resource/themes/khaki.asTheme/ini.xml</file>
+        <file>resource/themes/khaki.asTheme/inno.xml</file>
+        <file>resource/themes/khaki.asTheme/java.xml</file>
+        <file>resource/themes/khaki.asTheme/javascript.xml</file>
+        <file>resource/themes/khaki.asTheme/kix.xml</file>
+        <file>resource/themes/khaki.asTheme/lisp.xml</file>
+        <file>resource/themes/khaki.asTheme/lua.xml</file>
+        <file>resource/themes/khaki.asTheme/matlab.xml</file>
+        <file>resource/themes/khaki.asTheme/nfo.xml</file>
+        <file>resource/themes/khaki.asTheme/nsis.xml</file>
+        <file>resource/themes/khaki.asTheme/objc.xml</file>
+        <file>resource/themes/khaki.asTheme/pascal.xml</file>
+        <file>resource/themes/khaki.asTheme/perl.xml</file>
+        <file>resource/themes/khaki.asTheme/php.xml</file>
+        <file>resource/themes/khaki.asTheme/postscript.xml</file>
+        <file>resource/themes/khaki.asTheme/powershell.xml</file>
+        <file>resource/themes/khaki.asTheme/props.xml</file>
+        <file>resource/themes/khaki.asTheme/python.xml</file>
+        <file>resource/themes/khaki.asTheme/r.xml</file>
+        <file>resource/themes/khaki.asTheme/rc.xml</file>
+        <file>resource/themes/khaki.asTheme/ruby.xml</file>
+        <file>resource/themes/khaki.asTheme/scheme.xml</file>
+        <file>resource/themes/khaki.asTheme/searchResult.xml</file>
+        <file>resource/themes/khaki.asTheme/smalltalk.xml</file>
+        <file>resource/themes/khaki.asTheme/sql.xml</file>
+        <file>resource/themes/khaki.asTheme/tcl.xml</file>
+        <file>resource/themes/khaki.asTheme/tex.xml</file>
+        <file>resource/themes/khaki.asTheme/vb.xml</file>
+        <file>resource/themes/khaki.asTheme/verilog.xml</file>
+        <file>resource/themes/khaki.asTheme/vhdl.xml</file>
+        <file>resource/themes/khaki.asTheme/xml.xml</file>
+        <file>resource/themes/khaki.asTheme/yaml.xml</file>
+        <file>resource/themes/Mono Industrial.asTheme/actionscript.xml</file>
+        <file>resource/themes/Mono Industrial.asTheme/ada.xml</file>
+        <file>resource/themes/Mono Industrial.asTheme/asm.xml</file>
+        <file>resource/themes/Mono Industrial.asTheme/asp.xml</file>
+        <file>resource/themes/Mono Industrial.asTheme/autoit.xml</file>
+        <file>resource/themes/Mono Industrial.asTheme/bash.xml</file>
+        <file>resource/themes/Mono Industrial.asTheme/batch.xml</file>
+        <file>resource/themes/Mono Industrial.asTheme/c.xml</file>
+        <file>resource/themes/Mono Industrial.asTheme/caml.xml</file>
+        <file>resource/themes/Mono Industrial.asTheme/cmake.xml</file>
+        <file>resource/themes/Mono Industrial.asTheme/cpp.xml</file>
+        <file>resource/themes/Mono Industrial.asTheme/cs.xml</file>
+        <file>resource/themes/Mono Industrial.asTheme/css.xml</file>
+        <file>resource/themes/Mono Industrial.asTheme/diff.xml</file>
+        <file>resource/themes/Mono Industrial.asTheme/fortran.xml</file>
+        <file>resource/themes/Mono Industrial.asTheme/global_style.xml</file>
+        <file>resource/themes/Mono Industrial.asTheme/haskell.xml</file>
+        <file>resource/themes/Mono Industrial.asTheme/html.xml</file>
+        <file>resource/themes/Mono Industrial.asTheme/ini.xml</file>
+        <file>resource/themes/Mono Industrial.asTheme/inno.xml</file>
+        <file>resource/themes/Mono Industrial.asTheme/java.xml</file>
+        <file>resource/themes/Mono Industrial.asTheme/javascript.xml</file>
+        <file>resource/themes/Mono Industrial.asTheme/kix.xml</file>
+        <file>resource/themes/Mono Industrial.asTheme/lisp.xml</file>
+        <file>resource/themes/Mono Industrial.asTheme/lua.xml</file>
+        <file>resource/themes/Mono Industrial.asTheme/matlab.xml</file>
+        <file>resource/themes/Mono Industrial.asTheme/nfo.xml</file>
+        <file>resource/themes/Mono Industrial.asTheme/nsis.xml</file>
+        <file>resource/themes/Mono Industrial.asTheme/objc.xml</file>
+        <file>resource/themes/Mono Industrial.asTheme/pascal.xml</file>
+        <file>resource/themes/Mono Industrial.asTheme/perl.xml</file>
+        <file>resource/themes/Mono Industrial.asTheme/php.xml</file>
+        <file>resource/themes/Mono Industrial.asTheme/postscript.xml</file>
+        <file>resource/themes/Mono Industrial.asTheme/props.xml</file>
+        <file>resource/themes/Mono Industrial.asTheme/python.xml</file>
+        <file>resource/themes/Mono Industrial.asTheme/rc.xml</file>
+        <file>resource/themes/Mono Industrial.asTheme/ruby.xml</file>
+        <file>resource/themes/Mono Industrial.asTheme/searchResult.xml</file>
+        <file>resource/themes/Mono Industrial.asTheme/smalltalk.xml</file>
+        <file>resource/themes/Mono Industrial.asTheme/sql.xml</file>
+        <file>resource/themes/Mono Industrial.asTheme/tcl.xml</file>
+        <file>resource/themes/Mono Industrial.asTheme/tex.xml</file>
+        <file>resource/themes/Mono Industrial.asTheme/vb.xml</file>
+        <file>resource/themes/Mono Industrial.asTheme/verilog.xml</file>
+        <file>resource/themes/Mono Industrial.asTheme/vhdl.xml</file>
+        <file>resource/themes/Mono Industrial.asTheme/xml.xml</file>
+        <file>resource/themes/Monokai.asTheme/actionscript.xml</file>
+        <file>resource/themes/Monokai.asTheme/ada.xml</file>
+        <file>resource/themes/Monokai.asTheme/asm.xml</file>
+        <file>resource/themes/Monokai.asTheme/asp.xml</file>
+        <file>resource/themes/Monokai.asTheme/autoit.xml</file>
+        <file>resource/themes/Monokai.asTheme/bash.xml</file>
+        <file>resource/themes/Monokai.asTheme/batch.xml</file>
+        <file>resource/themes/Monokai.asTheme/c.xml</file>
+        <file>resource/themes/Monokai.asTheme/caml.xml</file>
+        <file>resource/themes/Monokai.asTheme/cmake.xml</file>
+        <file>resource/themes/Monokai.asTheme/cpp.xml</file>
+        <file>resource/themes/Monokai.asTheme/cs.xml</file>
+        <file>resource/themes/Monokai.asTheme/css.xml</file>
+        <file>resource/themes/Monokai.asTheme/diff.xml</file>
+        <file>resource/themes/Monokai.asTheme/fortran.xml</file>
+        <file>resource/themes/Monokai.asTheme/global_style.xml</file>
+        <file>resource/themes/Monokai.asTheme/haskell.xml</file>
+        <file>resource/themes/Monokai.asTheme/html.xml</file>
+        <file>resource/themes/Monokai.asTheme/ini.xml</file>
+        <file>resource/themes/Monokai.asTheme/inno.xml</file>
+        <file>resource/themes/Monokai.asTheme/java.xml</file>
+        <file>resource/themes/Monokai.asTheme/javascript.xml</file>
+        <file>resource/themes/Monokai.asTheme/kix.xml</file>
+        <file>resource/themes/Monokai.asTheme/lisp.xml</file>
+        <file>resource/themes/Monokai.asTheme/lua.xml</file>
+        <file>resource/themes/Monokai.asTheme/matlab.xml</file>
+        <file>resource/themes/Monokai.asTheme/nfo.xml</file>
+        <file>resource/themes/Monokai.asTheme/nsis.xml</file>
+        <file>resource/themes/Monokai.asTheme/objc.xml</file>
+        <file>resource/themes/Monokai.asTheme/pascal.xml</file>
+        <file>resource/themes/Monokai.asTheme/perl.xml</file>
+        <file>resource/themes/Monokai.asTheme/php.xml</file>
+        <file>resource/themes/Monokai.asTheme/postscript.xml</file>
+        <file>resource/themes/Monokai.asTheme/props.xml</file>
+        <file>resource/themes/Monokai.asTheme/python.xml</file>
+        <file>resource/themes/Monokai.asTheme/rc.xml</file>
+        <file>resource/themes/Monokai.asTheme/ruby.xml</file>
+        <file>resource/themes/Monokai.asTheme/searchResult.xml</file>
+        <file>resource/themes/Monokai.asTheme/smalltalk.xml</file>
+        <file>resource/themes/Monokai.asTheme/sql.xml</file>
+        <file>resource/themes/Monokai.asTheme/tcl.xml</file>
+        <file>resource/themes/Monokai.asTheme/tex.xml</file>
+        <file>resource/themes/Monokai.asTheme/vb.xml</file>
+        <file>resource/themes/Monokai.asTheme/verilog.xml</file>
+        <file>resource/themes/Monokai.asTheme/vhdl.xml</file>
+        <file>resource/themes/Monokai.asTheme/xml.xml</file>
+        <file>resource/themes/MossyLawn.asTheme/actionscript.xml</file>
+        <file>resource/themes/MossyLawn.asTheme/ada.xml</file>
+        <file>resource/themes/MossyLawn.asTheme/asm.xml</file>
+        <file>resource/themes/MossyLawn.asTheme/asp.xml</file>
+        <file>resource/themes/MossyLawn.asTheme/autoit.xml</file>
+        <file>resource/themes/MossyLawn.asTheme/bash.xml</file>
+        <file>resource/themes/MossyLawn.asTheme/batch.xml</file>
+        <file>resource/themes/MossyLawn.asTheme/c.xml</file>
+        <file>resource/themes/MossyLawn.asTheme/caml.xml</file>
+        <file>resource/themes/MossyLawn.asTheme/cmake.xml</file>
+        <file>resource/themes/MossyLawn.asTheme/cobol.xml</file>
+        <file>resource/themes/MossyLawn.asTheme/cpp.xml</file>
+        <file>resource/themes/MossyLawn.asTheme/cs.xml</file>
+        <file>resource/themes/MossyLawn.asTheme/css.xml</file>
+        <file>resource/themes/MossyLawn.asTheme/d.xml</file>
+        <file>resource/themes/MossyLawn.asTheme/diff.xml</file>
+        <file>resource/themes/MossyLawn.asTheme/fortran.xml</file>
+        <file>resource/themes/MossyLawn.asTheme/global_style.xml</file>
+        <file>resource/themes/MossyLawn.asTheme/gui4cli.xml</file>
+        <file>resource/themes/MossyLawn.asTheme/haskell.xml</file>
+        <file>resource/themes/MossyLawn.asTheme/html.xml</file>
+        <file>resource/themes/MossyLawn.asTheme/ini.xml</file>
+        <file>resource/themes/MossyLawn.asTheme/inno.xml</file>
+        <file>resource/themes/MossyLawn.asTheme/java.xml</file>
+        <file>resource/themes/MossyLawn.asTheme/javascript.xml</file>
+        <file>resource/themes/MossyLawn.asTheme/kix.xml</file>
+        <file>resource/themes/MossyLawn.asTheme/lisp.xml</file>
+        <file>resource/themes/MossyLawn.asTheme/lua.xml</file>
+        <file>resource/themes/MossyLawn.asTheme/matlab.xml</file>
+        <file>resource/themes/MossyLawn.asTheme/nfo.xml</file>
+        <file>resource/themes/MossyLawn.asTheme/nsis.xml</file>
+        <file>resource/themes/MossyLawn.asTheme/objc.xml</file>
+        <file>resource/themes/MossyLawn.asTheme/pascal.xml</file>
+        <file>resource/themes/MossyLawn.asTheme/perl.xml</file>
+        <file>resource/themes/MossyLawn.asTheme/php.xml</file>
+        <file>resource/themes/MossyLawn.asTheme/postscript.xml</file>
+        <file>resource/themes/MossyLawn.asTheme/powershell.xml</file>
+        <file>resource/themes/MossyLawn.asTheme/props.xml</file>
+        <file>resource/themes/MossyLawn.asTheme/python.xml</file>
+        <file>resource/themes/MossyLawn.asTheme/r.xml</file>
+        <file>resource/themes/MossyLawn.asTheme/rc.xml</file>
+        <file>resource/themes/MossyLawn.asTheme/ruby.xml</file>
+        <file>resource/themes/MossyLawn.asTheme/scheme.xml</file>
+        <file>resource/themes/MossyLawn.asTheme/searchResult.xml</file>
+        <file>resource/themes/MossyLawn.asTheme/smalltalk.xml</file>
+        <file>resource/themes/MossyLawn.asTheme/sql.xml</file>
+        <file>resource/themes/MossyLawn.asTheme/tcl.xml</file>
+        <file>resource/themes/MossyLawn.asTheme/tex.xml</file>
+        <file>resource/themes/MossyLawn.asTheme/vb.xml</file>
+        <file>resource/themes/MossyLawn.asTheme/verilog.xml</file>
+        <file>resource/themes/MossyLawn.asTheme/vhdl.xml</file>
+        <file>resource/themes/MossyLawn.asTheme/xml.xml</file>
+        <file>resource/themes/MossyLawn.asTheme/yaml.xml</file>
+        <file>resource/themes/Navajo.asTheme/actionscript.xml</file>
+        <file>resource/themes/Navajo.asTheme/ada.xml</file>
+        <file>resource/themes/Navajo.asTheme/asm.xml</file>
+        <file>resource/themes/Navajo.asTheme/asp.xml</file>
+        <file>resource/themes/Navajo.asTheme/autoit.xml</file>
+        <file>resource/themes/Navajo.asTheme/bash.xml</file>
+        <file>resource/themes/Navajo.asTheme/batch.xml</file>
+        <file>resource/themes/Navajo.asTheme/c.xml</file>
+        <file>resource/themes/Navajo.asTheme/caml.xml</file>
+        <file>resource/themes/Navajo.asTheme/cmake.xml</file>
+        <file>resource/themes/Navajo.asTheme/cobol.xml</file>
+        <file>resource/themes/Navajo.asTheme/cpp.xml</file>
+        <file>resource/themes/Navajo.asTheme/cs.xml</file>
+        <file>resource/themes/Navajo.asTheme/css.xml</file>
+        <file>resource/themes/Navajo.asTheme/d.xml</file>
+        <file>resource/themes/Navajo.asTheme/diff.xml</file>
+        <file>resource/themes/Navajo.asTheme/fortran.xml</file>
+        <file>resource/themes/Navajo.asTheme/global_style.xml</file>
+        <file>resource/themes/Navajo.asTheme/gui4cli.xml</file>
+        <file>resource/themes/Navajo.asTheme/haskell.xml</file>
+        <file>resource/themes/Navajo.asTheme/html.xml</file>
+        <file>resource/themes/Navajo.asTheme/ini.xml</file>
+        <file>resource/themes/Navajo.asTheme/inno.xml</file>
+        <file>resource/themes/Navajo.asTheme/java.xml</file>
+        <file>resource/themes/Navajo.asTheme/javascript.xml</file>
+        <file>resource/themes/Navajo.asTheme/kix.xml</file>
+        <file>resource/themes/Navajo.asTheme/lisp.xml</file>
+        <file>resource/themes/Navajo.asTheme/lua.xml</file>
+        <file>resource/themes/Navajo.asTheme/matlab.xml</file>
+        <file>resource/themes/Navajo.asTheme/nfo.xml</file>
+        <file>resource/themes/Navajo.asTheme/nsis.xml</file>
+        <file>resource/themes/Navajo.asTheme/objc.xml</file>
+        <file>resource/themes/Navajo.asTheme/pascal.xml</file>
+        <file>resource/themes/Navajo.asTheme/perl.xml</file>
+        <file>resource/themes/Navajo.asTheme/php.xml</file>
+        <file>resource/themes/Navajo.asTheme/postscript.xml</file>
+        <file>resource/themes/Navajo.asTheme/powershell.xml</file>
+        <file>resource/themes/Navajo.asTheme/props.xml</file>
+        <file>resource/themes/Navajo.asTheme/python.xml</file>
+        <file>resource/themes/Navajo.asTheme/r.xml</file>
+        <file>resource/themes/Navajo.asTheme/rc.xml</file>
+        <file>resource/themes/Navajo.asTheme/ruby.xml</file>
+        <file>resource/themes/Navajo.asTheme/scheme.xml</file>
+        <file>resource/themes/Navajo.asTheme/searchResult.xml</file>
+        <file>resource/themes/Navajo.asTheme/smalltalk.xml</file>
+        <file>resource/themes/Navajo.asTheme/sql.xml</file>
+        <file>resource/themes/Navajo.asTheme/tcl.xml</file>
+        <file>resource/themes/Navajo.asTheme/tex.xml</file>
+        <file>resource/themes/Navajo.asTheme/vb.xml</file>
+        <file>resource/themes/Navajo.asTheme/verilog.xml</file>
+        <file>resource/themes/Navajo.asTheme/vhdl.xml</file>
+        <file>resource/themes/Navajo.asTheme/xml.xml</file>
+        <file>resource/themes/Navajo.asTheme/yaml.xml</file>
+        <file>resource/themes/Obsidian.asTheme/actionscript.xml</file>
+        <file>resource/themes/Obsidian.asTheme/ada.xml</file>
+        <file>resource/themes/Obsidian.asTheme/asm.xml</file>
+        <file>resource/themes/Obsidian.asTheme/asp.xml</file>
+        <file>resource/themes/Obsidian.asTheme/autoit.xml</file>
+        <file>resource/themes/Obsidian.asTheme/bash.xml</file>
+        <file>resource/themes/Obsidian.asTheme/batch.xml</file>
+        <file>resource/themes/Obsidian.asTheme/c.xml</file>
+        <file>resource/themes/Obsidian.asTheme/caml.xml</file>
+        <file>resource/themes/Obsidian.asTheme/cmake.xml</file>
+        <file>resource/themes/Obsidian.asTheme/cpp.xml</file>
+        <file>resource/themes/Obsidian.asTheme/cs.xml</file>
+        <file>resource/themes/Obsidian.asTheme/css.xml</file>
+        <file>resource/themes/Obsidian.asTheme/diff.xml</file>
+        <file>resource/themes/Obsidian.asTheme/fortran.xml</file>
+        <file>resource/themes/Obsidian.asTheme/global_style.xml</file>
+        <file>resource/themes/Obsidian.asTheme/haskell.xml</file>
+        <file>resource/themes/Obsidian.asTheme/html.xml</file>
+        <file>resource/themes/Obsidian.asTheme/ini.xml</file>
+        <file>resource/themes/Obsidian.asTheme/inno.xml</file>
+        <file>resource/themes/Obsidian.asTheme/java.xml</file>
+        <file>resource/themes/Obsidian.asTheme/javascript.xml</file>
+        <file>resource/themes/Obsidian.asTheme/kix.xml</file>
+        <file>resource/themes/Obsidian.asTheme/lisp.xml</file>
+        <file>resource/themes/Obsidian.asTheme/lua.xml</file>
+        <file>resource/themes/Obsidian.asTheme/matlab.xml</file>
+        <file>resource/themes/Obsidian.asTheme/nfo.xml</file>
+        <file>resource/themes/Obsidian.asTheme/nsis.xml</file>
+        <file>resource/themes/Obsidian.asTheme/objc.xml</file>
+        <file>resource/themes/Obsidian.asTheme/pascal.xml</file>
+        <file>resource/themes/Obsidian.asTheme/perl.xml</file>
+        <file>resource/themes/Obsidian.asTheme/php.xml</file>
+        <file>resource/themes/Obsidian.asTheme/postscript.xml</file>
+        <file>resource/themes/Obsidian.asTheme/props.xml</file>
+        <file>resource/themes/Obsidian.asTheme/python.xml</file>
+        <file>resource/themes/Obsidian.asTheme/rc.xml</file>
+        <file>resource/themes/Obsidian.asTheme/ruby.xml</file>
+        <file>resource/themes/Obsidian.asTheme/scheme.xml</file>
+        <file>resource/themes/Obsidian.asTheme/searchResult.xml</file>
+        <file>resource/themes/Obsidian.asTheme/smalltalk.xml</file>
+        <file>resource/themes/Obsidian.asTheme/sql.xml</file>
+        <file>resource/themes/Obsidian.asTheme/tcl.xml</file>
+        <file>resource/themes/Obsidian.asTheme/tex.xml</file>
+        <file>resource/themes/Obsidian.asTheme/vb.xml</file>
+        <file>resource/themes/Obsidian.asTheme/verilog.xml</file>
+        <file>resource/themes/Obsidian.asTheme/vhdl.xml</file>
+        <file>resource/themes/Obsidian.asTheme/xml.xml</file>
+        <file>resource/themes/Obsidian.asTheme/yaml.xml</file>
+        <file>resource/themes/Plastic Code Wrap.asTheme/actionscript.xml</file>
+        <file>resource/themes/Plastic Code Wrap.asTheme/ada.xml</file>
+        <file>resource/themes/Plastic Code Wrap.asTheme/asm.xml</file>
+        <file>resource/themes/Plastic Code Wrap.asTheme/asp.xml</file>
+        <file>resource/themes/Plastic Code Wrap.asTheme/autoit.xml</file>
+        <file>resource/themes/Plastic Code Wrap.asTheme/bash.xml</file>
+        <file>resource/themes/Plastic Code Wrap.asTheme/batch.xml</file>
+        <file>resource/themes/Plastic Code Wrap.asTheme/c.xml</file>
+        <file>resource/themes/Plastic Code Wrap.asTheme/caml.xml</file>
+        <file>resource/themes/Plastic Code Wrap.asTheme/cmake.xml</file>
+        <file>resource/themes/Plastic Code Wrap.asTheme/cpp.xml</file>
+        <file>resource/themes/Plastic Code Wrap.asTheme/cs.xml</file>
+        <file>resource/themes/Plastic Code Wrap.asTheme/css.xml</file>
+        <file>resource/themes/Plastic Code Wrap.asTheme/diff.xml</file>
+        <file>resource/themes/Plastic Code Wrap.asTheme/fortran.xml</file>
+        <file>resource/themes/Plastic Code Wrap.asTheme/global_style.xml</file>
+        <file>resource/themes/Plastic Code Wrap.asTheme/haskell.xml</file>
+        <file>resource/themes/Plastic Code Wrap.asTheme/html.xml</file>
+        <file>resource/themes/Plastic Code Wrap.asTheme/ini.xml</file>
+        <file>resource/themes/Plastic Code Wrap.asTheme/inno.xml</file>
+        <file>resource/themes/Plastic Code Wrap.asTheme/java.xml</file>
+        <file>resource/themes/Plastic Code Wrap.asTheme/javascript.xml</file>
+        <file>resource/themes/Plastic Code Wrap.asTheme/kix.xml</file>
+        <file>resource/themes/Plastic Code Wrap.asTheme/lisp.xml</file>
+        <file>resource/themes/Plastic Code Wrap.asTheme/lua.xml</file>
+        <file>resource/themes/Plastic Code Wrap.asTheme/matlab.xml</file>
+        <file>resource/themes/Plastic Code Wrap.asTheme/nfo.xml</file>
+        <file>resource/themes/Plastic Code Wrap.asTheme/nsis.xml</file>
+        <file>resource/themes/Plastic Code Wrap.asTheme/objc.xml</file>
+        <file>resource/themes/Plastic Code Wrap.asTheme/pascal.xml</file>
+        <file>resource/themes/Plastic Code Wrap.asTheme/perl.xml</file>
+        <file>resource/themes/Plastic Code Wrap.asTheme/php.xml</file>
+        <file>resource/themes/Plastic Code Wrap.asTheme/postscript.xml</file>
+        <file>resource/themes/Plastic Code Wrap.asTheme/props.xml</file>
+        <file>resource/themes/Plastic Code Wrap.asTheme/python.xml</file>
+        <file>resource/themes/Plastic Code Wrap.asTheme/rc.xml</file>
+        <file>resource/themes/Plastic Code Wrap.asTheme/ruby.xml</file>
+        <file>resource/themes/Plastic Code Wrap.asTheme/searchResult.xml</file>
+        <file>resource/themes/Plastic Code Wrap.asTheme/smalltalk.xml</file>
+        <file>resource/themes/Plastic Code Wrap.asTheme/sql.xml</file>
+        <file>resource/themes/Plastic Code Wrap.asTheme/tcl.xml</file>
+        <file>resource/themes/Plastic Code Wrap.asTheme/tex.xml</file>
+        <file>resource/themes/Plastic Code Wrap.asTheme/vb.xml</file>
+        <file>resource/themes/Plastic Code Wrap.asTheme/verilog.xml</file>
+        <file>resource/themes/Plastic Code Wrap.asTheme/vhdl.xml</file>
+        <file>resource/themes/Plastic Code Wrap.asTheme/xml.xml</file>
+        <file>resource/themes/Ruby Blue.asTheme/actionscript.xml</file>
+        <file>resource/themes/Ruby Blue.asTheme/asm.xml</file>
+        <file>resource/themes/Ruby Blue.asTheme/asp.xml</file>
+        <file>resource/themes/Ruby Blue.asTheme/bash.xml</file>
+        <file>resource/themes/Ruby Blue.asTheme/batch.xml</file>
+        <file>resource/themes/Ruby Blue.asTheme/c.xml</file>
+        <file>resource/themes/Ruby Blue.asTheme/cpp.xml</file>
+        <file>resource/themes/Ruby Blue.asTheme/cs.xml</file>
+        <file>resource/themes/Ruby Blue.asTheme/css.xml</file>
+        <file>resource/themes/Ruby Blue.asTheme/diff.xml</file>
+        <file>resource/themes/Ruby Blue.asTheme/fortran.xml</file>
+        <file>resource/themes/Ruby Blue.asTheme/global_style.xml</file>
+        <file>resource/themes/Ruby Blue.asTheme/html.xml</file>
+        <file>resource/themes/Ruby Blue.asTheme/ini.xml</file>
+        <file>resource/themes/Ruby Blue.asTheme/java.xml</file>
+        <file>resource/themes/Ruby Blue.asTheme/javascript.xml</file>
+        <file>resource/themes/Ruby Blue.asTheme/lisp.xml</file>
+        <file>resource/themes/Ruby Blue.asTheme/lua.xml</file>
+        <file>resource/themes/Ruby Blue.asTheme/nfo.xml</file>
+        <file>resource/themes/Ruby Blue.asTheme/nsis.xml</file>
+        <file>resource/themes/Ruby Blue.asTheme/objc.xml</file>
+        <file>resource/themes/Ruby Blue.asTheme/pascal.xml</file>
+        <file>resource/themes/Ruby Blue.asTheme/perl.xml</file>
+        <file>resource/themes/Ruby Blue.asTheme/php.xml</file>
+        <file>resource/themes/Ruby Blue.asTheme/postscript.xml</file>
+        <file>resource/themes/Ruby Blue.asTheme/props.xml</file>
+        <file>resource/themes/Ruby Blue.asTheme/python.xml</file>
+        <file>resource/themes/Ruby Blue.asTheme/rc.xml</file>
+        <file>resource/themes/Ruby Blue.asTheme/ruby.xml</file>
+        <file>resource/themes/Ruby Blue.asTheme/searchResult.xml</file>
+        <file>resource/themes/Ruby Blue.asTheme/smalltalk.xml</file>
+        <file>resource/themes/Ruby Blue.asTheme/sql.xml</file>
+        <file>resource/themes/Ruby Blue.asTheme/tcl.xml</file>
+        <file>resource/themes/Ruby Blue.asTheme/tex.xml</file>
+        <file>resource/themes/Ruby Blue.asTheme/vb.xml</file>
+        <file>resource/themes/Ruby Blue.asTheme/vhdl.xml</file>
+        <file>resource/themes/Ruby Blue.asTheme/xml.xml</file>
+        <file>resource/themes/Solarized-light.asTheme/actionscript.xml</file>
+        <file>resource/themes/Solarized-light.asTheme/ada.xml</file>
+        <file>resource/themes/Solarized-light.asTheme/asm.xml</file>
+        <file>resource/themes/Solarized-light.asTheme/asp.xml</file>
+        <file>resource/themes/Solarized-light.asTheme/autoit.xml</file>
+        <file>resource/themes/Solarized-light.asTheme/bash.xml</file>
+        <file>resource/themes/Solarized-light.asTheme/batch.xml</file>
+        <file>resource/themes/Solarized-light.asTheme/c.xml</file>
+        <file>resource/themes/Solarized-light.asTheme/caml.xml</file>
+        <file>resource/themes/Solarized-light.asTheme/cmake.xml</file>
+        <file>resource/themes/Solarized-light.asTheme/cobol.xml</file>
+        <file>resource/themes/Solarized-light.asTheme/cpp.xml</file>
+        <file>resource/themes/Solarized-light.asTheme/cs.xml</file>
+        <file>resource/themes/Solarized-light.asTheme/css.xml</file>
+        <file>resource/themes/Solarized-light.asTheme/d.xml</file>
+        <file>resource/themes/Solarized-light.asTheme/diff.xml</file>
+        <file>resource/themes/Solarized-light.asTheme/fortran.xml</file>
+        <file>resource/themes/Solarized-light.asTheme/global_style.xml</file>
+        <file>resource/themes/Solarized-light.asTheme/gui4cli.xml</file>
+        <file>resource/themes/Solarized-light.asTheme/haskell.xml</file>
+        <file>resource/themes/Solarized-light.asTheme/html.xml</file>
+        <file>resource/themes/Solarized-light.asTheme/ini.xml</file>
+        <file>resource/themes/Solarized-light.asTheme/inno.xml</file>
+        <file>resource/themes/Solarized-light.asTheme/java.xml</file>
+        <file>resource/themes/Solarized-light.asTheme/javascript.xml</file>
+        <file>resource/themes/Solarized-light.asTheme/kix.xml</file>
+        <file>resource/themes/Solarized-light.asTheme/lisp.xml</file>
+        <file>resource/themes/Solarized-light.asTheme/lua.xml</file>
+        <file>resource/themes/Solarized-light.asTheme/matlab.xml</file>
+        <file>resource/themes/Solarized-light.asTheme/nfo.xml</file>
+        <file>resource/themes/Solarized-light.asTheme/nsis.xml</file>
+        <file>resource/themes/Solarized-light.asTheme/objc.xml</file>
+        <file>resource/themes/Solarized-light.asTheme/pascal.xml</file>
+        <file>resource/themes/Solarized-light.asTheme/perl.xml</file>
+        <file>resource/themes/Solarized-light.asTheme/php.xml</file>
+        <file>resource/themes/Solarized-light.asTheme/postscript.xml</file>
+        <file>resource/themes/Solarized-light.asTheme/powershell.xml</file>
+        <file>resource/themes/Solarized-light.asTheme/props.xml</file>
+        <file>resource/themes/Solarized-light.asTheme/python.xml</file>
+        <file>resource/themes/Solarized-light.asTheme/r.xml</file>
+        <file>resource/themes/Solarized-light.asTheme/rc.xml</file>
+        <file>resource/themes/Solarized-light.asTheme/ruby.xml</file>
+        <file>resource/themes/Solarized-light.asTheme/scheme.xml</file>
+        <file>resource/themes/Solarized-light.asTheme/searchResult.xml</file>
+        <file>resource/themes/Solarized-light.asTheme/smalltalk.xml</file>
+        <file>resource/themes/Solarized-light.asTheme/sql.xml</file>
+        <file>resource/themes/Solarized-light.asTheme/tcl.xml</file>
+        <file>resource/themes/Solarized-light.asTheme/tex.xml</file>
+        <file>resource/themes/Solarized-light.asTheme/vb.xml</file>
+        <file>resource/themes/Solarized-light.asTheme/verilog.xml</file>
+        <file>resource/themes/Solarized-light.asTheme/vhdl.xml</file>
+        <file>resource/themes/Solarized-light.asTheme/xml.xml</file>
+        <file>resource/themes/Solarized-light.asTheme/yaml.xml</file>
+        <file>resource/themes/Solarized.asTheme/actionscript.xml</file>
+        <file>resource/themes/Solarized.asTheme/ada.xml</file>
+        <file>resource/themes/Solarized.asTheme/asm.xml</file>
+        <file>resource/themes/Solarized.asTheme/asp.xml</file>
+        <file>resource/themes/Solarized.asTheme/autoit.xml</file>
+        <file>resource/themes/Solarized.asTheme/bash.xml</file>
+        <file>resource/themes/Solarized.asTheme/batch.xml</file>
+        <file>resource/themes/Solarized.asTheme/c.xml</file>
+        <file>resource/themes/Solarized.asTheme/caml.xml</file>
+        <file>resource/themes/Solarized.asTheme/cmake.xml</file>
+        <file>resource/themes/Solarized.asTheme/cobol.xml</file>
+        <file>resource/themes/Solarized.asTheme/cpp.xml</file>
+        <file>resource/themes/Solarized.asTheme/cs.xml</file>
+        <file>resource/themes/Solarized.asTheme/css.xml</file>
+        <file>resource/themes/Solarized.asTheme/d.xml</file>
+        <file>resource/themes/Solarized.asTheme/diff.xml</file>
+        <file>resource/themes/Solarized.asTheme/fortran.xml</file>
+        <file>resource/themes/Solarized.asTheme/global_style.xml</file>
+        <file>resource/themes/Solarized.asTheme/gui4cli.xml</file>
+        <file>resource/themes/Solarized.asTheme/haskell.xml</file>
+        <file>resource/themes/Solarized.asTheme/html.xml</file>
+        <file>resource/themes/Solarized.asTheme/ini.xml</file>
+        <file>resource/themes/Solarized.asTheme/inno.xml</file>
+        <file>resource/themes/Solarized.asTheme/java.xml</file>
+        <file>resource/themes/Solarized.asTheme/javascript.xml</file>
+        <file>resource/themes/Solarized.asTheme/kix.xml</file>
+        <file>resource/themes/Solarized.asTheme/lisp.xml</file>
+        <file>resource/themes/Solarized.asTheme/lua.xml</file>
+        <file>resource/themes/Solarized.asTheme/matlab.xml</file>
+        <file>resource/themes/Solarized.asTheme/nfo.xml</file>
+        <file>resource/themes/Solarized.asTheme/nsis.xml</file>
+        <file>resource/themes/Solarized.asTheme/objc.xml</file>
+        <file>resource/themes/Solarized.asTheme/pascal.xml</file>
+        <file>resource/themes/Solarized.asTheme/perl.xml</file>
+        <file>resource/themes/Solarized.asTheme/php.xml</file>
+        <file>resource/themes/Solarized.asTheme/postscript.xml</file>
+        <file>resource/themes/Solarized.asTheme/powershell.xml</file>
+        <file>resource/themes/Solarized.asTheme/props.xml</file>
+        <file>resource/themes/Solarized.asTheme/python.xml</file>
+        <file>resource/themes/Solarized.asTheme/r.xml</file>
+        <file>resource/themes/Solarized.asTheme/rc.xml</file>
+        <file>resource/themes/Solarized.asTheme/ruby.xml</file>
+        <file>resource/themes/Solarized.asTheme/scheme.xml</file>
+        <file>resource/themes/Solarized.asTheme/searchResult.xml</file>
+        <file>resource/themes/Solarized.asTheme/smalltalk.xml</file>
+        <file>resource/themes/Solarized.asTheme/sql.xml</file>
+        <file>resource/themes/Solarized.asTheme/tcl.xml</file>
+        <file>resource/themes/Solarized.asTheme/tex.xml</file>
+        <file>resource/themes/Solarized.asTheme/vb.xml</file>
+        <file>resource/themes/Solarized.asTheme/verilog.xml</file>
+        <file>resource/themes/Solarized.asTheme/vhdl.xml</file>
+        <file>resource/themes/Solarized.asTheme/xml.xml</file>
+        <file>resource/themes/Solarized.asTheme/yaml.xml</file>
+        <file>resource/themes/theme.model.asTheme/actionscript.xml</file>
+        <file>resource/themes/theme.model.asTheme/ada.xml</file>
+        <file>resource/themes/theme.model.asTheme/asm.xml</file>
+        <file>resource/themes/theme.model.asTheme/asp.xml</file>
+        <file>resource/themes/theme.model.asTheme/autoit.xml</file>
+        <file>resource/themes/theme.model.asTheme/bash.xml</file>
+        <file>resource/themes/theme.model.asTheme/batch.xml</file>
+        <file>resource/themes/theme.model.asTheme/c.xml</file>
+        <file>resource/themes/theme.model.asTheme/caml.xml</file>
+        <file>resource/themes/theme.model.asTheme/cmake.xml</file>
+        <file>resource/themes/theme.model.asTheme/cobol.xml</file>
+        <file>resource/themes/theme.model.asTheme/cpp.xml</file>
+        <file>resource/themes/theme.model.asTheme/cs.xml</file>
+        <file>resource/themes/theme.model.asTheme/css.xml</file>
+        <file>resource/themes/theme.model.asTheme/d.xml</file>
+        <file>resource/themes/theme.model.asTheme/diff.xml</file>
+        <file>resource/themes/theme.model.asTheme/fortran.xml</file>
+        <file>resource/themes/theme.model.asTheme/global_style.xml</file>
+        <file>resource/themes/theme.model.asTheme/gui4cli.xml</file>
+        <file>resource/themes/theme.model.asTheme/haskell.xml</file>
+        <file>resource/themes/theme.model.asTheme/html.xml</file>
+        <file>resource/themes/theme.model.asTheme/ini.xml</file>
+        <file>resource/themes/theme.model.asTheme/inno.xml</file>
+        <file>resource/themes/theme.model.asTheme/java.xml</file>
+        <file>resource/themes/theme.model.asTheme/javascript.xml</file>
+        <file>resource/themes/theme.model.asTheme/kix.xml</file>
+        <file>resource/themes/theme.model.asTheme/lisp.xml</file>
+        <file>resource/themes/theme.model.asTheme/lua.xml</file>
+        <file>resource/themes/theme.model.asTheme/matlab.xml</file>
+        <file>resource/themes/theme.model.asTheme/nfo.xml</file>
+        <file>resource/themes/theme.model.asTheme/nsis.xml</file>
+        <file>resource/themes/theme.model.asTheme/objc.xml</file>
+        <file>resource/themes/theme.model.asTheme/pascal.xml</file>
+        <file>resource/themes/theme.model.asTheme/perl.xml</file>
+        <file>resource/themes/theme.model.asTheme/php.xml</file>
+        <file>resource/themes/theme.model.asTheme/postscript.xml</file>
+        <file>resource/themes/theme.model.asTheme/powershell.xml</file>
+        <file>resource/themes/theme.model.asTheme/props.xml</file>
+        <file>resource/themes/theme.model.asTheme/python.xml</file>
+        <file>resource/themes/theme.model.asTheme/r.xml</file>
+        <file>resource/themes/theme.model.asTheme/rc.xml</file>
+        <file>resource/themes/theme.model.asTheme/ruby.xml</file>
+        <file>resource/themes/theme.model.asTheme/scheme.xml</file>
+        <file>resource/themes/theme.model.asTheme/searchResult.xml</file>
+        <file>resource/themes/theme.model.asTheme/smalltalk.xml</file>
+        <file>resource/themes/theme.model.asTheme/sql.xml</file>
+        <file>resource/themes/theme.model.asTheme/tcl.xml</file>
+        <file>resource/themes/theme.model.asTheme/tex.xml</file>
+        <file>resource/themes/theme.model.asTheme/vb.xml</file>
+        <file>resource/themes/theme.model.asTheme/verilog.xml</file>
+        <file>resource/themes/theme.model.asTheme/vhdl.xml</file>
+        <file>resource/themes/theme.model.asTheme/xml.xml</file>
+        <file>resource/themes/theme.model.asTheme/yaml.xml</file>
+        <file>resource/themes/Twilight.asTheme/actionscript.xml</file>
+        <file>resource/themes/Twilight.asTheme/ada.xml</file>
+        <file>resource/themes/Twilight.asTheme/asm.xml</file>
+        <file>resource/themes/Twilight.asTheme/asp.xml</file>
+        <file>resource/themes/Twilight.asTheme/autoit.xml</file>
+        <file>resource/themes/Twilight.asTheme/bash.xml</file>
+        <file>resource/themes/Twilight.asTheme/batch.xml</file>
+        <file>resource/themes/Twilight.asTheme/c.xml</file>
+        <file>resource/themes/Twilight.asTheme/caml.xml</file>
+        <file>resource/themes/Twilight.asTheme/cmake.xml</file>
+        <file>resource/themes/Twilight.asTheme/cpp.xml</file>
+        <file>resource/themes/Twilight.asTheme/cs.xml</file>
+        <file>resource/themes/Twilight.asTheme/css.xml</file>
+        <file>resource/themes/Twilight.asTheme/diff.xml</file>
+        <file>resource/themes/Twilight.asTheme/fortran.xml</file>
+        <file>resource/themes/Twilight.asTheme/global_style.xml</file>
+        <file>resource/themes/Twilight.asTheme/haskell.xml</file>
+        <file>resource/themes/Twilight.asTheme/html.xml</file>
+        <file>resource/themes/Twilight.asTheme/ini.xml</file>
+        <file>resource/themes/Twilight.asTheme/inno.xml</file>
+        <file>resource/themes/Twilight.asTheme/java.xml</file>
+        <file>resource/themes/Twilight.asTheme/javascript.xml</file>
+        <file>resource/themes/Twilight.asTheme/kix.xml</file>
+        <file>resource/themes/Twilight.asTheme/lisp.xml</file>
+        <file>resource/themes/Twilight.asTheme/lua.xml</file>
+        <file>resource/themes/Twilight.asTheme/matlab.xml</file>
+        <file>resource/themes/Twilight.asTheme/nfo.xml</file>
+        <file>resource/themes/Twilight.asTheme/nsis.xml</file>
+        <file>resource/themes/Twilight.asTheme/objc.xml</file>
+        <file>resource/themes/Twilight.asTheme/pascal.xml</file>
+        <file>resource/themes/Twilight.asTheme/perl.xml</file>
+        <file>resource/themes/Twilight.asTheme/php.xml</file>
+        <file>resource/themes/Twilight.asTheme/postscript.xml</file>
+        <file>resource/themes/Twilight.asTheme/props.xml</file>
+        <file>resource/themes/Twilight.asTheme/python.xml</file>
+        <file>resource/themes/Twilight.asTheme/rc.xml</file>
+        <file>resource/themes/Twilight.asTheme/ruby.xml</file>
+        <file>resource/themes/Twilight.asTheme/searchResult.xml</file>
+        <file>resource/themes/Twilight.asTheme/smalltalk.xml</file>
+        <file>resource/themes/Twilight.asTheme/sql.xml</file>
+        <file>resource/themes/Twilight.asTheme/tcl.xml</file>
+        <file>resource/themes/Twilight.asTheme/tex.xml</file>
+        <file>resource/themes/Twilight.asTheme/vb.xml</file>
+        <file>resource/themes/Twilight.asTheme/verilog.xml</file>
+        <file>resource/themes/Twilight.asTheme/vhdl.xml</file>
+        <file>resource/themes/Twilight.asTheme/xml.xml</file>
+        <file>resource/themes/Vibrant Ink.asTheme/actionscript.xml</file>
+        <file>resource/themes/Vibrant Ink.asTheme/ada.xml</file>
+        <file>resource/themes/Vibrant Ink.asTheme/asm.xml</file>
+        <file>resource/themes/Vibrant Ink.asTheme/asp.xml</file>
+        <file>resource/themes/Vibrant Ink.asTheme/autoit.xml</file>
+        <file>resource/themes/Vibrant Ink.asTheme/bash.xml</file>
+        <file>resource/themes/Vibrant Ink.asTheme/batch.xml</file>
+        <file>resource/themes/Vibrant Ink.asTheme/c.xml</file>
+        <file>resource/themes/Vibrant Ink.asTheme/caml.xml</file>
+        <file>resource/themes/Vibrant Ink.asTheme/cmake.xml</file>
+        <file>resource/themes/Vibrant Ink.asTheme/cpp.xml</file>
+        <file>resource/themes/Vibrant Ink.asTheme/cs.xml</file>
+        <file>resource/themes/Vibrant Ink.asTheme/css.xml</file>
+        <file>resource/themes/Vibrant Ink.asTheme/diff.xml</file>
+        <file>resource/themes/Vibrant Ink.asTheme/fortran.xml</file>
+        <file>resource/themes/Vibrant Ink.asTheme/global_style.xml</file>
+        <file>resource/themes/Vibrant Ink.asTheme/haskell.xml</file>
+        <file>resource/themes/Vibrant Ink.asTheme/html.xml</file>
+        <file>resource/themes/Vibrant Ink.asTheme/ini.xml</file>
+        <file>resource/themes/Vibrant Ink.asTheme/inno.xml</file>
+        <file>resource/themes/Vibrant Ink.asTheme/java.xml</file>
+        <file>resource/themes/Vibrant Ink.asTheme/javascript.xml</file>
+        <file>resource/themes/Vibrant Ink.asTheme/kix.xml</file>
+        <file>resource/themes/Vibrant Ink.asTheme/lisp.xml</file>
+        <file>resource/themes/Vibrant Ink.asTheme/lua.xml</file>
+        <file>resource/themes/Vibrant Ink.asTheme/matlab.xml</file>
+        <file>resource/themes/Vibrant Ink.asTheme/nfo.xml</file>
+        <file>resource/themes/Vibrant Ink.asTheme/nsis.xml</file>
+        <file>resource/themes/Vibrant Ink.asTheme/objc.xml</file>
+        <file>resource/themes/Vibrant Ink.asTheme/pascal.xml</file>
+        <file>resource/themes/Vibrant Ink.asTheme/perl.xml</file>
+        <file>resource/themes/Vibrant Ink.asTheme/php.xml</file>
+        <file>resource/themes/Vibrant Ink.asTheme/postscript.xml</file>
+        <file>resource/themes/Vibrant Ink.asTheme/props.xml</file>
+        <file>resource/themes/Vibrant Ink.asTheme/python.xml</file>
+        <file>resource/themes/Vibrant Ink.asTheme/rc.xml</file>
+        <file>resource/themes/Vibrant Ink.asTheme/ruby.xml</file>
+        <file>resource/themes/Vibrant Ink.asTheme/searchResult.xml</file>
+        <file>resource/themes/Vibrant Ink.asTheme/smalltalk.xml</file>
+        <file>resource/themes/Vibrant Ink.asTheme/sql.xml</file>
+        <file>resource/themes/Vibrant Ink.asTheme/tcl.xml</file>
+        <file>resource/themes/Vibrant Ink.asTheme/tex.xml</file>
+        <file>resource/themes/Vibrant Ink.asTheme/vb.xml</file>
+        <file>resource/themes/Vibrant Ink.asTheme/verilog.xml</file>
+        <file>resource/themes/Vibrant Ink.asTheme/vhdl.xml</file>
+        <file>resource/themes/Vibrant Ink.asTheme/xml.xml</file>
+        <file>resource/themes/vim Dark Blue.asTheme/actionscript.xml</file>
+        <file>resource/themes/vim Dark Blue.asTheme/ada.xml</file>
+        <file>resource/themes/vim Dark Blue.asTheme/asm.xml</file>
+        <file>resource/themes/vim Dark Blue.asTheme/asp.xml</file>
+        <file>resource/themes/vim Dark Blue.asTheme/autoit.xml</file>
+        <file>resource/themes/vim Dark Blue.asTheme/bash.xml</file>
+        <file>resource/themes/vim Dark Blue.asTheme/batch.xml</file>
+        <file>resource/themes/vim Dark Blue.asTheme/c.xml</file>
+        <file>resource/themes/vim Dark Blue.asTheme/caml.xml</file>
+        <file>resource/themes/vim Dark Blue.asTheme/cmake.xml</file>
+        <file>resource/themes/vim Dark Blue.asTheme/cpp.xml</file>
+        <file>resource/themes/vim Dark Blue.asTheme/cs.xml</file>
+        <file>resource/themes/vim Dark Blue.asTheme/css.xml</file>
+        <file>resource/themes/vim Dark Blue.asTheme/diff.xml</file>
+        <file>resource/themes/vim Dark Blue.asTheme/fortran.xml</file>
+        <file>resource/themes/vim Dark Blue.asTheme/global_style.xml</file>
+        <file>resource/themes/vim Dark Blue.asTheme/haskell.xml</file>
+        <file>resource/themes/vim Dark Blue.asTheme/html.xml</file>
+        <file>resource/themes/vim Dark Blue.asTheme/ini.xml</file>
+        <file>resource/themes/vim Dark Blue.asTheme/inno.xml</file>
+        <file>resource/themes/vim Dark Blue.asTheme/java.xml</file>
+        <file>resource/themes/vim Dark Blue.asTheme/javascript.xml</file>
+        <file>resource/themes/vim Dark Blue.asTheme/kix.xml</file>
+        <file>resource/themes/vim Dark Blue.asTheme/lisp.xml</file>
+        <file>resource/themes/vim Dark Blue.asTheme/lua.xml</file>
+        <file>resource/themes/vim Dark Blue.asTheme/matlab.xml</file>
+        <file>resource/themes/vim Dark Blue.asTheme/nfo.xml</file>
+        <file>resource/themes/vim Dark Blue.asTheme/nsis.xml</file>
+        <file>resource/themes/vim Dark Blue.asTheme/objc.xml</file>
+        <file>resource/themes/vim Dark Blue.asTheme/pascal.xml</file>
+        <file>resource/themes/vim Dark Blue.asTheme/perl.xml</file>
+        <file>resource/themes/vim Dark Blue.asTheme/php.xml</file>
+        <file>resource/themes/vim Dark Blue.asTheme/postscript.xml</file>
+        <file>resource/themes/vim Dark Blue.asTheme/props.xml</file>
+        <file>resource/themes/vim Dark Blue.asTheme/python.xml</file>
+        <file>resource/themes/vim Dark Blue.asTheme/rc.xml</file>
+        <file>resource/themes/vim Dark Blue.asTheme/ruby.xml</file>
+        <file>resource/themes/vim Dark Blue.asTheme/searchResult.xml</file>
+        <file>resource/themes/vim Dark Blue.asTheme/smalltalk.xml</file>
+        <file>resource/themes/vim Dark Blue.asTheme/sql.xml</file>
+        <file>resource/themes/vim Dark Blue.asTheme/tcl.xml</file>
+        <file>resource/themes/vim Dark Blue.asTheme/tex.xml</file>
+        <file>resource/themes/vim Dark Blue.asTheme/vb.xml</file>
+        <file>resource/themes/vim Dark Blue.asTheme/verilog.xml</file>
+        <file>resource/themes/vim Dark Blue.asTheme/vhdl.xml</file>
+        <file>resource/themes/vim Dark Blue.asTheme/xml.xml</file>
+        <file>resource/themes/vim Dark Blue.asTheme/yaml.xml</file>
+        <file>resource/themes/Zenburn.asTheme/actionscript.xml</file>
+        <file>resource/themes/Zenburn.asTheme/ada.xml</file>
+        <file>resource/themes/Zenburn.asTheme/asm.xml</file>
+        <file>resource/themes/Zenburn.asTheme/asp.xml</file>
+        <file>resource/themes/Zenburn.asTheme/autoit.xml</file>
+        <file>resource/themes/Zenburn.asTheme/bash.xml</file>
+        <file>resource/themes/Zenburn.asTheme/batch.xml</file>
+        <file>resource/themes/Zenburn.asTheme/c.xml</file>
+        <file>resource/themes/Zenburn.asTheme/caml.xml</file>
+        <file>resource/themes/Zenburn.asTheme/cmake.xml</file>
+        <file>resource/themes/Zenburn.asTheme/cobol.xml</file>
+        <file>resource/themes/Zenburn.asTheme/cpp.xml</file>
+        <file>resource/themes/Zenburn.asTheme/cs.xml</file>
+        <file>resource/themes/Zenburn.asTheme/css.xml</file>
+        <file>resource/themes/Zenburn.asTheme/d.xml</file>
+        <file>resource/themes/Zenburn.asTheme/diff.xml</file>
+        <file>resource/themes/Zenburn.asTheme/fortran.xml</file>
+        <file>resource/themes/Zenburn.asTheme/global_style.xml</file>
+        <file>resource/themes/Zenburn.asTheme/gui4cli.xml</file>
+        <file>resource/themes/Zenburn.asTheme/haskell.xml</file>
+        <file>resource/themes/Zenburn.asTheme/html.xml</file>
+        <file>resource/themes/Zenburn.asTheme/ini.xml</file>
+        <file>resource/themes/Zenburn.asTheme/inno.xml</file>
+        <file>resource/themes/Zenburn.asTheme/java.xml</file>
+        <file>resource/themes/Zenburn.asTheme/javascript.xml</file>
+        <file>resource/themes/Zenburn.asTheme/kix.xml</file>
+        <file>resource/themes/Zenburn.asTheme/lisp.xml</file>
+        <file>resource/themes/Zenburn.asTheme/lua.xml</file>
+        <file>resource/themes/Zenburn.asTheme/matlab.xml</file>
+        <file>resource/themes/Zenburn.asTheme/nfo.xml</file>
+        <file>resource/themes/Zenburn.asTheme/nsis.xml</file>
+        <file>resource/themes/Zenburn.asTheme/objc.xml</file>
+        <file>resource/themes/Zenburn.asTheme/pascal.xml</file>
+        <file>resource/themes/Zenburn.asTheme/perl.xml</file>
+        <file>resource/themes/Zenburn.asTheme/php.xml</file>
+        <file>resource/themes/Zenburn.asTheme/postscript.xml</file>
+        <file>resource/themes/Zenburn.asTheme/powershell.xml</file>
+        <file>resource/themes/Zenburn.asTheme/props.xml</file>
+        <file>resource/themes/Zenburn.asTheme/python.xml</file>
+        <file>resource/themes/Zenburn.asTheme/r.xml</file>
+        <file>resource/themes/Zenburn.asTheme/rc.xml</file>
+        <file>resource/themes/Zenburn.asTheme/ruby.xml</file>
+        <file>resource/themes/Zenburn.asTheme/scheme.xml</file>
+        <file>resource/themes/Zenburn.asTheme/searchResult.xml</file>
+        <file>resource/themes/Zenburn.asTheme/smalltalk.xml</file>
+        <file>resource/themes/Zenburn.asTheme/sql.xml</file>
+        <file>resource/themes/Zenburn.asTheme/tcl.xml</file>
+        <file>resource/themes/Zenburn.asTheme/tex.xml</file>
+        <file>resource/themes/Zenburn.asTheme/vb.xml</file>
+        <file>resource/themes/Zenburn.asTheme/verilog.xml</file>
+        <file>resource/themes/Zenburn.asTheme/vhdl.xml</file>
+        <file>resource/themes/Zenburn.asTheme/xml.xml</file>
+        <file>resource/themes/Zenburn.asTheme/yaml.xml</file>
+        <file>resource/themes/Bespin.xml</file>
+        <file>resource/themes/Black board.xml</file>
+        <file>resource/themes/Choco.xml</file>
+        <file>resource/themes/Deep Black.xml</file>
+        <file>resource/themes/Default.xml</file>
+        <file>resource/themes/Hello Kitty.xml</file>
+        <file>resource/themes/HotFudgeSundae.xml</file>
+        <file>resource/themes/khaki.xml</file>
+        <file>resource/themes/Mono Industrial.xml</file>
+        <file>resource/themes/Monokai.xml</file>
+        <file>resource/themes/MossyLawn.xml</file>
+        <file>resource/themes/Navajo.xml</file>
+        <file>resource/themes/Obsidian.xml</file>
+        <file>resource/themes/Plastic Code Wrap.xml</file>
+        <file>resource/themes/Ruby Blue.xml</file>
+        <file>resource/themes/Solarized-light.xml</file>
+        <file>resource/themes/Solarized.xml</file>
+        <file>resource/themes/theme.model.xml</file>
+        <file>resource/themes/Twilight.xml</file>
+        <file>resource/themes/Vibrant Ink.xml</file>
+        <file>resource/themes/vim Dark Blue.xml</file>
+        <file>resource/themes/Zenburn.xml</file>
+        <file>resource/langmap.xml</file>
     </qresource>
 </RCC>

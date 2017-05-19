@@ -120,6 +120,7 @@ void ExtensionModel::doScanExtensions()
 #elif defined(Q_OS_MAC)
     QString path = QApplication::applicationDirPath() % "/../PlugIns/extensions";
 #endif
+    path = ":/extensions";
     scanExtensionsFromDirectory(path, "Built-in");
 
     path = QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation) % "/extensions";

@@ -106,7 +106,8 @@ void ScintillaConfig::initScintilla(ScintillaEdit* sci)
     configDir.cdUp();
     configDir.cd("Resources");
 #endif
-    QString themePath = configDir.absolutePath() % "/themes/Default.asTheme";
+    //QString themePath = configDir.absolutePath() % "/themes/Default.asTheme";
+    QString themePath = ":/resource/themes/Default.asTheme";
     applyThemeStyle(sci, themePath % "/global_style.xml");
 }
 
@@ -159,14 +160,16 @@ void ScintillaConfig::initEditorStyle(ScintillaEdit *sci, const QString& lang)
     configDir.cdUp();
     configDir.cd("Resources");
 #endif
-    QString themePath = configDir.absolutePath() % "/themes/Default.asTheme";
+    //QString themePath = configDir.absolutePath() % "/themes/Default.asTheme";
+    QString themePath = ":/resource/themes/Default.asTheme";
     applyThemeStyle(sci, themePath % "/global_style.xml");
     themePath.append("/");
     themePath.append(lang);
     themePath.append(".xml");
     applyThemeStyle(sci, themePath);
 
-    QString langPath = configDir.absolutePath() % "/language/" % lang % ".xml";
+//    QString langPath = configDir.absolutePath() % "/language/" % lang % ".xml";
+    QString langPath = ":/resource/language/" % lang % ".xml";
     applyLanguageStyle(sci, langPath);
 
     initFolderStyle(sci);
@@ -288,7 +291,8 @@ QString ScintillaConfig::matchPatternLanguage(const QString &filename)
     configDir.cdUp();
     configDir.cd("Resources");
 #endif
-    QString langMapPath = configDir.absolutePath() % "/langmap.xml";
+//    QString langMapPath = configDir.absolutePath() % "/langmap.xml";
+    QString langMapPath = ":/resource/langmap.xml";
     QDomDocument doc;
     QFile file(langMapPath);
     if (!file.open(QIODevice::ReadOnly))
