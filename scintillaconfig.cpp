@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "settings.h"
 #include "ScintillaEdit.h"
 #include "scintillaconfig.h"
 
@@ -107,7 +108,7 @@ void ScintillaConfig::initScintilla(ScintillaEdit* sci)
     configDir.cd("Resources");
 #endif
     //QString themePath = configDir.absolutePath() % "/themes/Default.asTheme";
-    QString themePath = ":/resource/themes/Default.asTheme";
+    QString themePath = ":/resource/themes/" % g_settings->sourceViewTheme() % ".asTheme";
     applyThemeStyle(sci, themePath % "/global_style.xml");
 }
 
@@ -161,7 +162,7 @@ void ScintillaConfig::initEditorStyle(ScintillaEdit *sci, const QString& lang)
     configDir.cd("Resources");
 #endif
     //QString themePath = configDir.absolutePath() % "/themes/Default.asTheme";
-    QString themePath = ":/resource/themes/Default.asTheme";
+    QString themePath = ":/resource/themes/" % g_settings->sourceViewTheme() % ".asTheme";
     applyThemeStyle(sci, themePath % "/global_style.xml");
     themePath.append("/");
     themePath.append(lang);
@@ -252,8 +253,8 @@ void ScintillaConfig::applyThemeStyle(ScintillaEdit *sci, const QString &themePa
         {
             QFontDatabase database;
             QStringList families = database.families();
-            if (families.contains("Source Code Pro"))
-                sci->styleSetFont(id, "Source Code Pro");
+            if (families.contains(g_settings->sourceViewFontFamily()))
+                sci->styleSetFont(id, g_settings->sourceViewFontFamily().toStdString().c_str());
             else
 #if defined(Q_OS_MAC)
                 sci->styleSetFont(id, "Menlo");

@@ -145,6 +145,12 @@ public:
     const QString & windbgPath() const;
     void setWindbgPath(const QString &windbgPath);
 
+    const QString & sourceViewFontFamily() const;
+    void setSourceViewFontFamily(const QString &sourceViewFontFamily);
+
+    const QString & sourceViewTheme() const;
+    void setSourceViewTheme(const QString &sourceViewTheme);
+
 private:
     bool m_inMemoryDatabase;
     bool m_searchOrFitler;
@@ -163,6 +169,8 @@ private:
     QString m_cecId;
     QString m_cecPassword;
     QString m_windbgPath;
+    QString m_sourceViewFontFamily;
+    QString m_sourceViewTheme;
 };
 
 extern Settings *g_settings;

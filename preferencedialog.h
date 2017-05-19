@@ -26,6 +26,10 @@ private slots:
 
     void on_btnSelectWinDBGPath_clicked();
 
+    void on_fontComboBox_currentFontChanged(const QFont &f);
+
+    void on_cbSourceViewTheme_currentIndexChanged(const QString &theme);
+
 private:
     Ui::PreferenceDialog *ui;
 };

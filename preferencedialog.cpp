@@ -23,6 +23,22 @@ PreferenceDialog::PreferenceDialog(QWidget *parent) :
 #if defined(Q_OS_WIN)
     ui->edtWinDBG->setText(g_settings->windbgPath());
 #endif
+    ui->fontComboBox->setCurrentFont(QFont(g_settings->sourceViewFontFamily()));
+
+
+    QDir dir(":/resource/themes");
+    dir.setFilter(QDir::Dirs | QDir::NoSymLinks);
+    dir.setSorting(QDir::Name);
+    QStringList filters;
+    filters << "*.asTheme";
+    dir.setNameFilters(filters);
+
+    QFileInfoList list = dir.entryInfoList();
+    for( auto fi : list)
+    {
+        ui->cbSourceViewTheme->addItem(fi.baseName());
+    }
+    ui->cbSourceViewTheme->setCurrentText(g_settings->sourceViewTheme());
 }
 
 PreferenceDialog::~PreferenceDialog()
@@ -34,6 +50,8 @@ void PreferenceDialog::accept()
 {
     g_settings->setTemporaryDirectory(ui->edtTemporaryDirectory->text());
     g_settings->setSourceDirectory(ui->edtSourceCodeDirectory->text());
+    g_settings->setSourceViewFontFamily(ui->fontComboBox->currentText());
+    g_settings->setSourceViewTheme(ui->cbSourceViewTheme->currentText());
     g_settings->setCecId(ui->edtCECId->text());
     g_settings->setCecPassword(ui->edtCECPassword->text());
 #if defined(Q_OS_WIN)
@@ -115,4 +133,20 @@ void PreferenceDialog::on_btnSelectWinDBGPath_clicked()
     {
         ui->edtWinDBG->setText(path);
     }
+}
+
+void PreferenceDialog::on_fontComboBox_currentFontChanged(const QFont &f)
+{
+#if defined(Q_OS_MAC)
+    g_settings->setSourceViewFontFamily(f.family());
+    g_settings->save();
+#endif
+}
+
+void PreferenceDialog::on_cbSourceViewTheme_currentIndexChanged(const QString &theme)
+{
+#if defined(Q_OS_MAC)
+    g_settings->setSourceViewTheme(theme);
+    g_settings->save();
+#endif
 }

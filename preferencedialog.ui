@@ -6,14 +6,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>574</width>
-    <height>244</height>
+    <width>650</width>
+    <height>381</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Preference</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0,0,0,0,0,0,0,0,0,0">
+  <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0">
    <property name="spacing">
     <number>1</number>
    </property>
@@ -79,6 +79,30 @@
       </widget>
      </item>
     </layout>
+   </item>
+   <item>
+    <widget class="QLabel" name="label_3">
+     <property name="text">
+      <string>Source View Font:</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QFontComboBox" name="fontComboBox">
+     <property name="fontFilters">
+      <set>QFontComboBox::MonospacedFonts</set>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="label_6">
+     <property name="text">
+      <string>Source View Theme:</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QComboBox" name="cbSourceViewTheme"/>
    </item>
    <item>
     <widget class="QLabel" name="label_4">
