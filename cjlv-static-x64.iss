@@ -6,8 +6,8 @@
 ; Do not use the same AppId value in installers for other applications.
 ; (To generate a new GUID, click Tools | Generate GUID inside the IDE.)
 AppId={{889D6462-F830-4294-B564-3824442FD6EC}
-AppName=Cisco Jabber Log Viewer 1.1 - x64
-AppVerName=Cisco Jabber Log Viewer 1.1 - x64
+AppName=Cisco Jabber Log Viewer 1.2 - x64
+AppVerName=Cisco Jabber Log Viewer 1.2 - x64
 AppPublisher=fyang3@cisco.com
 AppPublisherURL=http://www.cisco.com/
 AppSupportURL=http://www.cisco.com/
@@ -19,10 +19,10 @@ OutputBaseFilename=CiscoJabberLogViewerSetup_x64
 SolidCompression=true
 Compression=lzma/Ultra
 InternalCompressLevel=Ultra
-VersionInfoVersion=1.1.0.1
+VersionInfoVersion=1.2.0.1
 VersionInfoCompany=Cisco
-VersionInfoDescription=Cisco Jabber Log Viewer 1.1 - x64
-VersionInfoTextVersion=Cisco Jabber Log Viewer 1.1 - x64
+VersionInfoDescription=Cisco Jabber Log Viewer 1.2 - x64
+VersionInfoTextVersion=Cisco Jabber Log Viewer 1.2 - x64
 VersionInfoCopyright=Copyright (c) 2016 Cisco.com. All rights reserved.
 AppCopyright=Copyright (C) 2016 Cisco.com. All rights reserved.
 PrivilegesRequired=none
@@ -31,8 +31,8 @@ AllowUNCPath=false
 ShowLanguageDialog=auto
 WizardImageFile=compiler:WizModernImage-IS.bmp
 WizardSmallImageFile=compiler:WizModernSmallImage-IS.bmp
-AppVersion=1.1.0.1
-UninstallDisplayName=Cisco Jabber Log Viewer 1.1 - x64
+AppVersion=1.2.0.1
+UninstallDisplayName=Cisco Jabber Log Viewer 1.2 - x64
 ChangesAssociations=true
 ChangesEnvironment=true
 DefaultGroupName=Cisco Jabber Log Viewer
@@ -48,11 +48,6 @@ Name: desktopicon; Description: {cm:CreateDesktopIcon}; GroupDescription: {cm:Ad
 
 [Files]
 Source: "CJLV.exe"; DestDir: "{app}"
-Source: "language\*"; DestDir: "{app}\language"; Flags: recursesubdirs
-Source: "themes\*"; DestDir: "{app}\themes"; Flags: recursesubdirs
-Source: "extensions\*"; DestDir: "{app}\extensions"; Flags: recursesubdirs
-Source: "Fonts\*"; DestDir: "{app}\Fonts"; Flags: recursesubdirs
-Source: "langmap.xml"; DestDir: "{app}"
 Source: "Everything.dll"; DestDir: "{app}"
 Source: "Everything.exe"; DestDir: "{app}"
 
