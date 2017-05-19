@@ -16,6 +16,20 @@ TabWidget::TabWidget(QWidget *parent)
     connect(this, &QTabWidget::currentChanged, this, &TabWidget::onCurrentChanged);
 }
 
+void TabWidget::openZipBundle(const QString &zipBundle, const QString &crashInfo)
+{
+    int index = findTab(zipBundle);
+    if (index >= 0)
+    {
+        setCurrentIndex(index);
+        return;
+    }
+    LogView* v = new LogView(this);
+    v->openZipBundle(zipBundle, crashInfo);
+    index = addTab(v, v->windowTitle(), zipBundle);
+    setTabIcon(index, QIcon(":/image/open-zip-file.png"));
+}
+
 void TabWidget::openZipBundle(const QString &path)
 {
     int index = findTab(path);

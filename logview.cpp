@@ -128,6 +128,12 @@ LogView::~LogView()
     }
 }
 
+void LogView::openZipBundle(const QString &zipBundle, const QString &crashInfo)
+{
+    m_crashInfo = crashInfo;
+    openZipBundle(zipBundle);
+}
+
 void LogView::openZipBundle(const QString &path)
 {
     m_path = path;
@@ -578,6 +584,19 @@ MainWindow *LogView::getMainWindow()
 
 void LogView::openCrashReport()
 {
+    if (QFile::exists(m_crashInfo))
+    {
+        showCodeEditorPane();
+        if (g_settings->multiMonitorEnabled())
+        {
+            g_sourceWindow->getSourceViewTabWidget()->gotoLine(m_path, m_crashInfo);
+        }
+        else
+        {
+            m_codeEditorTabWidget->gotoLine(m_crashInfo);
+        }
+    }
+
     QString dirPath;
     if (QFileInfo(m_path).isDir())
         dirPath = m_path;

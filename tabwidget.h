@@ -11,6 +11,7 @@ class TabWidget : public QTabWidget
 public:
     explicit TabWidget(QWidget *parent = 0);
 
+    void openZipBundle(const QString& zipBundle, const QString& crashInfo);
     void openZipBundle(const QString& path);
     void openRawLogFile(const QStringList& paths);
     void openFolder(const QString& path, bool installed);

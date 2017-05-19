@@ -40,6 +40,9 @@ private slots:
     void onOpenPRTViaListWidgetContextMenuItem();
     void onListWidgetCustomContextMenuRequested(const QPoint &pos);
     void onClipboardChanged();
+    void onCrashInfoRequestFinished();
+    void onCrashInfoRequestReadyRead();
+    void onCrashInfoRequestRedirected(const QUrl &url);
     void onPRTListFinished();
     void onPRTListReadyRead();
     void onPRTTrackingSystemLoginFinished();
@@ -128,6 +131,8 @@ private:
     QByteArray m_prtInfo;
     QByteArray m_prtTrackingSystemLoginInfo;
     QByteArray m_prtList;
+    QByteArray m_crashInfo;
+    QString m_crashUrl;
     QMap<QString, QMenu*> m_extensionMenu;
 
     void dragEnterEvent(QDragEnterEvent *e);
@@ -141,6 +146,7 @@ private:
     void createDockWindows();
     void getPRTList(const QString& platform);
     void getJabberWinPRTInfo(const QString& id);
+    void getCrashInfo(const QString& id, const QString& fileDirectory, const QString& fileName, const QString& platform);
 };
 
 #if defined(Q_OS_WIN)

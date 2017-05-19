@@ -20,7 +20,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow),
     thumbbar(nullptr),
     m_nam(new QNetworkAccessManager(this)),
-    m_prt(nullptr)
+    m_prt(nullptr),
+    m_crashInfo(nullptr)
 {
     ui->setupUi(this);
     g_mainTabWidget = ui->tabWidget;
@@ -62,6 +63,9 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     delete ui;
+    QDir dir(g_settings->temporaryDirectory());
+    dir.removeRecursively();
+    dir.mkpath(g_settings->temporaryDirectory());
 }
 
 void MainWindow::openLogs(const QStringList &logs)
@@ -198,6 +202,41 @@ void MainWindow::onClipboardChanged()
     }
 }
 
+void MainWindow::onCrashInfoRequestFinished()
+{
+    QNetworkReply* reply = qobject_cast<QNetworkReply*>(sender());
+    reply->deleteLater();
+    // save to file and open it
+    QString tempDir = g_settings->temporaryDirectory();
+    if (tempDir.isEmpty())
+    {
+        tempDir = QStandardPaths::writableLocation(QStandardPaths::TempLocation) % "/CiscoJabberLogs";
+    }
+    QDir dir(tempDir);
+    if (!dir.exists())
+        dir.mkpath(tempDir);
+
+    QFile f(tempDir % "/" % m_crashUrl.mid(m_crashUrl.lastIndexOf(QChar('/')),-1));
+    f.open(QIODevice::WriteOnly | QIODevice::Truncate);
+    f.write(m_crashInfo);
+    f.close();
+}
+
+void MainWindow::onCrashInfoRequestReadyRead()
+{
+    QNetworkReply* reply = qobject_cast<QNetworkReply*>(sender());
+    int statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+    if (statusCode >= 200 && statusCode < 300)
+    {
+        m_crashInfo.append(reply->readAll());
+    }
+}
+
+void MainWindow::onCrashInfoRequestRedirected(const QUrl &url)
+{
+    m_crashUrl = url.toString();
+}
+
 void MainWindow::onPRTListFinished()
 {
     QNetworkReply* reply = qobject_cast<QNetworkReply*>(sender());
@@ -315,7 +354,24 @@ void MainWindow::onPRTDownloadFinished()
     reply->deleteLater();
     closeProgressDialog();
     m_prt->close();
-    ui->tabWidget->openZipBundle(m_prt->fileName());
+
+    if (!m_crashUrl.isEmpty())
+    {
+        QString tempDir = g_settings->temporaryDirectory();
+        if (tempDir.isEmpty())
+        {
+            tempDir = QStandardPaths::writableLocation(QStandardPaths::TempLocation) % "/CiscoJabberLogs";
+        }
+        QDir dir(tempDir);
+        if (!dir.exists())
+            dir.mkpath(tempDir);
+
+        QString crashInfo = tempDir % "/" % m_crashUrl.mid(m_crashUrl.lastIndexOf(QChar('/')),-1);
+        ui->tabWidget->openZipBundle(m_prt->fileName(), crashInfo);
+    }
+    else
+        ui->tabWidget->openZipBundle(m_prt->fileName());
+    m_prt->deleteLater();
 }
 
 void MainWindow::onPRTDownloadReadyRead()
@@ -334,6 +390,8 @@ void MainWindow::onPRTInfoRequestFinished()
     QNetworkReply* reply = qobject_cast<QNetworkReply*>(sender());
     reply->deleteLater();
 
+    m_crashUrl.clear();
+
     QJsonDocument doc = QJsonDocument::fromJson(m_prtInfo);
     if (!doc.isObject())
     {
@@ -343,12 +401,10 @@ void MainWindow::onPRTInfoRequestFinished()
 
     QJsonObject docObj = doc.object();
 
-#if defined(Q_OS_WIN)
     QJsonValue tagName = docObj["tagName"];
     bool isCrash = false;
     if (tagName.isString() && tagName.toString() == "Crash")
         isCrash = true;
-#endif
 
     QJsonValue emailsObj = docObj["emails"];
     if (!emailsObj.isArray())
@@ -421,6 +477,21 @@ void MainWindow::onPRTInfoRequestFinished()
                 qDebug() << "zip bundle is expected." << name.toString();
                 continue;
             }
+
+            if (isCrash)
+            {
+                if (docObj["platform"].isString() && docObj["platform"].toString() != "Windows")
+                {
+                    if (QMessageBox::question(this, tr("Found PRT with crash information"),
+                                          tr("It seems to be a crash PRT, do you want to download crash information?"),
+                                          QMessageBox::Yes | QMessageBox::No,
+                                          QMessageBox::Yes) == QMessageBox::Yes)
+                    {
+                        getCrashInfo(docObj["id"].toString(), path.toString(), name.toString(), docObj["platform"].toString());
+                    }
+                }
+            }
+
             QString u = QString("http://prt.jabberqa.cisco.com/download?path=%1&name=%2").arg(path.toString()).arg(name.toString());
             downloadPRT(u);
             return;
@@ -574,8 +645,7 @@ void MainWindow::on_actionOpenZipLogBundle_triggered()
     QFileInfo fi(fileNames.at(0));
     g_settings->setLastOpenedDirectory(fi.absolutePath());
 
-    std::for_each(fileNames.begin(), fileNames.end(),
-                  std::bind(&TabWidget::openZipBundle, ui->tabWidget, std::placeholders::_1));
+    std::for_each(fileNames.begin(), fileNames.end(),[&](const QString& p){ ui->tabWidget->openZipBundle(p);});
 }
 
 void MainWindow::on_actionOpenRawLogFile_triggered()
@@ -729,6 +799,30 @@ void MainWindow::getJabberWinPRTInfo(const QString &id)
             this, SLOT(onPRTRequestError(QNetworkReply::NetworkError)));
     connect(reply, SIGNAL(finished()), this, SLOT(onJabberWinPRTInfoRequestFinished()));
     showProgressDialog(QString(tr("Getting Jabber Win PRT information of ID %1...")).arg(id));
+}
+
+void MainWindow::getCrashInfo(const QString &id, const QString &fileDirectory, const QString &fileName, const QString &platform)
+{
+    QUrl url("http://prt.jabberqa.cisco.com/analysis");
+    QUrlQuery query;
+    query.addQueryItem("conversation_id", id);
+    query.addQueryItem("file_directory", fileDirectory);
+    query.addQueryItem("file_name", fileName);
+    query.addQueryItem("platform", platform);
+    query.addQueryItem("user", g_settings->cecId());
+    query.addQueryItem("cpve", "false");
+    query.addQueryItem("crypto", "false");
+    url.setQuery(query);
+    QNetworkRequest req(url);
+    req.setAttribute(QNetworkRequest::FollowRedirectsAttribute, QVariant(true));
+    m_crashInfo.clear();
+
+    QNetworkReply* reply = m_nam->get(req);
+    connect(reply, SIGNAL(readyRead()), this, SLOT(onCrashInfoRequestReadyRead()));
+    connect(reply, SIGNAL(error(QNetworkReply::NetworkError)),
+            this, SLOT(onPRTRequestError(QNetworkReply::NetworkError)));
+    connect(reply, SIGNAL(finished()), this, SLOT(onCrashInfoRequestFinished()));
+    connect(reply, SIGNAL(redirected(const QUrl&)), this, SLOT(onCrashInfoRequestRedirected(const QUrl&)));
 }
 
 void MainWindow::showProgressDialog(const QString &title)

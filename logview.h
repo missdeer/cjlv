@@ -26,6 +26,7 @@ public:
     LogView(QWidget *parent = NULL);
     ~LogView();
 
+    void openZipBundle(const QString& zipBundle, const QString& crashInfo);
     void openZipBundle(const QString& path);
     void openRawLogFile(const QStringList& paths);
     void openFolder(const QString& path);
@@ -119,6 +120,8 @@ private:
 
     QModelIndex m_beginAnchor;
     QModelIndex m_endAnchor;
+
+    QString m_crashInfo;
 
     bool event(QEvent *e) Q_DECL_OVERRIDE;
 
