@@ -99,9 +99,9 @@ macx: {
         #copy_themes.commands = cp -R \"$$PWD/resource/themes\" \"$${TARGET}.app/Contents/Resources\"
         #copy_language.commands = cp -R \"$$PWD/resource/language\" \"$${TARGET}.app/Contents/Resources\"
         #copy_langmap.commands = cp \"$$PWD/resource/langmap.xml\" \"$${TARGET}.app/Contents/Resources/\"
-        copy_fonts.commands = cp -R \"$$PWD/Fonts\" \"$${TARGET}.app/Contents/Resources/\" 
+        #copy_fonts.commands = cp -R \"$$PWD/Fonts\" \"$${TARGET}.app/Contents/Resources/\"
 
-        deploy.depends += copy_fonts
+        #deploy.depends += copy_fonts
         deploy.commands += $$MACDEPLOYQT \"$${OUT_PWD}/$${TARGET}.app\" -appstore-compliant
 
         APPCERT = Developer ID Application: Fan Yang (Y73SBCN2CG)
@@ -112,7 +112,7 @@ macx: {
         codesign_bundle.commands = codesign -s \"$${APPCERT}\" -v -f --timestamp=none --deep \"$${OUT_PWD}/$${TARGET}.app\"
         makedmg.depends += codesign_bundle
         makedmg.commands = hdiutil create -srcfolder \"$${TARGET}.app\" -volname \"$${TARGET}\" -format UDBZ \"$${TARGET}.dmg\" -ov -scrub -stretch 2g
-        QMAKE_EXTRA_TARGETS +=  copy_fonts deploy codesign_bundle makedmg
+        QMAKE_EXTRA_TARGETS +=  deploy codesign_bundle makedmg
     }
 }
 
@@ -146,7 +146,7 @@ win32: {
         #copy_themes.commands = '$(COPY_DIR) $$shell_path($$PWD/resource/themes) $$shell_path($$OUT_PWD/Release/)'
         #copy_language.commands = '$(COPY_DIR) $$shell_path($$PWD/resource/language) $$shell_path($$OUT_PWD/Release/)'
         #copy_langmap.commands = '$(COPY_FILE) $$shell_path($$PWD/resource/langmap.xml) $$shell_path($$OUT_PWD/Release/langmap.xml)'
-        copy_fonts.commands = '$(COPY_DIR) $$shell_path($$PWD/Fonts) $$shell_path($$OUT_PWD/Release/)'
+        #copy_fonts.commands = '$(COPY_DIR) $$shell_path($$PWD/Fonts) $$shell_path($$OUT_PWD/Release/)'
 
         contains(QMAKE_HOST.arch, x86_64): {
             copy_everything_dll.commands = '$(COPY_FILE) $$shell_path($$PWD/3rdparty/Everything-SDK/dll/Everything64.dll) $$shell_path($$OUT_PWD/Release/Everything.dll)'
@@ -159,8 +159,8 @@ win32: {
             copy_iss.commands = '$(COPY_FILE) $$shell_path($$PWD/cjlv-msvc-x86.iss) $$shell_path($$OUT_PWD/Release/cjlv-msvc-x86.iss)'
         }
 
-        QMAKE_EXTRA_TARGETS += copy_iss copy_everything_dll copy_everything_exe copy_fonts
-        POST_TARGETDEPS += copy_iss copy_everything_dll copy_everything_exe copy_fonts
+        QMAKE_EXTRA_TARGETS += copy_iss copy_everything_dll copy_everything_exe
+        POST_TARGETDEPS += copy_iss copy_everything_dll copy_everything_exe
         #QMAKE_POST_LINK += $$quote($$WINDEPLOYQT --release --force \"$${OUT_PWD}/Release/$${TARGET}.exe\")
     }
     else: LIBS += -L$$PWD/3rdparty/scintilla/bin/debug

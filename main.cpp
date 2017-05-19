@@ -22,35 +22,19 @@ int main(int argc, char *argv[])
     SharedTools::QtSingleApplication a("Cisco Jabber Log Viewer", argc, argv);
 
     QStringList fonts {
-        "SourceCodePro-Regular.ttf",
-        "SourceCodePro-Black.ttf",
-        "SourceCodePro-Bold.ttf",
-        "SourceCodePro-ExtraLight.ttf",
-        "SourceCodePro-Light.ttf",
-        "SourceCodePro-Medium.ttf",
-        "SourceCodePro-Semibold.ttf"
+        ":/Fonts/SourceCodePro-Regular.ttf",
+        ":/Fonts/SourceCodePro-Black.ttf",
+        ":/Fonts/SourceCodePro-Bold.ttf",
+        ":/Fonts/SourceCodePro-ExtraLight.ttf",
+        ":/Fonts/SourceCodePro-Light.ttf",
+        ":/Fonts/SourceCodePro-Medium.ttf",
+        ":/Fonts/SourceCodePro-Semibold.ttf"
     };
-    QString fontPath = QApplication::applicationDirPath();
-    QDir dir(fontPath);
-#if !defined(Q_OS_MAC)
-    QCoreApplication::setAttribute(Qt::AA_DisableHighDpiScaling, true);
-#else
-    QCoreApplication::setAttribute(Qt::AA_DontShowIconsInMenus, true);
-    dir.cdUp();
-    dir.cd("Resources");
-#endif
-    dir.cd("Fonts");
-    QStringList missingFonts;
+
     foreach(const QString& f, fonts)
     {
-        fontPath = dir.absolutePath() + QDir::separator() + f;
-        if (QFile::exists(fontPath))
-            QFontDatabase::addApplicationFont(fontPath);
-        else
-            missingFonts.push_back(f);
+        QFontDatabase::addApplicationFont(f);
     }
-    if (!missingFonts.isEmpty())
-        QMessageBox::critical(NULL, a.tr("Font missing"), missingFonts.join(", ") % a.tr(" haven't been installed."), QMessageBox::Ok);
 
     QCoreApplication::setAttribute(Qt::AA_UseHighDpiPixmaps, true);
 	
