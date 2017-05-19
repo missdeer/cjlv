@@ -47,10 +47,10 @@ int main(int argc, char *argv[])
         if (QFile::exists(fontPath))
             QFontDatabase::addApplicationFont(fontPath);
         else
-            missingFonts.push_back(fontPath);
+            missingFonts.push_back(f);
     }
     if (!missingFonts.isEmpty())
-        QMessageBox::critical(NULL, "Font missing", missingFonts.join("\n"), QMessageBox::Ok);
+        QMessageBox::critical(NULL, a.tr("Font missing"), missingFonts.join(", ") % a.tr(" haven't been installed."), QMessageBox::Ok);
 
     QCoreApplication::setAttribute(Qt::AA_UseHighDpiPixmaps, true);
 	

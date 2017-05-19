@@ -249,14 +249,20 @@ void ScintillaConfig::applyThemeStyle(ScintillaEdit *sci, const QString &themePa
         if (!fontName.isEmpty())
             sci->styleSetFont(id, fontName.toStdString().c_str());
         else
-            sci->styleSetFont(id, "Source Code Pro");
-//#if defined(Q_OS_MAC)
-//            sci->styleSetFont(id, "Monaco");
-//#elif defined(Q_OS_WIN)
-//            sci->styleSetFont(id, "Consolas");
-//#else
-//            sci->styleSetFont(id, "Monospace");
-//#endif
+        {
+            QFontDatabase database;
+            QStringList families = database.families();
+            if (families.contains("Source Code Pro"))
+                sci->styleSetFont(id, "Source Code Pro");
+            else
+#if defined(Q_OS_MAC)
+                sci->styleSetFont(id, "Menlo");
+#elif defined(Q_OS_WIN)
+                sci->styleSetFont(id, "Consolas");
+#else
+                sci->styleSetFont(id, "Monospace");
+#endif
+        }
 
         uint fontStyle = styleElem.attribute("font_style").toUInt();
         if (fontStyle & 0x01)
