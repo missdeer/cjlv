@@ -1,9 +1,0 @@
-<extension title="lua match presence" field="content" createAt="2016-07-08T15:01:06" uuid="{ef8b171a-d859-4263-976f-497dfe94c239}" author="fyang3" lastModifiedAt="2016-07-08T15:47:05" method="Lua" category="Presence">
-    <content><![CDATA[function match(text)
-    if string.find(text, "presence") then
-        return 1
-    else
-        return 0
-    end
-end]]></content>
-</extension>

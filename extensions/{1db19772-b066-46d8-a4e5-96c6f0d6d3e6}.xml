@@ -1,0 +1,9 @@
+<extension lastModifiedAt="2017-05-18T16:44:12" category="Location" author="fyang3" shortcut="" field="content" uuid="{1db19772-b066-46d8-a4e5-96c6f0d6d3e6}" title="geoloc message" comment="geoloc message" createAt="2017-05-18T16:40:35" method="Lua">
+    <content><![CDATA[function match(text)
+    if string.find(text, ":<message ") and string.find(text, "geoloc") then
+        return 1
+    else
+        return 0
+    end
+end]]></content>
+</extension>
