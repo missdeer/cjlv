@@ -67,7 +67,7 @@
      <x>0</x>
      <y>0</y>
      <width>1156</width>
-     <height>22</height>
+     <height>18</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -118,8 +118,6 @@
      <addaction name="actionLogLevelTrace"/>
     </widget>
     <addaction name="actionSearch"/>
-    <addaction name="actionFilter"/>
-    <addaction name="separator"/>
     <addaction name="actionInputKeyword"/>
     <addaction name="actionClearKeyword"/>
     <addaction name="actionRegexpMode"/>
