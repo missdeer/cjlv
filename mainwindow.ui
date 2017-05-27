@@ -200,7 +200,6 @@
    <addaction name="actionGotoById"/>
    <addaction name="separator"/>
    <addaction name="actionSearch"/>
-   <addaction name="actionFilter"/>
    <addaction name="actionRegexpMode"/>
    <addaction name="actionPreference"/>
    <addaction name="actionEditExtensions"/>
