@@ -23,8 +23,8 @@ greaterThan(QT_MINOR_VERSION, 8) : {
     SOURCES += $$PWD/3rdparty/sqlite3/3.16.1/sqlite3.c
 } else {
     # 5.7, 5.8 is supported
-    INCLUDEPATH += $$PWD/3rdparty/sqlite3/3.11.1
-    SOURCES += $$PWD/3rdparty/sqlite3/3.11.1/sqlite3.c
+    INCLUDEPATH += $$PWD/3rdparty/sqlite3/3.11.1.0
+    SOURCES += $$PWD/3rdparty/sqlite3/3.11.1.0/sqlite3.c
 }
 
 DEFINES += SCINTILLA_QT=1 SCI_LEXER=1 _CRT_SECURE_NO_DEPRECATE=1 SCI_STATIC_LINK=1 LOKI_FUNCTOR_IS_NOT_A_SMALLOBJECT
