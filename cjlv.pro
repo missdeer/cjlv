@@ -18,6 +18,10 @@ include($$PWD/3rdparty/lua-5.3.3/src/lua.pri)
 include($$PWD/3rdparty/scintilla/qt/ScintillaEdit/ScintillaEdit.pri)
 include($$PWD/Boost.pri)
 
+lessThan(QT_MINOR_VERSION, 7) : {
+    error("Qt >= 5.7 and Qt <= 5.9 are supported")
+}
+
 greaterThan(QT_MINOR_VERSION, 8) : {
     INCLUDEPATH += $$PWD/3rdparty/sqlite3/3.16.1
     SOURCES += $$PWD/3rdparty/sqlite3/3.16.1/sqlite3.c
