@@ -18,7 +18,14 @@ include($$PWD/3rdparty/lua-5.3.3/src/lua.pri)
 include($$PWD/3rdparty/scintilla/qt/ScintillaEdit/ScintillaEdit.pri)
 include($$PWD/Boost.pri)
 
-INCLUDEPATH += $$PWD/3rdparty/sqlite3
+greaterThan(QT_MINOR_VERSION, 8) : {
+    INCLUDEPATH += $$PWD/3rdparty/sqlite3/3.16.1
+    SOURCES += $$PWD/3rdparty/sqlite3/3.16.1/sqlite3.c
+} else {
+    # 5.7, 5.8 is supported
+    INCLUDEPATH += $$PWD/3rdparty/sqlite3/3.11.1
+    SOURCES += $$PWD/3rdparty/sqlite3/3.11.1/sqlite3.c
+}
 
 DEFINES += SCINTILLA_QT=1 SCI_LEXER=1 _CRT_SECURE_NO_DEPRECATE=1 SCI_STATIC_LINK=1 LOKI_FUNCTOR_IS_NOT_A_SMALLOBJECT
 
@@ -31,7 +38,6 @@ SOURCES += main.cpp\
     scintillaconfig.cpp \
     codeeditortabwidget.cpp \
     codeeditor.cpp \
-    3rdparty/sqlite3/sqlite3.c \
     preferencedialog.cpp \
     extensiondialog.cpp \
     extensionmodel.cpp \
