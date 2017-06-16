@@ -73,10 +73,16 @@ LogView::LogView(QWidget *parent)
     topBarLayout->addWidget(m_cbSearchKeyword);
     topBarLayout->setStretch(1, 1);
 
+    QQuickWidget* rangeSlider = new QQuickWidget(logsTab);
+    rangeSlider->setResizeMode(QQuickWidget::SizeRootObjectToView);
+    rangeSlider->setSource(QUrl("qrc:///qml/RangeSlider.qml"));
+
     QVBoxLayout* logsTabLayout = new QVBoxLayout;
     logsTabLayout->setMargin(0);
     logsTabLayout->addWidget(topBar);
+    logsTabLayout->addWidget(rangeSlider);
     logsTabLayout->addWidget(m_logsTableView);
+    logsTabLayout->setStretch(2, 1);
     logsTab->setLayout(logsTabLayout);
 
     mainLayout->addWidget(m_verticalSplitter);

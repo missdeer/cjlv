@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui concurrent widgets sql xml charts network
+QT       += core gui concurrent widgets sql xml charts network quickwidgets
 
 TARGET = "Cisco Jabber Log Viewer"
 TEMPLATE = app

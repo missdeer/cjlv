@@ -85,6 +85,7 @@
 #include <QHBoxLayout>
 
 #include <QtCharts>
+#include <QQuickWidget>
 
 #if defined(Q_OS_WIN)
 #include <QWinThumbnailToolBar>

@@ -16,6 +16,7 @@ QT_BEGIN_NAMESPACE
 class QTableView;
 class QSplitter;
 class QTimer;
+class QQuickWidget;
 QT_END_NAMESPACE
 
 
@@ -112,6 +113,7 @@ private:
     LogModel* m_logModel;
     PresenceWidget* m_presenceWidget;
     QComboBox* m_cbSearchKeyword;
+    QQuickWidget* m_rangeSlider;
     QString m_path;
     QString m_extractDir;
     QMutex m_mutex;
