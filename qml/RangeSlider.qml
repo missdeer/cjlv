@@ -8,8 +8,17 @@ RangeSlider {
     width: 500
     from: 1
     to: 100
-    first.value: 25
-    second.value: 75
+    first.value: 1
+    second.value: 100
+    snapMode: RangeSlider.SnapAlways
+
+    first.onValueChanged: {
+
+    }
+
+    second.onValueChanged: {
+
+    }
 
     background: Rectangle {
         x: control.leftPadding
@@ -33,9 +42,9 @@ RangeSlider {
     first.handle: Rectangle {
         x: control.leftPadding + first.visualPosition * (control.availableWidth - width)
         y: control.topPadding + control.availableHeight / 2 - height / 2
-        implicitWidth: 26
-        implicitHeight: 26
-        radius: 13
+        implicitWidth: 14
+        implicitHeight: 14
+        radius: 7
         color: first.pressed ? "#f0f0f0" : "#f6f6f6"
         border.color: "#bdbebf"
     }
@@ -43,9 +52,9 @@ RangeSlider {
     second.handle: Rectangle {
         x: control.leftPadding + second.visualPosition * (control.availableWidth - width)
         y: control.topPadding + control.availableHeight / 2 - height / 2
-        implicitWidth: 26
-        implicitHeight: 26
-        radius: 13
+        implicitWidth: 14
+        implicitHeight: 14
+        radius: 7
         color: second.pressed ? "#f0f0f0" : "#f6f6f6"
         border.color: "#bdbebf"
     }
