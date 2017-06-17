@@ -1,23 +1,26 @@
-import QtQuick 2.0
-import QtQuick.Controls 2.2
+import QtQuick 2.7
+import QtQuick.Controls 2.1
 import QtQuick.Controls.Universal 2.0
+import com.cisco.jabber.viewer.log 1.0
 
 RangeSlider {
     id: control
     height: 20
     width: 500
-    from: 1
-    to: 100
-    first.value: 1
-    second.value: 100
-    snapMode: RangeSlider.SnapAlways
+    from: LogViewAPI.from
+    to: LogViewAPI.to
+    first.value: LogViewAPI.from
+    second.value: LogViewAPI.to
+    //snapMode: RangeSlider.SnapAlways
 
     first.onValueChanged: {
-
+        console.log(first.value)
+        LogViewAPI.firstValue = first.value
     }
 
     second.onValueChanged: {
-
+        console.log(second.value)
+        LogViewAPI.secondValue = second.value
     }
 
     background: Rectangle {

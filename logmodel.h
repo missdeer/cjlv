@@ -69,6 +69,8 @@ public:
     bool getMethodStatistic(QList<QSharedPointer<StatisticItem>>& sis);
     void setSearchField(const QString &searchField);
     void setRegexpMode(bool regexpMode);
+    int getMaxTotalRowCount() const;
+
 signals:
     void logItemReady(int, QSharedPointer<LogItem>);
     void logItemsReady(QMap<int, QSharedPointer<LogItem>>);
@@ -96,7 +98,8 @@ private:
     QWaitCondition m_dataMemberCondition;
     QFuture<void> m_queryFuture;
     int m_rowCount;
-    int m_totalRowCount;
+    int m_currentTotalRowCount;
+    int m_maxTotalRowCount;
     int m_toQueryOffset;
     bool m_stopQuerying;
     bool m_regexpMode;

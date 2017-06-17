@@ -33,6 +33,75 @@ public:
     ExtractedEvent() : QEvent(EXTRACTED_EVENT) {}
 };
 
+QuickWidgetAPI::QuickWidgetAPI(QObject *parent)
+    : QObject(parent)
+    , m_firstValue(1)
+    , m_secondValue(100)
+    , m_from(1)
+    , m_to(100)
+{
+
+}
+
+QuickWidgetAPI::~QuickWidgetAPI()
+{
+
+}
+
+int QuickWidgetAPI::getSecondValue() const
+{
+    return m_secondValue;
+}
+
+int QuickWidgetAPI::getFirstValue() const
+{
+    return m_firstValue;
+}
+
+void QuickWidgetAPI::setFirstValue(int v)
+{
+    m_firstValue = v;
+    qDebug() << "set first vaule:" << v;
+    emit valueChanged();
+}
+
+void QuickWidgetAPI::setSecondValue(int v)
+{
+    m_secondValue = v;
+    qDebug() << "set second vaule:" << v;
+    emit valueChanged();
+}
+
+int QuickWidgetAPI::getTo() const
+{
+    return m_to;
+}
+
+void QuickWidgetAPI::setTo(int to)
+{
+    m_to = to;
+}
+
+int QuickWidgetAPI::getFrom() const
+{
+    return m_from;
+}
+
+void QuickWidgetAPI::setFrom(int from)
+{
+    m_from = from;
+}
+
+static QuickWidgetAPI* g_latestAPI = nullptr;
+
+QObject *LogView::APIProvider(QQmlEngine *engine, QJSEngine *scriptEngine)
+{
+    Q_UNUSED(engine)
+    Q_UNUSED(scriptEngine)
+
+    return g_latestAPI;
+}
+
 LogView::LogView(QWidget *parent)
     : QWidget (parent)
     , m_verticalSplitter(new QSplitter( Qt::Vertical, parent))
@@ -72,6 +141,9 @@ LogView::LogView(QWidget *parent)
     m_cbSearchKeyword = new QComboBox(topBar);
     topBarLayout->addWidget(m_cbSearchKeyword);
     topBarLayout->setStretch(1, 1);
+
+    g_latestAPI = m_api = new QuickWidgetAPI(this);
+    connect(m_api, &QuickWidgetAPI::valueChanged, this, &LogView::onRangeSliderValueChanged);
 
     QQuickWidget* rangeSlider = new QQuickWidget(logsTab);
     rangeSlider->setResizeMode(QQuickWidget::SizeRootObjectToView);
@@ -132,6 +204,7 @@ LogView::~LogView()
         QDir dir(m_extractDir);
         dir.removeRecursively();
     }
+    delete m_api;
 }
 
 void LogView::openZipBundle(const QString &zipBundle, const QString &crashInfo)
@@ -687,6 +760,14 @@ void LogView::onDataLoaded()
 {
     getMainWindow()->closeProgressDialog();
 
+    if (m_api->getTo() < m_logModel->getMaxTotalRowCount())
+    {
+        m_api->setTo( m_logModel->getMaxTotalRowCount());
+        emit m_api->toChanged();
+        m_api->setSecondValue( m_logModel->getMaxTotalRowCount());
+        emit m_api->secondValueChanged();
+    }
+
     // let it run in main thread, so QMessageBox could work as expected
     QTimer::singleShot(100, [&](){ openCrashReport(); });
 }
@@ -1092,6 +1173,14 @@ void LogView::onLogTableChartTabWidgetCurrentChanged(int index)
             break;
         }
     }
+}
+
+void LogView::onRangeSliderValueChanged()
+{
+    Q_ASSERT(m_cbSearchKeyword);
+    Q_ASSERT(m_cbSearchKeyword->lineEdit());
+    Q_ASSERT(m_api);
+    m_cbSearchKeyword->lineEdit()->setText(QString("sql>id>=%1 and id<=%2").arg(m_api->getFirstValue()).arg(m_api->getSecondValue()));
 }
 
 bool LogView::event(QEvent* e)

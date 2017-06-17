@@ -14,6 +14,9 @@ TabWidget::TabWidget(QWidget *parent)
     connect(this, &QTabWidget::tabBarDoubleClicked, this, &TabWidget::onTabCloseRequested);
     connect(this, &QWidget::customContextMenuRequested, this, &TabWidget::onCustomContextMenuRequested);
     connect(this, &QTabWidget::currentChanged, this, &TabWidget::onCurrentChanged);
+
+    const char *uri = "com.cisco.jabber.viewer.log";
+    qmlRegisterSingletonType<LogView>(uri, 1, 0, "LogViewAPI", &LogView::APIProvider);
 }
 
 void TabWidget::openZipBundle(const QString &zipBundle, const QString &crashInfo)

@@ -170,7 +170,8 @@ LogModel::LogModel(QObject *parent)
     , m_searchField("content")
     , m_searchFieldOption("content")
     , m_rowCount(0)
-    , m_totalRowCount(0)
+    , m_currentTotalRowCount(0)
+    , m_maxTotalRowCount(0)
     , m_toQueryOffset(-1)
     , m_regexpMode(false)
     , m_regexpModeOption(false)
@@ -404,6 +405,11 @@ void LogModel::onFilter(const QString &keyword)
         }
     }
     doFilter(kw.trimmed(), searchField, regexpMode, false, true);
+}
+
+int LogModel::getMaxTotalRowCount() const
+{
+    return m_maxTotalRowCount;
 }
 
 void LogModel::setRegexpMode(bool regexpMode)
@@ -852,21 +858,21 @@ bool LogModel::getStatistic(const QString &tableName, QList<QSharedPointer<Stati
                 QSharedPointer<StatisticItem> si =  QSharedPointer<StatisticItem>(new StatisticItem);
                 si->content = q.value(contentIndex).toString();
                 si->count =  q.value(countIndex).toInt();
-                si->percent = ((double)si->count * 100)/((double)m_totalRowCount);
+                si->percent = ((double)si->count * 100)/((double)m_currentTotalRowCount);
                 sis.append(si);
                 count += si->count;
             }
             q.clear();
             q.finish();
-            if (count * 3 <= m_totalRowCount * 2)
+            if (count * 3 <= m_currentTotalRowCount * 2)
                 continue;
 
-            if (count < m_totalRowCount)
+            if (count < m_currentTotalRowCount)
             {
                 QSharedPointer<StatisticItem> si =  QSharedPointer<StatisticItem>(new StatisticItem);
                 si->content = "Other";
-                si->count =  m_totalRowCount - count;
-                si->percent = ((double)si->count * 100)/((double)m_totalRowCount);
+                si->count =  m_currentTotalRowCount - count;
+                si->percent = ((double)si->count * 100)/((double)m_currentTotalRowCount);
                 sis.append(si);
             }
 
@@ -1049,7 +1055,9 @@ void LogModel::doReload()
 
     std::for_each(m_logFiles.rbegin(), m_logFiles.rend(),
                   [&](const QString& log) { e->m_rowCount += copyFromFileToDatabase(log); });
-    m_totalRowCount = e->m_rowCount;
+    m_currentTotalRowCount = e->m_rowCount;
+    if (m_maxTotalRowCount < m_currentTotalRowCount)
+        m_maxTotalRowCount = m_currentTotalRowCount;
     saveStatistic();
 
     qint64 q = t.secsTo(QDateTime::currentDateTime());

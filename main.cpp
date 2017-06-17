@@ -21,6 +21,7 @@ int main(int argc, char *argv[])
 #endif
     SharedTools::QtSingleApplication a("Cisco Jabber Log Viewer", argc, argv);
 
+    a.setAttribute(Qt::AA_UseHighDpiPixmaps);
     QStringList fonts {
         ":/Fonts/SourceCodePro-Regular.ttf",
         ":/Fonts/SourceCodePro-Black.ttf",

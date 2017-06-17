@@ -16,14 +16,51 @@ QT_BEGIN_NAMESPACE
 class QTableView;
 class QSplitter;
 class QTimer;
-class QQuickWidget;
+class QQmlEngine;
+class QJSEngine;
 QT_END_NAMESPACE
 
+class QuickWidgetAPI : public QObject
+{
+    Q_OBJECT
+    Q_PROPERTY(int from READ getFrom WRITE setFrom NOTIFY fromChanged)
+    Q_PROPERTY(int to READ getTo WRITE setTo NOTIFY toChanged)
+    Q_PROPERTY(int firstValue READ getFirstValue WRITE setFirstValue NOTIFY firstValueChanged)
+    Q_PROPERTY(int secondValue READ getSecondValue WRITE setSecondValue NOTIFY secondValueChanged)
+public:
+    explicit QuickWidgetAPI(QObject* parent = nullptr);
+    ~QuickWidgetAPI();
+
+    int getFrom() const;
+    void setFrom(int from);
+
+    int getTo() const;
+    void setTo(int to);
+
+    int getFirstValue() const;
+    void setFirstValue(int v);
+
+    int getSecondValue() const;
+    void setSecondValue(int v);
+signals:
+    void fromChanged();
+    void toChanged();
+    void firstValueChanged();
+    void secondValueChanged();
+    void valueChanged();
+private:
+    int m_firstValue;
+    int m_secondValue;
+    int m_from;
+    int m_to;
+};
 
 class LogView : public QWidget
 {
     Q_OBJECT
 public:
+    static QObject *APIProvider(QQmlEngine *engine, QJSEngine *scriptEngine);
+
     LogView(QWidget *parent = NULL);
     ~LogView();
 
@@ -97,6 +134,7 @@ private slots:
     void onOpenRowsBetweenAnchorsInNewTab();
     void onShowLogItemsBetweenAnchors();
     void onLogTableChartTabWidgetCurrentChanged(int index);
+    void onRangeSliderValueChanged();
 public slots:
     void onClearKeyword();
 private:
@@ -113,13 +151,12 @@ private:
     LogModel* m_logModel;
     PresenceWidget* m_presenceWidget;
     QComboBox* m_cbSearchKeyword;
-    QQuickWidget* m_rangeSlider;
+    QuickWidgetAPI* m_api;
     QString m_path;
     QString m_extractDir;
     QMutex m_mutex;
     int m_lastId;
     int m_lastColumn;
-
     QModelIndex m_beginAnchor;
     QModelIndex m_endAnchor;
 
