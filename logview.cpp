@@ -188,13 +188,16 @@ LogView::LogView(QWidget *parent)
 
     m_rangeSliderValueChangedTimer->setSingleShot(true);
     connect(m_rangeSliderValueChangedTimer, &QTimer::timeout, [&]() {
-        QString query = QString("sql>id>=%1 and id<=%2").arg(m_api->getFirstValue()).arg(m_api->getSecondValue());
-        qDebug() << "generated query string:" << query;
-
         if (!m_cbSearchKeyword || !m_cbSearchKeyword->lineEdit())
             return;
+
+        if (m_api->getSecondValue() == m_logModel->getMaxTotalRowCount() && m_api->getFirstValue() == 1)
+        {
+            m_cbSearchKeyword->lineEdit()->clear();
+            return;
+        }
+        QString query = QString("sql>id>=%1 and id<=%2").arg(m_api->getFirstValue()).arg(m_api->getSecondValue());
         m_cbSearchKeyword->lineEdit()->setText(query);
-        //QTimer::singleShot(100, [&](){ m_cbSearchKeyword->lineEdit()->setText(query); });
     });
 }
 
