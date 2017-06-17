@@ -1188,7 +1188,7 @@ void LogView::onRangeSliderValueChanged()
     Q_ASSERT(m_api);
     if (m_api->getSecondValue() != 1)
     {
-        m_rangeSliderValueChangedTimer->start(500);
+        m_rangeSliderValueChangedTimer->start(200);
     }
 }
 
