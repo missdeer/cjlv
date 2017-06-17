@@ -61,14 +61,12 @@ int QuickWidgetAPI::getFirstValue() const
 void QuickWidgetAPI::setFirstValue(int v)
 {
     m_firstValue = v;
-    qDebug() << "set first vaule:" << v;
     emit valueChanged();
 }
 
 void QuickWidgetAPI::setSecondValue(int v)
 {
     m_secondValue = v;
-    qDebug() << "set second vaule:" << v;
     emit valueChanged();
 }
 

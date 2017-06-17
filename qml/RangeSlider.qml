@@ -8,19 +8,11 @@ RangeSlider {
     width: 500
     from: LogViewAPI.from
     to: LogViewAPI.to
-    first.value: LogViewAPI.from
-    second.value: LogViewAPI.to
-    //snapMode: RangeSlider.SnapAlways
 
-    first.onValueChanged: {
-        console.log(first.value)
-        LogViewAPI.firstValue = first.value
-    }
-
-    second.onValueChanged: {
-        console.log(second.value)
-        LogViewAPI.secondValue = second.value
-    }
+    onFromChanged: first.value = from
+    onToChanged: second.value = to
+    first.onValueChanged: LogViewAPI.firstValue = first.value
+    second.onValueChanged: LogViewAPI.secondValue = second.value
 
     background: Rectangle {
         x: control.leftPadding
