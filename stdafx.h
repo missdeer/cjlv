@@ -86,6 +86,8 @@
 
 #include <QtCharts>
 #include <QQuickWidget>
+#include <QQmlEngine>
+#include <QQmlContext>
 
 #if defined(Q_OS_WIN)
 #include <QWinThumbnailToolBar>

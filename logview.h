@@ -152,6 +152,7 @@ private:
     PresenceWidget* m_presenceWidget;
     QComboBox* m_cbSearchKeyword;
     QuickWidgetAPI* m_api;
+    QTimer* m_rangeSliderValueChangedTimer;
     QString m_path;
     QString m_extractDir;
     QMutex m_mutex;

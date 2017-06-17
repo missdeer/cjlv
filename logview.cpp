@@ -36,9 +36,9 @@ public:
 QuickWidgetAPI::QuickWidgetAPI(QObject *parent)
     : QObject(parent)
     , m_firstValue(1)
-    , m_secondValue(100)
+    , m_secondValue(1)
     , m_from(1)
-    , m_to(100)
+    , m_to(1)
 {
 
 }
@@ -92,16 +92,6 @@ void QuickWidgetAPI::setFrom(int from)
     m_from = from;
 }
 
-static QuickWidgetAPI* g_latestAPI = nullptr;
-
-QObject *LogView::APIProvider(QQmlEngine *engine, QJSEngine *scriptEngine)
-{
-    Q_UNUSED(engine)
-    Q_UNUSED(scriptEngine)
-
-    return g_latestAPI;
-}
-
 LogView::LogView(QWidget *parent)
     : QWidget (parent)
     , m_verticalSplitter(new QSplitter( Qt::Vertical, parent))
@@ -116,6 +106,7 @@ LogView::LogView(QWidget *parent)
     , m_codeEditorTabWidget(new CodeEditorTabWidget(m_verticalSplitter))
     , m_logModel(new LogModel(m_logsTableView))
     , m_presenceWidget(new PresenceWidget(m_logTableChartTabWidget))
+    , m_rangeSliderValueChangedTimer(new QTimer)
     , m_lastId(-1)
     , m_lastColumn(-1)
 {
@@ -142,12 +133,13 @@ LogView::LogView(QWidget *parent)
     topBarLayout->addWidget(m_cbSearchKeyword);
     topBarLayout->setStretch(1, 1);
 
-    g_latestAPI = m_api = new QuickWidgetAPI(this);
+    m_api = new QuickWidgetAPI(this);
     connect(m_api, &QuickWidgetAPI::valueChanged, this, &LogView::onRangeSliderValueChanged);
 
     QQuickWidget* rangeSlider = new QQuickWidget(logsTab);
     rangeSlider->setResizeMode(QQuickWidget::SizeRootObjectToView);
-    rangeSlider->setSource(QUrl("qrc:///qml/RangeSlider.qml"));
+    rangeSlider->engine()->rootContext()->setContextProperty("LogViewAPI", m_api);
+    rangeSlider->setSource(QUrl("qrc:qml/RangeSlider.qml"));
 
     QVBoxLayout* logsTabLayout = new QVBoxLayout;
     logsTabLayout->setMargin(0);
@@ -195,10 +187,25 @@ LogView::LogView(QWidget *parent)
     connect(m_logModel, &LogModel::rowCountChanged, this, &LogView::onRowCountChanged);
     connect(m_logModel, &LogModel::databaseCreated, m_presenceWidget, &PresenceWidget::databaseCreated);
     connect(this, &LogView::runExtension, m_logModel, &LogModel::runLuaExtension);
+
+    m_rangeSliderValueChangedTimer->setSingleShot(true);
+    connect(m_rangeSliderValueChangedTimer, &QTimer::timeout, [&]() {
+        QString query = QString("sql>id>=%1 and id<=%2").arg(m_api->getFirstValue()).arg(m_api->getSecondValue());
+        qDebug() << "generated query string:" << query;
+
+        if (!m_cbSearchKeyword || !m_cbSearchKeyword->lineEdit())
+            return;
+        m_cbSearchKeyword->lineEdit()->setText(query);
+        //QTimer::singleShot(100, [&](){ m_cbSearchKeyword->lineEdit()->setText(query); });
+    });
 }
 
 LogView::~LogView()
 {
+    if (m_rangeSliderValueChangedTimer->isActive())
+        m_rangeSliderValueChangedTimer->stop();
+    delete m_rangeSliderValueChangedTimer;
+
     if (!m_extractDir.isEmpty())
     {
         QDir dir(m_extractDir);
@@ -1177,10 +1184,11 @@ void LogView::onLogTableChartTabWidgetCurrentChanged(int index)
 
 void LogView::onRangeSliderValueChanged()
 {
-    Q_ASSERT(m_cbSearchKeyword);
-    Q_ASSERT(m_cbSearchKeyword->lineEdit());
     Q_ASSERT(m_api);
-    m_cbSearchKeyword->lineEdit()->setText(QString("sql>id>=%1 and id<=%2").arg(m_api->getFirstValue()).arg(m_api->getSecondValue()));
+    if (m_api->getSecondValue() != 1)
+    {
+        m_rangeSliderValueChangedTimer->start(500);
+    }
 }
 
 bool LogView::event(QEvent* e)

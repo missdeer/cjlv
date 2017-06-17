@@ -1,7 +1,6 @@
 import QtQuick 2.7
 import QtQuick.Controls 2.1
 import QtQuick.Controls.Universal 2.0
-import com.cisco.jabber.viewer.log 1.0
 
 RangeSlider {
     id: control
