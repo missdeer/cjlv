@@ -1157,6 +1157,12 @@ void LogView::onShowLogItemsBetweenAnchors()
 
 void LogView::onLogTableChartTabWidgetCurrentChanged(int index)
 {
+    if (index == 7)
+    {
+        // presence widget
+        m_presenceWidget->onRefreshBuddyList();
+        return;
+    }
     // draw charts
     static struct {
         bool created;

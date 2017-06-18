@@ -49,7 +49,8 @@ PresenceWidget::PresenceWidget(QWidget *parent)
 
 void PresenceWidget::onRefreshBuddyList()
 {
-    m_model->requestReceivedPresenceBuddyList();
+    if (!m_cbBuddyList->count())
+        m_model->requestReceivedPresenceBuddyList();
 }
 
 void PresenceWidget::onReceivedPresenceBuddyList(QStringList bl)
