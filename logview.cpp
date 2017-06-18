@@ -629,11 +629,11 @@ void LogView::setChart(QtCharts::QChartView* chartView,const QList<QSharedPointe
     int totalCount = 0;
     std::for_each(sis.begin(), sis.end(), [&totalCount](QSharedPointer<StatisticItem> si){ totalCount += si->count;});
     bool visible = false;
-    for (QSharedPointer<StatisticItem> si: sis)
+    for (auto si: sis)
     {
         QString label = QString("%1, %2, %3%").arg(si->content).arg(si->count).arg(si->percent, 0, 'f', 2);
         QPieSlice *slice = series->append(label, si->count);
-        slice->setLabelVisible(visible = !visible);
+        slice->setLabelVisible(sis.length() > 20 ? (visible = !visible) : true);
     }
 
     int index = sis.length() - 1;
@@ -1158,28 +1158,29 @@ void LogView::onShowLogItemsBetweenAnchors()
 void LogView::onLogTableChartTabWidgetCurrentChanged(int index)
 {
     // draw charts
-    QList<QSharedPointer<StatisticItem>> sis;
-    struct {
+    static struct {
+        bool created;
         int index;
         std::function<bool(QList<QSharedPointer<StatisticItem>>&)> getter;
         QtCharts::QChartView* chartView;
         QString label;
     }  m[] = {
-        {1, std::bind(&LogModel::getLevelStatistic,      m_logModel, std::placeholders::_1), m_levelStatisticChart,      "Level Count Statistic"},
-        {2, std::bind(&LogModel::getThreadStatistic,     m_logModel, std::placeholders::_1), m_threadStatisticChart,     "Thread Count Statistic"},
-        {3, std::bind(&LogModel::getSourceFileStatistic, m_logModel, std::placeholders::_1), m_sourceFileStatisticChart, "Source File Count Statistic"},
-        {4, std::bind(&LogModel::getSourceLineStatistic, m_logModel, std::placeholders::_1), m_sourceLineStatisticChart, "Source Line Count Statistic"},
-        {5, std::bind(&LogModel::getCategoryStatistic,   m_logModel, std::placeholders::_1), m_categoryStatisticChart,   "Category Count Statistic"},
-        {6, std::bind(&LogModel::getMethodStatistic,     m_logModel, std::placeholders::_1), m_methodStatisticChart,     "Method Count Statistic"},
+        {false, 1, std::bind(&LogModel::getLevelStatistic,      m_logModel, std::placeholders::_1), m_levelStatisticChart,      "Level Count Statistic"},
+        {false, 2, std::bind(&LogModel::getThreadStatistic,     m_logModel, std::placeholders::_1), m_threadStatisticChart,     "Thread Count Statistic"},
+        {false, 3, std::bind(&LogModel::getSourceFileStatistic, m_logModel, std::placeholders::_1), m_sourceFileStatisticChart, "Source File Count Statistic"},
+        {false, 4, std::bind(&LogModel::getSourceLineStatistic, m_logModel, std::placeholders::_1), m_sourceLineStatisticChart, "Source Line Count Statistic"},
+        {false, 5, std::bind(&LogModel::getCategoryStatistic,   m_logModel, std::placeholders::_1), m_categoryStatisticChart,   "Category Count Statistic"},
+        {false, 6, std::bind(&LogModel::getMethodStatistic,     m_logModel, std::placeholders::_1), m_methodStatisticChart,     "Method Count Statistic"},
     };
 
-    for (const auto & t: m)
+    QList<QSharedPointer<StatisticItem>> sis;
+    auto it = std::find_if(std::begin(m), std::end(m), [&](const decltype(m[0])& t){
+        return !t.created && t.index == index && t.getter(sis);
+    });
+    if (it != std::end(m))
     {
-        if (t.index == index && t.getter(sis))
-        {
-            setChart(t.chartView, sis, t.label);
-            break;
-        }
+        setChart(it->chartView, sis, it->label);
+        it->created = true;
     }
 }
 
