@@ -462,7 +462,7 @@ void LogView::extractContent(const QModelIndex& index)
     }
 }
 
-void LogView::openSourceFile(const QModelIndex &index, bool openWithBuiltinEditor)
+void LogView::openSourceFile(const QModelIndex &index, std::function<void(const QString&, int)> callback)
 {
     const QString& source = m_logModel->getLogSourceFile(index);
 
@@ -535,33 +535,7 @@ void LogView::openSourceFile(const QModelIndex &index, bool openWithBuiltinEdito
 
             if (matched && (g_settings->sourceDirectory().isEmpty() || (!g_settings->sourceDirectory().isEmpty() && dir == srcDir)))
             {
-                if (openWithBuiltinEditor)
-                {
-                    showCodeEditorPane();
-                    if (g_settings->multiMonitorEnabled())
-                    {                        
-                        g_sourceWindow->getSourceViewTabWidget()->gotoLine(m_path, filePath, m.captured(2).toInt());
-                    }
-                    else
-                    {
-                        m_codeEditorTabWidget->gotoLine(filePath, m.captured(2).toInt());
-                    }
-                }
-                else
-                {
-                    int index = filePath.indexOf("components");
-                    if (index == -1)
-                        index = filePath.indexOf("products");
-                    if (index == -1)
-                        index = filePath.indexOf("services");
-                    if (index >= 0)
-                    {
-                        QString url = QString("http://jmpopengrok.jabberqa.cisco.com:8080/source/xref/trunk/%1#%2")
-                                .arg(filePath.mid(index).replace(QChar('\\'), QChar('/')))
-                                .arg(m.captured(2).toInt());
-                        QDesktopServices::openUrl(url);
-                    }
-                }
+                callback(filePath, m.captured(2).toInt());
                 return;
             }
         }
@@ -607,7 +581,10 @@ void LogView::onDoubleClicked(const QModelIndex& index)
     switch (index.column())// the content field
     {
     case 4:
-        openSourceFile(index, true);
+        openSourceFile(index, std::bind(&LogView::openSourceFileWithBuiltinEditor,
+                                                           this,
+                                                           std::placeholders::_1,
+                                                           std::placeholders::_2));
         break;
     case 7:
         extractContent(index);
@@ -764,6 +741,48 @@ void LogView::openCrashReport()
 #endif
 }
 
+void LogView::openSourceFileWithBuiltinEditor(const QString &filePath, int line)
+{
+    showCodeEditorPane();
+    if (g_settings->multiMonitorEnabled())
+    {
+        g_sourceWindow->getSourceViewTabWidget()->gotoLine(m_path, filePath, line);
+    }
+    else
+    {
+        m_codeEditorTabWidget->gotoLine(filePath, line);
+    }
+}
+
+void LogView::openSourceFileInVS(const QString &filePath, int line)
+{
+#if defined(Q_OS_WIN)
+    // extract resource file
+    QString localPath = QStandardPaths::writableLocation(QStandardPaths::TempLocation) + "/open-in-vs.vbs";
+    QFile::copy(":/open-in-vs.vbs" , localPath);
+
+    // run
+    QString arg = QString("\"%1\" %2 0").arg(QDir::toNativeSeparators(filePath)).arg(line);
+    ::ShellExecuteW(NULL, L"open", localPath.toStdWString().c_str(), arg.toStdWString().c_str(), NULL, SW_SHOWNORMAL);
+#endif
+}
+
+void LogView::openSourceFileWithOpenGrok(const QString &filePath, int line)
+{
+    int index = filePath.indexOf("components");
+    if (index == -1)
+        index = filePath.indexOf("products");
+    if (index == -1)
+        index = filePath.indexOf("services");
+    if (index >= 0)
+    {
+        QString url = QString("http://jmpopengrok.jabberqa.cisco.com:8080/source/xref/trunk/%1#%2")
+                .arg(filePath.mid(index).replace(QChar('\\'), QChar('/')))
+                .arg(line);
+        QDesktopServices::openUrl(url);
+    }
+}
+
 void LogView::onDataLoaded()
 {
     getMainWindow()->closeProgressDialog();
@@ -801,6 +820,12 @@ void LogView::onCustomContextMenuRequested(const QPoint &pos)
         QAction* pOpengrokAction = new QAction("Browse Source File with OpenGrok", this);
         connect(pOpengrokAction, &QAction::triggered, this, &LogView::onBrowseSourceFileWithOpenGrok);
         menu.addAction(pOpengrokAction);
+
+#if defined(Q_OS_WIN)
+        QAction* pOpenFileInVSAction = new QAction("Open Source File In Visual Studio", this);
+        connect(pOpenFileInVSAction, &QAction::triggered, this, &LogView::onOpenSourceFileInVS);
+        menu.addAction(pOpenFileInVSAction);
+#endif
 
         QAction* pSourceFilePreviewAction = new QAction("Source File Preview", this);
         connect(pSourceFilePreviewAction, &QAction::triggered, this, &LogView::onSourceFilePreview);
@@ -856,7 +881,10 @@ void LogView::onBrowseSourceFileWithOpenGrok()
     QItemSelectionModel* selected = m_logsTableView->selectionModel();
     if (selected && selected->hasSelection())
     {
-        openSourceFile(selected->currentIndex(), false);
+        openSourceFile(selected->currentIndex(), std::bind(&LogView::openSourceFileWithOpenGrok,
+                                                           this,
+                                                           std::placeholders::_1,
+                                                           std::placeholders::_2));
     }
 }
 
@@ -865,7 +893,22 @@ void LogView::onSourceFilePreview()
     QItemSelectionModel* selected = m_logsTableView->selectionModel();
     if (selected && selected->hasSelection())
     {
-        openSourceFile(selected->currentIndex(), true);
+        openSourceFile(selected->currentIndex(), std::bind(&LogView::openSourceFileWithBuiltinEditor,
+                                                           this,
+                                                           std::placeholders::_1,
+                                                           std::placeholders::_2));
+    }
+}
+
+void LogView::onOpenSourceFileInVS()
+{
+    QItemSelectionModel* selected = m_logsTableView->selectionModel();
+    if (selected && selected->hasSelection())
+    {
+        openSourceFile(selected->currentIndex(), std::bind(&LogView::openSourceFileInVS,
+                                                           this,
+                                                           std::placeholders::_1,
+                                                           std::placeholders::_2));
     }
 }
 

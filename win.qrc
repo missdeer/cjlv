@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/">
+        <file>open-in-vs.vbs</file>
+    </qresource>
+</RCC>

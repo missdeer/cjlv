@@ -122,6 +122,7 @@ private slots:
     void onCustomContextMenuRequested(const QPoint &pos);
     void onBrowseSourceFileWithOpenGrok();
     void onSourceFilePreview();
+    void onOpenSourceFileInVS();
     void onContentPreview();
     void onLogFilePreview();
     void onCbKeywordEditTextChanged(const QString &text);
@@ -167,13 +168,16 @@ private:
 
     void extract(LogView* v, const QString& fileName, const QString& dirName);
     void extractContent(const QModelIndex& index);
-    void openSourceFile(const QModelIndex& index, bool openWithBuiltinEditor);
+    void openSourceFile(const QModelIndex& index, std::function<void(const QString&, int)> callback);
     void openLog(const QModelIndex& index);
     void gotoLogLine(const QModelIndex& index);
     void showCodeEditorPane();
     void setChart(QtCharts::QChartView* chartView, const QList<QSharedPointer<StatisticItem> >& sis, const QString& label);
     MainWindow *getMainWindow();
     void openCrashReport();
+    void openSourceFileWithBuiltinEditor(const QString& filePath, int line);
+    void openSourceFileInVS(const QString& filePath, int line);
+    void openSourceFileWithOpenGrok(const QString& filePath, int line);
 };
 
 class SourceWindow;

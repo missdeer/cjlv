@@ -19,6 +19,7 @@ private slots:
     void onCopyFileName();
     void onCopyFileFullPath();
     void onOpenContainerFolder();
+    void onOpenFileInVS();
 
     void onCloseAll();
     void onCloseAllButThis();
@@ -29,6 +30,7 @@ private slots:
     void onCustomContextMenuRequested(const QPoint &pos);
 private:
     CodeEditor *createCodeEditor(const QString& text, const QString& tooltip);
+    int m_line;
 };
 
 #endif // CODEEDITORTABWIDGET_H

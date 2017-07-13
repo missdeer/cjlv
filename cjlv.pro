@@ -127,6 +127,8 @@ macx: {
 }
 
 win32: {
+    RESOURCES += \
+        win.qrc
     win32-msvc* {
         QMAKE_LFLAGS += "/LTCG"
         QMAKE_CXXFLAGS_RELEASE += /Zi

@@ -57,6 +57,7 @@ void CodeEditorTabWidget::gotoLine(const QString &fileName, int line)
     QFileInfo fi(fileName);
     CodeEditor* v = createCodeEditor(fi.fileName(), fi.absoluteFilePath());
     v->gotoLine(fileName, line);
+    m_line = line;
 }
 
 bool CodeEditorTabWidget::copyable()
@@ -112,6 +113,20 @@ void CodeEditorTabWidget::onOpenContainerFolder()
     scriptArgs << QLatin1String("-e")
                << QLatin1String("tell application \"Finder\" to activate");
     QProcess::execute("/usr/bin/osascript", scriptArgs);
+#endif
+}
+
+void CodeEditorTabWidget::onOpenFileInVS()
+{
+#if defined(Q_OS_WIN)
+    // extract resource file
+    QString localPath = QStandardPaths::writableLocation(QStandardPaths::TempLocation) + "/open-in-vs.vbs";
+    QFile::copy(":/open-in-vs.vbs" , localPath);
+
+    // run
+    QString fileFullPath = tabToolTip(currentIndex());
+    QString arg = QString("\"%1\" %2 0").arg(QDir::toNativeSeparators(fileFullPath)).arg(m_line);
+    ::ShellExecuteW(NULL, L"open", localPath.toStdWString().c_str(), arg.toStdWString().c_str(), NULL, SW_SHOWNORMAL);
 #endif
 }
 
@@ -199,6 +214,10 @@ void CodeEditorTabWidget::onCustomContextMenuRequested(const QPoint &pos)
         connect(pOpenContainerFolderAction, &QAction::triggered, this, &CodeEditorTabWidget::onOpenContainerFolder);
         menu.addAction(pOpenContainerFolderAction);
 #if defined(Q_OS_WIN)
+        QAction* pOpenFileInVSAction = new QAction("Open File In Visual Studio", this);
+        connect(pOpenFileInVSAction, &QAction::triggered, this, &CodeEditorTabWidget::onOpenFileInVS);
+        menu.addAction(pOpenFileInVSAction);
+
         CShellContextMenu scm;
         QPoint p = mapToGlobal(pos);
         scm.ShowContextMenu(&menu, this, p, QDir::toNativeSeparators(tabToolTip(currentIndex())));
