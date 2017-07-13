@@ -1223,7 +1223,7 @@ void LogView::onLogTableChartTabWidgetCurrentChanged(int index)
     };
 
     QList<QSharedPointer<StatisticItem>> sis;
-    auto it = std::find_if(std::begin(m), std::end(m), [&](const decltype(m[0])& t){
+    auto it = std::find_if(std::begin(m), std::end(m), [&](decltype(m[0])& t){
         return !t.created && t.index == index && t.getter(sis);
     });
     if (it != std::end(m))
