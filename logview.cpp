@@ -581,10 +581,22 @@ void LogView::onDoubleClicked(const QModelIndex& index)
     switch (index.column())// the content field
     {
     case 4:
-        openSourceFile(index, std::bind(&LogView::openSourceFileWithBuiltinEditor,
-                                                           this,
-                                                           std::placeholders::_1,
-                                                           std::placeholders::_2));
+#if defined(Q_OS_WIN)
+        if (qApp->keyboardModifiers() & Qt::ControlModifier)
+        {
+            openSourceFile(index, std::bind(&LogView::openSourceFileInVS,
+                                            this,
+                                            std::placeholders::_1,
+                                            std::placeholders::_2));
+        }
+        else
+#endif
+        {
+            openSourceFile(index, std::bind(&LogView::openSourceFileWithBuiltinEditor,
+                                            this,
+                                            std::placeholders::_1,
+                                            std::placeholders::_2));
+        }
         break;
     case 7:
         extractContent(index);
