@@ -90,25 +90,6 @@ void QuickWidgetAPI::setFrom(int from)
     m_from = from;
 }
 
-struct HHeaderContextMenuAction{
-    QString label;
-    int index;
-    bool hidden;
-};
-
-static HHeaderContextMenuAction hheaderContextMenuActions[] = {
-{ "Id",          0, false },
-{ "Time",        1, false },
-{ "Level",       2, false },
-{ "Thread",      3, false },
-{ "Source File", 4, false },
-{ "Category",    5, false },
-{ "Method",      6, false },
-{ "Content",     7, false },
-{ "Log File",    8, false },
-{ "Line",        9, false },
-};
-
 LogView::LogView(QWidget *parent)
     : QWidget (parent)
     , m_verticalSplitter(new QSplitter( Qt::Vertical, parent))
@@ -126,6 +107,18 @@ LogView::LogView(QWidget *parent)
     , m_rangeSliderValueChangedTimer(new QTimer)
     , m_lastId(-1)
     , m_lastColumn(-1)
+    , m_hheaderContextMenuActions({
+{ "Id",          0, false },
+{ "Time",        1, false },
+{ "Level",       2, false },
+{ "Thread",      3, false },
+{ "Source File", 4, false },
+{ "Category",    5, false },
+{ "Method",      6, false },
+{ "Content",     7, false },
+{ "Log File",    8, false },
+{ "Line",        9, false },
+                                })
 {
     m_verticalSplitter->addWidget(m_logTableChartTabWidget);
     m_verticalSplitter->addWidget(m_codeEditorTabWidget);
@@ -913,8 +906,8 @@ void LogView::onHHeaderContextMenuActionTriggered()
 {
     QAction* p = qobject_cast<QAction*>(sender());
     int idx = 0;
-    for(;p->text() != hheaderContextMenuActions[idx].label; idx++);
-    HHeaderContextMenuAction& a = hheaderContextMenuActions[idx];
+    for(;p->text() != m_hheaderContextMenuActions[idx].label; idx++);
+    HHeaderContextMenuAction& a = m_hheaderContextMenuActions[idx];
     a.hidden = !a.hidden;
     m_logsTableView->setColumnHidden(a.index, a.hidden);
 }
@@ -923,7 +916,7 @@ void LogView::onHHeaderCustomContextMenuRequested(const QPoint &pos)
 {
     QMenu menu(this);
 
-    for (auto a : hheaderContextMenuActions)
+    for (auto a : m_hheaderContextMenuActions)
     {
         QAction* pAction = new QAction(a.label, &menu);
         pAction->setCheckable(true);

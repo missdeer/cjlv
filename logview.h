@@ -55,6 +55,12 @@ private:
     int m_to;
 };
 
+struct HHeaderContextMenuAction{
+    QString label;
+    int index;
+    bool hidden;
+};
+
 class LogView : public QWidget
 {
     Q_OBJECT
@@ -165,6 +171,7 @@ private:
     QModelIndex m_endAnchor;
 
     QString m_crashInfo;
+    QList<HHeaderContextMenuAction> m_hheaderContextMenuActions;
 
     bool event(QEvent *e) Q_DECL_OVERRIDE;
 
