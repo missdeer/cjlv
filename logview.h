@@ -120,6 +120,7 @@ private slots:
     void onDataLoaded();
     void onRowCountChanged();
     void onCustomContextMenuRequested(const QPoint &pos);
+    void onHHeaderCustomContextMenuRequested(const QPoint &pos);
     void onBrowseSourceFileWithOpenGrok();
     void onSourceFilePreview();
     void onOpenSourceFileInVS();
@@ -136,6 +137,7 @@ private slots:
     void onShowLogItemsBetweenAnchors();
     void onLogTableChartTabWidgetCurrentChanged(int index);
     void onRangeSliderValueChanged();
+    void onHHeaderContextMenuActionTriggered();
 public slots:
     void onClearKeyword();
 private:

@@ -90,6 +90,25 @@ void QuickWidgetAPI::setFrom(int from)
     m_from = from;
 }
 
+struct HHeaderContextMenuAction{
+    QString label;
+    int index;
+    bool hidden;
+};
+
+static HHeaderContextMenuAction hheaderContextMenuActions[] = {
+{ "Id",          0, false },
+{ "Time",        1, false },
+{ "Level",       2, false },
+{ "Thread",      3, false },
+{ "Source File", 4, false },
+{ "Category",    5, false },
+{ "Method",      6, false },
+{ "Content",     7, false },
+{ "Log File",    8, false },
+{ "Line",        9, false },
+};
+
 LogView::LogView(QWidget *parent)
     : QWidget (parent)
     , m_verticalSplitter(new QSplitter( Qt::Vertical, parent))
@@ -166,6 +185,7 @@ LogView::LogView(QWidget *parent)
 
     m_logsTableView->setModel(m_logModel);
     m_logsTableView->horizontalHeader()->setSectionResizeMode(7, QHeaderView::Stretch);
+    m_logsTableView->horizontalHeader()->setContextMenuPolicy(Qt::CustomContextMenu);
     m_logsTableView->setContextMenuPolicy(Qt::CustomContextMenu);
 
     m_cbSearchKeyword->setEditable(true);
@@ -181,6 +201,7 @@ LogView::LogView(QWidget *parent)
     connect(m_cbSearchKeyword, static_cast<void(QComboBox::*)(const QString &)>(&QComboBox::currentIndexChanged), this, &LogView::onCbKeywordCurrentIndexChanged);
     connect(m_logsTableView, &QAbstractItemView::doubleClicked, this, &LogView::onDoubleClicked);
     connect(m_logsTableView, &QWidget::customContextMenuRequested, this, &LogView::onCustomContextMenuRequested);
+    connect(m_logsTableView->horizontalHeader(), &QWidget::customContextMenuRequested, this, &LogView::onHHeaderCustomContextMenuRequested);
     connect(m_logModel, &LogModel::dataLoaded, this, &LogView::onDataLoaded);
     connect(m_logModel, &LogModel::rowCountChanged, this, &LogView::onRowCountChanged);
     connect(m_logModel, &LogModel::databaseCreated, m_presenceWidget, &PresenceWidget::databaseCreated);
@@ -886,6 +907,32 @@ void LogView::onCustomContextMenuRequested(const QPoint &pos)
         menu.exec(m_logsTableView->viewport()->mapToGlobal(pos));
 #endif
     }
+}
+
+void LogView::onHHeaderContextMenuActionTriggered()
+{
+    QAction* p = qobject_cast<QAction*>(sender());
+    int idx = 0;
+    for(;p->text() != hheaderContextMenuActions[idx].label; idx++);
+    HHeaderContextMenuAction& a = hheaderContextMenuActions[idx];
+    a.hidden = !a.hidden;
+    m_logsTableView->setColumnHidden(a.index, a.hidden);
+}
+
+void LogView::onHHeaderCustomContextMenuRequested(const QPoint &pos)
+{
+    QMenu menu(this);
+
+    for (auto a : hheaderContextMenuActions)
+    {
+        QAction* pAction = new QAction(a.label, &menu);
+        pAction->setCheckable(true);
+        pAction->setChecked(!a.hidden);
+        connect(pAction, &QAction::triggered, this, &LogView::onHHeaderContextMenuActionTriggered);
+        menu.addAction(pAction);
+    }
+
+    menu.exec(m_logsTableView->horizontalHeader()->viewport()->mapToGlobal(pos));
 }
 
 void LogView::onBrowseSourceFileWithOpenGrok()
