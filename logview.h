@@ -165,7 +165,7 @@ private:
     QModelIndex m_endAnchor;
 
     QString m_crashInfo;
-    QList<bool> m_hheaderColumnShown;
+    QList<bool> m_hheaderColumnHidden;
 
     bool event(QEvent *e) Q_DECL_OVERRIDE;
 

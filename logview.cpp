@@ -108,8 +108,9 @@ LogView::LogView(QWidget *parent)
     , m_lastId(-1)
     , m_lastColumn(-1)
 {
+    int res = g_settings->logTableColumnVisible();
     for(int i = 0; i < 10; i++)
-        m_hheaderColumnShown.append(false);
+        m_hheaderColumnHidden.append(!(res & (0x01 << i)));
 
     m_verticalSplitter->addWidget(m_logTableChartTabWidget);
     m_verticalSplitter->addWidget(m_codeEditorTabWidget);
@@ -813,7 +814,12 @@ void LogView::onDataLoaded()
     }
 
     // let it run in main thread, so QMessageBox could work as expected
-    QTimer::singleShot(100, [&](){ openCrashReport(); });
+    QTimer::singleShot(100, [&](){
+        openCrashReport();
+
+        for (int idx = 0; idx < m_hheaderColumnHidden.length(); idx ++)
+            m_logsTableView->setColumnHidden(idx, m_hheaderColumnHidden[idx] );
+    });
 }
 
 void LogView::onRowCountChanged()
@@ -909,8 +915,8 @@ void LogView::onHHeaderContextMenuActionTriggered()
         {"Line",9},
     };
     int idx = labels[p->text()];
-    m_hheaderColumnShown[idx] = !m_hheaderColumnShown[idx] ;
-    m_logsTableView->setColumnHidden(idx, m_hheaderColumnShown[idx] );
+    m_hheaderColumnHidden[idx] = !m_hheaderColumnHidden[idx] ;
+    m_logsTableView->setColumnHidden(idx, m_hheaderColumnHidden[idx] );
 }
 
 void LogView::onHHeaderCustomContextMenuRequested(const QPoint &pos)
@@ -928,11 +934,11 @@ void LogView::onHHeaderCustomContextMenuRequested(const QPoint &pos)
         "Log File",
         "Line",
     };
-    for (int i = 0; i < m_hheaderColumnShown.length(); i++)
+    for (int i = 0; i < m_hheaderColumnHidden.length(); i++)
     {
         QAction* pAction = new QAction(labels[i], &menu);
         pAction->setCheckable(true);
-        pAction->setChecked(!m_hheaderColumnShown[i]);
+        pAction->setChecked(!m_hheaderColumnHidden[i]);
         connect(pAction, &QAction::triggered, this, &LogView::onHHeaderContextMenuActionTriggered);
         menu.addAction(pAction);
     }

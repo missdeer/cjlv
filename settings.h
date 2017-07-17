@@ -151,6 +151,9 @@ public:
     const QString & sourceViewTheme() const;
     void setSourceViewTheme(const QString &sourceViewTheme);
 
+    int logTableColumnVisible() const;
+    void setLogTableColumnVisible(int logTableColumnVisible);
+
 private:
     bool m_inMemoryDatabase;
     bool m_searchOrFitler;
@@ -161,6 +164,7 @@ private:
     bool m_debugEnabled;
     bool m_traceEnabled;
     bool m_multiMonitorEnabled;
+    int m_logTableColumnVisible;
     QString m_temporaryDirectory;
     QString m_lastOpenedDirectory;
     QString m_sourceDirectory;

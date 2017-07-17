@@ -104,6 +104,16 @@ void Settings::setSourceViewTheme(const QString &sourceViewTheme)
     m_sourceViewTheme = sourceViewTheme;
 }
 
+int Settings::logTableColumnVisible() const
+{
+    return m_logTableColumnVisible;
+}
+
+void Settings::setLogTableColumnVisible(int logTableColumnVisible)
+{
+    m_logTableColumnVisible = logTableColumnVisible;
+}
+
 void Settings::save()
 {
     QSettings settings(QSettings::IniFormat, QSettings::UserScope, "cisco.com", "Cisco Jabber Log Viewer");
@@ -117,6 +127,7 @@ void Settings::save()
         settings.setValue("everythingPath", m_everythingPath);
     if (!m_windbgPath.isEmpty())
         settings.setValue("windbgPath", m_windbgPath);
+    settings.setValue("logTableColumnVisible", m_logTableColumnVisible);
     settings.sync();
 
     WritePasswordJob job( QLatin1String("com.cisco.jabber.viewer") );
@@ -148,6 +159,7 @@ void Settings::load()
     if (m_everythingPath.isEmpty())
         m_everythingPath = QApplication::applicationDirPath() % "/Everything.exe";
     m_windbgPath = settings.value("windbgPath").toString();
+    m_logTableColumnVisible = settings.value("logTableColumnVisible", 0xFF).toInt();
 
     ReadPasswordJob job( QLatin1String("com.cisco.jabber.viewer") );
     job.setAutoDelete( false );

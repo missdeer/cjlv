@@ -30,6 +30,7 @@ private slots:
 
     void on_cbSourceViewTheme_currentIndexChanged(const QString &theme);
 
+    void onCheckBoxStateChanged(int state);
 private:
     Ui::PreferenceDialog *ui;
 };

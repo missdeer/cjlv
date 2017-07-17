@@ -8,11 +8,43 @@ PreferenceDialog::PreferenceDialog(QWidget *parent) :
     ui(new Ui::PreferenceDialog)
 {
     ui->setupUi(this);
+
+    std::map<QCheckBox*, int> m = {
+        { ui->cbId,         0 },
+        { ui->cbTime,       1 },
+        { ui->cbLevel,      2 },
+        { ui->cbThread,     3 },
+        { ui->cbSourceFile, 4 },
+        { ui->cbCategory,   5 },
+        { ui->cbMethod,     6 },
+        { ui->cbContent,    7 },
+        { ui->cbLogFile,    8 },
+        { ui->cbLine,       9 },
+    };
+    int visible = g_settings->logTableColumnVisible();
+    for (auto p : m )
+    {
+        if ((0x01 << p.second) & visible)
+            p.first->setChecked(true);
+        else
+            p.first->setChecked(false);
+    }
+
 #if defined(Q_OS_MAC)
     ui->buttonBox->setVisible(false);
     ui->labelWinDBGPath->setVisible(false);
     ui->btnSelectWinDBGPath->setVisible(false);
     ui->edtWinDBG->setVisible(false);
+    connect(ui->cbId,         &QCheckBox::stateChanged, this, &PreferenceDialog::onCheckBoxStateChanged);
+    connect(ui->cbTime,       &QCheckBox::stateChanged, this, &PreferenceDialog::onCheckBoxStateChanged);
+    connect(ui->cbLevel,      &QCheckBox::stateChanged, this, &PreferenceDialog::onCheckBoxStateChanged);
+    connect(ui->cbThread,     &QCheckBox::stateChanged, this, &PreferenceDialog::onCheckBoxStateChanged);
+    connect(ui->cbSourceFile, &QCheckBox::stateChanged, this, &PreferenceDialog::onCheckBoxStateChanged);
+    connect(ui->cbCategory,   &QCheckBox::stateChanged, this, &PreferenceDialog::onCheckBoxStateChanged);
+    connect(ui->cbMethod,     &QCheckBox::stateChanged, this, &PreferenceDialog::onCheckBoxStateChanged);
+    connect(ui->cbContent,    &QCheckBox::stateChanged, this, &PreferenceDialog::onCheckBoxStateChanged);
+    connect(ui->cbLogFile,    &QCheckBox::stateChanged, this, &PreferenceDialog::onCheckBoxStateChanged);
+    connect(ui->cbLine,       &QCheckBox::stateChanged, this, &PreferenceDialog::onCheckBoxStateChanged);
 #endif
     adjustSize();
     setFixedSize( size() );
@@ -48,6 +80,29 @@ PreferenceDialog::~PreferenceDialog()
 
 void PreferenceDialog::accept()
 {
+    std::map<QCheckBox*, int> m = {
+        { ui->cbId,         0 },
+        { ui->cbTime,       1 },
+        { ui->cbLevel,      2 },
+        { ui->cbThread,     3 },
+        { ui->cbSourceFile, 4 },
+        { ui->cbCategory,   5 },
+        { ui->cbMethod,     6 },
+        { ui->cbContent,    7 },
+        { ui->cbLogFile,    8 },
+        { ui->cbLine,       9 },
+    };
+
+    int res = 0;
+    for ( auto p : m )
+    {
+        if (p.first->isChecked())
+        {
+            res |= (0x01 << p.second);
+        }
+    }
+
+    g_settings->setLogTableColumnVisible(res);
     g_settings->setTemporaryDirectory(ui->edtTemporaryDirectory->text());
     g_settings->setSourceDirectory(ui->edtSourceCodeDirectory->text());
     g_settings->setSourceViewFontFamily(ui->fontComboBox->currentText());
@@ -147,6 +202,35 @@ void PreferenceDialog::on_cbSourceViewTheme_currentIndexChanged(const QString &t
 {
 #if defined(Q_OS_MAC)
     g_settings->setSourceViewTheme(theme);
+    g_settings->save();
+#endif
+}
+
+void PreferenceDialog::onCheckBoxStateChanged(int)
+{
+    std::map<QCheckBox*, int> m = {
+        { ui->cbId,         0 },
+        { ui->cbTime,       1 },
+        { ui->cbLevel,      2 },
+        { ui->cbThread,     3 },
+        { ui->cbSourceFile, 4 },
+        { ui->cbCategory,   5 },
+        { ui->cbMethod,     6 },
+        { ui->cbContent,    7 },
+        { ui->cbLogFile,    8 },
+        { ui->cbLine,       9 },
+    };
+
+    int res = 0;
+    for ( auto p : m )
+    {
+        if (p.first->isChecked())
+        {
+            res |= (0x01 << p.second);
+        }
+    }
+#if defined(Q_OS_MAC)
+    g_settings->setLogTableColumnVisible(res);
     g_settings->save();
 #endif
 }
