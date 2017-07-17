@@ -24,7 +24,7 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit MainWindow(QWidget *parent = 0);
+    explicit MainWindow(QSplashScreen& splash, QWidget *parent = 0);
     ~MainWindow();
     void openLogs(const QStringList& logs);
     TabWidget* getMainTabWidget();

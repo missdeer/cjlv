@@ -21,7 +21,12 @@ int main(int argc, char *argv[])
 #endif
     SharedTools::QtSingleApplication a("Cisco Jabber Log Viewer", argc, argv);
 
-    a.setAttribute(Qt::AA_UseHighDpiPixmaps);
+    QPixmap pixmap(":/cjlv.png");
+    QSplashScreen splash(pixmap.scaled(500, 500));
+    splash.show();
+    a.processEvents();
+
+    splash.showMessage("Loading external fonts...");
     QStringList fonts {
         ":/Fonts/SourceCodePro-Regular.ttf",
         ":/Fonts/SourceCodePro-Black.ttf",
@@ -42,6 +47,7 @@ int main(int argc, char *argv[])
     QCoreApplication::setApplicationName("Cisco Jabber Log Viewer");
     QCoreApplication::setApplicationVersion("1.1");
 
+    splash.showMessage("Checking evaluating date...");
     QDate d =  QLocale(QLocale::C).toDate(QString(__DATE__).simplified(), QLatin1String("MMM d yyyy"));
     if (d.daysTo(QDate::currentDate()) > 365)
     {
@@ -49,6 +55,7 @@ int main(int argc, char *argv[])
         return 1;
     }
 
+    splash.showMessage("Parsing command line options...");
     QCommandLineParser parser;
     parser.setApplicationDescription("Cisco Jabber Log Viewer");
     parser.addHelpOption();
@@ -62,6 +69,7 @@ int main(int argc, char *argv[])
     // Process the actual command line arguments given by the user
     parser.process(a);
 
+    splash.showMessage("Applying global configurations...");
     g_settings = new Settings;
     BOOST_SCOPE_EXIT(g_settings) {
         delete g_settings;
@@ -94,8 +102,9 @@ int main(int argc, char *argv[])
         }
         return 0;
     }
-	
-    MainWindow w;
+
+    splash.showMessage("Creating main window...");
+    MainWindow w(splash);
     w.showMaximized();
     w.openLogs(logs);
 
@@ -114,5 +123,6 @@ int main(int argc, char *argv[])
 
     QObject::connect(&a, SIGNAL(messageReceived(QString,QObject*)), &w, SLOT(onIPCMessageReceived(QString,QObject*)));
 
+    splash.finish(&w);
     return a.exec();
 }

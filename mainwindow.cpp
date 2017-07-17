@@ -15,7 +15,7 @@ QTabWidget* g_mainTabWidget = nullptr;
 static QProgressDialog* g_progressDialog = nullptr;
 static QAtomicInt g_loadingReferenceCount;
 
-MainWindow::MainWindow(QWidget *parent) :
+MainWindow::MainWindow(QSplashScreen &splash, QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
     thumbbar(nullptr),
@@ -47,6 +47,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionGotoById, &QAction::triggered, ui->tabWidget, &TabWidget::onGotoById);
     connect(ui->actionExit, &QAction::triggered, qApp, &QApplication::quit);
 
+    splash.showMessage("Loading extensions...");
     ExtensionModel* em = ExtensionModel::instance(this);
     em->scanExtensions();;
     connect(em, &ExtensionModel::extensionCreated, this, &MainWindow::onExtensionCreated);
@@ -56,7 +57,11 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(QApplication::clipboard(), &QClipboard::dataChanged, this, &MainWindow::onClipboardChanged);
     ui->actionSearch->setChecked(g_settings->searchOrFitler());
+
+    splash.showMessage("Getting PRT Tracking System token...");
     getPRTTrackingSystemToken();
+
+    splash.showMessage("Creating dock windows...");
     createDockWindows();
 }
 
