@@ -119,6 +119,8 @@ private slots:
 
     void on_actionLogLevelTrace_triggered();
 
+    void on_actionOpenFromJabberWinPRTSite_triggered();
+
 private:
     Ui::MainWindow *ui;
     QWinThumbnailToolBar *thumbbar;

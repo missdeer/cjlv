@@ -1144,3 +1144,11 @@ void MainWindow::on_actionLogLevelTrace_triggered()
 {
     g_settings->setTraceEnabled(ui->actionLogLevelTrace->isChecked());
 }
+
+void MainWindow::on_actionOpenFromJabberWinPRTSite_triggered()
+{
+    bool ok = false;
+    int id = QInputDialog::getInt(this, "Input PRT Id", "Please input PRT Id", 0, 0, 99999, 1, &ok);
+    if (ok)
+        getJabberWinPRTInfo(QString("%1").arg(id));
+}
