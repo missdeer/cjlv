@@ -159,7 +159,7 @@ void Settings::load()
     if (m_everythingPath.isEmpty())
         m_everythingPath = QApplication::applicationDirPath() % "/Everything.exe";
     m_windbgPath = settings.value("windbgPath").toString();
-    m_logTableColumnVisible = settings.value("logTableColumnVisible", 0xFF).toInt();
+    m_logTableColumnVisible = settings.value("logTableColumnVisible", 0x7FFFFFFF).toInt();
 
     ReadPasswordJob job( QLatin1String("com.cisco.jabber.viewer") );
     job.setAutoDelete( false );
