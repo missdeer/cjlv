@@ -107,19 +107,10 @@ LogView::LogView(QWidget *parent)
     , m_rangeSliderValueChangedTimer(new QTimer)
     , m_lastId(-1)
     , m_lastColumn(-1)
-    , m_hheaderContextMenuActions({
-{ "Id",          0, false },
-{ "Time",        1, false },
-{ "Level",       2, false },
-{ "Thread",      3, false },
-{ "Source File", 4, false },
-{ "Category",    5, false },
-{ "Method",      6, false },
-{ "Content",     7, false },
-{ "Log File",    8, false },
-{ "Line",        9, false },
-                                })
 {
+    for(int i = 0; i < 10; i++)
+        m_hheaderColumnShown.append(false);
+
     m_verticalSplitter->addWidget(m_logTableChartTabWidget);
     m_verticalSplitter->addWidget(m_codeEditorTabWidget);
 
@@ -905,22 +896,43 @@ void LogView::onCustomContextMenuRequested(const QPoint &pos)
 void LogView::onHHeaderContextMenuActionTriggered()
 {
     QAction* p = qobject_cast<QAction*>(sender());
-    int idx = 0;
-    for(;p->text() != m_hheaderContextMenuActions[idx].label; idx++);
-    HHeaderContextMenuAction& a = m_hheaderContextMenuActions[idx];
-    a.hidden = !a.hidden;
-    m_logsTableView->setColumnHidden(a.index, a.hidden);
+    QMap<QString, int> labels = {
+        {"Id", 0},
+        {"Time",1},
+        {"Level",2},
+        {"Thread",3},
+        {"Source File",4},
+        {"Category",5},
+        {"Method",6},
+        {"Content",7},
+        {"Log File",8},
+        {"Line",9},
+    };
+    int idx = labels[p->text()];
+    m_hheaderColumnShown[idx] = !m_hheaderColumnShown[idx] ;
+    m_logsTableView->setColumnHidden(idx, m_hheaderColumnShown[idx] );
 }
 
 void LogView::onHHeaderCustomContextMenuRequested(const QPoint &pos)
 {
     QMenu menu(this);
-
-    for (auto a : m_hheaderContextMenuActions)
+    QStringList labels = {
+        "Id",
+        "Time",
+        "Level",
+        "Thread",
+        "Source File",
+        "Category",
+        "Method",
+        "Content",
+        "Log File",
+        "Line",
+    };
+    for (int i = 0; i < m_hheaderColumnShown.length(); i++)
     {
-        QAction* pAction = new QAction(a.label, &menu);
+        QAction* pAction = new QAction(labels[i], &menu);
         pAction->setCheckable(true);
-        pAction->setChecked(!a.hidden);
+        pAction->setChecked(!m_hheaderColumnShown[i]);
         connect(pAction, &QAction::triggered, this, &LogView::onHHeaderContextMenuActionTriggered);
         menu.addAction(pAction);
     }
