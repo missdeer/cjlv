@@ -67,7 +67,7 @@
      <x>0</x>
      <y>0</y>
      <width>1156</width>
-     <height>23</height>
+     <height>18</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -134,6 +134,9 @@
      <string>&amp;Help</string>
     </property>
     <addaction name="actionHelpContent"/>
+    <addaction name="actionGotoPRTTrackingSystem"/>
+    <addaction name="actionGotoJabberWinPRTWebsite"/>
+    <addaction name="separator"/>
     <addaction name="actionAbout"/>
    </widget>
    <widget class="QMenu" name="menuExtension">
@@ -195,6 +198,7 @@
    <addaction name="actionOpenLogFolder"/>
    <addaction name="actionOpenCurrentInstalledJabberLogFolder"/>
    <addaction name="actionOpenFromPRTTrackingSystemURL"/>
+   <addaction name="actionOpenFromJabberWinPRTSite"/>
    <addaction name="separator"/>
    <addaction name="actionScrollToTop"/>
    <addaction name="actionScrollToBottom"/>
@@ -680,6 +684,9 @@
    <property name="shortcut">
     <string>Ctrl+F5</string>
    </property>
+   <property name="visible">
+    <bool>false</bool>
+   </property>
   </action>
   <action name="actionGotoById">
    <property name="icon">
@@ -831,11 +838,25 @@
    </property>
   </action>
   <action name="actionOpenFromJabberWinPRTSite">
+   <property name="icon">
+    <iconset resource="cjlv.qrc">
+     <normaloff>:/image/open-win-prt-id.png</normaloff>:/image/open-win-prt-id.png</iconset>
+   </property>
    <property name="text">
     <string>Open From Jabber Win PRT Site...</string>
    </property>
    <property name="shortcut">
     <string>F11</string>
+   </property>
+  </action>
+  <action name="actionGotoPRTTrackingSystem">
+   <property name="text">
+    <string>Goto PRT Tracking System...</string>
+   </property>
+  </action>
+  <action name="actionGotoJabberWinPRTWebsite">
+   <property name="text">
+    <string>Goto Jabber Win PRT Website...</string>
    </property>
   </action>
  </widget>

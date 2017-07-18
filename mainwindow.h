@@ -121,6 +121,10 @@ private slots:
 
     void on_actionOpenFromJabberWinPRTSite_triggered();
 
+    void on_actionGotoPRTTrackingSystem_triggered();
+
+    void on_actionGotoJabberWinPRTWebsite_triggered();
+
 private:
     Ui::MainWindow *ui;
     QWinThumbnailToolBar *thumbbar;

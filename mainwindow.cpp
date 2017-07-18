@@ -1152,3 +1152,13 @@ void MainWindow::on_actionOpenFromJabberWinPRTSite_triggered()
     if (ok)
         getJabberWinPRTInfo(QString("%1").arg(id));
 }
+
+void MainWindow::on_actionGotoPRTTrackingSystem_triggered()
+{
+    QDesktopServices::openUrl(QUrl("http://prt.jabberqa.cisco.com/#/conversations"));
+}
+
+void MainWindow::on_actionGotoJabberWinPRTWebsite_triggered()
+{
+    QDesktopServices::openUrl(QUrl("http://jabber-prt.cisco.com/ProblemReportTriageTool/"));
+}
