@@ -6,8 +6,8 @@
 ; Do not use the same AppId value in installers for other applications.
 ; (To generate a new GUID, click Tools | Generate GUID inside the IDE.)
 AppId={{889D6462-F830-4294-B564-3824442FD6EC}
-AppName=Cisco Jabber Log Viewer 1.2 - x64
-AppVerName=Cisco Jabber Log Viewer 1.2 - x64
+AppName=Cisco Jabber Log Viewer 1.3 - x64
+AppVerName=Cisco Jabber Log Viewer 1.3 - x64
 AppPublisher=fyang3@cisco.com
 AppPublisherURL=http://www.cisco.com/
 AppSupportURL=http://www.cisco.com/
@@ -19,20 +19,20 @@ OutputBaseFilename=CiscoJabberLogViewerSetup_x64
 SolidCompression=true
 Compression=lzma/Ultra
 InternalCompressLevel=Ultra
-VersionInfoVersion=1.2.0.1
+VersionInfoVersion=1.3.0.1
 VersionInfoCompany=Cisco
 VersionInfoDescription=Cisco Jabber Log Viewer 1.2 - x64
 VersionInfoTextVersion=Cisco Jabber Log Viewer 1.2 - x64
-VersionInfoCopyright=Copyright (c) 2016 Cisco.com. All rights reserved.
-AppCopyright=Copyright (C) 2016 Cisco.com. All rights reserved.
+VersionInfoCopyright=Copyright (c) 2016 - 2017 Cisco.com. All rights reserved.
+AppCopyright=Copyright (C) 2016 - 2017 Cisco.com. All rights reserved.
 PrivilegesRequired=none
 AllowRootDirectory=true
 AllowUNCPath=false
 ShowLanguageDialog=auto
 WizardImageFile=compiler:WizModernImage-IS.bmp
 WizardSmallImageFile=compiler:WizModernSmallImage-IS.bmp
-AppVersion=1.2.0.1
-UninstallDisplayName=Cisco Jabber Log Viewer 1.2 - x64
+AppVersion=1.3.0.1
+UninstallDisplayName=Cisco Jabber Log Viewer 1.3 - x64
 ChangesAssociations=true
 ChangesEnvironment=true
 DefaultGroupName=Cisco Jabber Log Viewer

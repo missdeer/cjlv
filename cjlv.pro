@@ -163,12 +163,20 @@ win32: {
         contains(QMAKE_HOST.arch, x86_64): {
             copy_everything_dll.commands = '$(COPY_FILE) $$shell_path($$PWD/3rdparty/Everything-SDK/dll/Everything64.dll) $$shell_path($$OUT_PWD/Release/Everything.dll)'
             copy_everything_exe.commands = '$(COPY_FILE) $$shell_path($$PWD/3rdparty/Everything-SDK/exe/Everything64.exe) $$shell_path($$OUT_PWD/Release/Everything.exe)'
-            copy_iss.commands = '$(COPY_FILE) $$shell_path($$PWD/cjlv-msvc-x64.iss) $$shell_path($$OUT_PWD/Release/cjlv-msvc-x64.iss)'
+            win32-msvc* {
+                copy_iss.commands = '$(COPY_FILE) $$shell_path($$PWD/cjlv-msvc-x64.iss) $$shell_path($$OUT_PWD/Release/cjlv-msvc-x64.iss)'
+            } else {
+                copy_iss.commands = '$(COPY_FILE) $$shell_path($$PWD/cjlv-static-x64.iss) $$shell_path($$OUT_PWD/Release/cjlv-msvc-x64.iss)'
+            }
         }
         else: {
             copy_everything_dll.commands = '$(COPY_FILE) $$shell_path($$PWD/3rdparty/Everything-SDK/dll/Everything32.dll) $$shell_path($$OUT_PWD/Release/Everything.dll)'
             copy_everything_exe.commands = '$(COPY_FILE) $$shell_path($$PWD/3rdparty/Everything-SDK/exe/Everything32.exe) $$shell_path($$OUT_PWD/Release/Everything.exe)'
-            copy_iss.commands = '$(COPY_FILE) $$shell_path($$PWD/cjlv-msvc-x86.iss) $$shell_path($$OUT_PWD/Release/cjlv-msvc-x86.iss)'
+            win32-msvc* {
+                copy_iss.commands = '$(COPY_FILE) $$shell_path($$PWD/cjlv-msvc-x86.iss) $$shell_path($$OUT_PWD/Release/cjlv-msvc-x86.iss)'
+            } else {
+                copy_iss.commands = '$(COPY_FILE) $$shell_path($$PWD/cjlv-static-x86.iss) $$shell_path($$OUT_PWD/Release/cjlv-msvc-x64.iss)'
+            }
         }
 
         QMAKE_EXTRA_TARGETS += copy_iss copy_everything_dll copy_everything_exe
