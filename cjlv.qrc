@@ -1208,5 +1208,7 @@
         <file>Fonts/SourceCodePro-Semibold.ttf</file>
         <file>qml/RangeSlider.qml</file>
         <file>image/open-win-prt-id.png</file>
+        <file>image/closedeye.png</file>
+        <file>image/openedeye.png</file>
     </qresource>
 </RCC>

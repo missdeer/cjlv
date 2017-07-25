@@ -133,26 +133,35 @@ LogView::LogView(QWidget *parent)
     topBarLayout->addWidget(label);
     m_cbSearchKeyword = new QComboBox(topBar);
     topBarLayout->addWidget(m_cbSearchKeyword);
+    m_extraToolPanelVisibleButton = new QToolButton(topBar);
+    m_extraToolPanelVisibleButton->setIcon(QIcon(":/image/openedeye.png"));
+    topBarLayout->addWidget(m_extraToolPanelVisibleButton);
     topBarLayout->setStretch(1, 1);
 
     m_api = new QuickWidgetAPI(this);
     connect(m_api, &QuickWidgetAPI::valueChanged, this, &LogView::onRangeSliderValueChanged);
 
-    QQuickWidget* rangeSlider = new QQuickWidget(logsTab);
-    rangeSlider->setResizeMode(QQuickWidget::SizeRootObjectToView);
-    rangeSlider->engine()->rootContext()->setContextProperty("LogViewAPI", m_api);
-    rangeSlider->setSource(QUrl("qrc:qml/RangeSlider.qml"));
+    m_extraToolPanel = new QQuickWidget(logsTab);
+    m_extraToolPanel->setResizeMode(QQuickWidget::SizeRootObjectToView);
+    m_extraToolPanel->engine()->rootContext()->setContextProperty("LogViewAPI", m_api);
+    m_extraToolPanel->setSource(QUrl("qrc:qml/RangeSlider.qml"));
 
     QVBoxLayout* logsTabLayout = new QVBoxLayout;
     logsTabLayout->setMargin(0);
     logsTabLayout->addWidget(topBar);
-    logsTabLayout->addWidget(rangeSlider);
+    logsTabLayout->addWidget(m_extraToolPanel);
     logsTabLayout->addWidget(m_logsTableView);
     logsTabLayout->setStretch(2, 1);
     logsTab->setLayout(logsTabLayout);
 
     mainLayout->addWidget(m_verticalSplitter);
     setLayout(mainLayout);
+
+    m_extraToolPanel->setVisible(false);
+    connect(m_extraToolPanelVisibleButton, &QToolButton::clicked, [&]() {
+            m_extraToolPanel->setVisible(!m_extraToolPanel->isVisible());
+            m_extraToolPanelVisibleButton->setIcon(m_extraToolPanel->isVisible() ? QIcon(":/image/closedeye.png") : QIcon(":/image/openedeye.png"));
+    });
 
     m_logTableChartTabWidget->setTabPosition(QTabWidget::South);
     m_logTableChartTabWidget->setTabsClosable(false);

@@ -154,6 +154,8 @@ private:
     LogModel* m_logModel;
     PresenceWidget* m_presenceWidget;
     QComboBox* m_cbSearchKeyword;
+    QQuickWidget* m_extraToolPanel;
+    QToolButton* m_extraToolPanelVisibleButton;
     QuickWidgetAPI* m_api;
     QTimer* m_rangeSliderValueChangedTimer;
     QString m_path;
