@@ -147,7 +147,7 @@ LogView::LogView(QWidget *parent)
     m_extraToolPanel->setClearColor(Qt::transparent);
     m_extraToolPanel->setResizeMode(QQuickWidget::SizeRootObjectToView);
     m_extraToolPanel->engine()->rootContext()->setContextProperty("LogViewAPI", m_api);
-    m_extraToolPanel->setSource(QUrl("qrc:qml/RangeSlider.qml"));
+    m_extraToolPanel->setSource(QUrl("qrc:qml/main.qml"));
 
     QVBoxLayout* logsTabLayout = new QVBoxLayout;
     logsTabLayout->setMargin(0);
