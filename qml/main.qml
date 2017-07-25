@@ -94,7 +94,7 @@ Column {
             id: cbReceivedStanzaOnly
             enabled: cbStanzaOnly.checked
             checked: LogViewAPI.receivedStanzaOnly
-            text: qsTr("Received Stanza Only")
+            text: qsTr("Include Received Stanza")
 
             indicator: Rectangle {
                 implicitWidth: 14
@@ -120,7 +120,7 @@ Column {
             id: cbSentStanzaOnly
             enabled: cbStanzaOnly.checked
             checked: LogViewAPI.sentStanzaOnly
-            text: qsTr("Sent Stanza Only")
+            text: qsTr("Include Sent Stanza")
 
             indicator: Rectangle {
                 implicitWidth: 14
