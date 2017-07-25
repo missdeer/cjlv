@@ -142,6 +142,9 @@ LogView::LogView(QWidget *parent)
     connect(m_api, &QuickWidgetAPI::valueChanged, this, &LogView::onRangeSliderValueChanged);
 
     m_extraToolPanel = new QQuickWidget(logsTab);
+    m_extraToolPanel->setAttribute(Qt::WA_TranslucentBackground, true);
+    m_extraToolPanel->setAttribute(Qt::WA_AlwaysStackOnTop, true);
+    m_extraToolPanel->setClearColor(Qt::transparent);
     m_extraToolPanel->setResizeMode(QQuickWidget::SizeRootObjectToView);
     m_extraToolPanel->engine()->rootContext()->setContextProperty("LogViewAPI", m_api);
     m_extraToolPanel->setSource(QUrl("qrc:qml/RangeSlider.qml"));

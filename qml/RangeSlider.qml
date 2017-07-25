@@ -64,7 +64,7 @@ Column {
         width: parent.width
 
         CheckBox {
-            id: checkBox
+            id: cbStanzaOnly
             text: qsTr("Stanza Only")
         }
     }
@@ -73,12 +73,12 @@ Column {
         width: parent.width
 
         CheckBox {
-            id: checkBox1
+            id: cbReceivedStanzaOnly
             text: qsTr("Received Stanza Only")
         }
 
         CheckBox {
-            id: checkBox2
+            id: cbSentStanzaOnly
             text: qsTr("Sent Stanza Only")
         }
     }
@@ -88,59 +88,58 @@ Column {
         rows: 2
 
         CheckBox {
-            id: checkBox3
+            id: cbPresence
             text: qsTr("presence")
         }
 
         CheckBox {
-            id: checkBox4
+            id: cbMessage
             text: qsTr("message")
         }
 
         CheckBox {
-            id: checkBox5
-            text: qsTr("stream:stream")
-        }
-
-        CheckBox {
-            id: checkBox6
-            text: qsTr("stream:features")
-        }
-
-        CheckBox {
-            id: checkBox7
+            id: cbSuccess
             text: qsTr("success")
         }
 
         CheckBox {
-            id: checkBox8
+            id: cbIq
             text: qsTr("iq")
         }
 
         CheckBox {
-            id: checkBox9
+            id: cbR
             text: qsTr("r")
         }
 
-
         CheckBox {
-            id: checkBox13
+            id: cbA
             text: qsTr("a")
         }
+
         CheckBox {
-            id: checkBox10
+            id: cbX
             text: qsTr("x")
         }
 
-
         CheckBox {
-            id: checkBox11
+            id: cbEnable
             text: qsTr("enable")
         }
 
         CheckBox {
-            id: checkBox12
+            id: cbEnabled
             text: qsTr("enabled")
+        }
+
+        CheckBox {
+            id: cbStreamStream
+            text: qsTr("stream:stream")
+        }
+
+        CheckBox {
+            id: cbStreamFeatures
+            text: qsTr("stream:features")
         }
     }
 }
