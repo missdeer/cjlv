@@ -51,7 +51,8 @@ SOURCES += main.cpp\
     presencemodel.cpp \
     presencewidget.cpp \
     prtlistitemdelegate.cpp \
-    shortcutedit.cpp
+    shortcutedit.cpp \
+    quickwidgetapi.cpp
 
 HEADERS  += mainwindow.h \
     logview.h \
@@ -71,7 +72,8 @@ HEADERS  += mainwindow.h \
     presencemodel.h \
     presencewidget.h \
     prtlistitemdelegate.h \
-    shortcutedit.h
+    shortcutedit.h \
+    quickwidgetapi.h
 
 FORMS    += mainwindow.ui \
     preferencedialog.ui \
