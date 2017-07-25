@@ -739,6 +739,9 @@ void LogView::openSourceFileInVS(const QString &filePath, int line)
     // run
     QString arg = QString("\"%1\" %2 0").arg(QDir::toNativeSeparators(filePath)).arg(line);
     ::ShellExecuteW(NULL, L"open", localPath.toStdWString().c_str(), arg.toStdWString().c_str(), NULL, SW_SHOWNORMAL);
+#else
+    Q_UNUSED(filePath);
+    Q_UNUSED(line);
 #endif
 }
 

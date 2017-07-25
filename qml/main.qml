@@ -5,7 +5,7 @@ import QtQuick.Controls.Universal 2.0
 Column {
     id: column
     width: 500
-    height: 200
+    height: 140
 
     RangeSlider {
         id: rangeSlider
@@ -65,7 +65,7 @@ Column {
         CheckBox {
             id: cbStanzaOnly
             text: qsTr("Stanza Only")
-
+            checked: LogViewAPI.stanzaOnly
             indicator: Rectangle {
                 implicitWidth: 14
                 implicitHeight: 14
@@ -93,6 +93,7 @@ Column {
         CheckBox {
             id: cbReceivedStanzaOnly
             enabled: cbStanzaOnly.checked
+            checked: LogViewAPI.receivedStanzaOnly
             text: qsTr("Received Stanza Only")
 
             indicator: Rectangle {
@@ -118,6 +119,7 @@ Column {
         CheckBox {
             id: cbSentStanzaOnly
             enabled: cbStanzaOnly.checked
+            checked: LogViewAPI.sentStanzaOnly
             text: qsTr("Sent Stanza Only")
 
             indicator: Rectangle {
@@ -148,6 +150,7 @@ Column {
         CheckBox {
             id: cbPresence
             enabled: cbStanzaOnly.checked
+            checked: LogViewAPI.presenceStanza
             text: qsTr("presence")
 
             indicator: Rectangle {
@@ -173,6 +176,7 @@ Column {
         CheckBox {
             id: cbMessage
             enabled: cbStanzaOnly.checked
+            checked: LogViewAPI.messageStanza
             text: qsTr("message")
 
             indicator: Rectangle {
@@ -198,6 +202,7 @@ Column {
         CheckBox {
             id: cbSuccess
             enabled: cbStanzaOnly.checked
+            checked: LogViewAPI.successStanza
             text: qsTr("success")
 
             indicator: Rectangle {
@@ -223,6 +228,7 @@ Column {
         CheckBox {
             id: cbIq
             enabled: cbStanzaOnly.checked
+            checked: LogViewAPI.iqStanza
             text: qsTr("iq")
 
             indicator: Rectangle {
@@ -248,6 +254,7 @@ Column {
         CheckBox {
             id: cbR
             enabled: cbStanzaOnly.checked
+            checked: LogViewAPI.rStanza
             text: qsTr("r")
 
             indicator: Rectangle {
@@ -273,6 +280,7 @@ Column {
         CheckBox {
             id: cbA
             enabled: cbStanzaOnly.checked
+            checked: LogViewAPI.aStanza
             text: qsTr("a")
 
             indicator: Rectangle {
@@ -298,6 +306,7 @@ Column {
         CheckBox {
             id: cbX
             enabled: cbStanzaOnly.checked
+            checked: LogViewAPI.xStanza
             text: qsTr("x")
 
             indicator: Rectangle {
@@ -323,6 +332,7 @@ Column {
         CheckBox {
             id: cbEnable
             enabled: cbStanzaOnly.checked
+            checked: LogViewAPI.enableStanza
             text: qsTr("enable")
 
             indicator: Rectangle {
@@ -348,6 +358,7 @@ Column {
         CheckBox {
             id: cbEnabled
             enabled: cbStanzaOnly.checked
+            checked: LogViewAPI.enabledStanza
             text: qsTr("enabled")
 
             indicator: Rectangle {
@@ -373,6 +384,7 @@ Column {
         CheckBox {
             id: cbStreamStream
             enabled: cbStanzaOnly.checked
+            checked: LogViewAPI.streamStreamStanza
             text: qsTr("stream:stream")
 
             indicator: Rectangle {
@@ -398,6 +410,7 @@ Column {
         CheckBox {
             id: cbStreamFeatures
             enabled: cbStanzaOnly.checked
+            checked: LogViewAPI.streamFeaturesStanza
             text: qsTr("stream:features")
 
             indicator: Rectangle {
