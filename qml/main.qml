@@ -20,43 +20,14 @@ Column {
         first.onValueChanged: LogViewAPI.firstValue = first.value
         second.onValueChanged: LogViewAPI.secondValue = second.value
 
-        background: Rectangle {
-            x: rangeSlider.leftPadding
-            y: rangeSlider.topPadding + rangeSlider.availableHeight / 2 - height / 2
-            implicitWidth: 200
-            implicitHeight: 4
-            width: rangeSlider.availableWidth
-            height: implicitHeight
-            radius: 2
-            color: "#bdbebf"
-
-            Rectangle {
-                x: rangeSlider.first.visualPosition * parent.width
-                width: rangeSlider.second.visualPosition * parent.width - x
-                height: parent.height
-                color: "#21be2b"
-                radius: 2
-            }
+        background: RangeSliderBackground{}
+        first.handle: RangeSliderHandle{
+            x: parent.leftPadding + parent.first.visualPosition * (parent.availableWidth - width)
+            color: parent.first.pressed ? "#f0f0f0" : "#f6f6f6"
         }
-
-        first.handle: Rectangle {
-            x: rangeSlider.leftPadding + rangeSlider.first.visualPosition * (rangeSlider.availableWidth - width)
-            y: rangeSlider.topPadding + rangeSlider.availableHeight / 2 - height / 2
-            implicitWidth: 14
-            implicitHeight: 14
-            radius: 7
-            color: rangeSlider.first.pressed ? "#f0f0f0" : "#f6f6f6"
-            border.color: "#bdbebf"
-        }
-
-        second.handle: Rectangle {
-            x: rangeSlider.leftPadding + rangeSlider.second.visualPosition * (rangeSlider.availableWidth - width)
-            y: rangeSlider.topPadding + rangeSlider.availableHeight / 2 - height / 2
-            implicitWidth: 14
-            implicitHeight: 14
-            radius: 7
-            color: rangeSlider.second.pressed ? "#f0f0f0" : "#f6f6f6"
-            border.color: "#bdbebf"
+        second.handle: RangeSliderHandle{
+            x: parent.leftPadding + parent.second.visualPosition * (parent.availableWidth - width)
+            color: parent.second.pressed ? "#f0f0f0" : "#f6f6f6"
         }
     }
 

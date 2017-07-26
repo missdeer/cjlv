@@ -1212,5 +1212,7 @@
         <file>image/openedeye.png</file>
         <file>qml/control/CheckBoxIndicator.qml</file>
         <file>qml/control/qmldir</file>
+        <file>qml/control/RangeSliderBackground.qml</file>
+        <file>qml/control/RangeSliderHandle.qml</file>
     </qresource>
 </RCC>
