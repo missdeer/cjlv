@@ -8,8 +8,8 @@ QuickWidgetAPI::QuickWidgetAPI(QObject *parent)
     , m_from(1)
     , m_to(1)
     , m_stanzaOnly(false)
-    , m_receivedStanzaOnly(true)
-    , m_sentStanzaOnly(true)
+    , m_receivedStanza(true)
+    , m_sentStanza(true)
     , m_xStanza(true)
     , m_rStanza(true)
     , m_aStanza(true)
@@ -62,24 +62,24 @@ void QuickWidgetAPI::setStanzaOnly(bool stanzaOnly)
     m_stanzaOnly = stanzaOnly;
 }
 
-bool QuickWidgetAPI::getReceivedStanzaOnly() const
+bool QuickWidgetAPI::getReceivedStanza() const
 {
-    return m_receivedStanzaOnly;
+    return m_receivedStanza;
 }
 
-void QuickWidgetAPI::setReceivedStanzaOnly(bool receivedStanzaOnly)
+void QuickWidgetAPI::setReceivedStanza(bool receivedStanza)
 {
-    m_receivedStanzaOnly = receivedStanzaOnly;
+    m_receivedStanza = receivedStanza;
 }
 
-bool QuickWidgetAPI::getSentStanzaOnly() const
+bool QuickWidgetAPI::getSentStanza() const
 {
-    return m_sentStanzaOnly;
+    return m_sentStanza;
 }
 
-void QuickWidgetAPI::setSentStanzaOnly(bool sentStanzaOnly)
+void QuickWidgetAPI::setSentStanza(bool sentStanza)
 {
-    m_sentStanzaOnly = sentStanzaOnly;
+    m_sentStanza = sentStanza;
 }
 
 bool QuickWidgetAPI::getXStanza() const

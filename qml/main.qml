@@ -1,6 +1,7 @@
 import QtQuick 2.7
 import QtQuick.Controls 2.1
 import QtQuick.Controls.Universal 2.0
+import "qrc:/qml/control"
 
 Column {
     id: column
@@ -66,24 +67,7 @@ Column {
             id: cbStanzaOnly
             text: qsTr("Stanza Only")
             checked: LogViewAPI.stanzaOnly
-            indicator: Rectangle {
-                implicitWidth: 14
-                implicitHeight: 14
-                x: parent.leftPadding
-                y: parent.height / 2 - height / 2
-                radius: 3
-                border.color: parent.down ? "#17a81a" : "#21be2b"
-
-                Rectangle {
-                    width: 8
-                    height: 8
-                    x: 3
-                    y: 3
-                    radius: 2
-                    color: parent.down ? "#17a81a" : "#21be2b"
-                    visible: parent.parent.checked
-                }
-            }
+            indicator: CheckBoxIndicator{}
         }
     }
 
@@ -91,55 +75,25 @@ Column {
         width: parent.width
 
         CheckBox {
-            id: cbReceivedStanzaOnly
+            id: cbIncludeReceivedStanza
             enabled: cbStanzaOnly.checked
-            checked: LogViewAPI.receivedStanzaOnly
+            checked: LogViewAPI.receivedStanza
             text: qsTr("Include Received Stanza")
 
-            indicator: Rectangle {
-                implicitWidth: 14
-                implicitHeight: 14
-                x: parent.leftPadding
-                y: parent.height / 2 - height / 2
-                radius: 3
-                border.color: parent.down ? "#17a81a" : "#21be2b"
-
-                Rectangle {
-                    width: 8
-                    height: 8
-                    x: 3
-                    y: 3
-                    radius: 2
-                    color: parent.down ? "#17a81a" : "#21be2b"
-                    visible: parent.parent.checked
-                }
-            }
+            indicator: CheckBoxIndicator{}
+            onCheckedChanged: if (cbIncludeReceivedStanza.checked == false && cbIncludeSentStanza.checked == false)
+                                  cbIncludeSentStanza.checked = true
         }
 
         CheckBox {
-            id: cbSentStanzaOnly
+            id: cbIncludeSentStanza
             enabled: cbStanzaOnly.checked
-            checked: LogViewAPI.sentStanzaOnly
+            checked: LogViewAPI.sentStanza
             text: qsTr("Include Sent Stanza")
 
-            indicator: Rectangle {
-                implicitWidth: 14
-                implicitHeight: 14
-                x: parent.leftPadding
-                y: parent.height / 2 - height / 2
-                radius: 3
-                border.color: parent.down ? "#17a81a" : "#21be2b"
-
-                Rectangle {
-                    width: 8
-                    height: 8
-                    x: 3
-                    y: 3
-                    radius: 2
-                    color: parent.down ? "#17a81a" : "#21be2b"
-                    visible: parent.parent.checked
-                }
-            }
+            indicator: CheckBoxIndicator{}
+            onCheckedChanged: if (cbIncludeReceivedStanza.checked == false && cbIncludeSentStanza.checked == false)
+                                  cbIncludeReceivedStanza.checked = true
         }
     }
 
@@ -153,24 +107,7 @@ Column {
             checked: LogViewAPI.presenceStanza
             text: qsTr("presence")
 
-            indicator: Rectangle {
-                implicitWidth: 14
-                implicitHeight: 14
-                x: parent.leftPadding
-                y: parent.height / 2 - height / 2
-                radius: 3
-                border.color: parent.down ? "#17a81a" : "#21be2b"
-
-                Rectangle {
-                    width: 8
-                    height: 8
-                    x: 3
-                    y: 3
-                    radius: 2
-                    color: parent.down ? "#17a81a" : "#21be2b"
-                    visible: parent.parent.checked
-                }
-            }
+            indicator: CheckBoxIndicator{}
         }
 
         CheckBox {
@@ -179,24 +116,7 @@ Column {
             checked: LogViewAPI.messageStanza
             text: qsTr("message")
 
-            indicator: Rectangle {
-                implicitWidth: 14
-                implicitHeight: 14
-                x: parent.leftPadding
-                y: parent.height / 2 - height / 2
-                radius: 3
-                border.color: parent.down ? "#17a81a" : "#21be2b"
-
-                Rectangle {
-                    width: 8
-                    height: 8
-                    x: 3
-                    y: 3
-                    radius: 2
-                    color: parent.down ? "#17a81a" : "#21be2b"
-                    visible: parent.parent.checked
-                }
-            }
+            indicator: CheckBoxIndicator{}
         }
 
         CheckBox {
@@ -205,24 +125,7 @@ Column {
             checked: LogViewAPI.successStanza
             text: qsTr("success")
 
-            indicator: Rectangle {
-                implicitWidth: 14
-                implicitHeight: 14
-                x: parent.leftPadding
-                y: parent.height / 2 - height / 2
-                radius: 3
-                border.color: parent.down ? "#17a81a" : "#21be2b"
-
-                Rectangle {
-                    width: 8
-                    height: 8
-                    x: 3
-                    y: 3
-                    radius: 2
-                    color: parent.down ? "#17a81a" : "#21be2b"
-                    visible: parent.parent.checked
-                }
-            }
+            indicator: CheckBoxIndicator{}
         }
 
         CheckBox {
@@ -231,24 +134,7 @@ Column {
             checked: LogViewAPI.iqStanza
             text: qsTr("iq")
 
-            indicator: Rectangle {
-                implicitWidth: 14
-                implicitHeight: 14
-                x: parent.leftPadding
-                y: parent.height / 2 - height / 2
-                radius: 3
-                border.color: parent.down ? "#17a81a" : "#21be2b"
-
-                Rectangle {
-                    width: 8
-                    height: 8
-                    x: 3
-                    y: 3
-                    radius: 2
-                    color: parent.down ? "#17a81a" : "#21be2b"
-                    visible: parent.parent.checked
-                }
-            }
+            indicator: CheckBoxIndicator{}
         }
 
         CheckBox {
@@ -257,24 +143,7 @@ Column {
             checked: LogViewAPI.rStanza
             text: qsTr("r")
 
-            indicator: Rectangle {
-                implicitWidth: 14
-                implicitHeight: 14
-                x: parent.leftPadding
-                y: parent.height / 2 - height / 2
-                radius: 3
-                border.color: parent.down ? "#17a81a" : "#21be2b"
-
-                Rectangle {
-                    width: 8
-                    height: 8
-                    x: 3
-                    y: 3
-                    radius: 2
-                    color: parent.down ? "#17a81a" : "#21be2b"
-                    visible: parent.parent.checked
-                }
-            }
+            indicator: CheckBoxIndicator{}
         }
 
         CheckBox {
@@ -283,24 +152,7 @@ Column {
             checked: LogViewAPI.aStanza
             text: qsTr("a")
 
-            indicator: Rectangle {
-                implicitWidth: 14
-                implicitHeight: 14
-                x: parent.leftPadding
-                y: parent.height / 2 - height / 2
-                radius: 3
-                border.color: parent.down ? "#17a81a" : "#21be2b"
-
-                Rectangle {
-                    width: 8
-                    height: 8
-                    x: 3
-                    y: 3
-                    radius: 2
-                    color: parent.down ? "#17a81a" : "#21be2b"
-                    visible: parent.parent.checked
-                }
-            }
+            indicator: CheckBoxIndicator{}
         }
 
         CheckBox {
@@ -309,24 +161,7 @@ Column {
             checked: LogViewAPI.xStanza
             text: qsTr("x")
 
-            indicator: Rectangle {
-                implicitWidth: 14
-                implicitHeight: 14
-                x: parent.leftPadding
-                y: parent.height / 2 - height / 2
-                radius: 3
-                border.color: parent.down ? "#17a81a" : "#21be2b"
-
-                Rectangle {
-                    width: 8
-                    height: 8
-                    x: 3
-                    y: 3
-                    radius: 2
-                    color: parent.down ? "#17a81a" : "#21be2b"
-                    visible: parent.parent.checked
-                }
-            }
+            indicator: CheckBoxIndicator{}
         }
 
         CheckBox {
@@ -335,24 +170,7 @@ Column {
             checked: LogViewAPI.enableStanza
             text: qsTr("enable")
 
-            indicator: Rectangle {
-                implicitWidth: 14
-                implicitHeight: 14
-                x: parent.leftPadding
-                y: parent.height / 2 - height / 2
-                radius: 3
-                border.color: parent.down ? "#17a81a" : "#21be2b"
-
-                Rectangle {
-                    width: 8
-                    height: 8
-                    x: 3
-                    y: 3
-                    radius: 2
-                    color: parent.down ? "#17a81a" : "#21be2b"
-                    visible: parent.parent.checked
-                }
-            }
+            indicator: CheckBoxIndicator{}
         }
 
         CheckBox {
@@ -361,24 +179,7 @@ Column {
             checked: LogViewAPI.enabledStanza
             text: qsTr("enabled")
 
-            indicator: Rectangle {
-                implicitWidth: 14
-                implicitHeight: 14
-                x: parent.leftPadding
-                y: parent.height / 2 - height / 2
-                radius: 3
-                border.color: parent.down ? "#17a81a" : "#21be2b"
-
-                Rectangle {
-                    width: 8
-                    height: 8
-                    x: 3
-                    y: 3
-                    radius: 2
-                    color: parent.down ? "#17a81a" : "#21be2b"
-                    visible: parent.parent.checked
-                }
-            }
+            indicator: CheckBoxIndicator{}
         }
 
         CheckBox {
@@ -387,24 +188,7 @@ Column {
             checked: LogViewAPI.streamStreamStanza
             text: qsTr("stream:stream")
 
-            indicator: Rectangle {
-                implicitWidth: 14
-                implicitHeight: 14
-                x: parent.leftPadding
-                y: parent.height / 2 - height / 2
-                radius: 3
-                border.color: parent.down ? "#17a81a" : "#21be2b"
-
-                Rectangle {
-                    width: 8
-                    height: 8
-                    x: 3
-                    y: 3
-                    radius: 2
-                    color: parent.down ? "#17a81a" : "#21be2b"
-                    visible: parent.parent.checked
-                }
-            }
+            indicator: CheckBoxIndicator{}
         }
 
         CheckBox {
@@ -413,24 +197,7 @@ Column {
             checked: LogViewAPI.streamFeaturesStanza
             text: qsTr("stream:features")
 
-            indicator: Rectangle {
-                implicitWidth: 14
-                implicitHeight: 14
-                x: parent.leftPadding
-                y: parent.height / 2 - height / 2
-                radius: 3
-                border.color: parent.down ? "#17a81a" : "#21be2b"
-
-                Rectangle {
-                    width: 8
-                    height: 8
-                    x: 3
-                    y: 3
-                    radius: 2
-                    color: parent.down ? "#17a81a" : "#21be2b"
-                    visible: parent.parent.checked
-                }
-            }
+            indicator: CheckBoxIndicator{}
         }
     }
 }

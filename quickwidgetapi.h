@@ -11,8 +11,8 @@ class QuickWidgetAPI : public QObject
     Q_PROPERTY(int firstValue READ getFirstValue WRITE setFirstValue NOTIFY firstValueChanged)
     Q_PROPERTY(int secondValue READ getSecondValue WRITE setSecondValue NOTIFY secondValueChanged)
     Q_PROPERTY(bool stanzaOnly READ getStanzaOnly WRITE setStanzaOnly NOTIFY stanzaOnlyChanged)
-    Q_PROPERTY(bool receivedStanzaOnly READ getReceivedStanzaOnly WRITE setReceivedStanzaOnly NOTIFY receivedStanzaOnlyChanged)
-    Q_PROPERTY(bool sentStanzaOnly READ getSentStanzaOnly WRITE setSentStanzaOnly NOTIFY sentStanzaOnlyChanged)
+    Q_PROPERTY(bool receivedStanza READ getReceivedStanza WRITE setReceivedStanza NOTIFY receivedStanzaChanged)
+    Q_PROPERTY(bool sentStanza READ getSentStanza WRITE setSentStanza NOTIFY sentStanzaChanged)
     Q_PROPERTY(bool xStanza READ getXStanza WRITE setXStanza NOTIFY xStanzaChanged)
     Q_PROPERTY(bool rStanza READ getRStanza WRITE setRStanza NOTIFY rStanzaChanged)
     Q_PROPERTY(bool aStanza READ getAStanza WRITE setAStanza NOTIFY aStanzaChanged)
@@ -43,11 +43,11 @@ public:
     bool getStanzaOnly() const;
     void setStanzaOnly(bool stanzaOnly);
 
-    bool getReceivedStanzaOnly() const;
-    void setReceivedStanzaOnly(bool receivedStanzaOnly);
+    bool getReceivedStanza() const;
+    void setReceivedStanza(bool receivedStanza);
 
-    bool getSentStanzaOnly() const;
-    void setSentStanzaOnly(bool sentStanzaOnly);
+    bool getSentStanza() const;
+    void setSentStanza(bool sentStanza);
 
     bool getXStanza() const;
     void setXStanza(bool xStanza);
@@ -90,8 +90,8 @@ signals:
     void valueChanged();
 
     void stanzaOnlyChanged();
-    void receivedStanzaOnlyChanged();
-    void sentStanzaOnlyChanged();
+    void receivedStanzaChanged();
+    void sentStanzaChanged();
     void xStanzaChanged();
     void rStanzaChanged();
     void aStanzaChanged();
@@ -109,8 +109,8 @@ private:
     int m_from;
     int m_to;
     bool m_stanzaOnly;
-    bool m_receivedStanzaOnly;
-    bool m_sentStanzaOnly;
+    bool m_receivedStanza;
+    bool m_sentStanza;
     bool m_xStanza;
     bool m_rStanza;
     bool m_aStanza;

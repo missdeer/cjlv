@@ -81,7 +81,8 @@ FORMS    += mainwindow.ui \
     sourcewindow.ui
 
 DISTFILES += \
-    cjlv.png
+    cjlv.png \
+    qml/control/qmldir
 
 RESOURCES += \
     cjlv.qrc
