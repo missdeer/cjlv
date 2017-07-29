@@ -82,6 +82,7 @@ public slots:
     void onLogItemReady(int i, QSharedPointer<LogItem> log);
     void onLogItemsReady(QMap<int, QSharedPointer<LogItem>> logs);
     void onFilter(const QString& keyword);
+    void onStanzaVisibleChanged();
 private:
     lua_State* m_L;
     QuickWidgetAPI* m_api;
@@ -107,7 +108,7 @@ private:
     bool m_regexpMode;
     bool m_regexpModeOption;
     bool m_luaMode;
-
+    bool m_allStanza;
     QString dateTime;
     QString level ;
     QString thread ;

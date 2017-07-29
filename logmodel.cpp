@@ -178,11 +178,26 @@ LogModel::LogModel(QObject *parent)
     , m_regexpMode(false)
     , m_regexpModeOption(false)
     , m_luaMode(false)
+    , m_allStanza(true)
 {
     qRegisterMetaType<QSharedPointer<LogItem>>("QSharedPointer<LogItem>");
     connect(this, &LogModel::logItemReady, this, &LogModel::onLogItemReady);
     qRegisterMetaType<QMap<int, QSharedPointer<LogItem>>>("QMap<int, QSharedPointer<LogItem>>");
     connect(this, &LogModel::logItemsReady, this, &LogModel::onLogItemsReady);
+
+    connect(m_api, &QuickWidgetAPI::sentStanzaChanged, this, &LogModel::onStanzaVisibleChanged);
+    connect(m_api, &QuickWidgetAPI::receivedStanzaChanged, this, &LogModel::onStanzaVisibleChanged);
+    connect(m_api, &QuickWidgetAPI::aStanzaChanged, this, &LogModel::onStanzaVisibleChanged);
+    connect(m_api, &QuickWidgetAPI::rStanzaChanged, this, &LogModel::onStanzaVisibleChanged);
+    connect(m_api, &QuickWidgetAPI::xStanzaChanged, this, &LogModel::onStanzaVisibleChanged);
+    connect(m_api, &QuickWidgetAPI::presenceStanzaChanged, this, &LogModel::onStanzaVisibleChanged);
+    connect(m_api, &QuickWidgetAPI::enableStanzaChanged, this, &LogModel::onStanzaVisibleChanged);
+    connect(m_api, &QuickWidgetAPI::enabledStanzaChanged, this, &LogModel::onStanzaVisibleChanged);
+    connect(m_api, &QuickWidgetAPI::messageStanzaChanged, this, &LogModel::onStanzaVisibleChanged);
+    connect(m_api, &QuickWidgetAPI::iqStanzaChanged, this, &LogModel::onStanzaVisibleChanged);
+    connect(m_api, &QuickWidgetAPI::successStanzaChanged, this, &LogModel::onStanzaVisibleChanged);
+    connect(m_api, &QuickWidgetAPI::streamStreamStanzaChanged, this, &LogModel::onStanzaVisibleChanged);
+    connect(m_api, &QuickWidgetAPI::streamFeaturesStanzaChanged, this, &LogModel::onStanzaVisibleChanged);
 }
 
 LogModel::~LogModel()
@@ -408,6 +423,67 @@ void LogModel::onFilter(const QString &keyword)
         }
     }
     doFilter(kw.trimmed(), searchField, regexpMode, false, true);
+}
+
+void LogModel::onStanzaVisibleChanged()
+{
+    m_allStanza = (m_api->getAStanza() && m_api->getRStanza() && m_api->getXStanza() && m_api->getEnableStanza() &&
+                   m_api->getEnabledStanza() && m_api->getPresenceStanza() && m_api->getMessageStanza() && m_api->getIqStanza() &&
+                   m_api->getSuccessStanza() && m_api->getStreamStreamStanza() && m_api->getStreamFeaturesStanza() );
+
+    if (m_allStanza)
+        return;
+
+    QSqlDatabase db = QSqlDatabase::database(m_dbFile, true);
+    if (!db.isValid()) {
+        db = QSqlDatabase::addDatabase("QSQLITE", m_dbFile);
+        db.setDatabaseName(m_dbFile);
+    }
+
+    if (!db.isOpen())
+        db.open();
+
+    if (db.isOpen())
+    {
+        QString dataSource = "receivedStanza";
+
+        if (m_api->getSentStanza())
+            dataSource = "sentStanza";
+
+        if (m_api->getSentStanza() && m_api->getReceivedStanza())
+            dataSource = "allStanza";
+
+        QString sql = "CREATE VIEW customStanza AS SELECT * FROM " + dataSource + " WHERE 1=0";
+
+        struct{
+            std::function<bool()> f;
+            QString s;
+        }c[] ={
+        { std::bind(&QuickWidgetAPI::getAStanza, m_api),              " OR content LIKE '%:<a %'"},
+        { std::bind(&QuickWidgetAPI::getRStanza, m_api),              " OR content LIKE '%:<r %'"},
+        { std::bind(&QuickWidgetAPI::getXStanza, m_api),              " OR content LIKE '%:<x %'"},
+        { std::bind(&QuickWidgetAPI::getEnableStanza, m_api),         " OR content LIKE '%:<enable %'"},
+        { std::bind(&QuickWidgetAPI::getEnabledStanza, m_api),        " OR content LIKE '%:<enabled %'"},
+        { std::bind(&QuickWidgetAPI::getPresenceStanza, m_api),       " OR content LIKE '%:<presence %'"},
+        { std::bind(&QuickWidgetAPI::getMessageStanza, m_api),        " OR content LIKE '%:<message %'"},
+        { std::bind(&QuickWidgetAPI::getIqStanza, m_api),             " OR content LIKE '%:<iq %'"},
+        { std::bind(&QuickWidgetAPI::getSuccessStanza, m_api),        " OR content LIKE '%:<success %'"},
+        { std::bind(&QuickWidgetAPI::getStreamStreamStanza, m_api),   " OR content LIKE '%:<stream:stream %'"},
+        { std::bind(&QuickWidgetAPI::getStreamFeaturesStanza, m_api), " OR content LIKE '%:<stream:features %'"},
+    };
+
+        for (auto a : c)
+        {
+            if (a.f())
+                sql.append(a.s);
+        }
+        sql.append(";");
+
+        qDebug() << sql;
+        QSqlQuery query(db);
+        query.exec("DROP VIEW IF EXISTS customStanza;");
+        query.exec(sql);
+    }
 }
 
 int LogModel::getMaxTotalRowCount() const
@@ -1005,9 +1081,11 @@ void LogModel::saveStatistic()
 
 QString LogModel::getDataSource()
 {
-    qDebug() << m_api->getStanzaOnly() << m_api->getSentStanza() << m_api->getReceivedStanza();
     if (!m_api->getStanzaOnly())
         return "logs";
+
+    if (!m_allStanza)
+        return "customStanza";
 
     if (m_api->getSentStanza() && m_api->getReceivedStanza())
         return "allStanza";
@@ -1069,7 +1147,6 @@ void LogModel::doReload()
     RowCountEvent* e = new RowCountEvent;
     e->m_rowCount = 0;
     createDatabase();
-    createDatabaseView();
     QDateTime t = QDateTime::currentDateTime();
 
     std::for_each(m_logFiles.rbegin(), m_logFiles.rend(),
@@ -1081,6 +1158,7 @@ void LogModel::doReload()
 
     qint64 q = t.secsTo(QDateTime::currentDateTime());
     createDatabaseIndex();
+    createDatabaseView();
     qDebug() << "loaded elapsed " << q << " s";
     QCoreApplication::postEvent(this, e);
     emit dataLoaded();

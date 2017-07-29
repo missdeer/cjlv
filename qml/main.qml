@@ -96,7 +96,7 @@ Column {
             text: qsTr("message")
 
             indicator: CheckBoxIndicator{}
-            onCheckedChanged: LogViewAPI.messageStanza = cbStanzaOnly.checked
+            onCheckedChanged: LogViewAPI.messageStanza = cbMessage.checked
         }
 
         CheckBox {
