@@ -4,6 +4,7 @@
 #include "extension.h"
 
 struct lua_State;
+class QuickWidgetAPI;
 
 struct LogItem {
     int id;
@@ -70,7 +71,7 @@ public:
     void setSearchField(const QString &searchField);
     void setRegexpMode(bool regexpMode);
     int getMaxTotalRowCount() const;
-
+    QuickWidgetAPI* getQuickWidgetAPI() { return m_api; }
 signals:
     void logItemReady(int, QSharedPointer<LogItem>);
     void logItemsReady(QMap<int, QSharedPointer<LogItem>>);
@@ -83,6 +84,7 @@ public slots:
     void onFilter(const QString& keyword);
 private:
     lua_State* m_L;
+    QuickWidgetAPI* m_api;
     QString m_searchField;
     QString m_searchFieldOption;
     QString m_sqlCount;
@@ -128,6 +130,7 @@ private:
     bool parseLine(const QString &line, QStringList& results);
     bool event(QEvent *e) Q_DECL_OVERRIDE;
     void createDatabaseIndex();
+    void createDatabaseView();
     void generateSQLStatements(int offset, QString& sqlFetch, QString& sqlCount);
     QString generateSQLStatement(int from, int to);
     void doFilter(const QString& content, const QString& field, bool regexpMode, bool luaMode, bool saveOptions = false);

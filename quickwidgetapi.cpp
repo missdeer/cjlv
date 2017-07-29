@@ -60,6 +60,7 @@ bool QuickWidgetAPI::getStanzaOnly() const
 void QuickWidgetAPI::setStanzaOnly(bool stanzaOnly)
 {
     m_stanzaOnly = stanzaOnly;
+    emit stanzaOnlyChanged();
 }
 
 bool QuickWidgetAPI::getReceivedStanza() const
@@ -70,6 +71,7 @@ bool QuickWidgetAPI::getReceivedStanza() const
 void QuickWidgetAPI::setReceivedStanza(bool receivedStanza)
 {
     m_receivedStanza = receivedStanza;
+    emit receivedStanzaChanged();
 }
 
 bool QuickWidgetAPI::getSentStanza() const
@@ -80,6 +82,7 @@ bool QuickWidgetAPI::getSentStanza() const
 void QuickWidgetAPI::setSentStanza(bool sentStanza)
 {
     m_sentStanza = sentStanza;
+    emit sentStanzaChanged();
 }
 
 bool QuickWidgetAPI::getXStanza() const
@@ -90,6 +93,7 @@ bool QuickWidgetAPI::getXStanza() const
 void QuickWidgetAPI::setXStanza(bool xStanza)
 {
     m_xStanza = xStanza;
+    emit xStanzaChanged();
 }
 
 bool QuickWidgetAPI::getRStanza() const
@@ -100,6 +104,7 @@ bool QuickWidgetAPI::getRStanza() const
 void QuickWidgetAPI::setRStanza(bool rStanza)
 {
     m_rStanza = rStanza;
+    emit rStanzaChanged();
 }
 
 bool QuickWidgetAPI::getAStanza() const
@@ -110,6 +115,7 @@ bool QuickWidgetAPI::getAStanza() const
 void QuickWidgetAPI::setAStanza(bool aStanza)
 {
     m_aStanza = aStanza;
+    emit aStanzaChanged();
 }
 
 bool QuickWidgetAPI::getEnabledStanza() const
@@ -120,6 +126,7 @@ bool QuickWidgetAPI::getEnabledStanza() const
 void QuickWidgetAPI::setEnabledStanza(bool enabledStanza)
 {
     m_enabledStanza = enabledStanza;
+    emit enabledStanzaChanged();
 }
 
 bool QuickWidgetAPI::getEnableStanza() const
@@ -130,6 +137,7 @@ bool QuickWidgetAPI::getEnableStanza() const
 void QuickWidgetAPI::setEnableStanza(bool enableStanza)
 {
     m_enableStanza = enableStanza;
+    emit enableStanzaChanged();
 }
 
 bool QuickWidgetAPI::getPresenceStanza() const
@@ -140,6 +148,7 @@ bool QuickWidgetAPI::getPresenceStanza() const
 void QuickWidgetAPI::setPresenceStanza(bool presenceStanza)
 {
     m_presenceStanza = presenceStanza;
+    emit presenceStanzaChanged();
 }
 
 bool QuickWidgetAPI::getMessageStanza() const
@@ -150,6 +159,7 @@ bool QuickWidgetAPI::getMessageStanza() const
 void QuickWidgetAPI::setMessageStanza(bool messageStanza)
 {
     m_messageStanza = messageStanza;
+    emit messageStanzaChanged();
 }
 
 bool QuickWidgetAPI::getIqStanza() const
@@ -160,6 +170,7 @@ bool QuickWidgetAPI::getIqStanza() const
 void QuickWidgetAPI::setIqStanza(bool iqStanza)
 {
     m_iqStanza = iqStanza;
+    emit iqStanzaChanged();
 }
 
 bool QuickWidgetAPI::getSuccessStanza() const
@@ -170,6 +181,7 @@ bool QuickWidgetAPI::getSuccessStanza() const
 void QuickWidgetAPI::setSuccessStanza(bool successStanza)
 {
     m_successStanza = successStanza;
+    emit successStanzaChanged();
 }
 
 bool QuickWidgetAPI::getStreamStreamStanza() const
@@ -180,6 +192,7 @@ bool QuickWidgetAPI::getStreamStreamStanza() const
 void QuickWidgetAPI::setStreamStreamStanza(bool streamStreamStanza)
 {
     m_streamStreamStanza = streamStreamStanza;
+    emit streamStreamStanzaChanged();
 }
 
 bool QuickWidgetAPI::getStreamFeaturesStanza() const
@@ -190,6 +203,7 @@ bool QuickWidgetAPI::getStreamFeaturesStanza() const
 void QuickWidgetAPI::setStreamFeaturesStanza(bool streamFeaturesStanza)
 {
     m_streamFeaturesStanza = streamFeaturesStanza;
+    emit streamFeaturesStanzaChanged();
 }
 
 int QuickWidgetAPI::getTo() const

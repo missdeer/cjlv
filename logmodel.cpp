@@ -3,6 +3,7 @@
 #include <sqlite3.h>
 #include <lua.hpp>
 #include <boost/scope_exit.hpp>
+#include "quickwidgetapi.h"
 #include "settings.h"
 #include "logmodel.h"
 
@@ -167,6 +168,7 @@ static void qt_regexp(sqlite3_context* ctx, int /*argc*/, sqlite3_value** argv)
 LogModel::LogModel(QObject *parent)
     : QAbstractTableModel(parent)
     , m_L(nullptr)
+    , m_api(new QuickWidgetAPI)
     , m_searchField("content")
     , m_searchFieldOption("content")
     , m_rowCount(0)
@@ -196,6 +198,7 @@ LogModel::~LogModel()
     }
 
     QFile::remove(m_dbFile);
+    delete m_api;
 }
 
 QModelIndex LogModel::index(int row, int column, const QModelIndex &parent) const
@@ -1062,6 +1065,7 @@ void LogModel::doReload()
 
     qint64 q = t.secsTo(QDateTime::currentDateTime());
     createDatabaseIndex();
+    createDatabaseView();
     qDebug() << "loaded elapsed " << q << " s";
     QCoreApplication::postEvent(this, e);
     emit dataLoaded();
@@ -1593,6 +1597,26 @@ void LogModel::createDatabaseIndex()
         query.exec("CREATE INDEX ic ON logs ( category);");
         query.exec("CREATE INDEX im ON logs ( method);");
         query.exec("CREATE INDEX io ON logs ( content);");
+    }
+}
+
+void LogModel::createDatabaseView()
+{
+    QSqlDatabase db = QSqlDatabase::database(m_dbFile, true);
+    if (!db.isValid()) {
+        db = QSqlDatabase::addDatabase("QSQLITE", m_dbFile);
+        db.setDatabaseName(m_dbFile);
+    }
+
+    if (!db.isOpen())
+        db.open();
+
+    if (db.isOpen())
+    {
+        QSqlQuery query(db);
+        query.exec("CREATE VIEW stanza AS SELECT * FROM logs WHERE content REGEXP 'send:<|recv:<';");
+        query.exec("CREATE VIEW sent AS SELECT * FROM logs WHERE content LIKE '%send:<%';");
+        query.exec("CREATE VIEW received AS SELECT * FROM logs WHERE content LIKE '%recv:<%';");
     }
 }
 
