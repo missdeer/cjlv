@@ -1003,6 +1003,21 @@ void LogModel::saveStatistic()
     db.commit();
 }
 
+QString LogModel::getDataSource()
+{
+    qDebug() << m_api->getStanzaOnly() << m_api->getSentStanza() << m_api->getReceivedStanza();
+    if (!m_api->getStanzaOnly())
+        return "logs";
+
+    if (m_api->getSentStanza() && m_api->getReceivedStanza())
+        return "allStanza";
+
+    if (m_api->getSentStanza())
+        return "sentStanza";
+
+    return "receivedStanza";
+}
+
 bool LogModel::getLevelStatistic(QList<QSharedPointer<StatisticItem>> &sis)
 {
     return getStatistic("level_statistic", sis);
@@ -1054,6 +1069,7 @@ void LogModel::doReload()
     RowCountEvent* e = new RowCountEvent;
     e->m_rowCount = 0;
     createDatabase();
+    createDatabaseView();
     QDateTime t = QDateTime::currentDateTime();
 
     std::for_each(m_logFiles.rbegin(), m_logFiles.rend(),
@@ -1065,7 +1081,6 @@ void LogModel::doReload()
 
     qint64 q = t.secsTo(QDateTime::currentDateTime());
     createDatabaseIndex();
-    createDatabaseView();
     qDebug() << "loaded elapsed " << q << " s";
     QCoreApplication::postEvent(this, e);
     emit dataLoaded();
@@ -1079,32 +1094,32 @@ void LogModel::generateSQLStatements(int offset, QString &sqlFetch, QString &sql
         if (m_luaMode)
         {
             // lua match
-            sqlCount = QString("SELECT COUNT(*) FROM logs WHERE %1 MATCH 'dummy'").arg(m_searchField);
-            sqlFetch = QString("SELECT * FROM logs WHERE %1 MATCH 'dummy' ORDER BY epoch LIMIT %2, 200;").arg(m_searchField).arg(offset);
+            sqlCount = QString("SELECT COUNT(*) FROM " + getDataSource() + " WHERE %1 MATCH 'dummy'").arg(m_searchField);
+            sqlFetch = QString("SELECT * FROM " + getDataSource() + " WHERE %1 MATCH 'dummy' ORDER BY epoch LIMIT %2, 200;").arg(m_searchField).arg(offset);
             return;
         }
 
         if (m_keyword.isEmpty())
         {
             // no search, no filter
-            sqlCount = "SELECT COUNT(*) FROM logs";
-            sqlFetch = QString("SELECT * FROM logs ORDER BY epoch LIMIT %1, 200;").arg(offset);
+            sqlCount = "SELECT COUNT(*) FROM " + getDataSource();
+            sqlFetch = QString("SELECT * FROM " + getDataSource() + " ORDER BY epoch LIMIT %1, 200;").arg(offset);
             return;
         }
 
         if (m_searchField.isEmpty())
         {
             // SQL WHERE clause extension
-            sqlCount = QString("SELECT COUNT(*) FROM logs WHERE %1").arg(m_keyword);
-            sqlFetch = QString("SELECT * FROM logs WHERE %1 ORDER BY epoch LIMIT %2, 200;").arg(m_keyword).arg(offset);
+            sqlCount = QString("SELECT COUNT(*) FROM " + getDataSource() + " WHERE %1").arg(m_keyword);
+            sqlFetch = QString("SELECT * FROM " + getDataSource() + " WHERE %1 ORDER BY epoch LIMIT %2, 200;").arg(m_keyword).arg(offset);
             return;
         }
 
         if (m_regexpMode)
         {
             // regexp filter
-            sqlCount = QString("SELECT COUNT(*) FROM logs WHERE %1 REGEXP ?").arg(m_searchField);
-            sqlFetch = QString("SELECT * FROM logs WHERE %1 REGEXP ? ORDER BY epoch LIMIT %2, 200;").arg(m_searchField).arg(offset);
+            sqlCount = QString("SELECT COUNT(*) FROM " + getDataSource() + " WHERE %1 REGEXP ?").arg(m_searchField);
+            sqlFetch = QString("SELECT * FROM " + getDataSource() + " WHERE %1 REGEXP ? ORDER BY epoch LIMIT %2, 200;").arg(m_searchField).arg(offset);
             return;
         }
 
@@ -1116,10 +1131,10 @@ void LogModel::generateSQLStatements(int offset, QString &sqlFetch, QString &sql
             {
                 begin.replace(0, m_keyword.length(), m_keyword);
                 end.replace(0, m_keyword.length(), m_keyword);
-                sqlCount = QString("SELECT COUNT(*) FROM logs WHERE epoch >= %1 AND epoch <= %2")
+                sqlCount = QString("SELECT COUNT(*) FROM " + getDataSource() + " WHERE epoch >= %1 AND epoch <= %2")
                         .arg(QDateTime::fromString(begin,"yyyy-MM-dd hh:mm:ss,zzz").toMSecsSinceEpoch())
                         .arg(QDateTime::fromString(end,"yyyy-MM-dd hh:mm:ss,zzz").toMSecsSinceEpoch());
-                sqlFetch = QString("SELECT * FROM logs WHERE epoch >= %1 AND epoch <= %2 ORDER BY epoch LIMIT %3, 200;")
+                sqlFetch = QString("SELECT * FROM " + getDataSource() + " WHERE epoch >= %1 AND epoch <= %2 ORDER BY epoch LIMIT %3, 200;")
                         .arg(QDateTime::fromString(begin,"yyyy-MM-dd hh:mm:ss,zzz").toMSecsSinceEpoch())
                         .arg(QDateTime::fromString(end,"yyyy-MM-dd hh:mm:ss,zzz").toMSecsSinceEpoch())
                         .arg(offset);
@@ -1128,40 +1143,40 @@ void LogModel::generateSQLStatements(int offset, QString &sqlFetch, QString &sql
         }
 
         // simple keyword, SQL LIKE fitler
-        sqlCount = QString("SELECT COUNT(*) FROM logs WHERE %1 LIKE '%'||?||'%'").arg(m_searchField);
-        sqlFetch = QString("SELECT * FROM logs WHERE %1 LIKE '%'||?||'%' ORDER BY epoch LIMIT %2, 200;").arg(m_searchField).arg(offset);
+        sqlCount = QString("SELECT COUNT(*) FROM " + getDataSource() + " WHERE %1 LIKE '%'||?||'%'").arg(m_searchField);
+        sqlFetch = QString("SELECT * FROM " + getDataSource() + " WHERE %1 LIKE '%'||?||'%' ORDER BY epoch LIMIT %2, 200;").arg(m_searchField).arg(offset);
         return;
     }
 
     if (m_luaMode)
     {
         // lua match
-        sqlCount = QString("SELECT COUNT(*) FROM logs WHERE %1 MATCH 'dummy' AND level GLOB 'dummy'").arg(m_searchField);
-        sqlFetch = QString("SELECT * FROM logs WHERE %1 MATCH 'dummy' AND level GLOB 'dummy' ORDER BY epoch LIMIT %2, 200;").arg(m_searchField).arg(offset);
+        sqlCount = QString("SELECT COUNT(*) FROM " + getDataSource() + " WHERE %1 MATCH 'dummy' AND level GLOB 'dummy'").arg(m_searchField);
+        sqlFetch = QString("SELECT * FROM " + getDataSource() + " WHERE %1 MATCH 'dummy' AND level GLOB 'dummy' ORDER BY epoch LIMIT %2, 200;").arg(m_searchField).arg(offset);
         return;
     }
 
     if (m_keyword.isEmpty())
     {
         // no search, no filter
-        sqlCount = "SELECT COUNT(*) FROM logs WHERE level GLOB 'dummy'";
-        sqlFetch = QString("SELECT * FROM logs WHERE level GLOB 'dummy' ORDER BY epoch LIMIT %1, 200;").arg(offset);
+        sqlCount = "SELECT COUNT(*) FROM " + getDataSource() + " WHERE level GLOB 'dummy'";
+        sqlFetch = QString("SELECT * FROM " + getDataSource() + " WHERE level GLOB 'dummy' ORDER BY epoch LIMIT %1, 200;").arg(offset);
         return;
     }
 
     if (m_searchField.isEmpty())
     {
         // SQL WHERE clause extension
-        sqlCount = QString("SELECT COUNT(*) FROM logs WHERE %1 AND level GLOB 'dummy'").arg(m_keyword);
-        sqlFetch = QString("SELECT * FROM logs WHERE %1 AND level GLOB 'dummy' ORDER BY epoch LIMIT %2, 200;").arg(m_keyword).arg(offset);
+        sqlCount = QString("SELECT COUNT(*) FROM " + getDataSource() + " WHERE %1 AND level GLOB 'dummy'").arg(m_keyword);
+        sqlFetch = QString("SELECT * FROM " + getDataSource() + " WHERE %1 AND level GLOB 'dummy' ORDER BY epoch LIMIT %2, 200;").arg(m_keyword).arg(offset);
         return;
     }
 
     if (m_regexpMode)
     {
         // regexp filter
-        sqlCount = QString("SELECT COUNT(*) FROM logs WHERE %1 REGEXP ? AND level GLOB 'dummy'").arg(m_searchField);
-        sqlFetch = QString("SELECT * FROM logs WHERE %1 REGEXP ? AND level GLOB 'dummy' ORDER BY epoch LIMIT %2, 200;").arg(m_searchField).arg(offset);
+        sqlCount = QString("SELECT COUNT(*) FROM " + getDataSource() + " WHERE %1 REGEXP ? AND level GLOB 'dummy'").arg(m_searchField);
+        sqlFetch = QString("SELECT * FROM " + getDataSource() + " WHERE %1 REGEXP ? AND level GLOB 'dummy' ORDER BY epoch LIMIT %2, 200;").arg(m_searchField).arg(offset);
         return;
     }
 
@@ -1174,10 +1189,10 @@ void LogModel::generateSQLStatements(int offset, QString &sqlFetch, QString &sql
         {
             begin.replace(0, m_keyword.length(), m_keyword);
             end.replace(0, m_keyword.length(), m_keyword);
-            sqlCount = QString("SELECT COUNT(*) FROM logs WHERE epoch >= %1 AND epoch <= %2 AND level GLOB 'dummy'")
+            sqlCount = QString("SELECT COUNT(*) FROM " + getDataSource() + " WHERE epoch >= %1 AND epoch <= %2 AND level GLOB 'dummy'")
                     .arg(QDateTime::fromString(begin,"yyyy-MM-dd hh:mm:ss,zzz").toMSecsSinceEpoch())
                     .arg(QDateTime::fromString(end,"yyyy-MM-dd hh:mm:ss,zzz").toMSecsSinceEpoch());
-            sqlFetch = QString("SELECT * FROM logs WHERE epoch >= %1 AND epoch <= %2 AND level GLOB 'dummy' ORDER BY epoch LIMIT %3, 200;")
+            sqlFetch = QString("SELECT * FROM " + getDataSource() + " WHERE epoch >= %1 AND epoch <= %2 AND level GLOB 'dummy' ORDER BY epoch LIMIT %3, 200;")
                     .arg(QDateTime::fromString(begin,"yyyy-MM-dd hh:mm:ss,zzz").toMSecsSinceEpoch())
                     .arg(QDateTime::fromString(end,"yyyy-MM-dd hh:mm:ss,zzz").toMSecsSinceEpoch())
                     .arg(offset);
@@ -1186,8 +1201,8 @@ void LogModel::generateSQLStatements(int offset, QString &sqlFetch, QString &sql
     }
 
     // simple keyword, SQL LIKE fitler
-    sqlCount = QString("SELECT COUNT(*) FROM logs WHERE %1 LIKE '%'||?||'%' AND level GLOB 'dummy'").arg(m_searchField);
-    sqlFetch = QString("SELECT * FROM logs WHERE %1 LIKE '%'||?||'%' AND level GLOB 'dummy' ORDER BY epoch LIMIT %2, 200;").arg(m_searchField).arg(offset);
+    sqlCount = QString("SELECT COUNT(*) FROM " + getDataSource() + " WHERE %1 LIKE '%'||?||'%' AND level GLOB 'dummy'").arg(m_searchField);
+    sqlFetch = QString("SELECT * FROM " + getDataSource() + " WHERE %1 LIKE '%'||?||'%' AND level GLOB 'dummy' ORDER BY epoch LIMIT %2, 200;").arg(m_searchField).arg(offset);
 }
 
 QString LogModel::generateSQLStatement(int from, int to)
@@ -1197,25 +1212,25 @@ QString LogModel::generateSQLStatement(int from, int to)
         if (m_luaMode)
         {
             // lua match
-            return QString("SELECT * FROM logs WHERE %1 AND id >= %2 AND id <= %3 MATCH 'dummy' ORDER BY epoch LIMIT 400000;").arg(m_searchField).arg(from).arg(to);
+            return QString("SELECT * FROM " + getDataSource() + " WHERE %1 AND id >= %2 AND id <= %3 MATCH 'dummy' ORDER BY epoch LIMIT 400000;").arg(m_searchField).arg(from).arg(to);
         }
 
         if (m_keyword.isEmpty())
         {
             // no search, no filter
-            return QString("SELECT * FROM logs WHERE id >= %1 AND id <= %2 ORDER BY epoch LIMIT 400000;").arg(from).arg(to);
+            return QString("SELECT * FROM " + getDataSource() + " WHERE id >= %1 AND id <= %2 ORDER BY epoch LIMIT 400000;").arg(from).arg(to);
         }
 
         if (m_searchField.isEmpty())
         {
             // SQL WHERE clause extension
-            return QString("SELECT * FROM logs WHERE %1 AND id >= %2 AND id <= %3 ORDER BY epoch LIMIT 400000;").arg(m_keyword).arg(from).arg(to);
+            return QString("SELECT * FROM " + getDataSource() + " WHERE %1 AND id >= %2 AND id <= %3 ORDER BY epoch LIMIT 400000;").arg(m_keyword).arg(from).arg(to);
         }
 
         if (m_regexpMode)
         {
             // regexp filter
-            return QString("SELECT * FROM logs WHERE %1 AND id >= %2 AND id <= %3 REGEXP ? ORDER BY epoch LIMIT 400000;").arg(m_searchField).arg(from).arg(to);
+            return QString("SELECT * FROM " + getDataSource() + " WHERE %1 AND id >= %2 AND id <= %3 REGEXP ? ORDER BY epoch LIMIT 400000;").arg(m_searchField).arg(from).arg(to);
         }
 
         if (m_searchField == "datetime")
@@ -1226,38 +1241,38 @@ QString LogModel::generateSQLStatement(int from, int to)
             {
                 begin.replace(0, m_keyword.length(), m_keyword);
                 end.replace(0, m_keyword.length(), m_keyword);
-                return QString("SELECT * FROM logs WHERE epoch >= %1 AND epoch <= %2 AND id >= %3 AND id <= %4 ORDER BY epoch LIMIT 400000;")
+                return QString("SELECT * FROM " + getDataSource() + " WHERE epoch >= %1 AND epoch <= %2 AND id >= %3 AND id <= %4 ORDER BY epoch LIMIT 400000;")
                         .arg(QDateTime::fromString(begin,"yyyy-MM-dd hh:mm:ss,zzz").toMSecsSinceEpoch())
                         .arg(QDateTime::fromString(end,"yyyy-MM-dd hh:mm:ss,zzz").toMSecsSinceEpoch())
                         .arg(from).arg(to);;
             }
         }
         // simple keyword, SQL LIKE fitler
-        return QString("SELECT * FROM logs WHERE %1 LIKE '%'||?||'%' AND id >= %2 AND id <= %3 ORDER BY epoch LIMIT 400000;").arg(m_searchField).arg(from).arg(to);
+        return QString("SELECT * FROM " + getDataSource() + " WHERE %1 LIKE '%'||?||'%' AND id >= %2 AND id <= %3 ORDER BY epoch LIMIT 400000;").arg(m_searchField).arg(from).arg(to);
     }
 
     if (m_luaMode)
     {
         // lua match
-        return QString("SELECT * FROM logs WHERE %1 AND id >= %2 AND id <= %3 MATCH 'dummy' AND level GLOB 'dummy' ORDER BY epoch LIMIT 400000;").arg(m_searchField).arg(from).arg(to);
+        return QString("SELECT * FROM " + getDataSource() + " WHERE %1 AND id >= %2 AND id <= %3 MATCH 'dummy' AND level GLOB 'dummy' ORDER BY epoch LIMIT 400000;").arg(m_searchField).arg(from).arg(to);
     }
 
     if (m_keyword.isEmpty())
     {
         // no search, no filter
-        return QString("SELECT * FROM logs WHERE level GLOB 'dummy' AND id >= %1 AND id <= %2 ORDER BY epoch LIMIT 400000;").arg(from).arg(to);
+        return QString("SELECT * FROM " + getDataSource() + " WHERE level GLOB 'dummy' AND id >= %1 AND id <= %2 ORDER BY epoch LIMIT 400000;").arg(from).arg(to);
     }
 
     if (m_searchField.isEmpty())
     {
         // SQL WHERE clause extension
-        return QString("SELECT * FROM logs WHERE %1 AND level GLOB 'dummy' AND id >= %2 AND id <= %3 ORDER BY epoch LIMIT 400000;").arg(m_keyword).arg(from).arg(to);
+        return QString("SELECT * FROM " + getDataSource() + " WHERE %1 AND level GLOB 'dummy' AND id >= %2 AND id <= %3 ORDER BY epoch LIMIT 400000;").arg(m_keyword).arg(from).arg(to);
     }
 
     if (m_regexpMode)
     {
         // regexp filter
-        return QString("SELECT * FROM logs WHERE %1 REGEXP ? AND level GLOB 'dummy' AND id >= %2 AND id <= %3 ORDER BY epoch LIMIT 400000;").arg(m_searchField).arg(from).arg(to);
+        return QString("SELECT * FROM " + getDataSource() + " WHERE %1 REGEXP ? AND level GLOB 'dummy' AND id >= %2 AND id <= %3 ORDER BY epoch LIMIT 400000;").arg(m_searchField).arg(from).arg(to);
     }
 
     if (m_searchField == "datetime")
@@ -1268,14 +1283,14 @@ QString LogModel::generateSQLStatement(int from, int to)
         {
             begin.replace(0, m_keyword.length(), m_keyword);
             end.replace(0, m_keyword.length(), m_keyword);
-            return QString("SELECT * FROM logs WHERE epoch >= %1 AND epoch <= %2 AND level GLOB 'dummy' AND id >= %3 AND id <= %4 ORDER BY epoch LIMIT 400000;")
+            return QString("SELECT * FROM " + getDataSource() + " WHERE epoch >= %1 AND epoch <= %2 AND level GLOB 'dummy' AND id >= %3 AND id <= %4 ORDER BY epoch LIMIT 400000;")
                     .arg(QDateTime::fromString(begin,"yyyy-MM-dd hh:mm:ss,zzz").toMSecsSinceEpoch())
                     .arg(QDateTime::fromString(end,"yyyy-MM-dd hh:mm:ss,zzz").toMSecsSinceEpoch())
                     .arg(from).arg(to);;
         }
     }
     // simple keyword, SQL LIKE fitler
-    return QString("SELECT * FROM logs WHERE %1 LIKE '%'||?||'%' AND level GLOB 'dummy' AND id >= %2 AND id <= %3 ORDER BY epoch LIMIT 400000;").arg(m_searchField).arg(from).arg(to);
+    return QString("SELECT * FROM " + getDataSource() + " WHERE %1 LIKE '%'||?||'%' AND level GLOB 'dummy' AND id >= %2 AND id <= %3 ORDER BY epoch LIMIT 400000;").arg(m_searchField).arg(from).arg(to);
 }
 
 void LogModel::doFilter(const QString &content, const QString &field, bool regexpMode, bool luaMode, bool saveOptions)
@@ -1614,9 +1629,9 @@ void LogModel::createDatabaseView()
     if (db.isOpen())
     {
         QSqlQuery query(db);
-        query.exec("CREATE VIEW stanza AS SELECT * FROM logs WHERE content REGEXP 'send:<|recv:<';");
-        query.exec("CREATE VIEW sent AS SELECT * FROM logs WHERE content LIKE '%send:<%';");
-        query.exec("CREATE VIEW received AS SELECT * FROM logs WHERE content LIKE '%recv:<%';");
+        query.exec("CREATE VIEW allStanza AS SELECT * FROM " + getDataSource() + " WHERE content REGEXP 'send:<|recv:<';");
+        query.exec("CREATE VIEW sentStanza AS SELECT * FROM " + getDataSource() + " WHERE content LIKE '%send:<%';");
+        query.exec("CREATE VIEW receivedStanza AS SELECT * FROM " + getDataSource() + " WHERE content LIKE '%recv:<%';");
     }
 }
 

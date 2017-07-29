@@ -37,8 +37,9 @@ Column {
         CheckBox {
             id: cbStanzaOnly
             text: qsTr("Stanza Only")
-            checked: LogViewAPI.stanzaOnly
+            checked: false
             indicator: CheckBoxIndicator{}
+            onCheckedChanged: LogViewAPI.stanzaOnly = cbStanzaOnly.checked
         }
     }
 
@@ -48,23 +49,29 @@ Column {
         CheckBox {
             id: cbIncludeReceivedStanza
             enabled: cbStanzaOnly.checked
-            checked: LogViewAPI.receivedStanza
+            checked: true
             text: qsTr("Include Received Stanza")
 
             indicator: CheckBoxIndicator{}
-            onCheckedChanged: if (cbIncludeReceivedStanza.checked == false && cbIncludeSentStanza.checked == false)
-                                  cbIncludeSentStanza.checked = true
+            onCheckedChanged: {
+                LogViewAPI.receivedStanza = cbIncludeReceivedStanza.checked
+                if (cbIncludeReceivedStanza.checked == false && cbIncludeSentStanza.checked == false)
+                    cbIncludeSentStanza.checked = true
+            }
         }
 
         CheckBox {
             id: cbIncludeSentStanza
             enabled: cbStanzaOnly.checked
-            checked: LogViewAPI.sentStanza
+            checked: true
             text: qsTr("Include Sent Stanza")
 
             indicator: CheckBoxIndicator{}
-            onCheckedChanged: if (cbIncludeReceivedStanza.checked == false && cbIncludeSentStanza.checked == false)
+            onCheckedChanged:{
+                LogViewAPI.sentStanza = cbIncludeSentStanza.checked
+                if (cbIncludeReceivedStanza.checked == false && cbIncludeSentStanza.checked == false)
                                   cbIncludeReceivedStanza.checked = true
+            }
         }
     }
 
@@ -75,100 +82,111 @@ Column {
         CheckBox {
             id: cbPresence
             enabled: cbStanzaOnly.checked
-            checked: LogViewAPI.presenceStanza
+            checked: true
             text: qsTr("presence")
 
             indicator: CheckBoxIndicator{}
+            onCheckedChanged: LogViewAPI.cbStanzaOnly = cbPresence.checked
         }
 
         CheckBox {
             id: cbMessage
             enabled: cbStanzaOnly.checked
-            checked: LogViewAPI.messageStanza
+            checked: true
             text: qsTr("message")
 
             indicator: CheckBoxIndicator{}
+            onCheckedChanged: LogViewAPI.messageStanza = cbStanzaOnly.checked
         }
 
         CheckBox {
             id: cbSuccess
             enabled: cbStanzaOnly.checked
-            checked: LogViewAPI.successStanza
+            checked: true
             text: qsTr("success")
 
             indicator: CheckBoxIndicator{}
+            onCheckedChanged: LogViewAPI.successStanza = cbSuccess.checked
         }
 
         CheckBox {
             id: cbIq
             enabled: cbStanzaOnly.checked
-            checked: LogViewAPI.iqStanza
+            checked: true
             text: qsTr("iq")
 
             indicator: CheckBoxIndicator{}
+            onCheckedChanged: LogViewAPI.iqStanza = cbIq.checked
         }
 
         CheckBox {
             id: cbR
             enabled: cbStanzaOnly.checked
-            checked: LogViewAPI.rStanza
+            checked: true
             text: qsTr("r")
 
             indicator: CheckBoxIndicator{}
+            onCheckedChanged: LogViewAPI.rStanza = cbR.checked
         }
 
         CheckBox {
             id: cbA
             enabled: cbStanzaOnly.checked
-            checked: LogViewAPI.aStanza
+            checked: true
             text: qsTr("a")
 
             indicator: CheckBoxIndicator{}
+            onCheckedChanged: LogViewAPI.aStanza = cbA.checked
         }
 
         CheckBox {
             id: cbX
             enabled: cbStanzaOnly.checked
-            checked: LogViewAPI.xStanza
+            checked: true
             text: qsTr("x")
 
             indicator: CheckBoxIndicator{}
+            onCheckedChanged: LogViewAPI.xStanza = cbX.checked
         }
 
         CheckBox {
             id: cbEnable
             enabled: cbStanzaOnly.checked
-            checked: LogViewAPI.enableStanza
+            checked: true
             text: qsTr("enable")
 
             indicator: CheckBoxIndicator{}
+            onCheckedChanged: LogViewAPI.enableStanza = cbEnable.checked
         }
 
         CheckBox {
             id: cbEnabled
             enabled: cbStanzaOnly.checked
-            checked: LogViewAPI.enabledStanza
+            checked: true
             text: qsTr("enabled")
 
             indicator: CheckBoxIndicator{}
+            onCheckedChanged: LogViewAPI.enabledStanza = cbEnabled.checked
         }
 
         CheckBox {
             id: cbStreamStream
             enabled: cbStanzaOnly.checked
-            checked: LogViewAPI.streamStreamStanza
+            checked: true
             text: qsTr("stream:stream")
 
             indicator: CheckBoxIndicator{}
+            onCheckedChanged: LogViewAPI.streamStreamStanza = cbStreamStream.checked
         }
 
         CheckBox {
             id: cbStreamFeatures
             enabled: cbStanzaOnly.checked
-            checked: LogViewAPI.streamFeaturesStanza
+            checked: true
             text: qsTr("stream:features")
 
             indicator: CheckBoxIndicator{}
+            onCheckedChanged: LogViewAPI.streamFeaturesStanza = cbStreamFeatures.checked
         }
     }
 }

@@ -136,6 +136,7 @@ private:
     void doFilter(const QString& content, const QString& field, bool regexpMode, bool luaMode, bool saveOptions = false);
     bool getStatistic(const QString& tableName, QList<QSharedPointer<StatisticItem>>& sis);
     void saveStatistic();
+    QString getDataSource();
 };
 
 #endif // LOGMODEL_H
