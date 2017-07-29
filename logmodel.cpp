@@ -185,18 +185,18 @@ LogModel::LogModel(QObject *parent)
     qRegisterMetaType<QMap<int, QSharedPointer<LogItem>>>("QMap<int, QSharedPointer<LogItem>>");
     connect(this, &LogModel::logItemsReady, this, &LogModel::onLogItemsReady);
 
-    connect(m_api, &QuickWidgetAPI::sentStanzaChanged, this, &LogModel::onStanzaVisibleChanged);
-    connect(m_api, &QuickWidgetAPI::receivedStanzaChanged, this, &LogModel::onStanzaVisibleChanged);
-    connect(m_api, &QuickWidgetAPI::aStanzaChanged, this, &LogModel::onStanzaVisibleChanged);
-    connect(m_api, &QuickWidgetAPI::rStanzaChanged, this, &LogModel::onStanzaVisibleChanged);
-    connect(m_api, &QuickWidgetAPI::xStanzaChanged, this, &LogModel::onStanzaVisibleChanged);
-    connect(m_api, &QuickWidgetAPI::presenceStanzaChanged, this, &LogModel::onStanzaVisibleChanged);
-    connect(m_api, &QuickWidgetAPI::enableStanzaChanged, this, &LogModel::onStanzaVisibleChanged);
-    connect(m_api, &QuickWidgetAPI::enabledStanzaChanged, this, &LogModel::onStanzaVisibleChanged);
-    connect(m_api, &QuickWidgetAPI::messageStanzaChanged, this, &LogModel::onStanzaVisibleChanged);
-    connect(m_api, &QuickWidgetAPI::iqStanzaChanged, this, &LogModel::onStanzaVisibleChanged);
-    connect(m_api, &QuickWidgetAPI::successStanzaChanged, this, &LogModel::onStanzaVisibleChanged);
-    connect(m_api, &QuickWidgetAPI::streamStreamStanzaChanged, this, &LogModel::onStanzaVisibleChanged);
+    connect(m_api, &QuickWidgetAPI::sentStanzaChanged,           this, &LogModel::onStanzaVisibleChanged);
+    connect(m_api, &QuickWidgetAPI::receivedStanzaChanged,       this, &LogModel::onStanzaVisibleChanged);
+    connect(m_api, &QuickWidgetAPI::aStanzaChanged,              this, &LogModel::onStanzaVisibleChanged);
+    connect(m_api, &QuickWidgetAPI::rStanzaChanged,              this, &LogModel::onStanzaVisibleChanged);
+    connect(m_api, &QuickWidgetAPI::xStanzaChanged,              this, &LogModel::onStanzaVisibleChanged);
+    connect(m_api, &QuickWidgetAPI::presenceStanzaChanged,       this, &LogModel::onStanzaVisibleChanged);
+    connect(m_api, &QuickWidgetAPI::enableStanzaChanged,         this, &LogModel::onStanzaVisibleChanged);
+    connect(m_api, &QuickWidgetAPI::enabledStanzaChanged,        this, &LogModel::onStanzaVisibleChanged);
+    connect(m_api, &QuickWidgetAPI::messageStanzaChanged,        this, &LogModel::onStanzaVisibleChanged);
+    connect(m_api, &QuickWidgetAPI::iqStanzaChanged,             this, &LogModel::onStanzaVisibleChanged);
+    connect(m_api, &QuickWidgetAPI::successStanzaChanged,        this, &LogModel::onStanzaVisibleChanged);
+    connect(m_api, &QuickWidgetAPI::streamStreamStanzaChanged,   this, &LogModel::onStanzaVisibleChanged);
     connect(m_api, &QuickWidgetAPI::streamFeaturesStanzaChanged, this, &LogModel::onStanzaVisibleChanged);
 }
 
