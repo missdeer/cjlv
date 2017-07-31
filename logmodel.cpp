@@ -9,7 +9,7 @@
 static lua_State* g_L = nullptr;
 static const QEvent::Type ROWCOUNT_EVENT = QEvent::Type(QEvent::User + 1);
 static const QEvent::Type FINISHEDQUERY_EVENT = QEvent::Type(QEvent::User + 2);
-static const int align = 0x3F;
+static const int g_align = 0x3F;
 
 class RowCountEvent : public QEvent
 {
@@ -233,9 +233,9 @@ QVariant LogModel::data(const QModelIndex &index, int role) const
         return QVariant();
 
     auto it = m_logs.find(index.row());
-    if (m_logs.end() == it)
+    if (m_logs.end() == it || (*it)->level.isEmpty() || (*it)->logFile.isEmpty() || (*it)->source.isEmpty() )
     {
-        int alignRow = index.row() & (~align);
+        int alignRow = (index.row() < g_align) ? index.row() : (index.row() - g_align +1);
 #ifndef QT_NO_DEBUG
         qDebug() << "do query index:" << alignRow;
 #endif
@@ -243,16 +243,7 @@ QVariant LogModel::data(const QModelIndex &index, int role) const
         return QVariant();
     }
 
-    QSharedPointer<LogItem> r = *it;
-    if (r->level.isEmpty() || r->logFile.isEmpty() || r->source.isEmpty())
-    {
-        int alignRow = index.row() & (~align);
-#ifndef QT_NO_DEBUG
-        qDebug() << "do query index:" << alignRow;
-#endif
-        const_cast<LogModel&>(*this).query(alignRow);
-        return QVariant();
-    }
+    const QSharedPointer<LogItem>& r = *it;
 
     switch (index.column())
     {
@@ -1430,7 +1421,7 @@ void LogModel::doQuery(int offset)
 
                 e->m_size++;
                 logItemCount++;
-                if (logItemCount == align)
+                if (logItemCount == g_align)
                 {
                     emit logItemsReady(logs);
                     logs.clear();
