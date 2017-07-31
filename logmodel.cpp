@@ -1698,7 +1698,7 @@ void LogModel::createDatabaseView()
     if (db.isOpen())
     {
         QSqlQuery query(db);
-        query.exec("CREATE VIEW allStanza AS SELECT * FROM " + getDataSource() + " WHERE content REGEXP 'send:<|recv:<';");
+        query.exec("CREATE VIEW allStanza AS SELECT * FROM " + getDataSource() + " WHERE content LIKE '%send:<%' OR content LIKE '%recv:<%';");
         query.exec("CREATE VIEW sentStanza AS SELECT * FROM " + getDataSource() + " WHERE content LIKE '%send:<%';");
         query.exec("CREATE VIEW receivedStanza AS SELECT * FROM " + getDataSource() + " WHERE content LIKE '%recv:<%';");
     }
