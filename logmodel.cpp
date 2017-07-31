@@ -3,6 +3,7 @@
 #include <sqlite3.h>
 #include <lua.hpp>
 #include <boost/scope_exit.hpp>
+#include "quickwidgetapi.h"
 #include "settings.h"
 #include "logmodel.h"
 
@@ -167,6 +168,7 @@ static void qt_regexp(sqlite3_context* ctx, int /*argc*/, sqlite3_value** argv)
 LogModel::LogModel(QObject *parent)
     : QAbstractTableModel(parent)
     , m_L(nullptr)
+    , m_api(new QuickWidgetAPI)
     , m_searchField("content")
     , m_searchFieldOption("content")
     , m_rowCount(0)
@@ -176,11 +178,26 @@ LogModel::LogModel(QObject *parent)
     , m_regexpMode(false)
     , m_regexpModeOption(false)
     , m_luaMode(false)
+    , m_allStanza(true)
 {
     qRegisterMetaType<QSharedPointer<LogItem>>("QSharedPointer<LogItem>");
     connect(this, &LogModel::logItemReady, this, &LogModel::onLogItemReady);
     qRegisterMetaType<QMap<int, QSharedPointer<LogItem>>>("QMap<int, QSharedPointer<LogItem>>");
     connect(this, &LogModel::logItemsReady, this, &LogModel::onLogItemsReady);
+
+    connect(m_api, &QuickWidgetAPI::sentStanzaChanged,           this, &LogModel::onStanzaVisibleChanged);
+    connect(m_api, &QuickWidgetAPI::receivedStanzaChanged,       this, &LogModel::onStanzaVisibleChanged);
+    connect(m_api, &QuickWidgetAPI::aStanzaChanged,              this, &LogModel::onStanzaVisibleChanged);
+    connect(m_api, &QuickWidgetAPI::rStanzaChanged,              this, &LogModel::onStanzaVisibleChanged);
+    connect(m_api, &QuickWidgetAPI::xStanzaChanged,              this, &LogModel::onStanzaVisibleChanged);
+    connect(m_api, &QuickWidgetAPI::presenceStanzaChanged,       this, &LogModel::onStanzaVisibleChanged);
+    connect(m_api, &QuickWidgetAPI::enableStanzaChanged,         this, &LogModel::onStanzaVisibleChanged);
+    connect(m_api, &QuickWidgetAPI::enabledStanzaChanged,        this, &LogModel::onStanzaVisibleChanged);
+    connect(m_api, &QuickWidgetAPI::messageStanzaChanged,        this, &LogModel::onStanzaVisibleChanged);
+    connect(m_api, &QuickWidgetAPI::iqStanzaChanged,             this, &LogModel::onStanzaVisibleChanged);
+    connect(m_api, &QuickWidgetAPI::successStanzaChanged,        this, &LogModel::onStanzaVisibleChanged);
+    connect(m_api, &QuickWidgetAPI::streamStreamStanzaChanged,   this, &LogModel::onStanzaVisibleChanged);
+    connect(m_api, &QuickWidgetAPI::streamFeaturesStanzaChanged, this, &LogModel::onStanzaVisibleChanged);
 }
 
 LogModel::~LogModel()
@@ -196,6 +213,7 @@ LogModel::~LogModel()
     }
 
     QFile::remove(m_dbFile);
+    delete m_api;
 }
 
 QModelIndex LogModel::index(int row, int column, const QModelIndex &parent) const
@@ -396,6 +414,67 @@ void LogModel::onFilter(const QString &keyword)
         }
     }
     doFilter(kw.trimmed(), searchField, regexpMode, false, true);
+}
+
+void LogModel::onStanzaVisibleChanged()
+{
+    m_allStanza = (m_api->getAStanza() && m_api->getRStanza() && m_api->getXStanza() && m_api->getEnableStanza() &&
+                   m_api->getEnabledStanza() && m_api->getPresenceStanza() && m_api->getMessageStanza() && m_api->getIqStanza() &&
+                   m_api->getSuccessStanza() && m_api->getStreamStreamStanza() && m_api->getStreamFeaturesStanza() );
+
+    if (m_allStanza)
+        return;
+
+    QSqlDatabase db = QSqlDatabase::database(m_dbFile, true);
+    if (!db.isValid()) {
+        db = QSqlDatabase::addDatabase("QSQLITE", m_dbFile);
+        db.setDatabaseName(m_dbFile);
+    }
+
+    if (!db.isOpen())
+        db.open();
+
+    if (db.isOpen())
+    {
+        QString dataSource = "receivedStanza";
+
+        if (m_api->getSentStanza())
+            dataSource = "sentStanza";
+
+        if (m_api->getSentStanza() && m_api->getReceivedStanza())
+            dataSource = "allStanza";
+
+        QString sql = "CREATE VIEW customStanza AS SELECT * FROM " + dataSource + " WHERE 1=0";
+
+        struct{
+            std::function<bool()> f;
+            QString s;
+        }c[] ={
+        { std::bind(&QuickWidgetAPI::getAStanza, m_api),              " OR content LIKE '%:<a %'"},
+        { std::bind(&QuickWidgetAPI::getRStanza, m_api),              " OR content LIKE '%:<r %'"},
+        { std::bind(&QuickWidgetAPI::getXStanza, m_api),              " OR content LIKE '%:<x %'"},
+        { std::bind(&QuickWidgetAPI::getEnableStanza, m_api),         " OR content LIKE '%:<enable %'"},
+        { std::bind(&QuickWidgetAPI::getEnabledStanza, m_api),        " OR content LIKE '%:<enabled %'"},
+        { std::bind(&QuickWidgetAPI::getPresenceStanza, m_api),       " OR content LIKE '%:<presence %'"},
+        { std::bind(&QuickWidgetAPI::getMessageStanza, m_api),        " OR content LIKE '%:<message %'"},
+        { std::bind(&QuickWidgetAPI::getIqStanza, m_api),             " OR content LIKE '%:<iq %'"},
+        { std::bind(&QuickWidgetAPI::getSuccessStanza, m_api),        " OR content LIKE '%:<success %'"},
+        { std::bind(&QuickWidgetAPI::getStreamStreamStanza, m_api),   " OR content LIKE '%:<stream:stream %'"},
+        { std::bind(&QuickWidgetAPI::getStreamFeaturesStanza, m_api), " OR content LIKE '%:<stream:features %'"},
+    };
+
+        for (auto a : c)
+        {
+            if (a.f())
+                sql.append(a.s);
+        }
+        sql.append(";");
+
+        qDebug() << sql;
+        QSqlQuery query(db);
+        query.exec("DROP VIEW IF EXISTS customStanza;");
+        query.exec(sql);
+    }
 }
 
 int LogModel::getMaxTotalRowCount() const
@@ -991,6 +1070,23 @@ void LogModel::saveStatistic()
     db.commit();
 }
 
+QString LogModel::getDataSource()
+{
+    if (!m_api->getStanzaOnly())
+        return "logs";
+
+    if (!m_allStanza)
+        return "customStanza";
+
+    if (m_api->getSentStanza() && m_api->getReceivedStanza())
+        return "allStanza";
+
+    if (m_api->getSentStanza())
+        return "sentStanza";
+
+    return "receivedStanza";
+}
+
 bool LogModel::getLevelStatistic(QList<QSharedPointer<StatisticItem>> &sis)
 {
     return getStatistic("level_statistic", sis);
@@ -1053,6 +1149,7 @@ void LogModel::doReload()
 
     qint64 q = t.secsTo(QDateTime::currentDateTime());
     createDatabaseIndex();
+    createDatabaseView();
     qDebug() << "loaded elapsed " << q << " s";
     QCoreApplication::postEvent(this, e);
     emit dataLoaded();
@@ -1066,32 +1163,32 @@ void LogModel::generateSQLStatements(int offset, QString &sqlFetch, QString &sql
         if (m_luaMode)
         {
             // lua match
-            sqlCount = QString("SELECT COUNT(*) FROM logs WHERE %1 MATCH 'dummy'").arg(m_searchField);
-            sqlFetch = QString("SELECT * FROM logs WHERE %1 MATCH 'dummy' ORDER BY epoch LIMIT %2, 200;").arg(m_searchField).arg(offset);
+            sqlCount = QString("SELECT COUNT(*) FROM " + getDataSource() + " WHERE %1 MATCH 'dummy'").arg(m_searchField);
+            sqlFetch = QString("SELECT * FROM " + getDataSource() + " WHERE %1 MATCH 'dummy' ORDER BY epoch LIMIT %2, 200;").arg(m_searchField).arg(offset);
             return;
         }
 
         if (m_keyword.isEmpty())
         {
             // no search, no filter
-            sqlCount = "SELECT COUNT(*) FROM logs";
-            sqlFetch = QString("SELECT * FROM logs ORDER BY epoch LIMIT %1, 200;").arg(offset);
+            sqlCount = "SELECT COUNT(*) FROM " + getDataSource();
+            sqlFetch = QString("SELECT * FROM " + getDataSource() + " ORDER BY epoch LIMIT %1, 200;").arg(offset);
             return;
         }
 
         if (m_searchField.isEmpty())
         {
             // SQL WHERE clause extension
-            sqlCount = QString("SELECT COUNT(*) FROM logs WHERE %1").arg(m_keyword);
-            sqlFetch = QString("SELECT * FROM logs WHERE %1 ORDER BY epoch LIMIT %2, 200;").arg(m_keyword).arg(offset);
+            sqlCount = QString("SELECT COUNT(*) FROM " + getDataSource() + " WHERE %1").arg(m_keyword);
+            sqlFetch = QString("SELECT * FROM " + getDataSource() + " WHERE %1 ORDER BY epoch LIMIT %2, 200;").arg(m_keyword).arg(offset);
             return;
         }
 
         if (m_regexpMode)
         {
             // regexp filter
-            sqlCount = QString("SELECT COUNT(*) FROM logs WHERE %1 REGEXP ?").arg(m_searchField);
-            sqlFetch = QString("SELECT * FROM logs WHERE %1 REGEXP ? ORDER BY epoch LIMIT %2, 200;").arg(m_searchField).arg(offset);
+            sqlCount = QString("SELECT COUNT(*) FROM " + getDataSource() + " WHERE %1 REGEXP ?").arg(m_searchField);
+            sqlFetch = QString("SELECT * FROM " + getDataSource() + " WHERE %1 REGEXP ? ORDER BY epoch LIMIT %2, 200;").arg(m_searchField).arg(offset);
             return;
         }
 
@@ -1103,10 +1200,10 @@ void LogModel::generateSQLStatements(int offset, QString &sqlFetch, QString &sql
             {
                 begin.replace(0, m_keyword.length(), m_keyword);
                 end.replace(0, m_keyword.length(), m_keyword);
-                sqlCount = QString("SELECT COUNT(*) FROM logs WHERE epoch >= %1 AND epoch <= %2")
+                sqlCount = QString("SELECT COUNT(*) FROM " + getDataSource() + " WHERE epoch >= %1 AND epoch <= %2")
                         .arg(QDateTime::fromString(begin,"yyyy-MM-dd hh:mm:ss,zzz").toMSecsSinceEpoch())
                         .arg(QDateTime::fromString(end,"yyyy-MM-dd hh:mm:ss,zzz").toMSecsSinceEpoch());
-                sqlFetch = QString("SELECT * FROM logs WHERE epoch >= %1 AND epoch <= %2 ORDER BY epoch LIMIT %3, 200;")
+                sqlFetch = QString("SELECT * FROM " + getDataSource() + " WHERE epoch >= %1 AND epoch <= %2 ORDER BY epoch LIMIT %3, 200;")
                         .arg(QDateTime::fromString(begin,"yyyy-MM-dd hh:mm:ss,zzz").toMSecsSinceEpoch())
                         .arg(QDateTime::fromString(end,"yyyy-MM-dd hh:mm:ss,zzz").toMSecsSinceEpoch())
                         .arg(offset);
@@ -1115,40 +1212,40 @@ void LogModel::generateSQLStatements(int offset, QString &sqlFetch, QString &sql
         }
 
         // simple keyword, SQL LIKE fitler
-        sqlCount = QString("SELECT COUNT(*) FROM logs WHERE %1 LIKE '%'||?||'%'").arg(m_searchField);
-        sqlFetch = QString("SELECT * FROM logs WHERE %1 LIKE '%'||?||'%' ORDER BY epoch LIMIT %2, 200;").arg(m_searchField).arg(offset);
+        sqlCount = QString("SELECT COUNT(*) FROM " + getDataSource() + " WHERE %1 LIKE '%'||?||'%'").arg(m_searchField);
+        sqlFetch = QString("SELECT * FROM " + getDataSource() + " WHERE %1 LIKE '%'||?||'%' ORDER BY epoch LIMIT %2, 200;").arg(m_searchField).arg(offset);
         return;
     }
 
     if (m_luaMode)
     {
         // lua match
-        sqlCount = QString("SELECT COUNT(*) FROM logs WHERE %1 MATCH 'dummy' AND level GLOB 'dummy'").arg(m_searchField);
-        sqlFetch = QString("SELECT * FROM logs WHERE %1 MATCH 'dummy' AND level GLOB 'dummy' ORDER BY epoch LIMIT %2, 200;").arg(m_searchField).arg(offset);
+        sqlCount = QString("SELECT COUNT(*) FROM " + getDataSource() + " WHERE %1 MATCH 'dummy' AND level GLOB 'dummy'").arg(m_searchField);
+        sqlFetch = QString("SELECT * FROM " + getDataSource() + " WHERE %1 MATCH 'dummy' AND level GLOB 'dummy' ORDER BY epoch LIMIT %2, 200;").arg(m_searchField).arg(offset);
         return;
     }
 
     if (m_keyword.isEmpty())
     {
         // no search, no filter
-        sqlCount = "SELECT COUNT(*) FROM logs WHERE level GLOB 'dummy'";
-        sqlFetch = QString("SELECT * FROM logs WHERE level GLOB 'dummy' ORDER BY epoch LIMIT %1, 200;").arg(offset);
+        sqlCount = "SELECT COUNT(*) FROM " + getDataSource() + " WHERE level GLOB 'dummy'";
+        sqlFetch = QString("SELECT * FROM " + getDataSource() + " WHERE level GLOB 'dummy' ORDER BY epoch LIMIT %1, 200;").arg(offset);
         return;
     }
 
     if (m_searchField.isEmpty())
     {
         // SQL WHERE clause extension
-        sqlCount = QString("SELECT COUNT(*) FROM logs WHERE %1 AND level GLOB 'dummy'").arg(m_keyword);
-        sqlFetch = QString("SELECT * FROM logs WHERE %1 AND level GLOB 'dummy' ORDER BY epoch LIMIT %2, 200;").arg(m_keyword).arg(offset);
+        sqlCount = QString("SELECT COUNT(*) FROM " + getDataSource() + " WHERE %1 AND level GLOB 'dummy'").arg(m_keyword);
+        sqlFetch = QString("SELECT * FROM " + getDataSource() + " WHERE %1 AND level GLOB 'dummy' ORDER BY epoch LIMIT %2, 200;").arg(m_keyword).arg(offset);
         return;
     }
 
     if (m_regexpMode)
     {
         // regexp filter
-        sqlCount = QString("SELECT COUNT(*) FROM logs WHERE %1 REGEXP ? AND level GLOB 'dummy'").arg(m_searchField);
-        sqlFetch = QString("SELECT * FROM logs WHERE %1 REGEXP ? AND level GLOB 'dummy' ORDER BY epoch LIMIT %2, 200;").arg(m_searchField).arg(offset);
+        sqlCount = QString("SELECT COUNT(*) FROM " + getDataSource() + " WHERE %1 REGEXP ? AND level GLOB 'dummy'").arg(m_searchField);
+        sqlFetch = QString("SELECT * FROM " + getDataSource() + " WHERE %1 REGEXP ? AND level GLOB 'dummy' ORDER BY epoch LIMIT %2, 200;").arg(m_searchField).arg(offset);
         return;
     }
 
@@ -1161,10 +1258,10 @@ void LogModel::generateSQLStatements(int offset, QString &sqlFetch, QString &sql
         {
             begin.replace(0, m_keyword.length(), m_keyword);
             end.replace(0, m_keyword.length(), m_keyword);
-            sqlCount = QString("SELECT COUNT(*) FROM logs WHERE epoch >= %1 AND epoch <= %2 AND level GLOB 'dummy'")
+            sqlCount = QString("SELECT COUNT(*) FROM " + getDataSource() + " WHERE epoch >= %1 AND epoch <= %2 AND level GLOB 'dummy'")
                     .arg(QDateTime::fromString(begin,"yyyy-MM-dd hh:mm:ss,zzz").toMSecsSinceEpoch())
                     .arg(QDateTime::fromString(end,"yyyy-MM-dd hh:mm:ss,zzz").toMSecsSinceEpoch());
-            sqlFetch = QString("SELECT * FROM logs WHERE epoch >= %1 AND epoch <= %2 AND level GLOB 'dummy' ORDER BY epoch LIMIT %3, 200;")
+            sqlFetch = QString("SELECT * FROM " + getDataSource() + " WHERE epoch >= %1 AND epoch <= %2 AND level GLOB 'dummy' ORDER BY epoch LIMIT %3, 200;")
                     .arg(QDateTime::fromString(begin,"yyyy-MM-dd hh:mm:ss,zzz").toMSecsSinceEpoch())
                     .arg(QDateTime::fromString(end,"yyyy-MM-dd hh:mm:ss,zzz").toMSecsSinceEpoch())
                     .arg(offset);
@@ -1173,8 +1270,8 @@ void LogModel::generateSQLStatements(int offset, QString &sqlFetch, QString &sql
     }
 
     // simple keyword, SQL LIKE fitler
-    sqlCount = QString("SELECT COUNT(*) FROM logs WHERE %1 LIKE '%'||?||'%' AND level GLOB 'dummy'").arg(m_searchField);
-    sqlFetch = QString("SELECT * FROM logs WHERE %1 LIKE '%'||?||'%' AND level GLOB 'dummy' ORDER BY epoch LIMIT %2, 200;").arg(m_searchField).arg(offset);
+    sqlCount = QString("SELECT COUNT(*) FROM " + getDataSource() + " WHERE %1 LIKE '%'||?||'%' AND level GLOB 'dummy'").arg(m_searchField);
+    sqlFetch = QString("SELECT * FROM " + getDataSource() + " WHERE %1 LIKE '%'||?||'%' AND level GLOB 'dummy' ORDER BY epoch LIMIT %2, 200;").arg(m_searchField).arg(offset);
 }
 
 QString LogModel::generateSQLStatement(int from, int to)
@@ -1184,25 +1281,25 @@ QString LogModel::generateSQLStatement(int from, int to)
         if (m_luaMode)
         {
             // lua match
-            return QString("SELECT * FROM logs WHERE %1 AND id >= %2 AND id <= %3 MATCH 'dummy' ORDER BY epoch LIMIT 400000;").arg(m_searchField).arg(from).arg(to);
+            return QString("SELECT * FROM " + getDataSource() + " WHERE %1 AND id >= %2 AND id <= %3 MATCH 'dummy' ORDER BY epoch LIMIT 400000;").arg(m_searchField).arg(from).arg(to);
         }
 
         if (m_keyword.isEmpty())
         {
             // no search, no filter
-            return QString("SELECT * FROM logs WHERE id >= %1 AND id <= %2 ORDER BY epoch LIMIT 400000;").arg(from).arg(to);
+            return QString("SELECT * FROM " + getDataSource() + " WHERE id >= %1 AND id <= %2 ORDER BY epoch LIMIT 400000;").arg(from).arg(to);
         }
 
         if (m_searchField.isEmpty())
         {
             // SQL WHERE clause extension
-            return QString("SELECT * FROM logs WHERE %1 AND id >= %2 AND id <= %3 ORDER BY epoch LIMIT 400000;").arg(m_keyword).arg(from).arg(to);
+            return QString("SELECT * FROM " + getDataSource() + " WHERE %1 AND id >= %2 AND id <= %3 ORDER BY epoch LIMIT 400000;").arg(m_keyword).arg(from).arg(to);
         }
 
         if (m_regexpMode)
         {
             // regexp filter
-            return QString("SELECT * FROM logs WHERE %1 AND id >= %2 AND id <= %3 REGEXP ? ORDER BY epoch LIMIT 400000;").arg(m_searchField).arg(from).arg(to);
+            return QString("SELECT * FROM " + getDataSource() + " WHERE %1 AND id >= %2 AND id <= %3 REGEXP ? ORDER BY epoch LIMIT 400000;").arg(m_searchField).arg(from).arg(to);
         }
 
         if (m_searchField == "datetime")
@@ -1213,38 +1310,38 @@ QString LogModel::generateSQLStatement(int from, int to)
             {
                 begin.replace(0, m_keyword.length(), m_keyword);
                 end.replace(0, m_keyword.length(), m_keyword);
-                return QString("SELECT * FROM logs WHERE epoch >= %1 AND epoch <= %2 AND id >= %3 AND id <= %4 ORDER BY epoch LIMIT 400000;")
+                return QString("SELECT * FROM " + getDataSource() + " WHERE epoch >= %1 AND epoch <= %2 AND id >= %3 AND id <= %4 ORDER BY epoch LIMIT 400000;")
                         .arg(QDateTime::fromString(begin,"yyyy-MM-dd hh:mm:ss,zzz").toMSecsSinceEpoch())
                         .arg(QDateTime::fromString(end,"yyyy-MM-dd hh:mm:ss,zzz").toMSecsSinceEpoch())
                         .arg(from).arg(to);;
             }
         }
         // simple keyword, SQL LIKE fitler
-        return QString("SELECT * FROM logs WHERE %1 LIKE '%'||?||'%' AND id >= %2 AND id <= %3 ORDER BY epoch LIMIT 400000;").arg(m_searchField).arg(from).arg(to);
+        return QString("SELECT * FROM " + getDataSource() + " WHERE %1 LIKE '%'||?||'%' AND id >= %2 AND id <= %3 ORDER BY epoch LIMIT 400000;").arg(m_searchField).arg(from).arg(to);
     }
 
     if (m_luaMode)
     {
         // lua match
-        return QString("SELECT * FROM logs WHERE %1 AND id >= %2 AND id <= %3 MATCH 'dummy' AND level GLOB 'dummy' ORDER BY epoch LIMIT 400000;").arg(m_searchField).arg(from).arg(to);
+        return QString("SELECT * FROM " + getDataSource() + " WHERE %1 AND id >= %2 AND id <= %3 MATCH 'dummy' AND level GLOB 'dummy' ORDER BY epoch LIMIT 400000;").arg(m_searchField).arg(from).arg(to);
     }
 
     if (m_keyword.isEmpty())
     {
         // no search, no filter
-        return QString("SELECT * FROM logs WHERE level GLOB 'dummy' AND id >= %1 AND id <= %2 ORDER BY epoch LIMIT 400000;").arg(from).arg(to);
+        return QString("SELECT * FROM " + getDataSource() + " WHERE level GLOB 'dummy' AND id >= %1 AND id <= %2 ORDER BY epoch LIMIT 400000;").arg(from).arg(to);
     }
 
     if (m_searchField.isEmpty())
     {
         // SQL WHERE clause extension
-        return QString("SELECT * FROM logs WHERE %1 AND level GLOB 'dummy' AND id >= %2 AND id <= %3 ORDER BY epoch LIMIT 400000;").arg(m_keyword).arg(from).arg(to);
+        return QString("SELECT * FROM " + getDataSource() + " WHERE %1 AND level GLOB 'dummy' AND id >= %2 AND id <= %3 ORDER BY epoch LIMIT 400000;").arg(m_keyword).arg(from).arg(to);
     }
 
     if (m_regexpMode)
     {
         // regexp filter
-        return QString("SELECT * FROM logs WHERE %1 REGEXP ? AND level GLOB 'dummy' AND id >= %2 AND id <= %3 ORDER BY epoch LIMIT 400000;").arg(m_searchField).arg(from).arg(to);
+        return QString("SELECT * FROM " + getDataSource() + " WHERE %1 REGEXP ? AND level GLOB 'dummy' AND id >= %2 AND id <= %3 ORDER BY epoch LIMIT 400000;").arg(m_searchField).arg(from).arg(to);
     }
 
     if (m_searchField == "datetime")
@@ -1255,14 +1352,14 @@ QString LogModel::generateSQLStatement(int from, int to)
         {
             begin.replace(0, m_keyword.length(), m_keyword);
             end.replace(0, m_keyword.length(), m_keyword);
-            return QString("SELECT * FROM logs WHERE epoch >= %1 AND epoch <= %2 AND level GLOB 'dummy' AND id >= %3 AND id <= %4 ORDER BY epoch LIMIT 400000;")
+            return QString("SELECT * FROM " + getDataSource() + " WHERE epoch >= %1 AND epoch <= %2 AND level GLOB 'dummy' AND id >= %3 AND id <= %4 ORDER BY epoch LIMIT 400000;")
                     .arg(QDateTime::fromString(begin,"yyyy-MM-dd hh:mm:ss,zzz").toMSecsSinceEpoch())
                     .arg(QDateTime::fromString(end,"yyyy-MM-dd hh:mm:ss,zzz").toMSecsSinceEpoch())
                     .arg(from).arg(to);;
         }
     }
     // simple keyword, SQL LIKE fitler
-    return QString("SELECT * FROM logs WHERE %1 LIKE '%'||?||'%' AND level GLOB 'dummy' AND id >= %2 AND id <= %3 ORDER BY epoch LIMIT 400000;").arg(m_searchField).arg(from).arg(to);
+    return QString("SELECT * FROM " + getDataSource() + " WHERE %1 LIKE '%'||?||'%' AND level GLOB 'dummy' AND id >= %2 AND id <= %3 ORDER BY epoch LIMIT 400000;").arg(m_searchField).arg(from).arg(to);
 }
 
 void LogModel::doFilter(const QString &content, const QString &field, bool regexpMode, bool luaMode, bool saveOptions)
@@ -1584,6 +1681,26 @@ void LogModel::createDatabaseIndex()
         query.exec("CREATE INDEX ic ON logs ( category);");
         query.exec("CREATE INDEX im ON logs ( method);");
         query.exec("CREATE INDEX io ON logs ( content);");
+    }
+}
+
+void LogModel::createDatabaseView()
+{
+    QSqlDatabase db = QSqlDatabase::database(m_dbFile, true);
+    if (!db.isValid()) {
+        db = QSqlDatabase::addDatabase("QSQLITE", m_dbFile);
+        db.setDatabaseName(m_dbFile);
+    }
+
+    if (!db.isOpen())
+        db.open();
+
+    if (db.isOpen())
+    {
+        QSqlQuery query(db);
+        query.exec("CREATE VIEW allStanza AS SELECT * FROM " + getDataSource() + " WHERE content REGEXP 'send:<|recv:<';");
+        query.exec("CREATE VIEW sentStanza AS SELECT * FROM " + getDataSource() + " WHERE content LIKE '%send:<%';");
+        query.exec("CREATE VIEW receivedStanza AS SELECT * FROM " + getDataSource() + " WHERE content LIKE '%recv:<%';");
     }
 }
 

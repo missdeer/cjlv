@@ -83,7 +83,7 @@ LogView::LogView(QWidget *parent)
     topBarLayout->addWidget(m_extraToolPanelVisibleButton);
     topBarLayout->setStretch(1, 1);
 
-    m_api = new QuickWidgetAPI(this);
+    m_api = m_logModel->getQuickWidgetAPI();
     connect(m_api, &QuickWidgetAPI::valueChanged, this, &LogView::onRangeSliderValueChanged);
 
     m_extraToolPanel = new QQuickWidget(logsTab);
@@ -175,7 +175,6 @@ LogView::~LogView()
         QDir dir(m_extractDir);
         dir.removeRecursively();
     }
-    delete m_api;
 }
 
 void LogView::openZipBundle(const QString &zipBundle, const QString &crashInfo)
