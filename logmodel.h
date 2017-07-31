@@ -82,10 +82,11 @@ public slots:
     void onLogItemReady(int i, QSharedPointer<LogItem> log);
     void onLogItemsReady(QMap<int, QSharedPointer<LogItem>> logs);
     void onFilter(const QString& keyword);
-    void onStanzaVisibleChanged();
+    void onSearchScopeChanged();
 private:
     lua_State* m_L;
     QuickWidgetAPI* m_api;
+    QString m_lastFilterKeyword;
     QString m_searchField;
     QString m_searchFieldOption;
     QString m_sqlCount;
@@ -104,11 +105,13 @@ private:
     int m_currentTotalRowCount;
     int m_maxTotalRowCount;
     int m_toQueryOffset;
+    bool m_forceQuerying;
     bool m_stopQuerying;
     bool m_regexpMode;
     bool m_regexpModeOption;
     bool m_luaMode;
     bool m_allStanza;
+    bool m_fullRange;
     QString dateTime;
     QString level ;
     QString thread ;
@@ -131,7 +134,6 @@ private:
     bool parseLine(const QString &line, QStringList& results);
     bool event(QEvent *e) Q_DECL_OVERRIDE;
     void createDatabaseIndex();
-    void createDatabaseView();
     void generateSQLStatements(int offset, QString& sqlFetch, QString& sqlCount);
     QString generateSQLStatement(int from, int to);
     void doFilter(const QString& content, const QString& field, bool regexpMode, bool luaMode, bool saveOptions = false);

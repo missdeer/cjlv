@@ -175,6 +175,7 @@ LogModel::LogModel(QObject *parent)
     , m_currentTotalRowCount(0)
     , m_maxTotalRowCount(0)
     , m_toQueryOffset(-1)
+    , m_forceQuerying(false)
     , m_regexpMode(false)
     , m_regexpModeOption(false)
     , m_luaMode(false)
@@ -184,20 +185,6 @@ LogModel::LogModel(QObject *parent)
     connect(this, &LogModel::logItemReady, this, &LogModel::onLogItemReady);
     qRegisterMetaType<QMap<int, QSharedPointer<LogItem>>>("QMap<int, QSharedPointer<LogItem>>");
     connect(this, &LogModel::logItemsReady, this, &LogModel::onLogItemsReady);
-
-    connect(m_api, &QuickWidgetAPI::sentStanzaChanged,           this, &LogModel::onStanzaVisibleChanged);
-    connect(m_api, &QuickWidgetAPI::receivedStanzaChanged,       this, &LogModel::onStanzaVisibleChanged);
-    connect(m_api, &QuickWidgetAPI::aStanzaChanged,              this, &LogModel::onStanzaVisibleChanged);
-    connect(m_api, &QuickWidgetAPI::rStanzaChanged,              this, &LogModel::onStanzaVisibleChanged);
-    connect(m_api, &QuickWidgetAPI::xStanzaChanged,              this, &LogModel::onStanzaVisibleChanged);
-    connect(m_api, &QuickWidgetAPI::presenceStanzaChanged,       this, &LogModel::onStanzaVisibleChanged);
-    connect(m_api, &QuickWidgetAPI::enableStanzaChanged,         this, &LogModel::onStanzaVisibleChanged);
-    connect(m_api, &QuickWidgetAPI::enabledStanzaChanged,        this, &LogModel::onStanzaVisibleChanged);
-    connect(m_api, &QuickWidgetAPI::messageStanzaChanged,        this, &LogModel::onStanzaVisibleChanged);
-    connect(m_api, &QuickWidgetAPI::iqStanzaChanged,             this, &LogModel::onStanzaVisibleChanged);
-    connect(m_api, &QuickWidgetAPI::successStanzaChanged,        this, &LogModel::onStanzaVisibleChanged);
-    connect(m_api, &QuickWidgetAPI::streamStreamStanzaChanged,   this, &LogModel::onStanzaVisibleChanged);
-    connect(m_api, &QuickWidgetAPI::streamFeaturesStanzaChanged, this, &LogModel::onStanzaVisibleChanged);
 }
 
 LogModel::~LogModel()
@@ -349,6 +336,7 @@ void LogModel::reload()
 
 void LogModel::onFilter(const QString &keyword)
 {
+    m_lastFilterKeyword = keyword;
     if (keyword != m_keyword)
     {
         // get regexp mode option and search field option
@@ -416,14 +404,13 @@ void LogModel::onFilter(const QString &keyword)
     doFilter(kw.trimmed(), searchField, regexpMode, false, true);
 }
 
-void LogModel::onStanzaVisibleChanged()
+void LogModel::onSearchScopeChanged()
 {
     m_allStanza = (m_api->getAStanza() && m_api->getRStanza() && m_api->getXStanza() && m_api->getEnableStanza() &&
                    m_api->getEnabledStanza() && m_api->getPresenceStanza() && m_api->getMessageStanza() && m_api->getIqStanza() &&
-                   m_api->getSuccessStanza() && m_api->getStreamStreamStanza() && m_api->getStreamFeaturesStanza() );
+                   m_api->getSuccessStanza() && m_api->getStreamStreamStanza() && m_api->getStreamFeaturesStanza());
 
-    if (m_allStanza)
-        return;
+    m_fullRange = (m_api->getFirstValue() == 1 && m_api->getSecondValue() == m_maxTotalRowCount);
 
     QSqlDatabase db = QSqlDatabase::database(m_dbFile, true);
     if (!db.isValid()) {
@@ -436,6 +423,24 @@ void LogModel::onStanzaVisibleChanged()
 
     if (db.isOpen())
     {
+        QSqlQuery query(db);
+        QString globalScope = "logs";
+        if (!m_fullRange)
+        {
+            query.exec("DROP VIEW IF EXISTS inRange;");
+            QString sql = QString("CREATE VIEW inRange AS SELECT * FROM logs WHERE id>=%1 AND id<=%2;").arg(m_api->getFirstValue()).arg(m_api->getSecondValue());
+            qDebug() << sql;
+            query.exec(sql);
+            globalScope = "inRange";
+        }
+
+        query.exec("DROP VIEW IF EXISTS allStanza");
+        query.exec("CREATE VIEW allStanza AS SELECT * FROM " + globalScope + " WHERE content LIKE '%send:<%' OR content LIKE '%recv:<%';");
+        query.exec("DROP VIEW IF EXISTS sentStanza");
+        query.exec("CREATE VIEW sentStanza AS SELECT * FROM " + globalScope + " WHERE content LIKE '%send:<%';");
+        query.exec("DROP VIEW IF EXISTS receivedStanza");
+        query.exec("CREATE VIEW receivedStanza AS SELECT * FROM " + globalScope + " WHERE content LIKE '%recv:<%';");
+
         QString dataSource = "receivedStanza";
 
         if (m_api->getSentStanza())
@@ -471,10 +476,12 @@ void LogModel::onStanzaVisibleChanged()
         sql.append(";");
 
         qDebug() << sql;
-        QSqlQuery query(db);
         query.exec("DROP VIEW IF EXISTS customStanza;");
         query.exec(sql);
     }
+
+    m_forceQuerying = true;
+    onFilter(m_lastFilterKeyword);
 }
 
 int LogModel::getMaxTotalRowCount() const
@@ -1073,7 +1080,7 @@ void LogModel::saveStatistic()
 QString LogModel::getDataSource()
 {
     if (!m_api->getStanzaOnly())
-        return "logs";
+        return (m_fullRange ? "logs" : "inRange");
 
     if (!m_allStanza)
         return "customStanza";
@@ -1144,12 +1151,28 @@ void LogModel::doReload()
                   [&](const QString& log) { e->m_rowCount += copyFromFileToDatabase(log); });
     m_currentTotalRowCount = e->m_rowCount;
     if (m_maxTotalRowCount < m_currentTotalRowCount)
+    {
         m_maxTotalRowCount = m_currentTotalRowCount;
+
+        connect(m_api, &QuickWidgetAPI::sentStanzaChanged,           this, &LogModel::onSearchScopeChanged);
+        connect(m_api, &QuickWidgetAPI::receivedStanzaChanged,       this, &LogModel::onSearchScopeChanged);
+        connect(m_api, &QuickWidgetAPI::aStanzaChanged,              this, &LogModel::onSearchScopeChanged);
+        connect(m_api, &QuickWidgetAPI::rStanzaChanged,              this, &LogModel::onSearchScopeChanged);
+        connect(m_api, &QuickWidgetAPI::xStanzaChanged,              this, &LogModel::onSearchScopeChanged);
+        connect(m_api, &QuickWidgetAPI::presenceStanzaChanged,       this, &LogModel::onSearchScopeChanged);
+        connect(m_api, &QuickWidgetAPI::enableStanzaChanged,         this, &LogModel::onSearchScopeChanged);
+        connect(m_api, &QuickWidgetAPI::enabledStanzaChanged,        this, &LogModel::onSearchScopeChanged);
+        connect(m_api, &QuickWidgetAPI::messageStanzaChanged,        this, &LogModel::onSearchScopeChanged);
+        connect(m_api, &QuickWidgetAPI::iqStanzaChanged,             this, &LogModel::onSearchScopeChanged);
+        connect(m_api, &QuickWidgetAPI::successStanzaChanged,        this, &LogModel::onSearchScopeChanged);
+        connect(m_api, &QuickWidgetAPI::streamStreamStanzaChanged,   this, &LogModel::onSearchScopeChanged);
+        connect(m_api, &QuickWidgetAPI::streamFeaturesStanzaChanged, this, &LogModel::onSearchScopeChanged);
+        connect(m_api, &QuickWidgetAPI::valueChanged,                this, &LogModel::onSearchScopeChanged);
+    }
     saveStatistic();
 
     qint64 q = t.secsTo(QDateTime::currentDateTime());
     createDatabaseIndex();
-    createDatabaseView();
     qDebug() << "loaded elapsed " << q << " s";
     QCoreApplication::postEvent(this, e);
     emit dataLoaded();
@@ -1158,6 +1181,7 @@ void LogModel::doReload()
 void LogModel::generateSQLStatements(int offset, QString &sqlFetch, QString &sqlCount)
 {    
     //qWarning() << __FUNCTION__ << m_keyword << m_searchField << m_regexpMode;
+    qDebug() << "data source:" << getDataSource();
     if (g_settings->allLogLevelEnabled() || m_searchField == "level")
     {
         if (m_luaMode)
@@ -1364,9 +1388,11 @@ QString LogModel::generateSQLStatement(int from, int to)
 
 void LogModel::doFilter(const QString &content, const QString &field, bool regexpMode, bool luaMode, bool saveOptions)
 {
-    if (m_keyword == content)
+    if (m_keyword == content && !m_forceQuerying)
         return;
 
+    // reset force querying flag immediately
+    m_forceQuerying = false;
     // stop other query thread first
     m_stopQuerying = true;
 
@@ -1392,7 +1418,7 @@ void LogModel::doFilter(const QString &content, const QString &field, bool regex
     QString searchFieldBackup = m_searchField;
     m_searchField = field;
     m_keyword = content;
-    //qWarning() << __FUNCTION__ << content << field << regexpMode << m_keyword << m_searchField << m_regexpMode;
+    qWarning() << __FUNCTION__ << content << field << regexpMode << m_keyword << m_searchField << m_regexpMode;
     query(0);
 
     QMutexLocker l(&m_dataMemberMutex);
@@ -1432,7 +1458,8 @@ void LogModel::doQuery(int offset)
 
     if (sqlFetch == m_sqlFetch && sqlCount == m_sqlCount && m_keyword.isEmpty())
     {
-        return;
+        qDebug() << "search condition not changed";
+        //return;
     }
     m_sqlCount = sqlCount;
     m_sqlFetch = sqlFetch;
@@ -1681,26 +1708,6 @@ void LogModel::createDatabaseIndex()
         query.exec("CREATE INDEX ic ON logs ( category);");
         query.exec("CREATE INDEX im ON logs ( method);");
         query.exec("CREATE INDEX io ON logs ( content);");
-    }
-}
-
-void LogModel::createDatabaseView()
-{
-    QSqlDatabase db = QSqlDatabase::database(m_dbFile, true);
-    if (!db.isValid()) {
-        db = QSqlDatabase::addDatabase("QSQLITE", m_dbFile);
-        db.setDatabaseName(m_dbFile);
-    }
-
-    if (!db.isOpen())
-        db.open();
-
-    if (db.isOpen())
-    {
-        QSqlQuery query(db);
-        query.exec("CREATE VIEW allStanza AS SELECT * FROM " + getDataSource() + " WHERE content LIKE '%send:<%' OR content LIKE '%recv:<%';");
-        query.exec("CREATE VIEW sentStanza AS SELECT * FROM " + getDataSource() + " WHERE content LIKE '%send:<%';");
-        query.exec("CREATE VIEW receivedStanza AS SELECT * FROM " + getDataSource() + " WHERE content LIKE '%recv:<%';");
     }
 }
 

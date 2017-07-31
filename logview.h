@@ -103,7 +103,6 @@ private slots:
     void onOpenRowsBetweenAnchorsInNewTab();
     void onShowLogItemsBetweenAnchors();
     void onLogTableChartTabWidgetCurrentChanged(int index);
-    void onRangeSliderValueChanged();
     void onHHeaderContextMenuActionTriggered();
 public slots:
     void onClearKeyword();

@@ -86,7 +86,7 @@ Column {
             text: qsTr("presence")
 
             indicator: CheckBoxIndicator{}
-            onCheckedChanged: LogViewAPI.cbStanzaOnly = cbPresence.checked
+            onCheckedChanged: LogViewAPI.presenceStanza = cbPresence.checked
         }
 
         CheckBox {

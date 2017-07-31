@@ -49,7 +49,6 @@ LogView::LogView(QWidget *parent)
     , m_codeEditorTabWidget(new CodeEditorTabWidget(m_verticalSplitter))
     , m_logModel(new LogModel(m_logsTableView))
     , m_presenceWidget(new PresenceWidget(m_logTableChartTabWidget))
-    , m_rangeSliderValueChangedTimer(new QTimer)
     , m_lastId(-1)
     , m_lastColumn(-1)
 {
@@ -84,7 +83,6 @@ LogView::LogView(QWidget *parent)
     topBarLayout->setStretch(1, 1);
 
     m_api = m_logModel->getQuickWidgetAPI();
-    connect(m_api, &QuickWidgetAPI::valueChanged, this, &LogView::onRangeSliderValueChanged);
 
     m_extraToolPanel = new QQuickWidget(logsTab);
     m_extraToolPanel->setAttribute(Qt::WA_TranslucentBackground, true);
@@ -148,28 +146,10 @@ LogView::LogView(QWidget *parent)
     connect(m_logModel, &LogModel::rowCountChanged, this, &LogView::onRowCountChanged);
     connect(m_logModel, &LogModel::databaseCreated, m_presenceWidget, &PresenceWidget::databaseCreated);
     connect(this, &LogView::runExtension, m_logModel, &LogModel::runLuaExtension);
-
-    m_rangeSliderValueChangedTimer->setSingleShot(true);
-    connect(m_rangeSliderValueChangedTimer, &QTimer::timeout, [&]() {
-        if (!m_cbSearchKeyword || !m_cbSearchKeyword->lineEdit())
-            return;
-
-        if (m_api->getSecondValue() == m_logModel->getMaxTotalRowCount() && m_api->getFirstValue() == 1)
-        {
-            m_cbSearchKeyword->lineEdit()->clear();
-            return;
-        }
-        QString query = QString("sql>id>=%1 and id<=%2").arg(m_api->getFirstValue()).arg(m_api->getSecondValue());
-        m_cbSearchKeyword->lineEdit()->setText(query);
-    });
 }
 
 LogView::~LogView()
 {
-    if (m_rangeSliderValueChangedTimer->isActive())
-        m_rangeSliderValueChangedTimer->stop();
-    delete m_rangeSliderValueChangedTimer;
-
     if (!m_extractDir.isEmpty())
     {
         QDir dir(m_extractDir);
@@ -1259,15 +1239,6 @@ void LogView::onLogTableChartTabWidgetCurrentChanged(int index)
     {
         setChart(it->chartView, sis, it->label);
         it->created = true;
-    }
-}
-
-void LogView::onRangeSliderValueChanged()
-{
-    Q_ASSERT(m_api);
-    if (m_api->getSecondValue() != 1)
-    {
-        m_rangeSliderValueChangedTimer->start(200);
     }
 }
 
