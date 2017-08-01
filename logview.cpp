@@ -391,7 +391,8 @@ void LogView::extractContent(const QModelIndex& index)
 
         header.append("\n");
         header.append(xmlOut);
-        text = header;
+        if (header.length() > text.length())
+            text = header;
     }
 
     if (g_settings->multiMonitorEnabled())

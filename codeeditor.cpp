@@ -19,7 +19,8 @@ void CodeEditor::initialize()
 void CodeEditor::setContent(const QString &content)
 {
     m_isContent = true;
-    setText(content.toLatin1().data());
+    auto b = content.toLocal8Bit();
+    setText(b.data());
 
     emptyUndoBuffer();
     m_sc.initEditorStyle(this);
