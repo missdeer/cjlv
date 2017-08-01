@@ -1391,8 +1391,6 @@ void LogModel::doFilter(const QString &content, const QString &field, bool regex
     if (m_keyword == content && !m_forceQuerying)
         return;
 
-    // reset force querying flag immediately
-    m_forceQuerying = false;
     // stop other query thread first
     m_stopQuerying = true;
 
@@ -1456,10 +1454,10 @@ void LogModel::doQuery(int offset)
         QCoreApplication::postEvent(this_, e);
     } BOOST_SCOPE_EXIT_END
 
-    if (sqlFetch == m_sqlFetch && sqlCount == m_sqlCount && m_keyword.isEmpty())
+    if (sqlFetch == m_sqlFetch && sqlCount == m_sqlCount && m_keyword.isEmpty() && !m_forceQuerying)
     {
         qDebug() << "search condition not changed";
-        //return;
+        return;
     }
     m_sqlCount = sqlCount;
     m_sqlFetch = sqlFetch;
@@ -1562,6 +1560,9 @@ void LogModel::doQuery(int offset)
 
             q.clear();
             q.finish();
+
+            // reset force querying flag finally
+            m_forceQuerying = false;
         }
     }
 }
