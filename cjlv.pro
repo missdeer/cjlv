@@ -115,7 +115,7 @@ macx: {
         #copy_fonts.commands = cp -R \"$$PWD/Fonts\" \"$${TARGET}.app/Contents/Resources/\"
 
         #deploy.depends += copy_fonts
-        deploy.commands += $$MACDEPLOYQT \"$${OUT_PWD}/$${TARGET}.app\" -appstore-compliant
+        deploy.commands += $$MACDEPLOYQT \"$${OUT_PWD}/$${TARGET}.app\" -appstore-compliant \"-qmldir=$${PWD}/qml\"
 
         APPCERT = Developer ID Application: Fan Yang (Y73SBCN2CG)
         INSTALLERCERT = 3rd Party Mac Developer Installer: Fan Yang (Y73SBCN2CG)
