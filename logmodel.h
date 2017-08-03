@@ -105,8 +105,8 @@ private:
     int m_currentTotalRowCount;
     int m_maxTotalRowCount;
     int m_toQueryOffset;
-    bool m_forceQuerying;
-    bool m_stopQuerying;
+    std::atomic<bool> m_forceQuerying;
+    std::atomic<bool> m_stopQuerying;
     bool m_regexpMode;
     bool m_regexpModeOption;
     bool m_luaMode;

@@ -175,12 +175,12 @@ LogModel::LogModel(QObject *parent)
     , m_currentTotalRowCount(0)
     , m_maxTotalRowCount(0)
     , m_toQueryOffset(-1)
-    , m_forceQuerying(false)
     , m_regexpMode(false)
     , m_regexpModeOption(false)
     , m_luaMode(false)
     , m_allStanza(true)
 {
+    m_forceQuerying.store(false);
     qRegisterMetaType<QSharedPointer<LogItem>>("QSharedPointer<LogItem>");
     connect(this, &LogModel::logItemReady, this, &LogModel::onLogItemReady);
     qRegisterMetaType<QMap<int, QSharedPointer<LogItem>>>("QMap<int, QSharedPointer<LogItem>>");
@@ -480,7 +480,7 @@ void LogModel::onSearchScopeChanged()
         query.exec(sql);
     }
 
-    m_forceQuerying = true;
+    m_forceQuerying.store(true);
     onFilter(m_lastFilterKeyword);
 }
 
@@ -1388,11 +1388,11 @@ QString LogModel::generateSQLStatement(int from, int to)
 
 void LogModel::doFilter(const QString &content, const QString &field, bool regexpMode, bool luaMode, bool saveOptions)
 {
-    if (m_keyword == content && !m_forceQuerying)
+    if (m_keyword == content && !m_forceQuerying.load())
         return;
 
     // stop other query thread first
-    m_stopQuerying = true;
+    m_stopQuerying.store(true);
 
     if (!m_queryFuture.isFinished())
     {
@@ -1464,7 +1464,7 @@ void LogModel::doQuery(int offset)
 
     qDebug() << __FUNCTION__ <<  m_sqlCount << m_sqlFetch << m_keyword << m_searchField;
 
-    m_stopQuerying = false;
+    m_stopQuerying.store(false);
 
     QSqlDatabase db = QSqlDatabase::database(m_dbFile, true);
     if (!db.isValid()) {
@@ -1477,7 +1477,7 @@ void LogModel::doQuery(int offset)
 
     if (db.isOpen())
     {
-        if (m_stopQuerying)
+        if (m_stopQuerying.load())
             return;
         QSqlQuery q(db);
         q.prepare(m_sqlCount);
@@ -1497,14 +1497,14 @@ void LogModel::doQuery(int offset)
             QCoreApplication::postEvent(this, erc);
         }
 
-        if (m_stopQuerying)
+        if (m_stopQuerying.load())
             return;
         q.prepare(m_sqlFetch);
         if (!m_keyword.isEmpty() && m_sqlFetch.contains(QChar('?')))
             q.addBindValue(m_keyword);
         if (q.exec())
         {
-            if (m_stopQuerying)
+            if (m_stopQuerying.load())
                 return;
 
             int idIndex = q.record().indexOf("id");
@@ -1519,7 +1519,7 @@ void LogModel::doQuery(int offset)
             int lineIndex = q.record().indexOf("line");
             QMap<int, QSharedPointer<LogItem>> logs;
             int logItemCount = 0;
-            while (q.next() && !m_stopQuerying)
+            while (q.next() && !m_stopQuerying.load())
             {
                 QSharedPointer<LogItem> log =  QSharedPointer<LogItem>(new LogItem);
                 log->id = q.value(idIndex).toInt();
@@ -1562,7 +1562,7 @@ void LogModel::doQuery(int offset)
             q.finish();
 
             // reset force querying flag finally
-            m_forceQuerying = false;
+            m_forceQuerying.store(false);
         }
     }
 }
