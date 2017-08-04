@@ -125,6 +125,7 @@ LogView::LogView(QWidget *parent)
 
     m_logsTableView->setModel(m_logModel);
     m_logsTableView->horizontalHeader()->setSectionResizeMode(7, QHeaderView::Stretch);
+    m_logsTableView->horizontalHeader()->setSectionsMovable(true);
     m_logsTableView->horizontalHeader()->setContextMenuPolicy(Qt::CustomContextMenu);
     m_logsTableView->setContextMenuPolicy(Qt::CustomContextMenu);
 
