@@ -19,7 +19,7 @@ void CodeEditor::initialize()
 void CodeEditor::setContent(const QString &content)
 {
     m_isContent = true;
-    auto b = content.toLocal8Bit();
+    auto b = content.toUtf8();
     setText(b.data());
 
     emptyUndoBuffer();
