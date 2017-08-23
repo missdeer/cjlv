@@ -250,30 +250,22 @@ QVariant LogModel::data(const QModelIndex &index, int role) const
 
     const QSharedPointer<LogItem>& r = *it;
 
-    switch (index.column())
+    QMap<int, QString> m = {
+        {0, QString("%1").arg(r->id)},
+        {1, r->time.toString("yyyy-MM-dd hh:mm:ss.zzz")},
+        {2, r->level},
+        {3, r->thread},
+        {4, r->source},
+        {5, r->category},
+        {6, r->method},
+        {7, r->content},
+        {8, "." % r->logFile},
+        {9, QString("%1").arg(r->line)},
+    };
+    auto mit = m.find(index.column());
+    if (mit != m.end())
     {
-    case 0:
-        return QVariant(r->id);
-    case 1:
-        return QVariant(r->time.toString("yyyy-MM-dd hh:mm:ss,zzz"));
-    case 2:
-        return QVariant(r->level);
-    case 3:
-        return QVariant(r->thread);
-    case 4:
-        return QVariant(r->source);
-    case 5:
-        return QVariant(r->category);
-    case 6:
-        return QVariant(r->method);
-    case 7:
-        return QVariant(r->content);
-    case 8:
-        return QVariant("." % r->logFile);
-    case 9:
-        return QVariant(r->line);
-    default:
-        break;
+        return QVariant(mit.value());
     }
 
     return QVariant();
@@ -291,33 +283,21 @@ QVariant LogModel::headerData(int section, Qt::Orientation orientation, int role
 {
     if (orientation == Qt::Horizontal && role == Qt::DisplayRole)
     {
-        switch(section)
-        {
-
-        case 0:
-            return QVariant(tr("Id"));
-        case 1:
-            return QVariant(tr("Time"));
-        case 2:
-            return QVariant(tr("Level"));
-        case 3:
-            return QVariant(tr("Thread"));
-        case 4:
-            return QVariant(tr("Source File"));
-        case 5:
-            return QVariant(tr("Category"));
-        case 6:
-            return QVariant(tr("Method"));
-        case 7:
-            return QVariant(tr("Content"));
-        case 8:
-            return QVariant(tr("Log File"));
-        case 9:
-            return QVariant(tr("Line"));
-        default:
-            break;
-        }
-
+        QMap<int, QString> m = {
+            {0, tr("Id")},
+            {1, tr("Time")},
+            {2, tr("Level")},
+            {3, tr("Thread")},
+            {4, tr("Source File")},
+            {5, tr("Category")},
+            {6, tr("Method")},
+            {7, tr("Content")},
+            {8, tr("Log File")},
+            {9, tr("Line")},
+        };
+        auto it = m.find(section);
+        if (it != m.end())
+            return QVariant(it.value());
     }
 
     return QVariant();
@@ -528,41 +508,23 @@ void LogModel::copyCell(const QModelIndex& cell)
     }
 
     QSharedPointer<LogItem> r = *it;
-    QClipboard *clipboard = QApplication::clipboard();
-    switch (cell.column())
+    QMap<int, QString> m = {
+        {0, QString("%1").arg(r->id)},
+        {1, r->time.toString("yyyy-MM-dd hh:mm:ss.zzz")},
+        {2, r->level},
+        {3, r->thread},
+        {4, r->source},
+        {5, r->category},
+        {6, r->method},
+        {7, r->content},
+        {8, "." % r->logFile},
+        {9, QString("%1").arg(r->line)},
+    };
+    auto mit = m.find(cell.column());
+    if (mit != m.end())
     {
-    case 0:
-        clipboard->setText(QString("%1").arg(r->id));
-        break;
-    case 1:
-        clipboard->setText(r->time.toString("yyyy-MM-dd hh:mm:ss.zzz"));
-        break;
-    case 2:
-        clipboard->setText(r->level);
-        break;
-    case 3:
-        clipboard->setText(r->thread);
-        break;
-    case 4:
-        clipboard->setText(r->source);
-        break;
-    case 5:
-        clipboard->setText(r->category);
-        break;
-    case 6:
-        clipboard->setText(r->method);
-        break;
-    case 7:
-        clipboard->setText(r->content);
-        break;
-    case 8:
-        clipboard->setText("." % r->logFile);
-        break;
-    case 9:
-        clipboard->setText(QString("%1").arg(r->line));
-        break;
-    default:
-        break;
+        QClipboard *clipboard = QApplication::clipboard();
+        clipboard->setText(mit.value());
     }
 }
 
