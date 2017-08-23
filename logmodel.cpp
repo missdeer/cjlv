@@ -10,7 +10,7 @@
 static lua_State* g_L = nullptr;
 static const QEvent::Type ROWCOUNT_EVENT = QEvent::Type(QEvent::User + 1);
 static const QEvent::Type FINISHEDQUERY_EVENT = QEvent::Type(QEvent::User + 2);
-static const int g_align = 0x3F;
+static const int g_rowCountLimit = 200;
 
 class RowCountEvent : public QEvent
 {
@@ -240,7 +240,7 @@ QVariant LogModel::data(const QModelIndex &index, int role) const
     auto it = m_logs.find(index.row());
     if (m_logs.end() == it || (*it)->level.isEmpty() || (*it)->logFile.isEmpty() || (*it)->source.isEmpty() )
     {
-        int alignRow = (index.row() < g_align) ? index.row() : (index.row() - g_align +1);
+        int alignRow = index.row();
 #ifndef QT_NO_DEBUG
         qDebug() << "do query index:" << alignRow;
 #endif
@@ -1505,7 +1505,7 @@ void LogModel::doQuery(int offset)
 
                 e->m_size++;
                 logItemCount++;
-                if (logItemCount == g_align)
+                if (logItemCount == g_rowCountLimit)
                 {
                     emit logItemsReady(logs);
                     logs.clear();
