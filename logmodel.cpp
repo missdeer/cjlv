@@ -240,7 +240,7 @@ QVariant LogModel::data(const QModelIndex &index, int role) const
     auto it = m_logs.find(index.row());
     if (m_logs.end() == it || (*it)->level.isEmpty() || (*it)->logFile.isEmpty() || (*it)->source.isEmpty() )
     {
-        int alignRow = index.row();
+        int alignRow = ((index.row() < 100) ? index.row() : (index.row() - 100));
 #ifndef QT_NO_DEBUG
         qDebug() << "do query index:" << alignRow;
 #endif
