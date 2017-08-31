@@ -8,7 +8,7 @@ QT       += core gui widgets
 
 CONFIG += c++11
 
-VERSION = 3.6.6
+VERSION = 3.7.6
 
 SOURCES += \
     $$PWD/ScintillaEdit.cpp \

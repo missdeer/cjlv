@@ -20,7 +20,7 @@ unix {
     }
 }
 
-VERSION = 3.6.6
+VERSION = 3.7.5
 
 SOURCES += \
     ScintillaEdit.cpp \
@@ -78,7 +78,7 @@ OTHER_FILES +=
 
 INCLUDEPATH += ../ScintillaEditBase ../../include ../../src ../../lexlib
 
-DEFINES += SCINTILLA_QT=1 SCI_LEXER=1 _CRT_SECURE_NO_DEPRECATE=1 SCI_STATIC_LINK=1
+DEFINES += SCINTILLA_QT=1 MAKING_LIBRARY=1 SCI_LEXER=1 _CRT_SECURE_NO_DEPRECATE=1
 CONFIG(release, debug|release) {
     DEFINES += NDEBUG=1
 }

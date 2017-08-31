@@ -24,14 +24,14 @@ XP_DEFINE=-D_USING_V110_SDK71_
 XP_LINK=-SUBSYSTEM:WINDOWS,5.01
 !ENDIF
 
-CRTFLAGS=-D_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES=1 -D_CRT_SECURE_NO_DEPRECATE=1 $(XP_DEFINE)
-CXXFLAGS=-Zi -TP -MP -W4 -EHsc -Zc:forScope -Zc:wchar_t $(CRTFLAGS)
+CRTFLAGS=-D_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES=1 -D_CRT_SECURE_NO_DEPRECATE=1 -D_SCL_SECURE_NO_WARNINGS=1 $(XP_DEFINE)
+CXXFLAGS=-Zi -TP -MP -W4 -EHsc $(CRTFLAGS)
 CXXDEBUG=-Od -MTd -DDEBUG
 CXXNDEBUG=-O1 -MT -DNDEBUG -GL
 NAME=-Fo
-LDFLAGS=-OPT:REF -LTCG -DEBUG $(XP_LINK)
+LDFLAGS=-OPT:REF -LTCG -IGNORE:4197 -DEBUG $(XP_LINK)
 LDDEBUG=
-LIBS=KERNEL32.lib USER32.lib GDI32.lib IMM32.lib OLE32.LIB OLEAUT32.LIB
+LIBS=KERNEL32.lib USER32.lib GDI32.lib IMM32.lib OLE32.lib OLEAUT32.lib MSIMG32.lib
 NOLOGO=-nologo
 
 !IFDEF QUIET
@@ -45,8 +45,8 @@ CXXFLAGS=$(CXXFLAGS) -DDISABLE_D2D
 !MESSAGE Direct2D is not available
 !ENDIF
 
-!IFDEF CXX11_REGEX
-CXXFLAGS=$(CXXFLAGS) -DCXX11_REGEX
+!IFDEF NO_CXX11_REGEX
+CXXFLAGS=$(CXXFLAGS) -DNO_CXX11_REGEX
 !ENDIF
 
 !IFDEF DEBUG
@@ -136,6 +136,7 @@ LEXOBJS=\
 	$(DIR_O)\LexDMAP.obj \
 	$(DIR_O)\LexDMIS.obj \
 	$(DIR_O)\LexECL.obj \
+	$(DIR_O)\LexEDIFACT.obj \
 	$(DIR_O)\LexEiffel.obj \
 	$(DIR_O)\LexErlang.obj \
 	$(DIR_O)\LexErrorList.obj \
@@ -148,6 +149,7 @@ LEXOBJS=\
 	$(DIR_O)\LexHaskell.obj \
 	$(DIR_O)\LexHex.obj \
 	$(DIR_O)\LexHTML.obj \
+	$(DIR_O)\LexIndent.obj \
 	$(DIR_O)\LexInno.obj \
 	$(DIR_O)\LexJSON.obj \
 	$(DIR_O)\LexKix.obj \
@@ -345,9 +347,11 @@ $(DIR_O)\ContractionState.obj: \
 	../src/ContractionState.cxx \
 	../include/Platform.h \
 	../src/Position.h \
+	../src/UniqueString.h \
 	../src/SplitVector.h \
 	../src/Partitioning.h \
 	../src/RunStyles.h \
+	../src/SparseVector.h \
 	../src/ContractionState.h
 $(DIR_O)\Decoration.obj: \
 	../src/Decoration.cxx \
@@ -366,6 +370,7 @@ $(DIR_O)\Document.obj: \
 	../include/Sci_Position.h \
 	../include/Scintilla.h \
 	../lexlib/CharacterSet.h \
+	../lexlib/CharacterCategory.h \
 	../src/Position.h \
 	../src/SplitVector.h \
 	../src/Partitioning.h \
@@ -387,6 +392,7 @@ $(DIR_O)\EditModel.obj: \
 	../include/Scintilla.h \
 	../lexlib/StringCopy.h \
 	../src/Position.h \
+	../src/UniqueString.h \
 	../src/SplitVector.h \
 	../src/Partitioning.h \
 	../src/RunStyles.h \
@@ -414,6 +420,7 @@ $(DIR_O)\Editor.obj: \
 	../include/Scintilla.h \
 	../lexlib/StringCopy.h \
 	../src/Position.h \
+	../src/UniqueString.h \
 	../src/SplitVector.h \
 	../src/Partitioning.h \
 	../src/RunStyles.h \
@@ -444,7 +451,9 @@ $(DIR_O)\EditView.obj: \
 	../include/Sci_Position.h \
 	../include/Scintilla.h \
 	../lexlib/StringCopy.h \
+	../lexlib/CharacterSet.h \
 	../src/Position.h \
+	../src/UniqueString.h \
 	../src/SplitVector.h \
 	../src/Partitioning.h \
 	../src/RunStyles.h \
@@ -556,6 +565,8 @@ $(DIR_O)\LexDMIS.obj: ..\lexers\LexDMIS.cxx $(LEX_HEADERS)
 
 $(DIR_O)\LexECL.obj: ..\lexers\LexECL.cxx $(LEX_HEADERS)
 
+$(DIR_O)\LexEDIFACT.obj: ..\lexers\LexEDIFACT.cxx $(LEX_HEADERS)
+
 $(DIR_O)\LexEiffel.obj: ..\lexers\LexEiffel.cxx $(LEX_HEADERS)
 
 $(DIR_O)\LexErlang.obj: ..\lexers\LexErlang.cxx $(LEX_HEADERS)
@@ -579,6 +590,8 @@ $(DIR_O)\LexHaskell.obj: ..\lexers\LexHaskell.cxx $(LEX_HEADERS)
 $(DIR_O)\LexHex.obj: ..\lexers\LexHex.cxx $(LEX_HEADERS)
 
 $(DIR_O)\LexHTML.obj: ..\lexers\LexHTML.cxx $(LEX_HEADERS)
+
+$(DIR_O)\LexIndent.obj: ..\lexers\LexIndent.cxx $(LEX_HEADERS)
 
 $(DIR_O)\LexInno.obj: ..\lexers\LexInno.cxx $(LEX_HEADERS)
 
@@ -770,6 +783,7 @@ $(DIR_O)\MarginView.obj: \
 	../include/Scintilla.h \
 	../lexlib/StringCopy.h \
 	../src/Position.h \
+	../src/UniqueString.h \
 	../src/SplitVector.h \
 	../src/Partitioning.h \
 	../src/RunStyles.h \
@@ -815,6 +829,7 @@ $(DIR_O)\PositionCache.obj: \
 	../include/Sci_Position.h \
 	../include/Scintilla.h \
 	../src/Position.h \
+	../src/UniqueString.h \
 	../src/SplitVector.h \
 	../src/Partitioning.h \
 	../src/RunStyles.h \
@@ -858,6 +873,7 @@ $(DIR_O)\ScintillaBase.obj: \
 	../include/Scintilla.h \
 	../lexlib/PropSetSimple.h \
 	../src/Position.h \
+	../src/UniqueString.h \
 	../src/SplitVector.h \
 	../src/Partitioning.h \
 	../src/RunStyles.h \
@@ -890,6 +906,7 @@ $(DIR_O)\ScintillaBaseL.obj: \
 	../include/Scintilla.h \
 	../lexlib/PropSetSimple.h \
 	../src/Position.h \
+	../src/UniqueString.h \
 	../src/SplitVector.h \
 	../src/Partitioning.h \
 	../src/RunStyles.h \
@@ -922,6 +939,7 @@ $(DIR_O)\ScintillaWin.obj: \
 	../include/Scintilla.h \
 	../lexlib/StringCopy.h \
 	../src/Position.h \
+	../src/UniqueString.h \
 	../src/SplitVector.h \
 	../src/Partitioning.h \
 	../src/RunStyles.h \
@@ -958,6 +976,7 @@ $(DIR_O)\ScintillaWinL.obj: \
 	../include/Scintilla.h \
 	../lexlib/StringCopy.h \
 	../src/Position.h \
+	../src/UniqueString.h \
 	../src/SplitVector.h \
 	../src/Partitioning.h \
 	../src/RunStyles.h \
@@ -994,6 +1013,7 @@ $(DIR_O)\ScintillaWinS.obj: \
 	../include/Scintilla.h \
 	../lexlib/StringCopy.h \
 	../src/Position.h \
+	../src/UniqueString.h \
 	../src/SplitVector.h \
 	../src/Partitioning.h \
 	../src/RunStyles.h \
@@ -1041,7 +1061,8 @@ $(DIR_O)\StyleContext.obj: \
 	../include/Sci_Position.h \
 	../lexlib/LexAccessor.h \
 	../lexlib/Accessor.h \
-	../lexlib/StyleContext.h
+	../lexlib/StyleContext.h \
+	../lexlib/CharacterSet.h
 $(DIR_O)\UniConversion.obj: \
 	../src/UniConversion.cxx \
 	../src/UniConversion.h
@@ -1051,9 +1072,7 @@ $(DIR_O)\ViewStyle.obj: \
 	../include/Scintilla.h \
 	../include/Sci_Position.h \
 	../src/Position.h \
-	../src/SplitVector.h \
-	../src/Partitioning.h \
-	../src/RunStyles.h \
+	../src/UniqueString.h \
 	../src/Indicator.h \
 	../src/XPM.h \
 	../src/LineMarker.h \
@@ -1067,7 +1086,7 @@ $(DIR_O)\XPM.obj: \
 	../src/XPM.cxx \
 	../include/Platform.h \
 	../src/XPM.h
-$(DIR_O)\HanjaDic: \
+$(DIR_O)\HanjaDic.obj: \
 	HanjaDic.cxx \
 	../src/UniConversion.h \
 	HanjaDic.h
