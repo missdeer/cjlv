@@ -247,12 +247,12 @@ void ScintillaConfig::applyThemeStyle(ScintillaEdit *sci, const QString &themePa
             sci->styleSetBack(id, color);
         }
         QString fontName = styleElem.attribute("font_name");
-        if (!fontName.isEmpty())
+        QFontDatabase database;
+        QStringList families = database.families();
+        if (!fontName.isEmpty() && families.contains(fontName))
             sci->styleSetFont(id, fontName.toStdString().c_str());
         else
         {
-            QFontDatabase database;
-            QStringList families = database.families();
             if (families.contains(g_settings->sourceViewFontFamily()))
                 sci->styleSetFont(id, g_settings->sourceViewFontFamily().toStdString().c_str());
             else
