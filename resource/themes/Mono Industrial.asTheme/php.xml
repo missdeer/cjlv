@@ -1,14 +1,14 @@
 <AinesmileTheme name="php" desc="php" ext="">
-	<style name="QUESTION MARK" style_id="18" fg_color="FFFFFF" bg_color="222C28" font_name="Consolas" font_style="0" font_size="10"/>
-	<style name="DEFAULT" style_id="118" fg_color="FFFFFF" bg_color="222C28" font_name="Consolas" font_style="0" font_size="10"/>
-	<style name="STRING" style_id="119" fg_color="FFFFFF" bg_color="222C28" font_name="Consolas" font_style="0" font_size="10"/>
-	<style name="STRING VARIABLE" style_id="126" fg_color="FFFFFF" bg_color="222C28" font_name="Consolas" font_style="0" font_size="10"/>
-	<style name="SIMPLESTRING" style_id="120" fg_color="FFFFFF" bg_color="222C28" font_name="Consolas" font_style="0" font_size="10"/>
-	<style name="WORD" style_id="121" fg_color="A39E64" bg_color="222C28" font_name="Consolas" font_style="0" font_size="10"/>
-	<style name="NUMBER" style_id="122" fg_color="E98800" bg_color="222C28" font_name="Consolas" font_style="0" font_size="10"/>
-	<style name="VARIABLE" style_id="123" fg_color="648BD2" bg_color="222C28" font_name="Consolas" font_style="0" font_size="10"/>
-	<style name="COMMENT" style_id="124" fg_color="666C68" bg_color="222C28" font_name="Consolas" font_style="0" font_size="10"/>
-	<style name="COMMENTLINE" style_id="125" fg_color="666C68" bg_color="222C28" font_name="Consolas" font_style="0" font_size="10"/>
-	<style name="OPERATOR" style_id="127" fg_color="A8B3AB" bg_color="222C28" font_name="Consolas" font_style="0" font_size="10"/>
+	<style name="QUESTION MARK" style_id="18" fg_color="FFFFFF" bg_color="222C28" font_name="" font_style="0" font_size="10"/>
+	<style name="DEFAULT" style_id="118" fg_color="FFFFFF" bg_color="222C28" font_name="" font_style="0" font_size="10"/>
+	<style name="STRING" style_id="119" fg_color="FFFFFF" bg_color="222C28" font_name="" font_style="0" font_size="10"/>
+	<style name="STRING VARIABLE" style_id="126" fg_color="FFFFFF" bg_color="222C28" font_name="" font_style="0" font_size="10"/>
+	<style name="SIMPLESTRING" style_id="120" fg_color="FFFFFF" bg_color="222C28" font_name="" font_style="0" font_size="10"/>
+	<style name="WORD" style_id="121" fg_color="A39E64" bg_color="222C28" font_name="" font_style="0" font_size="10"/>
+	<style name="NUMBER" style_id="122" fg_color="E98800" bg_color="222C28" font_name="" font_style="0" font_size="10"/>
+	<style name="VARIABLE" style_id="123" fg_color="648BD2" bg_color="222C28" font_name="" font_style="0" font_size="10"/>
+	<style name="COMMENT" style_id="124" fg_color="666C68" bg_color="222C28" font_name="" font_style="0" font_size="10"/>
+	<style name="COMMENTLINE" style_id="125" fg_color="666C68" bg_color="222C28" font_name="" font_style="0" font_size="10"/>
+	<style name="OPERATOR" style_id="127" fg_color="A8B3AB" bg_color="222C28" font_name="" font_style="0" font_size="10"/>
 </AinesmileTheme>
 

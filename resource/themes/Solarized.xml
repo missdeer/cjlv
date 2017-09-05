@@ -30,7 +30,7 @@ Requirements:
       However, that font may be replaced in the "GlobalStyles" section of this 
       file, where it is found in only the "Global override" and "Default Style" lines.
       Fonts are not separately specified anywhere else in this version of the style file.
-      Note 3/29/2012: I have replaced Inconsola-dz with Consolas, since Consolas is
+      Note 3/29/2012: I have replaced Inconsola-dz with , since  is
       installed by default in recent versions of Windows.
       
 //-->

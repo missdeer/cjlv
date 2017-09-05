@@ -1,16 +1,16 @@
 <AinesmileTheme name="css" desc="CSS" ext="">
-	<style name="DEFAULT" style_id="0" fg_color="FFFFFF" bg_color="112435" font_name="Consolas" font_style="0" font_size=""/>
-	<style name="TAG" style_id="1" fg_color="7BD827" bg_color="112435" font_name="Consolas" font_style="0" font_size=""/>
-	<style name="CLASS" style_id="2" fg_color="F4DD0B" bg_color="112435" font_name="Consolas" font_style="0" font_size=""/>
-	<style name="PSEUDOCLASS" style_id="3" fg_color="FFFF80" bg_color="112435" font_name="Consolas" font_style="0" font_size=""/>
-	<style name="UNKNOWN_PSEUDOCLASS" style_id="4" fg_color="FF0000" bg_color="112435" font_name="Consolas" font_style="0" font_size=""/>
-	<style name="OPERATOR" style_id="5" fg_color="FF00FF" bg_color="112435" font_name="Consolas" font_style="0" font_size=""/>
-	<style name="IDENTIFIER" style_id="6" fg_color="FFFFFF" bg_color="112435" font_name="Consolas" font_style="0" font_size=""/>
-	<style name="UNKNOWN_IDENTIFIER" style_id="7" fg_color="FF0000" bg_color="112435" font_name="Consolas" font_style="0" font_size=""/>
-	<style name="VALUE" style_id="8" fg_color="8DB0D3" bg_color="112435" font_name="Consolas" font_style="0" font_size=""/>
-	<style name="COMMENT" style_id="9" fg_color="3A8BDA" bg_color="112435" font_name="Consolas" font_style="0" font_size=""/>
-	<style name="ID" style_id="10" fg_color="F08047" bg_color="112435" font_name="Consolas" font_style="0" font_size=""/>
-	<style name="IMPORTANT" style_id="11" fg_color="FF00FF" bg_color="112435" font_name="Consolas" font_style="0" font_size=""/>
-	<style name="DIRECTIVE" style_id="12" fg_color="730080" bg_color="112435" font_name="Consolas" font_style="0" font_size=""/>
+	<style name="DEFAULT" style_id="0" fg_color="FFFFFF" bg_color="112435" font_name="" font_style="0" font_size=""/>
+	<style name="TAG" style_id="1" fg_color="7BD827" bg_color="112435" font_name="" font_style="0" font_size=""/>
+	<style name="CLASS" style_id="2" fg_color="F4DD0B" bg_color="112435" font_name="" font_style="0" font_size=""/>
+	<style name="PSEUDOCLASS" style_id="3" fg_color="FFFF80" bg_color="112435" font_name="" font_style="0" font_size=""/>
+	<style name="UNKNOWN_PSEUDOCLASS" style_id="4" fg_color="FF0000" bg_color="112435" font_name="" font_style="0" font_size=""/>
+	<style name="OPERATOR" style_id="5" fg_color="FF00FF" bg_color="112435" font_name="" font_style="0" font_size=""/>
+	<style name="IDENTIFIER" style_id="6" fg_color="FFFFFF" bg_color="112435" font_name="" font_style="0" font_size=""/>
+	<style name="UNKNOWN_IDENTIFIER" style_id="7" fg_color="FF0000" bg_color="112435" font_name="" font_style="0" font_size=""/>
+	<style name="VALUE" style_id="8" fg_color="8DB0D3" bg_color="112435" font_name="" font_style="0" font_size=""/>
+	<style name="COMMENT" style_id="9" fg_color="3A8BDA" bg_color="112435" font_name="" font_style="0" font_size=""/>
+	<style name="ID" style_id="10" fg_color="F08047" bg_color="112435" font_name="" font_style="0" font_size=""/>
+	<style name="IMPORTANT" style_id="11" fg_color="FF00FF" bg_color="112435" font_name="" font_style="0" font_size=""/>
+	<style name="DIRECTIVE" style_id="12" fg_color="730080" bg_color="112435" font_name="" font_style="0" font_size=""/>
 </AinesmileTheme>
 

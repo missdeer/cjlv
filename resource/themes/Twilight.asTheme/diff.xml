@@ -1,10 +1,10 @@
 <AinesmileTheme name="diff" desc="DIFF" ext="">
-	<style name="DEFAULT" style_id="0" fg_color="F8F8F8" bg_color="141414" font_name="Consolas" font_style="0" font_size="10"/>
-	<style name="COMMENT" style_id="1" fg_color="5F5A60" bg_color="141414" font_name="Consolas" font_style="2" font_size="10"/>
-	<style name="COMMAND" style_id="2" fg_color="5F5A60" bg_color="141414" font_name="Consolas" font_style="2" font_size="10"/>
-	<style name="HEADER" style_id="3" fg_color="E8DD8E" bg_color="141414" font_name="Consolas" font_style="0" font_size="10"/>
-	<style name="POSITION" style_id="4" fg_color="5F5A60" bg_color="141414" font_name="Consolas" font_style="2" font_size="10"/>
-	<style name="DELETED" style_id="5" fg_color="CD6749" bg_color="141414" font_name="Consolas" font_style="0" font_size="10"/>
-	<style name="ADDED" style_id="6" fg_color="8FC6E8" bg_color="141414" font_name="Consolas" font_style="0" font_size="10"/>
+	<style name="DEFAULT" style_id="0" fg_color="F8F8F8" bg_color="141414" font_name="" font_style="0" font_size="10"/>
+	<style name="COMMENT" style_id="1" fg_color="5F5A60" bg_color="141414" font_name="" font_style="2" font_size="10"/>
+	<style name="COMMAND" style_id="2" fg_color="5F5A60" bg_color="141414" font_name="" font_style="2" font_size="10"/>
+	<style name="HEADER" style_id="3" fg_color="E8DD8E" bg_color="141414" font_name="" font_style="0" font_size="10"/>
+	<style name="POSITION" style_id="4" fg_color="5F5A60" bg_color="141414" font_name="" font_style="2" font_size="10"/>
+	<style name="DELETED" style_id="5" fg_color="CD6749" bg_color="141414" font_name="" font_style="0" font_size="10"/>
+	<style name="ADDED" style_id="6" fg_color="8FC6E8" bg_color="141414" font_name="" font_style="0" font_size="10"/>
 </AinesmileTheme>
 

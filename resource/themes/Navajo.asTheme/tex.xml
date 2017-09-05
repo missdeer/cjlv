@@ -1,9 +1,9 @@
 <AinesmileTheme name="tex" desc="TeX" ext="">
-	<style name="DEFAULT" style_id="0" fg_color="000000" bg_color="BA9C80" font_name="Consolas" font_style="0" font_size=""/>
-	<style name="SPECIAL" style_id="1" fg_color="C00058" bg_color="BA9C80" font_name="Consolas" font_style="0" font_size=""/>
-	<style name="GROUP" style_id="2" fg_color="010101" bg_color="BA9C80" font_name="Consolas" font_style="0" font_size=""/>
-	<style name="SYMBOL" style_id="3" fg_color="106060" bg_color="BA9C80" font_name="Consolas" font_style="0" font_size=""/>
-	<style name="COMMAND" style_id="4" fg_color="804040" bg_color="BA9C80" font_name="Consolas" font_style="0" font_size=""/>
-	<style name="TEXT" style_id="5" fg_color="000000" bg_color="BA9C80" font_name="Consolas" font_style="0" font_size=""/>
+	<style name="DEFAULT" style_id="0" fg_color="000000" bg_color="BA9C80" font_name="" font_style="0" font_size=""/>
+	<style name="SPECIAL" style_id="1" fg_color="C00058" bg_color="BA9C80" font_name="" font_style="0" font_size=""/>
+	<style name="GROUP" style_id="2" fg_color="010101" bg_color="BA9C80" font_name="" font_style="0" font_size=""/>
+	<style name="SYMBOL" style_id="3" fg_color="106060" bg_color="BA9C80" font_name="" font_style="0" font_size=""/>
+	<style name="COMMAND" style_id="4" fg_color="804040" bg_color="BA9C80" font_name="" font_style="0" font_size=""/>
+	<style name="TEXT" style_id="5" fg_color="000000" bg_color="BA9C80" font_name="" font_style="0" font_size=""/>
 </AinesmileTheme>
 
