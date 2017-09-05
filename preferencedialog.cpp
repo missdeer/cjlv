@@ -65,12 +65,13 @@ PreferenceDialog::PreferenceDialog(QWidget *parent) :
     filters << "*.asTheme";
     dir.setNameFilters(filters);
 
+    QString currentTheme = g_settings->sourceViewTheme();
     QFileInfoList list = dir.entryInfoList();
     for( auto fi : list)
     {
         ui->cbSourceViewTheme->addItem(fi.baseName());
     }
-    ui->cbSourceViewTheme->setCurrentText(g_settings->sourceViewTheme());
+    ui->cbSourceViewTheme->setCurrentText(currentTheme);
 }
 
 PreferenceDialog::~PreferenceDialog()
