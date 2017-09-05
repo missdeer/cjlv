@@ -1,8 +1,6 @@
 #ifndef STDAFX_H
 #define STDAFX_H
 
-#include <atomic>
-
 #if defined(_WIN32)
 #define NOMINMAX
 #include <Windows.h>
@@ -15,6 +13,11 @@
 #include <Everything.h>
 #include <everything_ipc.h>
 #endif
+
+// it's needed by clang
+#if defined(__cplusplus)
+
+#include <atomic>
 
 #include <QtCore>
 #include <QSettings>
@@ -93,6 +96,8 @@
 #include <QWinThumbnailToolButton>
 #include <QWinTaskbarButton>
 #include <QWinTaskbarProgress>
+#endif
+
 #endif
 
 #endif // STDAFX_H
