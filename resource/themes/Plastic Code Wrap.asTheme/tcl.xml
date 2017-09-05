@@ -1,4 +1,4 @@
-<AinesmileTheme name="tcl" desc="TCL" ext="">
+<EditorTheme name="tcl" desc="TCL" ext="">
 	<style name="PREPROCESSOR" style_id="9" fg_color="FFAA00" bg_color="0B161D" font_name="" font_style="0" font_size="10"/>
 	<style name="DEFAULT" style_id="11" fg_color="F8F8F8" bg_color="0B161D" font_name="" font_style="0" font_size="10"/>
 	<style name="INSTRUCTION WORD" style_id="5" fg_color="F6F080" bg_color="0B161D" font_name="" font_style="0" font_size="10"/>
@@ -15,5 +15,5 @@
 	<style name="COMMENT LINE DOC" style_id="15" fg_color="1E9AE0" bg_color="0B161D" font_name="" font_style="0" font_size="10"/>
 	<style name="COMMENT DOC KEYWORD" style_id="17" fg_color="1E9AE0" bg_color="0B161D" font_name="" font_style="0" font_size="10"/>
 	<style name="COMMENT DOC KEYWORD ERROR" style_id="18" fg_color="1E9AE0" bg_color="0B161D" font_name="" font_style="0" font_size="10"/>
-</AinesmileTheme>
+</EditorTheme>
 

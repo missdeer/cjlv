@@ -1,4 +1,4 @@
-<AinesmileTheme name="bash" desc="bash" ext="">
+<EditorTheme name="bash" desc="bash" ext="">
 	<style name="DEFAULT" style_id="0" fg_color="C3BE98" bg_color="1A0F0B" font_name="" font_style="0" font_size="10"/>
 	<style name="ERROR" style_id="1" fg_color="000000" bg_color="1A0F0B" font_name="" font_style="0" font_size="10"/>
 	<style name="INSTRUCTION WORD" style_id="4" fg_color="F1E694" bg_color="1A0F0B" font_name="" font_style="0" font_size="10"/>
@@ -13,5 +13,5 @@
 	<style name="BACKTICKS" style_id="11" fg_color="000000" bg_color="1A0F0B" font_name="" font_style="0" font_size="10"/>
 	<style name="HERE DELIM" style_id="12" fg_color="000000" bg_color="1A0F0B" font_name="" font_style="0" font_size="10"/>
 	<style name="HERE Q" style_id="13" fg_color="000000" bg_color="1A0F0B" font_name="" font_style="0" font_size="10"/>
-</AinesmileTheme>
+</EditorTheme>
 

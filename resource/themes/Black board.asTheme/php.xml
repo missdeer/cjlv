@@ -1,4 +1,4 @@
-<AinesmileTheme name="php" desc="php" ext="">
+<EditorTheme name="php" desc="php" ext="">
 	<style name="QUESTION MARK" style_id="18" fg_color="F8F8F8" bg_color="0C1021" font_name="" font_style="0" font_size="10"/>
 	<style name="DEFAULT" style_id="118" fg_color="F8F8F8" bg_color="0C1021" font_name="" font_style="0" font_size="10"/>
 	<style name="STRING" style_id="119" fg_color="61CE3C" bg_color="0C1021" font_name="" font_style="0" font_size="10"/>
@@ -10,5 +10,5 @@
 	<style name="COMMENT" style_id="124" fg_color="AEAEAE" bg_color="0C1021" font_name="" font_style="0" font_size="10"/>
 	<style name="COMMENTLINE" style_id="125" fg_color="AEAEAE" bg_color="0C1021" font_name="" font_style="0" font_size="10"/>
 	<style name="OPERATOR" style_id="127" fg_color="FBDE2D" bg_color="0C1021" font_name="" font_style="0" font_size="10"/>
-</AinesmileTheme>
+</EditorTheme>
 

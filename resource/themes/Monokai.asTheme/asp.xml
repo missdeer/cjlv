@@ -1,4 +1,4 @@
-<AinesmileTheme name="asp" desc="asp" ext="asp">
+<EditorTheme name="asp" desc="asp" ext="asp">
 	<style name="DEFAULT" style_id="81" fg_color="F8F8F2" bg_color="272822" font_name="" font_style="" font_size="10"/>
 	<style name="COMMENTLINE" style_id="82" fg_color="75715E" bg_color="272822" font_name="" font_style="" font_size="10"/>
 	<style name="NUMBER" style_id="83" fg_color="AE81FF" bg_color="272822" font_name="" font_style="" font_size="10"/>
@@ -8,5 +8,5 @@
 	<style name="IDENTIFIER" style_id="86" fg_color="66D9EF" bg_color="272822" font_name="" font_style="" font_size="10"/>
 	<style name="ASPSYBOL" style_id="15" fg_color="F8F8F2" bg_color="272822" font_name="" font_style="" font_size="10"/>
 	<style name="SCRIPTTYPE" style_id="16" fg_color="F8F8F2" bg_color="272822" font_name="" font_style="" font_size="10"/>
-</AinesmileTheme>
+</EditorTheme>
 

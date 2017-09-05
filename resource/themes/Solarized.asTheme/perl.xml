@@ -1,4 +1,4 @@
-<AinesmileTheme name="perl" desc="Perl" ext="">
+<EditorTheme name="perl" desc="Perl" ext="">
 	<style name="PREPROCESSOR" style_id="9" fg_color="DC322F" bg_color="002B36" font_name="" font_style="0" font_size=""/>
 	<style name="DEFAULT" style_id="0" fg_color="839496" bg_color="002B36" font_name="" font_style="0" font_size=""/>
 	<style name="INSTRUCTION WORD" style_id="5" fg_color="859900" bg_color="002B36" font_name="" font_style="0" font_size=""/>
@@ -32,5 +32,5 @@
 	<style name="STRING QW" style_id="30" fg_color="2AA198" bg_color="002B36" font_name="" font_style="0" font_size=""/>
 	<style name="FORMAT IDENT" style_id="41" fg_color="2AA198" bg_color="002B36" font_name="" font_style="0" font_size=""/>
 	<style name="FORMAT" style_id="42" fg_color="2AA198" bg_color="002B36" font_name="" font_style="0" font_size=""/>
-</AinesmileTheme>
+</EditorTheme>
 

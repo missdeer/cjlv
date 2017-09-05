@@ -1,4 +1,4 @@
-<AinesmileTheme name="xml" desc="XML" ext="">
+<EditorTheme name="xml" desc="XML" ext="">
 	<style name="XMLSTART" style_id="12" fg_color="DC322F" bg_color="FDF6E3" font_name="" font_style="0" font_size=""/>
 	<style name="XMLEND" style_id="13" fg_color="DC322F" bg_color="FDF6E3" font_name="" font_style="0" font_size=""/>
 	<style name="DEFAULT" style_id="0" fg_color="657B83" bg_color="FDF6E3" font_name="" font_style="0" font_size=""/>
@@ -13,5 +13,5 @@
 	<style name="ATTRIBUTEUNKNOWN" style_id="4" fg_color="D33682" bg_color="FDF6E3" font_name="" font_style="0" font_size=""/>
 	<style name="SGMLDEFAULT" style_id="21" fg_color="657B83" bg_color="FDF6E3" font_name="" font_style="0" font_size=""/>
 	<style name="CDATA" style_id="17" fg_color="2AA198" bg_color="FDF6E3" font_name="" font_style="0" font_size=""/>
-</AinesmileTheme>
+</EditorTheme>
 

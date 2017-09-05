@@ -1,4 +1,4 @@
-<AinesmileTheme>
+<EditorTheme>
 	<style name="Global override" style_id="0" fg_color="FFFF80" bg_color="FFB0FF" font_name="" font_style="0" font_size="10"/>
 	<style name="Default Style" style_id="32" fg_color="000000" bg_color="FFB0FF" font_name="" font_style="0" font_size="10"/>
 	<style name="Indent guideline style" style_id="37" fg_color="C0C0C0" bg_color="FFB0FF" font_name="" font_style="0" font_size=""/>
@@ -26,5 +26,5 @@
 	<style name="Active tab unfocused indicator" style_id="0" fg_color="FFCAB0" bg_color="80FF00" font_name="" font_style="" font_size=""/>
 	<style name="Active tab text" style_id="0" fg_color="000000" bg_color="" font_name="" font_style="" font_size=""/>
 	<style name="Inactive tabs" style_id="0" fg_color="808080" bg_color="C0C0C0" font_name="" font_style="" font_size=""/>
-</AinesmileTheme>
+</EditorTheme>
 

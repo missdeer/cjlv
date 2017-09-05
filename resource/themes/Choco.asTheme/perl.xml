@@ -1,4 +1,4 @@
-<AinesmileTheme name="perl" desc="Perl" ext="">
+<EditorTheme name="perl" desc="Perl" ext="">
 	<style name="PREPROCESSOR" style_id="9" fg_color="8996A8" bg_color="1A0F0B" font_name="" font_style="0" font_size="10"/>
 	<style name="DEFAULT" style_id="0" fg_color="C3BE98" bg_color="1A0F0B" font_name="" font_style="0" font_size="10"/>
 	<style name="INSTRUCTION WORD" style_id="5" fg_color="F1E694" bg_color="1A0F0B" font_name="" font_style="0" font_size="10"/>
@@ -19,5 +19,5 @@
 	<style name="DATASECTION" style_id="21" fg_color="000000" bg_color="1A0F0B" font_name="" font_style="0" font_size="10"/>
 	<style name="REGSUBST" style_id="18" fg_color="000000" bg_color="1A0F0B" font_name="" font_style="0" font_size="10"/>
 	<style name="BACKTICKS" style_id="20" fg_color="000000" bg_color="1A0F0B" font_name="" font_style="0" font_size="10"/>
-</AinesmileTheme>
+</EditorTheme>
 

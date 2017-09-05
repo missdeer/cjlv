@@ -1,4 +1,4 @@
-<AinesmileTheme name="verilog" desc="Verilog" ext="">
+<EditorTheme name="verilog" desc="Verilog" ext="">
 	<style name="DEFAULT" style_id="0" fg_color="000000" bg_color="FFFFFF" font_name="" font_style="0" font_size=""/>
 	<style name="IDENTIFIER" style_id="11" fg_color="000000" bg_color="FFFFFF" font_name="" font_style="0" font_size=""/>
 	<style name="TAGNAME" style_id="2" fg_color="000000" bg_color="FFFFFF" font_name="" font_style="0" font_size=""/>
@@ -12,5 +12,5 @@
 	<style name="COMMENT LINE" style_id="2" fg_color="008000" bg_color="FFFFFF" font_name="" font_style="0" font_size=""/>
 	<style name="COMMENT LINE BANG" style_id="3" fg_color="008080" bg_color="FFFFFF" font_name="" font_style="0" font_size=""/>
 	<style name="USER" style_id="19" fg_color="000000" bg_color="FFFFFF" font_name="" font_style="0" font_size=""/>
-</AinesmileTheme>
+</EditorTheme>
 

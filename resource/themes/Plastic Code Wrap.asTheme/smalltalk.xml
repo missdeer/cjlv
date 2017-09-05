@@ -1,4 +1,4 @@
-<AinesmileTheme name="smalltalk" desc="Smalltalk" ext="">
+<EditorTheme name="smalltalk" desc="Smalltalk" ext="">
 	<style name="DEFAULT" style_id="0" fg_color="F8F8F8" bg_color="0B161D" font_name="" font_style="0" font_size="10"/>
 	<style name="STRING" style_id="1" fg_color="55E439" bg_color="0B161D" font_name="" font_style="0" font_size="10"/>
 	<style name="NUMBER" style_id="2" fg_color="FF3A83" bg_color="0B161D" font_name="" font_style="0" font_size="10"/>
@@ -16,5 +16,5 @@
 	<style name="ASSIGN" style_id="14" fg_color="000000" bg_color="0B161D" font_name="" font_style="0" font_size="10"/>
 	<style name="CHARACTER" style_id="15" fg_color="55E439" bg_color="0B161D" font_name="" font_style="0" font_size="10"/>
 	<style name="SPECIAL SELECTOR" style_id="16" fg_color="000000" bg_color="0B161D" font_name="" font_style="0" font_size="10"/>
-</AinesmileTheme>
+</EditorTheme>
 

@@ -1,4 +1,4 @@
-<AinesmileTheme name="asm" desc="Assembler" ext="">
+<EditorTheme name="asm" desc="Assembler" ext="">
 	<style name="DEFAULT" style_id="0" fg_color="DCDCCC" bg_color="3F3F3F" font_name="" font_style="0" font_size=""/>
 	<style name="COMMENT" style_id="1" fg_color="7F9F7F" bg_color="3F3F3F" font_name="" font_style="2" font_size=""/>
 	<style name="NUMBER" style_id="2" fg_color="8CD0D3" bg_color="3F3F3F" font_name="" font_style="0" font_size=""/>
@@ -14,5 +14,5 @@
 	<style name="CHARACTER" style_id="12" fg_color="DCA3A3" bg_color="3F3F3F" font_name="" font_style="0" font_size=""/>
 	<style name="STRINGEOL" style_id="13" fg_color="DCA3A3" bg_color="3F3F3F" font_name="" font_style="0" font_size=""/>
 	<style name="EXT INSTRUCTION" style_id="14" fg_color="E3CEAB" bg_color="3F3F3F" font_name="" font_style="1" font_size=""/>
-</AinesmileTheme>
+</EditorTheme>
 

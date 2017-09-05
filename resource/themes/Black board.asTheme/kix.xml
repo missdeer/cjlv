@@ -1,4 +1,4 @@
-<AinesmileTheme name="kix" desc="KiXtart" ext="">
+<EditorTheme name="kix" desc="KiXtart" ext="">
 	<style name="DEFAULT" style_id="31" fg_color="F8F8F8" bg_color="0C1021" font_name="" font_style="0" font_size="10"/>
 	<style name="COMMENT" style_id="1" fg_color="AEAEAE" bg_color="0C1021" font_name="" font_style="0" font_size="10"/>
 	<style name="STRING" style_id="2" fg_color="61CE3C" bg_color="0C1021" font_name="" font_style="0" font_size="10"/>
@@ -9,5 +9,5 @@
 	<style name="INSTRUCTION WORD" style_id="7" fg_color="FBDE2D" bg_color="0C1021" font_name="" font_style="0" font_size="10"/>
 	<style name="FUNCTION" style_id="8" fg_color="8DA6CE" bg_color="0C1021" font_name="" font_style="0" font_size="10"/>
 	<style name="OPERATOR" style_id="9" fg_color="FBDE2D" bg_color="0C1021" font_name="" font_style="0" font_size="10"/>
-</AinesmileTheme>
+</EditorTheme>
 

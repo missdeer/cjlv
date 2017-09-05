@@ -1,4 +1,4 @@
-<AinesmileTheme name="batch" desc="Batch" ext="">
+<EditorTheme name="batch" desc="Batch" ext="">
 	<style name="DEFAULT" style_id="0" fg_color="839496" bg_color="002B36" font_name="" font_style="0" font_size=""/>
 	<style name="COMMENT" style_id="1" fg_color="586E75" bg_color="002B36" font_name="" font_style="2" font_size=""/>
 	<style name="KEYWORDS" style_id="2" fg_color="859900" bg_color="002B36" font_name="" font_style="0" font_size=""/>
@@ -7,5 +7,5 @@
 	<style name="COMMAND" style_id="5" fg_color="CB4B16" bg_color="002B36" font_name="" font_style="0" font_size=""/>
 	<style name="VARIABLE" style_id="6" fg_color="B58900" bg_color="002B36" font_name="" font_style="0" font_size=""/>
 	<style name="OPERATOR" style_id="7" fg_color="93A1A1" bg_color="002B36" font_name="" font_style="0" font_size=""/>
-</AinesmileTheme>
+</EditorTheme>
 
