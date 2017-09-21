@@ -24,6 +24,9 @@ class QuickWidgetAPI : public QObject
     Q_PROPERTY(bool successStanza READ getSuccessStanza WRITE setSuccessStanza NOTIFY successStanzaChanged)
     Q_PROPERTY(bool streamStreamStanza READ getStreamStreamStanza WRITE setStreamStreamStanza NOTIFY streamStreamStanzaChanged)
     Q_PROPERTY(bool streamFeaturesStanza READ getStreamFeaturesStanza WRITE setStreamFeaturesStanza NOTIFY streamFeaturesStanzaChanged)
+    Q_PROPERTY(bool authStanza READ getAuthStanza WRITE setAuthStanza NOTIFY authStanzaChanged)
+    Q_PROPERTY(bool startTlsStanza READ getStartTlsStanza WRITE setStartTlsStanza NOTIFY startTlsStanzaChanged)
+    Q_PROPERTY(bool proceedStanza READ getProceedStanza WRITE setProceedStanza NOTIFY proceedStanzaChanged)
 public:
     explicit QuickWidgetAPI(QObject* parent = nullptr);
     ~QuickWidgetAPI();
@@ -82,6 +85,15 @@ public:
     bool getStreamFeaturesStanza() const;
     void setStreamFeaturesStanza(bool streamFeaturesStanza);
 
+    bool getAuthStanza() const;
+    void setAuthStanza(bool authStanza);
+
+    bool getStartTlsStanza() const;
+    void setStartTlsStanza(bool startTlsStanza);
+
+    bool getProceedStanza() const;
+    void setProceedStanza(bool proceedStanza);
+
 signals:
     void fromChanged();
     void toChanged();
@@ -103,6 +115,9 @@ signals:
     void successStanzaChanged();
     void streamStreamStanzaChanged();
     void streamFeaturesStanzaChanged();
+    void authStanzaChanged();
+    void startTlsStanzaChanged();
+    void proceedStanzaChanged();
 private:
     int m_firstValue;
     int m_secondValue;
@@ -122,6 +137,9 @@ private:
     bool m_successStanza;
     bool m_streamStreamStanza;
     bool m_streamFeaturesStanza;
+    bool m_authStanza;
+    bool m_startTlsStanza;
+    bool m_proceedStanza;
 };
 
 #endif // QUICKWIDGETAPI_H

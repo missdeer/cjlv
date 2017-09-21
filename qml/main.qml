@@ -188,5 +188,35 @@ Column {
             indicator: CheckBoxIndicator{}
             onCheckedChanged: LogViewAPI.streamFeaturesStanza = cbStreamFeatures.checked
         }
+
+        CheckBox {
+            id: cbAuth
+            enabled: cbStanzaOnly.checked
+            checked: true
+            text: qsTr("auth")
+
+            indicator: CheckBoxIndicator{}
+            onCheckedChanged: LogViewAPI.authStanza = cbAuth.checked
+        }
+
+        CheckBox {
+            id: cbStartTLS
+            enabled: cbStanzaOnly.checked
+            checked: true
+            text: qsTr("starttls")
+
+            indicator: CheckBoxIndicator{}
+            onCheckedChanged: LogViewAPI.startTlsStanza = cbStartTLS.checked
+        }
+
+        CheckBox {
+            id: cbProceed
+            enabled: cbStanzaOnly.checked
+            checked: true
+            text: qsTr("proceed")
+
+            indicator: CheckBoxIndicator{}
+            onCheckedChanged: LogViewAPI.proceedStanza = cbProceed.checked
+        }
     }
 }

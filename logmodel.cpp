@@ -388,7 +388,8 @@ void LogModel::onSearchScopeChanged()
 {
     m_allStanza = (m_api->getAStanza() && m_api->getRStanza() && m_api->getXStanza() && m_api->getEnableStanza() &&
                    m_api->getEnabledStanza() && m_api->getPresenceStanza() && m_api->getMessageStanza() && m_api->getIqStanza() &&
-                   m_api->getSuccessStanza() && m_api->getStreamStreamStanza() && m_api->getStreamFeaturesStanza());
+                   m_api->getSuccessStanza() && m_api->getStreamStreamStanza() && m_api->getStreamFeaturesStanza() && m_api->getAuthStanza() &&
+                   m_api->getStartTlsStanza() && m_api->getProceedStanza());
 
     m_fullRange = (m_api->getFirstValue() == 1 && m_api->getSecondValue() == m_maxTotalRowCount);
 
@@ -446,6 +447,9 @@ void LogModel::onSearchScopeChanged()
         { std::bind(&QuickWidgetAPI::getSuccessStanza, m_api),        " OR content LIKE '%:<success %'"},
         { std::bind(&QuickWidgetAPI::getStreamStreamStanza, m_api),   " OR content LIKE '%:<stream:stream %'"},
         { std::bind(&QuickWidgetAPI::getStreamFeaturesStanza, m_api), " OR content LIKE '%:<stream:features %'"},
+        { std::bind(&QuickWidgetAPI::getAuthStanza, m_api),           " OR content LIKE '%:<auth %'"},
+        { std::bind(&QuickWidgetAPI::getStartTlsStanza, m_api),       " OR content LIKE '%:<starttls %'"},
+        { std::bind(&QuickWidgetAPI::getProceedStanza, m_api),        " OR content LIKE '%:<proceed %'"},
     };
 
         for (auto a : c)
@@ -1129,6 +1133,9 @@ void LogModel::doReload()
         connect(m_api, &QuickWidgetAPI::successStanzaChanged,        this, &LogModel::onSearchScopeChanged);
         connect(m_api, &QuickWidgetAPI::streamStreamStanzaChanged,   this, &LogModel::onSearchScopeChanged);
         connect(m_api, &QuickWidgetAPI::streamFeaturesStanzaChanged, this, &LogModel::onSearchScopeChanged);
+        connect(m_api, &QuickWidgetAPI::authStanzaChanged,           this, &LogModel::onSearchScopeChanged);
+        connect(m_api, &QuickWidgetAPI::proceedStanzaChanged,        this, &LogModel::onSearchScopeChanged);
+        connect(m_api, &QuickWidgetAPI::startTlsStanzaChanged,       this, &LogModel::onSearchScopeChanged);
         connect(m_api, &QuickWidgetAPI::valueChanged,                this, &LogModel::onSearchScopeChanged);
     }
     saveStatistic();

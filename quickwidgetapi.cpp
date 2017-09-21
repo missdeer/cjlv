@@ -21,6 +21,9 @@ QuickWidgetAPI::QuickWidgetAPI(QObject *parent)
     , m_successStanza(true)
     , m_streamStreamStanza(true)
     , m_streamFeaturesStanza(true)
+    , m_authStanza(true)
+    , m_startTlsStanza(true)
+    , m_proceedStanza(true)
 {
 
 }
@@ -204,6 +207,39 @@ void QuickWidgetAPI::setStreamFeaturesStanza(bool streamFeaturesStanza)
 {
     m_streamFeaturesStanza = streamFeaturesStanza;
     emit streamFeaturesStanzaChanged();
+}
+
+bool QuickWidgetAPI::getAuthStanza() const
+{
+    return m_authStanza;
+}
+
+void QuickWidgetAPI::setAuthStanza(bool authStanza)
+{
+    m_authStanza = authStanza;
+    emit authStanzaChanged();
+}
+
+bool QuickWidgetAPI::getStartTlsStanza() const
+{
+    return m_startTlsStanza;
+}
+
+void QuickWidgetAPI::setStartTlsStanza(bool startTlsStanza)
+{
+    m_startTlsStanza = startTlsStanza;
+    emit startTlsStanzaChanged();
+}
+
+bool QuickWidgetAPI::getProceedStanza() const
+{
+    return m_proceedStanza;
+}
+
+void QuickWidgetAPI::setProceedStanza(bool proceedStanza)
+{
+    m_proceedStanza = proceedStanza;
+    emit proceedStanzaChanged();
 }
 
 int QuickWidgetAPI::getTo() const
