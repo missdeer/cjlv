@@ -7,7 +7,9 @@ SourceWindow::SourceWindow(QWidget *parent) :
     ui(new Ui::SourceWindow)
 {
     ui->setupUi(this);
-    connect(this, &SourceWindow::currentChanged, ui->tabWidget, &SourceViewTabWidget::onCurrentChanged);
+    connect(this, &SourceWindow::currentChanged, [this](int i){
+        ui->tabWidget->setCurrentIndex(i);
+    });
     connect(this, &SourceWindow::tabCloseRequested, ui->tabWidget, &SourceViewTabWidget::onTabCloseRequested);
 }
 
