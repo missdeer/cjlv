@@ -52,6 +52,8 @@ void SourceViewTabWidget::onTabCloseRequested(int index)
     QWidget* w = widget(index);
     removeTab(index);
     delete w;
+    // re-arrange m_logFiles container
+    m_logFiles.removeAt(index);
 }
 
 void SourceViewTabWidget::gotoLine(const QString &logFile, const QString &sourceFile, int line)
