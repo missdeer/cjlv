@@ -123,7 +123,7 @@ private:
     QQuickWidget* m_extraToolPanel;
     QToolButton* m_extraToolPanelVisibleButton;
     QuickWidgetAPI* m_api;
-    QTimer* m_rangeSliderValueChangedTimer;
+    QTimer* m_keywordChangedTimer;
     QString m_path;
     QString m_extractDir;
     QMutex m_mutex;

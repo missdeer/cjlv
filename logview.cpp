@@ -136,6 +136,10 @@ LogView::LogView(QWidget *parent)
     QAction* actionClearKeyword = new QAction(QIcon(":/image/clear-keyword.png"), "Clear Keyword", this);
     m_cbSearchKeyword->lineEdit()->addAction(actionClearKeyword, QLineEdit::ActionPosition::TrailingPosition);
 
+    m_keywordChangedTimer = new QTimer;
+    m_keywordChangedTimer->setSingleShot(true);
+    m_keywordChangedTimer->setInterval(500);
+
     connect(actionReloadSearchResult, &QAction::triggered, this, &LogView::onReloadSearchResult);
     connect(actionClearKeyword, &QAction::triggered, this, &LogView::onClearKeyword);
     connect(m_cbSearchKeyword, &QComboBox::editTextChanged, this, &LogView::onCbKeywordEditTextChanged);
@@ -941,9 +945,14 @@ void LogView::onLogFilePreview()
     }
 }
 
-void LogView::onCbKeywordEditTextChanged(const QString &text)
+void LogView::onCbKeywordEditTextChanged(const QString & /*text*/)
 {
-    filter(text);
+    m_keywordChangedTimer->disconnect();
+    connect(m_keywordChangedTimer, &QTimer::timeout,
+            [this](){
+        filter(m_cbSearchKeyword->lineEdit()->text().trimmed());
+    });
+    m_keywordChangedTimer->start();
 }
 
 void LogView::onCbKeywordCurrentIndexChanged(const QString &text)
