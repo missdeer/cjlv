@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui concurrent widgets sql xml charts network qml quickwidgets
+QT       += core gui concurrent widgets sql xml charts network qml quick quickwidgets
 
 TARGET = "Cisco Jabber Log Viewer"
 TEMPLATE = app
@@ -18,27 +18,35 @@ include($$PWD/3rdparty/lua-5.3.3/src/lua.pri)
 include($$PWD/3rdparty/scintilla/qt/ScintillaEdit/ScintillaEdit.pri)
 include($$PWD/Boost.pri)
 
-lessThan(QT_MINOR_VERSION, 7) : {
-    error("Qt >= 5.7 and Qt <= 5.9 are supported")
-}
-
-greaterThan(QT_MINOR_VERSION, 9) : {
+equals(QT_MINOR_VERSION, 10) : {
     # 5.10 is supported
     INCLUDEPATH += $$PWD/3rdparty/sqlite3/3.20.1
     SOURCES += $$PWD/3rdparty/sqlite3/3.20.1/sqlite3.c
-} else {
-    greaterThan(QT_MINOR_VERSION, 8) : {
-        # 5.9 is supported
-        INCLUDEPATH += $$PWD/3rdparty/sqlite3/3.16.1
-        SOURCES += $$PWD/3rdparty/sqlite3/3.16.1/sqlite3.c
-    } else {
-        # 5.7, 5.8 is supported
-        INCLUDEPATH += $$PWD/3rdparty/sqlite3/3.11.1.0
-        SOURCES += $$PWD/3rdparty/sqlite3/3.11.1.0/sqlite3.c
-    }
+}
+
+equals(QT_MINOR_VERSION, 9) : {
+    # 5.9 is supported
+    INCLUDEPATH += $$PWD/3rdparty/sqlite3/3.16.1
+    SOURCES += $$PWD/3rdparty/sqlite3/3.16.1/sqlite3.c
+}
+
+equals(QT_MINOR_VERSION, 8) || equals(QT_MINOR_VERSION, 7): {
+    # 5.7, 5.8 is supported
+    INCLUDEPATH += $$PWD/3rdparty/sqlite3/3.11.1.0
+    SOURCES += $$PWD/3rdparty/sqlite3/3.11.1.0/sqlite3.c
+}
+
+lessThan(QT_MINOR_VERSION, 7) : {
+    error("Qt >= 5.7 is supported")
 }
 
 DEFINES += SCINTILLA_QT=1 SCI_LEXER=1 _CRT_SECURE_NO_DEPRECATE=1 SCI_STATIC_LINK=1 LOKI_FUNCTOR_IS_NOT_A_SMALLOBJECT
+
+QML_FILES = qml/main.qml \
+    qml/control/qmldir \
+    qml/control/CheckBoxIndicator.qml \
+    qml/control/RangeSliderBackground.qml \
+    qml/control/RangeSliderHandle.qml \
 
 SOURCES += main.cpp\
         mainwindow.cpp \
