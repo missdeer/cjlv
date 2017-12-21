@@ -9,6 +9,7 @@ class Sqlite3Helper
 {
 public:
     Sqlite3Helper(lua_State*& L);
+    ~Sqlite3Helper();
     void bind(sqlite3_stmt* pVM, int nParam, const QString& sValue);
     void bind(sqlite3_stmt* pVM, int nParam, const char * szValue);
     void bind(sqlite3_stmt* pVM, int nParam, const int nValue);
