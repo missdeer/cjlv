@@ -16,6 +16,7 @@ include($$PWD/3rdparty/quazip-0.7.2/quazip.pri)
 include($$PWD/3rdparty/qtsingleapplication/qtsingleapplication.pri)
 include($$PWD/3rdparty/lua-5.3.3/src/lua.pri)
 include($$PWD/3rdparty/scintilla/qt/ScintillaEdit/ScintillaEdit.pri)
+include($$PWD/3rdparty/sqlite3/sqlite3.pri)
 include($$PWD/Boost.pri)
 
 DEFINES += SCINTILLA_QT=1 SCI_LEXER=1 _CRT_SECURE_NO_DEPRECATE=1 SCI_STATIC_LINK=1 LOKI_FUNCTOR_IS_NOT_A_SMALLOBJECT
@@ -25,9 +26,6 @@ QML_FILES = qml/main.qml \
     qml/control/CheckBoxIndicator.qml \
     qml/control/RangeSliderBackground.qml \
     qml/control/RangeSliderHandle.qml \
-
-INCLUDEPATH += $$PWD/3rdparty/sqlite3/
-SOURCES += $$PWD/3rdparty/sqlite3/sqlite3.c
 
 SOURCES += main.cpp\
         mainwindow.cpp \
