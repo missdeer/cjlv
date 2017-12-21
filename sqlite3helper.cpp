@@ -10,12 +10,6 @@ Sqlite3Helper::Sqlite3Helper()
 
 }
 
-Sqlite3Helper::~Sqlite3Helper()
-{
-    if (isDatabaseOpened())
-        closeDatabaseConnection();
-}
-
 void Sqlite3Helper::bind(sqlite3_stmt *pVM, int nParam, const QString &sValue)
 {
     bind(pVM, nParam, sValue.toStdString().c_str());
