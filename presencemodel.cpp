@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include <boost/scope_exit.hpp>
+#include "sqlite3helper.h"
 #include "presencemodel.h"
 
 PresenceModel::PresenceModel(QObject *parent)
@@ -200,38 +201,33 @@ void PresenceModel::doQueryPresence(const QString &jid)
 {
     QMutexLocker lock(&m_mutex);
 
-    QSqlDatabase db = QSqlDatabase::database(m_dbFile, true);
-    if (!db.isValid())
-    {
-        db = QSqlDatabase::addDatabase("QSQLITE", m_dbFile);
-        db.setDatabaseName(m_dbFile);
-    }
-
-    if (!db.isOpen())
-        db.open();
-
     QStringList jids;
     QList<QSharedPointer<PresenceItem>> results;
-    if (db.isOpen())
+
+    Sqlite3Helper sqlite3Helper;
+    if (!sqlite3Helper.openDatabase(m_dbFile))
     {
-        QSqlQuery q(db);
-        QString sqlFetch("SELECT id,time,content FROM logs WHERE content LIKE '%'||?||'%' ORDER BY epoch LIMIT 1, 200000;");
-        q.prepare(sqlFetch);
-        q.addBindValue("Recv:<presence from=\""+jid);
-        if (q.exec())
+        qDebug() << "cannot open database file:" << m_dbFile;
+        return;
+    }
+    bool eof = false;
+    int nRet = 0;
+    sqlite3_stmt* pVM = nullptr;
+
+    do {
+        pVM = sqlite3Helper.compile("SELECT id,time,content FROM logs WHERE content LIKE '%'||?||'%' ORDER BY epoch LIMIT 1, 200000;");
+        sqlite3Helper.bind(pVM, 1, "Recv:<presence from=\""+jid);
+        nRet = sqlite3Helper.execQuery(pVM, eof);
+        if (nRet == SQLITE_DONE || nRet == SQLITE_ROW)
         {
-            int idIndex = q.record().indexOf("id");
-            int dateTimeIndex = q.record().indexOf("time");
-            int contentIndex = q.record().indexOf("content");
-            while (q.next())
+            QRegularExpression re("from=\"([^\"]+)");
+            while (!eof)
             {
                 QSharedPointer<PresenceItem> p =  QSharedPointer<PresenceItem>(new PresenceItem);
-                p->id = q.value(idIndex).toInt();
-                p->time =  q.value(dateTimeIndex).toDateTime();
-                QString content = q.value(contentIndex).toString();
-
+                p->id = sqlite3_column_int(pVM, 1);
+                p->time = QDateTime::fromString(QString((const char *)sqlite3_column_text(pVM, 2)), Qt::ISODate);
+                QString content((const char *)sqlite3_column_text(pVM, 3));
                 // extract from JID
-                QRegularExpression re("from=\"([^\"]+)");
 
                 QRegularExpressionMatch m = re.match(content);
                 if (m.hasMatch())
@@ -252,17 +248,12 @@ void PresenceModel::doQueryPresence(const QString &jid)
                     p->presences.append(content);
                 }
                 results.append(p);
-            }
 
-            q.clear();
-            q.finish();
+                sqlite3Helper.nextRow(pVM, eof);
+            }
+            break;
         }
-        else
-        {
-            QSqlError e = q.lastError();
-            qWarning() << "error:" << e;
-        }
-    }
+    }while(nRet == SQLITE_SCHEMA);
 
     if (!jids.empty() && !results.empty())
         emit gotPresences(jids, results);
@@ -280,32 +271,28 @@ void PresenceModel::doRequestReceivedPresenceBuddyList()
         this_->m_mutex.unlock();
     } BOOST_SCOPE_EXIT_END
 
-    QSqlDatabase db = QSqlDatabase::database(m_dbFile, true);
-    if (!db.isValid())
-    {
-        db = QSqlDatabase::addDatabase("QSQLITE", m_dbFile);
-        db.setDatabaseName(m_dbFile);
-    }
-
-    if (!db.isOpen())
-        db.open();
-
     QStringList result;
-    if (db.isOpen())
-    {
-        QSqlQuery q(db);
-        QString sqlFetch("SELECT * FROM logs WHERE content LIKE '%'||?||'%' ORDER BY epoch LIMIT 1, 200000;");
-        q.prepare(sqlFetch);
-        q.addBindValue("Recv:<presence from=");
-        if (q.exec())
-        {
-            int contentIndex = q.record().indexOf("content");
-            while (q.next())
-            {
-                QString content = q.value(contentIndex).toString();
 
-                // extract from JID
-                QRegularExpression re("from=\"([^/\"]+)");
+    Sqlite3Helper sqlite3Helper;
+    if (!sqlite3Helper.openDatabase(m_dbFile))
+    {
+        qDebug() << "cannot open database file:" << m_dbFile;
+        return;
+    }
+    bool eof = false;
+    int nRet = 0;
+    sqlite3_stmt* pVM = nullptr;
+    do {
+        pVM = sqlite3Helper.compile("SELECT content FROM logs WHERE content LIKE '%'||?||'%' ORDER BY epoch LIMIT 1, 200000;");
+        sqlite3Helper.bind(pVM, 1, "Recv:<presence from=");
+        nRet = sqlite3Helper.execQuery(pVM, eof);
+        if (nRet == SQLITE_DONE || nRet == SQLITE_ROW)
+        {
+            // extract from JID
+            QRegularExpression re("from=\"([^/\"]+)");
+            while (!eof)
+            {
+                QString content((const char *)sqlite3_column_text(pVM, 1));
 
                 QRegularExpressionMatch m = re.match(content);
                 if (m.hasMatch())
@@ -314,16 +301,12 @@ void PresenceModel::doRequestReceivedPresenceBuddyList()
                     if (!result.contains(s))
                         result.append(s);
                 }
+
+                sqlite3Helper.nextRow(pVM, eof);
             }
-            q.clear();
-            q.finish();
+            break;
         }
-        else
-        {
-            QSqlError e = q.lastError();
-            qWarning() << "error:" << e;
-        }
-    }
+    }while(nRet == SQLITE_SCHEMA);
 
     emit receivedPresenceBuddyList(result);
 }

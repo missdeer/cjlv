@@ -1,12 +1,11 @@
 #include "stdafx.h"
-#include <lua.hpp>
-#include <sqlite3.h>
+#include "settings.h"
 #include "sqlite3helper.h"
 
+lua_State* Sqlite3Helper::g_L = nullptr;
 
-Sqlite3Helper::Sqlite3Helper(lua_State *&L)
+Sqlite3Helper::Sqlite3Helper()
     :m_db(nullptr)
-    ,m_L(L)
 {
 
 }
@@ -198,6 +197,11 @@ int Sqlite3Helper::bindParameterIndex(sqlite3_stmt* mpVM, const char * szParam)
     }
 
     return nParam;
+}
+
+void Sqlite3Helper::bind(sqlite3_stmt *pVM, const char *szParam, const QString &sValue)
+{
+    bind(pVM, szParam, sValue.toStdString().c_str());
 }
 
 sqlite3_stmt* Sqlite3Helper::compile(const char * szSQL)
@@ -398,6 +402,7 @@ bool Sqlite3Helper::openDatabase(const QString &name)
         return false;
     }
 
+    bindCustomFunctions();
     qDebug() <<"The database is opened.";
     return true;
 }
@@ -410,7 +415,8 @@ bool Sqlite3Helper::createDatabase(const QString &name)
         return false;
     }
 
-    qDebug() <<"The database is opened.";
+    bindCustomFunctions();
+    qDebug() <<"The database is created.";
     return true;
 }
 
@@ -434,9 +440,18 @@ bool Sqlite3Helper::vacuum()
     return execDML("VACUUM;") == SQLITE_OK;
 }
 
-void Sqlite3Helper::setLuaState()
+void Sqlite3Helper::setLuaState(lua_State* L)
 {
-    g_L = m_L;
+    Sqlite3Helper::g_L = L;
+}
+
+void Sqlite3Helper::bindCustomFunctions()
+{
+    sqlite3_initialize();
+
+    sqlite3_create_function_v2(m_db, "regexp", 2, SQLITE_UTF8 | SQLITE_DETERMINISTIC, NULL, &Sqlite3Helper::qtRegexp, NULL, NULL, NULL);
+    sqlite3_create_function_v2(m_db, "match", 2, SQLITE_UTF8 | SQLITE_DETERMINISTIC, NULL, &Sqlite3Helper::luaMatch, NULL, NULL, NULL);
+    sqlite3_create_function_v2(m_db, "glob", 2, SQLITE_UTF8 | SQLITE_DETERMINISTIC, NULL, &Sqlite3Helper::levelGlob, NULL, NULL, NULL);
 }
 
 void Sqlite3Helper::levelGlob(sqlite3_context *ctx, int, sqlite3_value **argv)

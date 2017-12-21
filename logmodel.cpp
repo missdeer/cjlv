@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include <tuple>
-#include <sqlite3.h>
 #include <lua.hpp>
 #include <boost/scope_exit.hpp>
 #include "quickwidgetapi.h"
@@ -116,7 +115,6 @@ LogModel::LogModel(QObject *parent)
     , m_regexpModeOption(false)
     , m_luaMode(false)
     , m_allStanza(true)
-    , m_sqlite3Helper(m_L)
 {
     m_forceQuerying.store(false);
     qRegisterMetaType<QSharedPointer<LogItem>>("QSharedPointer<LogItem>");
@@ -130,11 +128,6 @@ LogModel::~LogModel()
     if (m_L)
     {
         lua_close(m_L);
-    }
-    QSqlDatabase db = QSqlDatabase::database(m_dbFile, false);
-    if (db.isValid() && db.isOpen())
-    {
-        db.close();
     }
 
     QFile::remove(m_dbFile);
@@ -331,49 +324,37 @@ void LogModel::onSearchScopeChanged()
 
     m_fullRange = (m_api->getFirstValue() == 1 && m_api->getSecondValue() == m_maxTotalRowCount);
 
-    QSqlDatabase db = QSqlDatabase::database(m_dbFile, true);
-    if (!db.isValid()) {
-        db = QSqlDatabase::addDatabase("QSQLITE", m_dbFile);
-        db.setDatabaseName(m_dbFile);
+    QString globalScope = "logs";
+    if (!m_fullRange)
+    {
+        m_sqlite3Helper.execDML("DROP VIEW IF EXISTS inRange;");
+        QString sql = QString("CREATE VIEW inRange AS SELECT * FROM logs WHERE id>=%1 AND id<=%2;").arg(m_api->getFirstValue()).arg(m_api->getSecondValue());
+        qDebug() << sql;
+        m_sqlite3Helper.execDML(sql);
+        globalScope = "inRange";
     }
 
-    if (!db.isOpen())
-        db.open();
+    m_sqlite3Helper.execDML("DROP VIEW IF EXISTS allStanza");
+    m_sqlite3Helper.execDML("CREATE VIEW allStanza AS SELECT * FROM " + globalScope + " WHERE content LIKE '%send:<%' OR content LIKE '%recv:<%';");
+    m_sqlite3Helper.execDML("DROP VIEW IF EXISTS sentStanza");
+    m_sqlite3Helper.execDML("CREATE VIEW sentStanza AS SELECT * FROM " + globalScope + " WHERE content LIKE '%send:<%';");
+    m_sqlite3Helper.execDML("DROP VIEW IF EXISTS receivedStanza");
+    m_sqlite3Helper.execDML("CREATE VIEW receivedStanza AS SELECT * FROM " + globalScope + " WHERE content LIKE '%recv:<%';");
 
-    if (db.isOpen())
-    {
-        QSqlQuery query(db);
-        QString globalScope = "logs";
-        if (!m_fullRange)
-        {
-            query.exec("DROP VIEW IF EXISTS inRange;");
-            QString sql = QString("CREATE VIEW inRange AS SELECT * FROM logs WHERE id>=%1 AND id<=%2;").arg(m_api->getFirstValue()).arg(m_api->getSecondValue());
-            qDebug() << sql;
-            query.exec(sql);
-            globalScope = "inRange";
-        }
+    QString dataSource = "receivedStanza";
 
-        query.exec("DROP VIEW IF EXISTS allStanza");
-        query.exec("CREATE VIEW allStanza AS SELECT * FROM " + globalScope + " WHERE content LIKE '%send:<%' OR content LIKE '%recv:<%';");
-        query.exec("DROP VIEW IF EXISTS sentStanza");
-        query.exec("CREATE VIEW sentStanza AS SELECT * FROM " + globalScope + " WHERE content LIKE '%send:<%';");
-        query.exec("DROP VIEW IF EXISTS receivedStanza");
-        query.exec("CREATE VIEW receivedStanza AS SELECT * FROM " + globalScope + " WHERE content LIKE '%recv:<%';");
+    if (m_api->getSentStanza())
+        dataSource = "sentStanza";
 
-        QString dataSource = "receivedStanza";
+    if (m_api->getSentStanza() && m_api->getReceivedStanza())
+        dataSource = "allStanza";
 
-        if (m_api->getSentStanza())
-            dataSource = "sentStanza";
+    QString sql = "CREATE VIEW customStanza AS SELECT * FROM " + dataSource + " WHERE 1=0";
 
-        if (m_api->getSentStanza() && m_api->getReceivedStanza())
-            dataSource = "allStanza";
-
-        QString sql = "CREATE VIEW customStanza AS SELECT * FROM " + dataSource + " WHERE 1=0";
-
-        struct{
-            std::function<bool()> f;
-            QString s;
-        }c[] ={
+    struct{
+        std::function<bool()> f;
+        QString s;
+    }c[] ={
         { std::bind(&QuickWidgetAPI::getAStanza, m_api),              " OR content LIKE '%:<a %'"},
         { std::bind(&QuickWidgetAPI::getRStanza, m_api),              " OR content LIKE '%:<r %'"},
         { std::bind(&QuickWidgetAPI::getXStanza, m_api),              " OR content LIKE '%:<x %'"},
@@ -390,17 +371,17 @@ void LogModel::onSearchScopeChanged()
         { std::bind(&QuickWidgetAPI::getProceedStanza, m_api),        " OR content LIKE '%:<proceed %'"},
     };
 
-        for (auto a : c)
-        {
-            if (a.f())
-                sql.append(a.s);
-        }
-        sql.append(";");
-
-        qDebug() << sql;
-        query.exec("DROP VIEW IF EXISTS customStanza;");
-        query.exec(sql);
+    for (auto a : c)
+    {
+        if (a.f())
+            sql.append(a.s);
     }
+    sql.append(";");
+
+    qDebug() << sql;
+    m_sqlite3Helper.execDML("DROP VIEW IF EXISTS customStanza;");
+    m_sqlite3Helper.execDML(sql);
+
 
     m_forceQuerying.store(true);
     onFilter(m_lastFilterKeyword);
@@ -655,7 +636,7 @@ void LogModel::runLuaExtension(ExtensionPtr e)
         QMessageBox::warning(p, tr("Warning"), msg, QMessageBox::Ok);
         return;
     }
-    m_sqlite3Helper.setLuaState();
+    m_sqlite3Helper.setLuaState(m_L);
     // regexp mode is ignored
     doFilter(e->content(), e->field(), false, true);
 }
@@ -730,22 +711,15 @@ void LogModel::saveRowsBetweenAnchorsInFolder(const QModelIndex &beginAnchor, co
 
     QString sql = generateSQLStatement(qMin(br->id, er->id), qMax(br->id, er->id));
 
-    QSqlDatabase db = QSqlDatabase::database(m_dbFile, true);
-    if (!db.isValid()) {
-        db = QSqlDatabase::addDatabase("QSQLITE", m_dbFile);
-        db.setDatabaseName(m_dbFile);
-    }
-
-    if (!db.isOpen())
-        db.open();
-
-    if (db.isOpen())
-    {
-        QSqlQuery q(db);
-        q.prepare(sql);
-        if (!m_keyword.isEmpty() && m_sqlFetch.contains(QChar('?')))
-            q.addBindValue(m_keyword);
-        if (q.exec())
+    bool eof = false;
+    int nRet = 0;
+    sqlite3_stmt* pVM = nullptr;
+    do {
+        pVM = m_sqlite3Helper.compile(sql);
+        if (!m_keyword.isEmpty() && sql.contains(QChar('?')))
+            m_sqlite3Helper.bind(pVM, 1, m_keyword);
+        nRet = m_sqlite3Helper.execQuery(pVM, eof);
+        if (nRet == SQLITE_DONE || nRet == SQLITE_ROW)
         {
             QFile f(folderName+"/jabber.log");
             if (!f.open(QIODevice::WriteOnly | QIODevice::Truncate))
@@ -755,30 +729,20 @@ void LogModel::saveRowsBetweenAnchorsInFolder(const QModelIndex &beginAnchor, co
             }
 
             QTextStream out(&f);
-
-            int idIndex = q.record().indexOf("id");
-            int dateTimeIndex = q.record().indexOf("time");
-            int levelIndex = q.record().indexOf("level");
-            int threadIndex = q.record().indexOf("thread");
-            int sourceIndex = q.record().indexOf("source");
-            int categoryIndex = q.record().indexOf("category");
-            int methodIndex = q.record().indexOf("method");
-            int contentIndex = q.record().indexOf("content");
-            int logIndex = q.record().indexOf("log");
-            int lineIndex = q.record().indexOf("line");
-            while (q.next())
+            while (!eof && !m_stopQuerying.load())
             {
                 QSharedPointer<LogItem> log =  QSharedPointer<LogItem>(new LogItem);
-                log->id = q.value(idIndex).toInt();
-                log->time =  q.value(dateTimeIndex).toDateTime();
-                log->level = q.value(levelIndex).toString();
-                log->thread = q.value(threadIndex).toString();
-                log->source = q.value(sourceIndex).toString();
-                log->category = q.value(categoryIndex).toString();
-                log->method = q.value(methodIndex).toString();
-                log->content = q.value(contentIndex).toString();
-                log->logFile = q.value(logIndex).toString();
-                log->line = q.value(lineIndex).toInt();
+                log->id = sqlite3_column_int(pVM, 1);   // 1 - id
+                                                        // 2 - epoch
+                log->time = QDateTime::fromString(QString((const char *)sqlite3_column_text(pVM, 3)), Qt::ISODate); //  3 - time
+                log->level = QString((const char *)sqlite3_column_text(pVM, 4));
+                log->thread = QString((const char *)sqlite3_column_text(pVM, 5));
+                log->source = QString((const char *)sqlite3_column_text(pVM, 6));
+                log->category = QString((const char *)sqlite3_column_text(pVM, 7));
+                log->method = QString((const char *)sqlite3_column_text(pVM, 8));
+                log->content = QString((const char *)sqlite3_column_text(pVM, 9));
+                log->logFile = QString((const char *)sqlite3_column_text(pVM, 10));
+                log->line = sqlite3_column_int(pVM, 11);
 
                 if (log->level.isEmpty() || log->source.isEmpty() || log->logFile.isEmpty())
                 {
@@ -798,71 +762,55 @@ void LogModel::saveRowsBetweenAnchorsInFolder(const QModelIndex &beginAnchor, co
             }
 
             f.close();
-
-            q.clear();
-            q.finish();
+            break;
         }
-    }
+    }while(nRet == SQLITE_SCHEMA);
 }
 
 bool LogModel::getStatistic(const QString &tableName, QList<QSharedPointer<StatisticItem>> &sis)
 {
-    QSqlDatabase db = QSqlDatabase::database(m_dbFile, true);
-    if (!db.isValid()) {
-        db = QSqlDatabase::addDatabase("QSQLITE", m_dbFile);
-        db.setDatabaseName(m_dbFile);
-    }
-
-    if (!db.isOpen())
-        db.open();
-
-    if (!db.isOpen())
-    {
-        return false;
-    }
-
-    QSqlQuery q(db);
     int limitCount = 15;
     for(int count = 0;;limitCount++)
     {
-        QString sql = QString("SELECT * FROM %1 ORDER BY count DESC LIMIT %2;").arg(tableName).arg(limitCount);
+        bool eof = false;
+        int nRet = 0;
+        sqlite3_stmt* pVM = nullptr;
+        QString sql = QString("SELECT key,count FROM %1 ORDER BY count DESC LIMIT %2;").arg(tableName).arg(limitCount);
 
-        q.prepare(sql);
-        if (q.exec())
-        {
-            int contentIndex = q.record().indexOf("key");
-            int countIndex = q.record().indexOf("count");
-            count = 0;
-            sis.clear();
-            while (q.next())
+        do {
+            pVM = m_sqlite3Helper.compile(sql);
+            nRet = m_sqlite3Helper.execQuery(pVM, eof);
+            if (nRet == SQLITE_DONE || nRet == SQLITE_ROW)
             {
-                QSharedPointer<StatisticItem> si =  QSharedPointer<StatisticItem>(new StatisticItem);
-                si->content = q.value(contentIndex).toString();
-                si->count =  q.value(countIndex).toInt();
-                si->percent = ((double)si->count * 100)/((double)m_currentTotalRowCount);
-                sis.append(si);
-                count += si->count;
-            }
-            q.clear();
-            q.finish();
-            if (count * 3 <= m_currentTotalRowCount * 2)
-                continue;
+                count = 0;
+                sis.clear();
+                while (!eof)
+                {
+                    QSharedPointer<StatisticItem> si =  QSharedPointer<StatisticItem>(new StatisticItem);
+                    si->content = QString((const char *)sqlite3_column_text(pVM, 1));
+                    si->count = sqlite3_column_int(pVM, 2);
 
-            if (count < m_currentTotalRowCount)
-            {
-                QSharedPointer<StatisticItem> si =  QSharedPointer<StatisticItem>(new StatisticItem);
-                si->content = "Other";
-                si->count =  m_currentTotalRowCount - count;
-                si->percent = ((double)si->count * 100)/((double)m_currentTotalRowCount);
-                sis.append(si);
-            }
+                    si->percent = ((double)si->count * 100)/((double)m_currentTotalRowCount);
+                    sis.append(si);
+                    count += si->count;
+                    m_sqlite3Helper.nextRow(pVM, eof);
+                }
+                if (count * 3 <= m_currentTotalRowCount * 2)
+                    continue;
 
-            return true;
-        }
-        else
-        {
-            return (!sis.empty());
-        }
+                if (count < m_currentTotalRowCount)
+                {
+                    QSharedPointer<StatisticItem> si =  QSharedPointer<StatisticItem>(new StatisticItem);
+                    si->content = "Other";
+                    si->count =  m_currentTotalRowCount - count;
+                    si->percent = ((double)si->count * 100)/((double)m_currentTotalRowCount);
+                    sis.append(si);
+                }
+                return true;
+            } else {
+                return !sis.empty();
+            }
+        }while(nRet == SQLITE_SCHEMA);
     }
 
     return false;
@@ -870,115 +818,107 @@ bool LogModel::getStatistic(const QString &tableName, QList<QSharedPointer<Stati
 
 void LogModel::saveStatistic()
 {
-    QSqlDatabase db = QSqlDatabase::database(m_dbFile, false);
-    if (!db.isValid() || !db.isOpen())
-    {
-        qDebug() << "opening database file failed " << m_dbFile;
-        return ;
-    }
-
-    QSqlQuery query(db);
-    query.prepare("INSERT INTO level_statistic (key, count) VALUES (:key, :count);");
-    db.transaction();
+    sqlite3_stmt* pVM = m_sqlite3Helper.compile("INSERT INTO level_statistic (key, count) VALUES (:key, :count);");
+    m_sqlite3Helper.beginTransaction();
     for (auto i = m_levelCountMap.constBegin();
          i != m_levelCountMap.constEnd();
          ++i)
     {
-        query.bindValue(":key", i.key());
-        query.bindValue(":count", i.value());
-        if (!query.exec()) {
+        m_sqlite3Helper.bind(pVM, ":key", i.key());
+        m_sqlite3Helper.bind(pVM, ":count", i.value());
+        if (!m_sqlite3Helper.execDML(pVM)) {
 #ifndef QT_NO_DEBUG
             qDebug() << " inserting level_statistic into database failed!";
 #endif
         }
     }
     m_levelCountMap.clear();
-    db.commit();
+    m_sqlite3Helper.endTransaction();
 
-    query.prepare("INSERT INTO thread_statistic (key, count) VALUES (:key, :count);");
-    db.transaction();
+    pVM = m_sqlite3Helper.compile("INSERT INTO thread_statistic (key, count) VALUES (:key, :count);");
+    m_sqlite3Helper.beginTransaction();
     for (auto i = m_threadCountMap.constBegin();
          i != m_threadCountMap.constEnd();
          ++i)
     {
-        query.bindValue(":key", i.key());
-        query.bindValue(":count", i.value());
-        if (!query.exec()) {
+        m_sqlite3Helper.bind(pVM, ":key", i.key());
+        m_sqlite3Helper.bind(pVM, ":count", i.value());
+        if (!m_sqlite3Helper.execDML(pVM)) {
 #ifndef QT_NO_DEBUG
             qDebug() << " inserting thread_statistic into database failed!";
 #endif
         }
     }
     m_threadCountMap.clear();
-    db.commit();
+    m_sqlite3Helper.endTransaction();
 
-    query.prepare("INSERT INTO source_file_statistic (key, count) VALUES (:key, :count);");
-    db.transaction();
+    pVM = m_sqlite3Helper.compile("INSERT INTO source_file_statistic (key, count) VALUES (:key, :count);");
+    m_sqlite3Helper.beginTransaction();
     for (auto i = m_sourceFileCountMap.constBegin();
          i != m_sourceFileCountMap.constEnd();
          ++i)
     {
-        query.bindValue(":key", i.key());
-        query.bindValue(":count", i.value());
-        if (!query.exec()) {
+        m_sqlite3Helper.bind(pVM, ":key", i.key());
+        m_sqlite3Helper.bind(pVM, ":count", i.value());
+        if (!m_sqlite3Helper.execDML(pVM)) {
 #ifndef QT_NO_DEBUG
             qDebug() << " inserting source_file_statistic into database failed!";
 #endif
         }
     }
     m_sourceFileCountMap.clear();
-    db.commit();
+    m_sqlite3Helper.endTransaction();
 
-    query.prepare("INSERT INTO source_line_statistic (key, count) VALUES (:key, :count);");
-    db.transaction();
+    pVM = m_sqlite3Helper.compile("INSERT INTO source_line_statistic (key, count) VALUES (:key, :count);");
+    m_sqlite3Helper.beginTransaction();
     for (auto i = m_sourceLineCountMap.constBegin();
          i != m_sourceLineCountMap.constEnd();
          ++i)
     {
-        query.bindValue(":key", i.key());
-        query.bindValue(":count", i.value());
-        if (!query.exec()) {
+        m_sqlite3Helper.bind(pVM, ":key", i.key());
+        m_sqlite3Helper.bind(pVM, ":count", i.value());
+        if (!m_sqlite3Helper.execDML(pVM)) {
 #ifndef QT_NO_DEBUG
             qDebug() << " inserting source_line_statistic into database failed!";
 #endif
         }
     }
     m_sourceLineCountMap.clear();
-    db.commit();
+    m_sqlite3Helper.endTransaction();
 
-    query.prepare("INSERT INTO category_statistic (key, count) VALUES (:key, :count);");
-    db.transaction();
+    pVM = m_sqlite3Helper.compile("INSERT INTO category_statistic (key, count) VALUES (:key, :count);");
+    m_sqlite3Helper.beginTransaction();
     for (auto i = m_categoryCountMap.constBegin();
          i != m_categoryCountMap.constEnd();
          ++i)
     {
-        query.bindValue(":key", i.key());
-        query.bindValue(":count", i.value());
-        if (!query.exec()) {
+        m_sqlite3Helper.bind(pVM, ":key", i.key());
+        m_sqlite3Helper.bind(pVM, ":count", i.value());
+        if (!m_sqlite3Helper.execDML(pVM)) {
 #ifndef QT_NO_DEBUG
             qDebug() << " inserting category_statistic into database failed!";
 #endif
         }
     }
     m_categoryCountMap.clear();
-    db.commit();
+    m_sqlite3Helper.endTransaction();
 
-    query.prepare("INSERT INTO method_statistic (key, count) VALUES (:key, :count);");
-    db.transaction();
+    pVM = m_sqlite3Helper.compile("INSERT INTO method_statistic (key, count) VALUES (:key, :count);");
+    m_sqlite3Helper.beginTransaction();
     for (auto i = m_methodCountMap.constBegin();
          i != m_methodCountMap.constEnd();
          ++i)
     {
-        query.bindValue(":key", i.key());
-        query.bindValue(":count", i.value());
-        if (!query.exec()) {
+        m_sqlite3Helper.bind(pVM, ":key", i.key());
+        m_sqlite3Helper.bind(pVM, ":count", i.value());
+        if (!m_sqlite3Helper.execDML(pVM)) {
 #ifndef QT_NO_DEBUG
             qDebug() << " inserting method_statistic into database failed!";
 #endif
         }
     }
     m_methodCountMap.clear();
-    db.commit();
+    m_sqlite3Helper.endTransaction();
 }
 
 QString LogModel::getDataSource()
@@ -1373,72 +1313,64 @@ void LogModel::doQuery(int offset)
 
     m_stopQuerying.store(false);
 
-    QSqlDatabase db = QSqlDatabase::database(m_dbFile, true);
-    if (!db.isValid()) {
-        db = QSqlDatabase::addDatabase("QSQLITE", m_dbFile);
-        db.setDatabaseName(m_dbFile);
-    }
+    if (m_stopQuerying.load())
+        return;
 
-    if (!db.isOpen())
-        db.open();
-
-    if (db.isOpen())
-    {
-        if (m_stopQuerying.load())
-            return;
-        QSqlQuery q(db);
-        q.prepare(m_sqlCount);
+    bool eof = false;
+    int nRet = 0;
+    sqlite3_stmt* pVM = nullptr;
+    do {
+        pVM = m_sqlite3Helper.compile(m_sqlCount);
         if (!m_keyword.isEmpty() && m_sqlCount.contains(QChar('?')))
-            q.addBindValue(m_keyword);
-        if (q.exec())
+            m_sqlite3Helper.bind(pVM, 1, m_keyword);
+        nRet = m_sqlite3Helper.execQuery(pVM, eof);
+        if (nRet == SQLITE_DONE || nRet == SQLITE_ROW)
         {
             RowCountEvent* erc = new RowCountEvent;
             erc->m_rowCount = 0;
-            if (q.next())
+            while (!eof)
             {
-                erc->m_rowCount = q.value(0).toInt();
+                erc->m_rowCount = sqlite3_column_int(pVM, 0);
+                m_sqlite3Helper.nextRow(pVM, eof);
             }
-            q.clear();
-            q.finish();
+
             qDebug() << __FUNCTION__ << " query row count: " << erc->m_rowCount;
             QCoreApplication::postEvent(this, erc);
+            break;
         }
+    }while(nRet == SQLITE_SCHEMA);
 
-        if (m_stopQuerying.load())
-            return;
-        q.prepare(m_sqlFetch);
+    if (m_stopQuerying.load())
+        return;
+
+    eof = false;
+    nRet = 0;
+    pVM = nullptr;
+    do {
+        pVM = m_sqlite3Helper.compile(m_sqlFetch);
         if (!m_keyword.isEmpty() && m_sqlFetch.contains(QChar('?')))
-            q.addBindValue(m_keyword);
-        if (q.exec())
+            m_sqlite3Helper.bind(pVM, 1, m_keyword);
+        nRet = m_sqlite3Helper.execQuery(pVM, eof);
+        if (nRet == SQLITE_DONE || nRet == SQLITE_ROW)
         {
             if (m_stopQuerying.load())
                 return;
-
-            int idIndex = q.record().indexOf("id");
-            int dateTimeIndex = q.record().indexOf("time");
-            int levelIndex = q.record().indexOf("level");
-            int threadIndex = q.record().indexOf("thread");
-            int sourceIndex = q.record().indexOf("source");
-            int categoryIndex = q.record().indexOf("category");
-            int methodIndex = q.record().indexOf("method");
-            int contentIndex = q.record().indexOf("content");
-            int logIndex = q.record().indexOf("log");
-            int lineIndex = q.record().indexOf("line");
             QMap<int, QSharedPointer<LogItem>> logs;
             int logItemCount = 0;
-            while (q.next() && !m_stopQuerying.load())
+            while (!eof && !m_stopQuerying.load())
             {
                 QSharedPointer<LogItem> log =  QSharedPointer<LogItem>(new LogItem);
-                log->id = q.value(idIndex).toInt();
-                log->time =  q.value(dateTimeIndex).toDateTime();
-                log->level = q.value(levelIndex).toString();
-                log->thread = q.value(threadIndex).toString();
-                log->source = q.value(sourceIndex).toString();
-                log->category = q.value(categoryIndex).toString();
-                log->method = q.value(methodIndex).toString();
-                log->content = q.value(contentIndex).toString();
-                log->logFile = q.value(logIndex).toString();
-                log->line = q.value(lineIndex).toInt();
+                log->id = sqlite3_column_int(pVM, 1);   // 1 - id
+                                                        // 2 - epoch
+                log->time = QDateTime::fromString(QString((const char *)sqlite3_column_text(pVM, 3)), Qt::ISODate); //  3 - time
+                log->level = QString((const char *)sqlite3_column_text(pVM, 4));
+                log->thread = QString((const char *)sqlite3_column_text(pVM, 5));
+                log->source = QString((const char *)sqlite3_column_text(pVM, 6));
+                log->category = QString((const char *)sqlite3_column_text(pVM, 7));
+                log->method = QString((const char *)sqlite3_column_text(pVM, 8));
+                log->content = QString((const char *)sqlite3_column_text(pVM, 9));
+                log->logFile = QString((const char *)sqlite3_column_text(pVM, 10));
+                log->line = sqlite3_column_int(pVM, 11);
 
                 if (log->level.isEmpty() || log->source.isEmpty() || log->logFile.isEmpty())
                 {
@@ -1456,7 +1388,7 @@ void LogModel::doQuery(int offset)
                     logs.clear();
                     logItemCount = 0;
                 }
-                //emit logItemReady(offset++, log);
+                m_sqlite3Helper.nextRow(pVM, eof);
             }
             if (logItemCount)
             {
@@ -1465,13 +1397,11 @@ void LogModel::doQuery(int offset)
                 logItemCount = 0;
             }
 
-            q.clear();
-            q.finish();
-
             // reset force querying flag finally
             m_forceQuerying.store(false);
+            break;
         }
-    }
+    }while(nRet == SQLITE_SCHEMA);
 }
 
 bool LogModel::parseLine(const QString& line, QStringList& results)
@@ -1596,27 +1526,14 @@ bool LogModel::event(QEvent *e)
 
 void LogModel::createDatabaseIndex()
 {
-    QSqlDatabase db = QSqlDatabase::database(m_dbFile, true);
-    if (!db.isValid()) {
-        db = QSqlDatabase::addDatabase("QSQLITE", m_dbFile);
-        db.setDatabaseName(m_dbFile);
-    }
-
-    if (!db.isOpen())
-        db.open();
-
-    if (db.isOpen())
-    {
-        QSqlQuery query(db);
-        query.exec("CREATE INDEX itime ON logs (epoch);");
-        query.exec("CREATE INDEX it ON logs ( time);");
-        query.exec("CREATE INDEX il ON logs ( level);");
-        query.exec("CREATE INDEX ith ON logs ( thread);");
-        query.exec("CREATE INDEX is ON logs ( source);");
-        query.exec("CREATE INDEX ic ON logs ( category);");
-        query.exec("CREATE INDEX im ON logs ( method);");
-        query.exec("CREATE INDEX io ON logs ( content);");
-    }
+    m_sqlite3Helper.execDML("CREATE INDEX itime ON logs (epoch);");
+    m_sqlite3Helper.execDML("CREATE INDEX it ON logs ( time);");
+    m_sqlite3Helper.execDML("CREATE INDEX il ON logs ( level);");
+    m_sqlite3Helper.execDML("CREATE INDEX ith ON logs ( thread);");
+    m_sqlite3Helper.execDML("CREATE INDEX is ON logs ( source);");
+    m_sqlite3Helper.execDML("CREATE INDEX ic ON logs ( category);");
+    m_sqlite3Helper.execDML("CREATE INDEX im ON logs ( method);");
+    m_sqlite3Helper.execDML("CREATE INDEX io ON logs ( content);");
 }
 
 void LogModel::createDatabase()
@@ -1636,61 +1553,24 @@ void LogModel::createDatabase()
 
     QFile::remove(m_dbFile);
 
-    QSqlDatabase db = QSqlDatabase::database(m_dbFile, true);
-    if (!db.isValid())
+    if (!m_sqlite3Helper.createDatabase(m_dbFile))
     {
-        db = QSqlDatabase::addDatabase("QSQLITE", m_dbFile);
+        return;
     }
-    if (g_settings->inMemoryDatabase())
-        db.setDatabaseName(":memory:");
-    else
-        db.setDatabaseName(m_dbFile);
 
     emit databaseCreated(m_dbFile);
 
-    if (!db.isOpen())
-    {
-        if (db.open())
-        {
-            QVariant v = db.driver()->handle();
-            if (v.isValid() && qstrcmp(v.typeName(), "sqlite3*")==0)
-            {
-                sqlite3 *db_handle = *static_cast<sqlite3 **>(v.data());
-                if (db_handle != 0)
-                {
-                    sqlite3_initialize();
-                    // must use the same sqlite3 version with the one Qt ships, aka. Qt 5.7 uses sqlite3 3.11.1.0
-                    // http://www.sqlite.org/2016/sqlite-amalgamation-3110100.zip
-                    sqlite3_create_function_v2(db_handle, "regexp", 2, SQLITE_UTF8 | SQLITE_DETERMINISTIC, NULL, &qt_regexp, NULL, NULL, NULL);
-                    sqlite3_create_function_v2(db_handle, "match", 2, SQLITE_UTF8 | SQLITE_DETERMINISTIC, NULL, &lua_match, NULL, NULL, NULL);
-                    sqlite3_create_function_v2(db_handle, "glob", 2, SQLITE_UTF8 | SQLITE_DETERMINISTIC, NULL, &level_glob, NULL, NULL, NULL);
-                }
-            }
-        }
-    }
-
-    if (db.isOpen())
-    {
-        QSqlQuery query(db);
-        query.exec("CREATE TABLE logs(id INTEGER PRIMARY KEY AUTOINCREMENT,epoch INTEGER, time DATETIME,level TEXT,thread TEXT,source TEXT,category TEXT,method TEXT, content TEXT, log TEXT, line INTEGER);");
-        query.exec("CREATE TABLE level_statistic(id INTEGER PRIMARY KEY AUTOINCREMENT, key TEXT, count INTEGER);");
-        query.exec("CREATE TABLE thread_statistic(id INTEGER PRIMARY KEY AUTOINCREMENT, key TEXT, count INTEGER);");
-        query.exec("CREATE TABLE source_file_statistic(id INTEGER PRIMARY KEY AUTOINCREMENT, key TEXT, count INTEGER);");
-        query.exec("CREATE TABLE source_line_statistic(id INTEGER PRIMARY KEY AUTOINCREMENT, key TEXT, count INTEGER);");
-        query.exec("CREATE TABLE category_statistic(id INTEGER PRIMARY KEY AUTOINCREMENT, key TEXT, count INTEGER);");
-        query.exec("CREATE TABLE method_statistic(id INTEGER PRIMARY KEY AUTOINCREMENT, key TEXT, count INTEGER);");
-    }
+    m_sqlite3Helper.execDML("CREATE TABLE logs(id INTEGER PRIMARY KEY AUTOINCREMENT,epoch INTEGER, time DATETIME,level TEXT,thread TEXT,source TEXT,category TEXT,method TEXT, content TEXT, log TEXT, line INTEGER);");
+    m_sqlite3Helper.execDML("CREATE TABLE level_statistic(id INTEGER PRIMARY KEY AUTOINCREMENT, key TEXT, count INTEGER);");
+    m_sqlite3Helper.execDML("CREATE TABLE thread_statistic(id INTEGER PRIMARY KEY AUTOINCREMENT, key TEXT, count INTEGER);");
+    m_sqlite3Helper.execDML("CREATE TABLE source_file_statistic(id INTEGER PRIMARY KEY AUTOINCREMENT, key TEXT, count INTEGER);");
+    m_sqlite3Helper.execDML("CREATE TABLE source_line_statistic(id INTEGER PRIMARY KEY AUTOINCREMENT, key TEXT, count INTEGER);");
+    m_sqlite3Helper.execDML("CREATE TABLE category_statistic(id INTEGER PRIMARY KEY AUTOINCREMENT, key TEXT, count INTEGER);");
+    m_sqlite3Helper.execDML("CREATE TABLE method_statistic(id INTEGER PRIMARY KEY AUTOINCREMENT, key TEXT, count INTEGER);");
 }
 
 int LogModel::copyFromFileToDatabase(const QString &fileName)
 {
-    QSqlDatabase db = QSqlDatabase::database(m_dbFile, false);
-    if (!db.isValid() || !db.isOpen())
-    {
-        qDebug() << "opening database file failed " << m_dbFile;
-        return 0;
-    }
-
     ReadLineFromFile f(fileName);
     if (f.atEnd())
     {
@@ -1722,12 +1602,12 @@ int LogModel::copyFromFileToDatabase(const QString &fileName)
     int recordCount = 0;
     int appendLine = 1;
     bool pendingRecord = false;
-    QSqlQuery query(db);
-    query.exec("PRAGMA synchronous = OFF");
-    query.exec("PRAGMA journal_mode = MEMORY");
-    query.prepare("INSERT INTO logs (time, epoch, level, thread, source, category, method, content, log, line) "
+
+    m_sqlite3Helper.execDML("PRAGMA synchronous = OFF");
+    m_sqlite3Helper.execDML("PRAGMA journal_mode = MEMORY");
+    sqlite3_stmt* pVM = m_sqlite3Helper.compile("INSERT INTO logs (time, epoch, level, thread, source, category, method, content, log, line) "
         "VALUES (:time, :epoch, :level, :thread, :source, :category, :method, :content, :log, :line );");
-    db.transaction();
+    m_sqlite3Helper.beginTransaction();
     while(!f.atEnd())
     {
         QString lookAhead = f.readLine();
@@ -1742,17 +1622,17 @@ int LogModel::copyFromFileToDatabase(const QString &fileName)
         else
         {
             // save to database
-            query.bindValue(":time", dateTime);
-            query.bindValue(":epoch", QDateTime::fromString(dateTime, "yyyy-MM-dd hh:mm:ss,zzz").toMSecsSinceEpoch());
-            query.bindValue(":level", level);
-            query.bindValue(":thread", thread);
-            query.bindValue(":source", source);
-            query.bindValue(":category", category);
-            query.bindValue(":method", method);
-            query.bindValue(":content", content);
-            query.bindValue(":log", suffix);
-            query.bindValue(":line", lineNo - appendLine);
-            if (!query.exec()) {
+            m_sqlite3Helper.bind(pVM, ":time", dateTime);
+            m_sqlite3Helper.bind(pVM, ":epoch", QDateTime::fromString(dateTime, "yyyy-MM-dd hh:mm:ss,zzz").toMSecsSinceEpoch());
+            m_sqlite3Helper.bind(pVM, ":level", level);
+            m_sqlite3Helper.bind(pVM, ":thread", thread);
+            m_sqlite3Helper.bind(pVM, ":source", source);
+            m_sqlite3Helper.bind(pVM, ":category", category);
+            m_sqlite3Helper.bind(pVM, ":method", method);
+            m_sqlite3Helper.bind(pVM, ":content", content);
+            m_sqlite3Helper.bind(pVM, ":log", suffix);
+            m_sqlite3Helper.bind(pVM, ":line", lineNo - appendLine);
+            if (!m_sqlite3Helper.execDML(pVM)) {
         #ifndef QT_NO_DEBUG
                 qDebug() << dateTime << level << thread << source << category << method << content << " inserting log into database failed!" << query.lastError();
         #endif
@@ -1775,23 +1655,23 @@ int LogModel::copyFromFileToDatabase(const QString &fileName)
     if (pendingRecord)
     {
         // save the last record to database
-        query.bindValue(":time", dateTime);
-        query.bindValue(":epoch", QDateTime::fromString(dateTime, "yyyy-MM-dd hh:mm:ss,zzz").toMSecsSinceEpoch());
-        query.bindValue(":level", level);
-        query.bindValue(":thread", thread);
-        query.bindValue(":source", source);
-        query.bindValue(":category", category);
-        query.bindValue(":method", method);
-        query.bindValue(":content", content);
-        query.bindValue(":log", suffix);
-        query.bindValue(":line", lineNo +1 - appendLine);
-        if (!query.exec()) {
+        m_sqlite3Helper.bind(pVM, ":time", dateTime);
+        m_sqlite3Helper.bind(pVM, ":epoch", QDateTime::fromString(dateTime, "yyyy-MM-dd hh:mm:ss,zzz").toMSecsSinceEpoch());
+        m_sqlite3Helper.bind(pVM, ":level", level);
+        m_sqlite3Helper.bind(pVM, ":thread", thread);
+        m_sqlite3Helper.bind(pVM, ":source", source);
+        m_sqlite3Helper.bind(pVM, ":category", category);
+        m_sqlite3Helper.bind(pVM, ":method", method);
+        m_sqlite3Helper.bind(pVM, ":content", content);
+        m_sqlite3Helper.bind(pVM, ":log", suffix);
+        m_sqlite3Helper.bind(pVM, ":line", lineNo +1 - appendLine);
+        if (!m_sqlite3Helper.execDML(pVM)) {
 #ifndef QT_NO_DEBUG
             qDebug() << dateTime << level << thread << source << category << method << content << " inserting log into database failed!" << query.lastError();
 #endif
         }
     }
-    db.commit();
+    m_sqlite3Helper.endTransaction();
 
     return recordCount;
 }

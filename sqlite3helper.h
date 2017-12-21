@@ -1,14 +1,14 @@
 #ifndef SQLITE3HELPER_H
 #define SQLITE3HELPER_H
 
-struct sqlite3;
-struct sqlite3_stmt;
-struct lua_State;
+#include <sqlite3.h>
+#include <lua.hpp>
+#include <QString>
 
 class Sqlite3Helper
 {
 public:
-    Sqlite3Helper(lua_State*& L);
+    Sqlite3Helper();
     ~Sqlite3Helper();
     void bind(sqlite3_stmt* pVM, int nParam, const QString& sValue);
     void bind(sqlite3_stmt* pVM, int nParam, const char * szValue);
@@ -18,6 +18,7 @@ public:
     void bind(sqlite3_stmt* pVM, int nParam, const unsigned char* blobValue, int nLen);
     void bindNull(sqlite3_stmt* pVM, int nParam);
     int bindParameterIndex(sqlite3_stmt* pVM, const char * szParam);
+    void bind(sqlite3_stmt* pVM, const char * szParam, const QString& sValue);
     void bind(sqlite3_stmt* pVM, const char * szParam, const char * szValue);
     void bind(sqlite3_stmt* pVM, const char * szParam, const int nValue);
     void bind(sqlite3_stmt* pVM, const char * szParam, const int64_t nValue);
@@ -45,14 +46,14 @@ public:
     bool rollbackTransaction();
 
     bool vacuum();
-    void setLuaState();
+    void setLuaState(lua_State* L);
+    void bindCustomFunctions();
 
     static void levelGlob(sqlite3_context* ctx, int /*argc*/, sqlite3_value** argv);
     static void luaMatch(sqlite3_context* ctx, int /*argc*/, sqlite3_value** argv);
     static void qtRegexp(sqlite3_context* ctx, int /*argc*/, sqlite3_value** argv);
 private:
     sqlite3* m_db;
-    lua_State*& m_L;
     static lua_State* g_L;
 };
 
