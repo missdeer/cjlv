@@ -224,9 +224,9 @@ void PresenceModel::doQueryPresence(const QString &jid)
             while (!eof)
             {
                 QSharedPointer<PresenceItem> p =  QSharedPointer<PresenceItem>(new PresenceItem);
-                p->id = sqlite3_column_int(pVM, 1);
-                p->time = QDateTime::fromString(QString((const char *)sqlite3_column_text(pVM, 2)), Qt::ISODate);
-                QString content((const char *)sqlite3_column_text(pVM, 3));
+                p->id = sqlite3_column_int(pVM, 0);
+                p->time = QDateTime::fromString(QString((const char *)sqlite3_column_text(pVM, 1)), Qt::ISODate);
+                QString content((const char *)sqlite3_column_text(pVM, 2));
                 // extract from JID
 
                 QRegularExpressionMatch m = re.match(content);
@@ -292,7 +292,7 @@ void PresenceModel::doRequestReceivedPresenceBuddyList()
             QRegularExpression re("from=\"([^/\"]+)");
             while (!eof)
             {
-                QString content((const char *)sqlite3_column_text(pVM, 1));
+                QString content((const char *)sqlite3_column_text(pVM, 0));
 
                 QRegularExpressionMatch m = re.match(content);
                 if (m.hasMatch())
