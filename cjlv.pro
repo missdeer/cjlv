@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui concurrent widgets sql xml charts network qml quick quickwidgets
+QT       += core gui concurrent widgets xml charts network qml quick quickwidgets
 
 TARGET = "Cisco Jabber Log Viewer"
 TEMPLATE = app
@@ -67,7 +67,8 @@ SOURCES += main.cpp\
     presencewidget.cpp \
     prtlistitemdelegate.cpp \
     shortcutedit.cpp \
-    quickwidgetapi.cpp
+    quickwidgetapi.cpp \
+    sqlite3helper.cpp
 
 HEADERS  += mainwindow.h \
     logview.h \
@@ -88,7 +89,8 @@ HEADERS  += mainwindow.h \
     presencewidget.h \
     prtlistitemdelegate.h \
     shortcutedit.h \
-    quickwidgetapi.h
+    quickwidgetapi.h \
+    sqlite3helper.h
 
 FORMS    += mainwindow.ui \
     preferencedialog.ui \

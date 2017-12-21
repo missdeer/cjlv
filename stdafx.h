@@ -67,12 +67,6 @@
 #include <QWaitCondition>
 #include <QThreadPool>
 
-#include <QSqlDatabase>
-#include <QSqlQuery>
-#include <QSqlRecord>
-#include <QSqlError>
-#include <QSqlDriver>
-
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 #include <QNetworkRequest>

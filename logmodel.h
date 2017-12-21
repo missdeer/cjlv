@@ -2,6 +2,7 @@
 #define LOGMODEL_H
 
 #include "extension.h"
+#include "sqlite3helper.h"
 
 struct lua_State;
 class QuickWidgetAPI;
@@ -126,6 +127,8 @@ private:
     QMap<QString, int> m_sourceLineCountMap;
     QMap<QString, int> m_categoryCountMap;
     QMap<QString, int> m_methodCountMap;
+
+    Sqlite3Helper m_sqlite3Helper;
 
     void createDatabase();
     int copyFromFileToDatabase(const QString& fileName);

@@ -7,7 +7,6 @@
 #include "settings.h"
 #include "logmodel.h"
 
-static lua_State* g_L = nullptr;
 static const QEvent::Type ROWCOUNT_EVENT = QEvent::Type(QEvent::User + 1);
 static const QEvent::Type FINISHEDQUERY_EVENT = QEvent::Type(QEvent::User + 2);
 static const int g_rowCountLimit = 200;
@@ -102,68 +101,6 @@ start_read:
     }
 };
 
-static void level_glob(sqlite3_context* ctx, int /*argc*/, sqlite3_value** argv)
-{
-    QString text(reinterpret_cast<const char*>(sqlite3_value_text(argv[1])));
-
-    QMap<QString, bool> v {
-        {"FATAL", g_settings->fatalEnabled()},
-        {"ERROR", g_settings->errorEnabled()},
-        {"WARN", g_settings->warnEnabled()},
-        {"INFO", g_settings->infoEnabled()},
-        {"DEBUG", g_settings->debugEnabled()},
-        {"TRACE", g_settings->traceEnabled()},
-    };
-
-    bool b = v[text];
-    if (b)
-    {
-        sqlite3_result_int(ctx, 1);
-    }
-    else
-    {
-        sqlite3_result_int(ctx, 0);
-    }
-}
-
-static void lua_match(sqlite3_context* ctx, int /*argc*/, sqlite3_value** argv)
-{
-    const char * text = reinterpret_cast<const char*>(sqlite3_value_text(argv[1]));
-    lua_getglobal(g_L, "match");
-    lua_pushstring(g_L, text);
-
-    /* call the function with 1 arguments, return 1 result */
-    if (lua_pcall(g_L, 1, 1, 0) != 0)
-    {
-        qDebug() << QString(lua_tostring(g_L, -1));
-        lua_pop(g_L, 1);  /* pop error message from the stack */
-        sqlite3_result_int(ctx, 0);
-        return;
-    }
-
-    int res = static_cast<int>(lua_tointeger(g_L, -1));
-    lua_pop(g_L, 1);
-    sqlite3_result_int(ctx, res);
-}
-
-static void qt_regexp(sqlite3_context* ctx, int /*argc*/, sqlite3_value** argv)
-{
-    QString pattern(reinterpret_cast<const char*>(sqlite3_value_text(argv[0])));
-    QString text(reinterpret_cast<const char*>(sqlite3_value_text(argv[1])));
-
-    QRegularExpression regex(pattern, QRegularExpression::CaseInsensitiveOption);
-
-    bool b = text.contains(regex);
-
-    if (b)
-    {
-        sqlite3_result_int(ctx, 1);
-    }
-    else
-    {
-        sqlite3_result_int(ctx, 0);
-    }
-}
 
 LogModel::LogModel(QObject *parent)
     : QAbstractTableModel(parent)
@@ -179,6 +116,7 @@ LogModel::LogModel(QObject *parent)
     , m_regexpModeOption(false)
     , m_luaMode(false)
     , m_allStanza(true)
+    , m_sqlite3Helper(m_L)
 {
     m_forceQuerying.store(false);
     qRegisterMetaType<QSharedPointer<LogItem>>("QSharedPointer<LogItem>");
@@ -717,7 +655,7 @@ void LogModel::runLuaExtension(ExtensionPtr e)
         QMessageBox::warning(p, tr("Warning"), msg, QMessageBox::Ok);
         return;
     }
-    g_L = m_L;
+    m_sqlite3Helper.setLuaState();
     // regexp mode is ignored
     doFilter(e->content(), e->field(), false, true);
 }
