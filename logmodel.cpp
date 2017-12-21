@@ -777,7 +777,7 @@ bool LogModel::getStatistic(const QString &tableName, QList<QSharedPointer<Stati
         bool eof = false;
         int nRet = 0;
         sqlite3_stmt* pVM = nullptr;
-        QString sql = QString("SELECT key,count FROM %1 ORDER BY count DESC LIMIT %2;").arg(tableName).arg(limitCount);
+        QString sql = QString("SELECT * FROM %1 ORDER BY count DESC LIMIT %2;").arg(tableName).arg(limitCount);
 
         do {
             pVM = m_sqlite3Helper.compile(sql);
@@ -791,14 +791,13 @@ bool LogModel::getStatistic(const QString &tableName, QList<QSharedPointer<Stati
                     QSharedPointer<StatisticItem> si =  QSharedPointer<StatisticItem>(new StatisticItem);
                     si->content = QString((const char *)sqlite3_column_text(pVM, 1));
                     si->count = sqlite3_column_int(pVM, 2);
-
                     si->percent = ((double)si->count * 100)/((double)m_currentTotalRowCount);
                     sis.append(si);
                     count += si->count;
                     m_sqlite3Helper.nextRow(pVM, eof);
                 }
                 if (count * 3 <= m_currentTotalRowCount * 2)
-                    continue;
+                    break;
 
                 if (count < m_currentTotalRowCount)
                 {
@@ -1518,14 +1517,14 @@ bool LogModel::event(QEvent *e)
 
 void LogModel::createDatabaseIndex()
 {
-    m_sqlite3Helper.execDML("CREATE INDEX itime ON logs (epoch);");
-    m_sqlite3Helper.execDML("CREATE INDEX it ON logs ( time);");
-    m_sqlite3Helper.execDML("CREATE INDEX il ON logs ( level);");
-    m_sqlite3Helper.execDML("CREATE INDEX ith ON logs ( thread);");
-    m_sqlite3Helper.execDML("CREATE INDEX is ON logs ( source);");
-    m_sqlite3Helper.execDML("CREATE INDEX ic ON logs ( category);");
-    m_sqlite3Helper.execDML("CREATE INDEX im ON logs ( method);");
-    m_sqlite3Helper.execDML("CREATE INDEX io ON logs ( content);");
+    m_sqlite3Helper.execDML("CREATE INDEX indexepoch ON logs (epoch);");
+    m_sqlite3Helper.execDML("CREATE INDEX indextime ON logs ( time);");
+    m_sqlite3Helper.execDML("CREATE INDEX indexlevel ON logs ( level);");
+    m_sqlite3Helper.execDML("CREATE INDEX indexthread ON logs ( thread);");
+    m_sqlite3Helper.execDML("CREATE INDEX indexsource ON logs ( source);");
+    m_sqlite3Helper.execDML("CREATE INDEX indexcategory ON logs ( category);");
+    m_sqlite3Helper.execDML("CREATE INDEX indexmethod ON logs ( method);");
+    m_sqlite3Helper.execDML("CREATE INDEX indexcontent ON logs ( content);");
 }
 
 void LogModel::createDatabase()
