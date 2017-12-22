@@ -737,13 +737,13 @@ void LogModel::saveRowsBetweenAnchorsInFolder(const QModelIndex &beginAnchor, co
                 log->id = sqlite3_column_int(pVM, 0);   // 0 - id
                                                         // 1 - epoch
                 log->time = QDateTime::fromString(QString((const char *)sqlite3_column_text(pVM, 2)), Qt::ISODate); //  2 - time
-                log->level = QString((const char *)sqlite3_column_text(pVM, 3));
-                log->thread = QString((const char *)sqlite3_column_text(pVM, 4));
-                log->source = QString((const char *)sqlite3_column_text(pVM, 5));
-                log->category = QString((const char *)sqlite3_column_text(pVM, 6));
-                log->method = QString((const char *)sqlite3_column_text(pVM, 7));
-                log->content = QString((const char *)sqlite3_column_text(pVM, 8));
-                log->logFile = QString((const char *)sqlite3_column_text(pVM, 9));
+                log->level = (const char *)sqlite3_column_text(pVM, 3);
+                log->thread = (const char *)sqlite3_column_text(pVM, 4);
+                log->source = (const char *)sqlite3_column_text(pVM, 5);
+                log->category = (const char *)sqlite3_column_text(pVM, 6);
+                log->method = (const char *)sqlite3_column_text(pVM, 7);
+                log->content = (const char *)sqlite3_column_text(pVM, 8);
+                log->logFile = (const char *)sqlite3_column_text(pVM, 9);
                 log->line = sqlite3_column_int(pVM, 10);
 
                 if (log->level.isEmpty() || log->source.isEmpty() || log->logFile.isEmpty())
@@ -789,7 +789,7 @@ bool LogModel::getStatistic(const QString &tableName, QList<QSharedPointer<Stati
                 while (!eof)
                 {
                     QSharedPointer<StatisticItem> si =  QSharedPointer<StatisticItem>(new StatisticItem);
-                    si->content = QString((const char *)sqlite3_column_text(pVM, 1));
+                    si->content =(const char *)sqlite3_column_text(pVM, 1);
                     si->count = sqlite3_column_int(pVM, 2);
                     si->percent = ((double)si->count * 100)/((double)m_currentTotalRowCount);
                     sis.append(si);
@@ -1354,13 +1354,13 @@ void LogModel::doQuery(int offset)
                 log->id = sqlite3_column_int(pVM, 0);   // 0 - id
                                                         // 1 - epoch
                 log->time = QDateTime::fromString(QString((const char *)sqlite3_column_text(pVM, 2)), Qt::ISODate); //  2 - time
-                log->level = QString((const char *)sqlite3_column_text(pVM, 3));
-                log->thread = QString((const char *)sqlite3_column_text(pVM, 4));
-                log->source = QString((const char *)sqlite3_column_text(pVM, 5));
-                log->category = QString((const char *)sqlite3_column_text(pVM, 6));
-                log->method = QString((const char *)sqlite3_column_text(pVM, 7));
-                log->content = QString((const char *)sqlite3_column_text(pVM, 8));
-                log->logFile = QString((const char *)sqlite3_column_text(pVM, 9));
+                log->level = (const char *)sqlite3_column_text(pVM, 3);
+                log->thread = (const char *)sqlite3_column_text(pVM, 4);
+                log->source = (const char *)sqlite3_column_text(pVM, 5);
+                log->category = (const char *)sqlite3_column_text(pVM, 6);
+                log->method = (const char *)sqlite3_column_text(pVM, 7);
+                log->content = (const char *)sqlite3_column_text(pVM, 8);
+                log->logFile = (const char *)sqlite3_column_text(pVM, 9);
                 log->line = sqlite3_column_int(pVM, 10);
 
                 if (log->level.isEmpty() || log->source.isEmpty() || log->logFile.isEmpty())

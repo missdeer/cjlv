@@ -58,16 +58,6 @@ sqlite3_stmt *Sqlite3Helper::compile(const QString &szSQL)
 
 void Sqlite3Helper::bind(sqlite3_stmt* mpVM, int nParam, const char * szValue)
 {
-    if (!isDatabaseOpened())
-    {
-        qDebug() <<"database is not opened";;
-        return;
-    }
-    if (!mpVM)
-    {
-        qDebug() <<"VM null pointer";
-        return;
-    }
     int nRes = sqlite3_bind_text(mpVM, nParam, szValue, -1, SQLITE_TRANSIENT);
     if (nRes != SQLITE_OK)
     {
@@ -77,16 +67,6 @@ void Sqlite3Helper::bind(sqlite3_stmt* mpVM, int nParam, const char * szValue)
 
 void Sqlite3Helper::bind(sqlite3_stmt* mpVM, int nParam, const int nValue)
 {
-    if (!isDatabaseOpened())
-    {
-        qDebug() <<"database is not opened";;
-        return;
-    }
-    if (!mpVM)
-    {
-        qDebug() <<"VM null pointer";
-        return;
-    }
     int nRes = sqlite3_bind_int(mpVM, nParam, nValue);
     if (nRes != SQLITE_OK)
     {
@@ -97,16 +77,6 @@ void Sqlite3Helper::bind(sqlite3_stmt* mpVM, int nParam, const int nValue)
 
 void Sqlite3Helper::bind(sqlite3_stmt* mpVM, int nParam, const int64_t nValue)
 {
-    if (!isDatabaseOpened())
-    {
-        qDebug() <<"database is not opened";;
-        return;
-    }
-    if (!mpVM)
-    {
-        qDebug() <<"VM null pointer";
-        return;
-    }
     int nRes = sqlite3_bind_int64(mpVM, nParam, nValue);
     if (nRes != SQLITE_OK)
     {
@@ -116,16 +86,6 @@ void Sqlite3Helper::bind(sqlite3_stmt* mpVM, int nParam, const int64_t nValue)
 
 void Sqlite3Helper::bind(sqlite3_stmt* mpVM, int nParam, const double dValue)
 {
-    if (!isDatabaseOpened())
-    {
-        qDebug() <<"database is not opened";;
-        return;
-    }
-    if (!mpVM)
-    {
-        qDebug() <<"VM null pointer";
-        return;
-    }
     int nRes = sqlite3_bind_double(mpVM, nParam, dValue);
     if (nRes != SQLITE_OK)
     {
@@ -135,16 +95,6 @@ void Sqlite3Helper::bind(sqlite3_stmt* mpVM, int nParam, const double dValue)
 
 void Sqlite3Helper::bind(sqlite3_stmt* mpVM, int nParam, const unsigned char* blobValue, int nLen)
 {
-    if (!isDatabaseOpened())
-    {
-        qDebug() <<"database is not opened";
-        return;
-    }
-    if (!mpVM)
-    {
-        qDebug() <<"VM null pointer";
-        return;
-    }
     int nRes = sqlite3_bind_blob(mpVM, nParam, (const void*)blobValue, nLen, SQLITE_TRANSIENT);
     if (nRes != SQLITE_OK)
     {
@@ -154,18 +104,7 @@ void Sqlite3Helper::bind(sqlite3_stmt* mpVM, int nParam, const unsigned char* bl
 
 void Sqlite3Helper::bindNull(sqlite3_stmt* mpVM, int nParam)
 {
-    if (!isDatabaseOpened())
-    {
-        qDebug() <<"database is not opened";
-        return;
-    }
-    if (!mpVM)
-    {
-        qDebug() <<"VM null pointer";
-        return;
-    }
     int nRes = sqlite3_bind_null(mpVM, nParam);
-
     if (nRes != SQLITE_OK)
     {
         qDebug() <<"Error binding NULL param";
@@ -174,18 +113,7 @@ void Sqlite3Helper::bindNull(sqlite3_stmt* mpVM, int nParam)
 
 int Sqlite3Helper::bindParameterIndex(sqlite3_stmt* mpVM, const char * szParam)
 {
-    if (!isDatabaseOpened())
-    {
-        qDebug() <<"database is not opened";
-        return -1;
-    }
-    if (!mpVM)
-    {
-        qDebug() <<"VM null pointer";
-        return -1;
-    }
     int nParam = sqlite3_bind_parameter_index(mpVM, szParam);
-
     if (!nParam) {
         qDebug() <<"Parameter '" << szParam << "' is not valid for this statement";
     }
@@ -200,12 +128,6 @@ void Sqlite3Helper::bind(sqlite3_stmt *pVM, const char *szParam, const QString &
 
 sqlite3_stmt* Sqlite3Helper::compile(const char * szSQL)
 {
-    if (!m_db)
-    {
-        qDebug() <<"null db pointer";
-        return nullptr;
-    }
-
     sqlite3_stmt* pVM = nullptr;
     int res = sqlite3_prepare(m_db, szSQL, -1, &pVM, nullptr);
     if (res != SQLITE_OK)
@@ -232,8 +154,7 @@ int Sqlite3Helper::execDML(const char * szSQL)
         nRet = sqlite3_step(pVM);
 
         if (nRet == SQLITE_ERROR) {
-            const char * szError = (const char *)sqlite3_errmsg(m_db);
-            qDebug() <<szError;
+            qDebug() << (const char *)sqlite3_errmsg(m_db);
             sqlite3_finalize(pVM);
             break;
         }
@@ -262,17 +183,17 @@ int Sqlite3Helper::execDML(sqlite3_stmt* pVM)
 
         if (sqlite3_finalize(pVM) != SQLITE_OK)
         {
-            const char * szError = (const char *)sqlite3_errmsg(m_db);
-            qDebug() <<szError;
+            qDebug() << (const char *)sqlite3_errmsg(m_db);
             return -1;
         }
         return nRowsChanged;
     }
     else
     {
-        sqlite3_finalize(pVM);
-        const char * szError = (const char *)sqlite3_errmsg(m_db);
-        qDebug() <<szError;
+        if (sqlite3_finalize(pVM) != SQLITE_OK)
+        {
+            qDebug() << (const char *)sqlite3_errmsg(m_db);
+        }
     }
     return -1;
 }
@@ -295,8 +216,7 @@ int Sqlite3Helper::execQuery(sqlite3_stmt* pVM, bool& eof)
     if (nRet == SQLITE_SCHEMA)
         return nRet;
 
-    const char * szError = (const char *)sqlite3_errmsg(m_db);
-    qDebug() <<szError;
+    qDebug() << (const char *)sqlite3_errmsg(m_db);
     return -1;
 }
 
@@ -307,7 +227,10 @@ void Sqlite3Helper::nextRow(sqlite3_stmt* pVM, bool& eof)
     if (nRet == SQLITE_DONE)
     {
         // no rows
-        sqlite3_finalize(pVM);
+        if (sqlite3_finalize(pVM) != SQLITE_OK)
+        {
+            qDebug() << (const char *)sqlite3_errmsg(m_db);
+        }
         eof = true;
     }
     else if (nRet == SQLITE_ROW)
@@ -317,9 +240,10 @@ void Sqlite3Helper::nextRow(sqlite3_stmt* pVM, bool& eof)
     }
     else
     {
-        sqlite3_finalize(pVM);
-        const char * szError = (const char *)sqlite3_errmsg(m_db);
-        qDebug() <<szError;
+        if (sqlite3_finalize(pVM) != SQLITE_OK)
+        {
+            qDebug() << (const char *)sqlite3_errmsg(m_db);
+        }
     }
 }
 
