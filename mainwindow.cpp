@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "popupmenutoolbutton.h"
 #include "prtlistitemdelegate.h"
 #include "settings.h"
 #include "preferencedialog.h"
@@ -54,6 +55,41 @@ MainWindow::MainWindow(QSplashScreen &splash, QWidget *parent) :
     connect(em, &ExtensionModel::extensionModified, this, &MainWindow::onExtensionModified);
     connect(em, &ExtensionModel::extensionRemoved, this, &MainWindow::onExtensionRemoved);
     connect(em, &ExtensionModel::extensionScanned, this, &MainWindow::onExtensionScanned);
+
+    // add popup menu tool button
+    QMenu* popupMenu = new QMenu(this);
+    popupMenu->addAction(ui->actionOpenCurrentInstalledJabberLogFolder);
+    popupMenu->addSeparator();
+
+    QAction* actionOpenJabberLog  = new QAction(tr("Open jabber.log"), this);
+    actionOpenJabberLog->setIcon(QIcon(":/image/open-installed-folder.png"));
+    connect(actionOpenJabberLog, &QAction::triggered, this, &MainWindow::onActionOpenJabberLogTriggered);
+    popupMenu->addAction(actionOpenJabberLog);
+    QAction* actionOpenJabberLog1 = new QAction(tr("Open jabber.log.1"), this);
+    actionOpenJabberLog1->setIcon(QIcon(":/image/open-installed-folder.png"));
+    connect(actionOpenJabberLog1, &QAction::triggered, this, &MainWindow::onActionOpenJabberLogTriggered);
+    popupMenu->addAction(actionOpenJabberLog1);
+    QAction* actionOpenJabberLog2 = new QAction(tr("Open jabber.log.2"), this);
+    actionOpenJabberLog2->setIcon(QIcon(":/image/open-installed-folder.png"));
+    connect(actionOpenJabberLog2, &QAction::triggered, this, &MainWindow::onActionOpenJabberLogTriggered);
+    popupMenu->addAction(actionOpenJabberLog2);
+    QAction* actionOpenJabberLog3 = new QAction(tr("Open jabber.log.3"), this);
+    actionOpenJabberLog3->setIcon(QIcon(":/image/open-installed-folder.png"));
+    connect(actionOpenJabberLog3, &QAction::triggered, this, &MainWindow::onActionOpenJabberLogTriggered);
+    popupMenu->addAction(actionOpenJabberLog3);
+    QAction* actionOpenJabberLog4 = new QAction(tr("Open jabber.log.4"), this);
+    actionOpenJabberLog4->setIcon(QIcon(":/image/open-installed-folder.png"));
+    connect(actionOpenJabberLog4, &QAction::triggered, this, &MainWindow::onActionOpenJabberLogTriggered);
+    popupMenu->addAction(actionOpenJabberLog4);
+    QAction* actionOpenJabberLog5 = new QAction(tr("Open jabber.log.5"), this);
+    actionOpenJabberLog5->setIcon(QIcon(":/image/open-installed-folder.png"));
+    connect(actionOpenJabberLog5, &QAction::triggered, this, &MainWindow::onActionOpenJabberLogTriggered);
+    popupMenu->addAction(actionOpenJabberLog5);
+
+    PopupMenuToolButton* toolButton = new PopupMenuToolButton(this);
+    toolButton->setMenu(popupMenu);
+    toolButton->setDefaultAction(ui->actionOpenCurrentInstalledJabberLogFolder);
+    ui->mainToolBar->insertWidget(ui->actionOpenFromPRTTrackingSystemURL, toolButton);
 
     connect(QApplication::clipboard(), &QClipboard::dataChanged, this, &MainWindow::onClipboardChanged);
     ui->actionSearch->setChecked(g_settings->searchOrFitler());
@@ -636,6 +672,40 @@ void MainWindow::onExtensionModified(ExtensionPtr e)
     {
         (*it)->setText(QString("%1 by %2").arg(e->title()).arg(e->author()));
     }
+}
+
+void MainWindow::onActionOpenJabberLogTriggered()
+{
+#if defined(Q_OS_WIN)
+    QString path = QStandardPaths::writableLocation(QStandardPaths::HomeLocation) % "/AppData/Local/Cisco/Unified Communications/Jabber/CSF/Logs/jabber.log";
+#endif
+#if defined(Q_OS_MAC)
+    QString path = QStandardPaths::writableLocation(QStandardPaths::HomeLocation) % "/Library/Logs/Jabber/jabber.log";
+#endif
+
+    QAction *action = qobject_cast<QAction*>(sender());
+    QString caption = action->text();
+    QStringList prefixes = { ".1", ".2", ".3", ".4", ".5"};
+    for (const auto & prefix : prefixes)
+    {
+        if (caption.endsWith(prefix))
+        {
+            path.append(prefix);
+            break;
+        }
+    }
+
+    if (!QFile::exists(path))
+    {
+        QMessageBox::critical(this,
+                             tr("Warning"),
+                             QString(tr("Folder '%1' doesn't exist.")).arg(path),
+                             QMessageBox::Ok);
+        return;
+    }
+    QStringList files;
+    files.append(path);
+    ui->tabWidget->openRawLogFile(files);
 }
 
 void MainWindow::on_actionOpenZipLogBundle_triggered()

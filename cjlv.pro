@@ -47,7 +47,8 @@ SOURCES += main.cpp\
     prtlistitemdelegate.cpp \
     shortcutedit.cpp \
     quickwidgetapi.cpp \
-    sqlite3helper.cpp
+    sqlite3helper.cpp \
+    popupmenutoolbutton.cpp
 
 HEADERS  += mainwindow.h \
     logview.h \
@@ -69,7 +70,8 @@ HEADERS  += mainwindow.h \
     prtlistitemdelegate.h \
     shortcutedit.h \
     quickwidgetapi.h \
-    sqlite3helper.h
+    sqlite3helper.h \
+    popupmenutoolbutton.h
 
 FORMS    += mainwindow.ui \
     preferencedialog.ui \
