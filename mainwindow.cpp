@@ -699,7 +699,7 @@ void MainWindow::onActionOpenJabberLogTriggered()
     {
         QMessageBox::critical(this,
                              tr("Warning"),
-                             QString(tr("Folder '%1' doesn't exist.")).arg(path),
+                             QString(tr("File '%1' doesn't exist.")).arg(path),
                              QMessageBox::Ok);
         return;
     }
