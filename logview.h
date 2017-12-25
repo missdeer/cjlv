@@ -149,6 +149,7 @@ private:
     void openSourceFileWithBuiltinEditor(const QString& filePath, int line);
     void openSourceFileInVS(const QString& filePath, int line);
     void openSourceFileWithOpenGrok(const QString& filePath, int line);
+    void initialize();
 };
 
 class SourceWindow;

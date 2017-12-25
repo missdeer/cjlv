@@ -10,6 +10,15 @@ Sqlite3Helper::Sqlite3Helper()
 
 }
 
+Sqlite3Helper::~Sqlite3Helper()
+{
+    if(isDatabaseOpened())
+        closeDatabaseConnection();
+    m_db = nullptr;
+
+    QFile::remove(m_dbFile);
+}
+
 void Sqlite3Helper::bind(sqlite3_stmt *pVM, int nParam, const QString &sValue)
 {
     bind(pVM, nParam, sValue.toStdString().c_str());
@@ -321,6 +330,7 @@ bool Sqlite3Helper::openDatabase(const QString &name)
     }
 
     bindCustomFunctions();
+    m_dbFile = name;
     qDebug() <<"The database is opened.";
     return true;
 }
@@ -334,6 +344,7 @@ bool Sqlite3Helper::createDatabase(const QString &name)
     }
 
     bindCustomFunctions();
+    m_dbFile = name;
     qDebug() <<"The database is created.";
     return true;
 }

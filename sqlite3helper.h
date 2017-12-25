@@ -4,11 +4,13 @@
 #include <sqlite3.h>
 #include <lua.hpp>
 #include <QString>
+#include <QSharedPointer>
 
 class Sqlite3Helper
 {
 public:
     Sqlite3Helper();
+    ~Sqlite3Helper();
     void bind(sqlite3_stmt* pVM, int nParam, const QString& sValue);
     void bind(sqlite3_stmt* pVM, int nParam, const char * szValue);
     void bind(sqlite3_stmt* pVM, int nParam, const int nValue);
@@ -54,6 +56,9 @@ public:
 private:
     sqlite3* m_db;
     static lua_State* g_L;
+    QString m_dbFile;
 };
+
+typedef QSharedPointer<Sqlite3Helper> Sqlite3HelperPtr;
 
 #endif // SQLITE3HELPER_H

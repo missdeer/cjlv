@@ -34,7 +34,7 @@ class LogModel : public QAbstractTableModel
 {
     Q_OBJECT
 public:
-    explicit LogModel(QObject *parent = 0);
+    explicit LogModel(QObject *parent = 0, Sqlite3HelperPtr sqlite3Helper = Sqlite3HelperPtr(new Sqlite3Helper));
     ~LogModel();
 
     virtual QModelIndex index(int row, int column, const QModelIndex & parent = QModelIndex()) const Q_DECL_OVERRIDE;
@@ -85,6 +85,7 @@ public slots:
     void onFilter(const QString& keyword);
     void onSearchScopeChanged();
 private:
+    Sqlite3HelperPtr m_sqlite3Helper;
     lua_State* m_L;
     QuickWidgetAPI* m_api;
     QString m_lastFilterKeyword;
@@ -127,8 +128,6 @@ private:
     QMap<QString, int> m_sourceLineCountMap;
     QMap<QString, int> m_categoryCountMap;
     QMap<QString, int> m_methodCountMap;
-
-    Sqlite3Helper m_sqlite3Helper;
 
     void createDatabase();
     int copyFromFileToDatabase(const QString& fileName);

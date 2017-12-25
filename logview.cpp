@@ -52,105 +52,7 @@ LogView::LogView(QWidget *parent)
     , m_lastId(-1)
     , m_lastColumn(-1)
 {
-    int res = g_settings->logTableColumnVisible();
-    for(int i = 0; i < 10; i++)
-        m_hheaderColumnHidden.append(!(res & (0x01 << i)));
-
-    m_verticalSplitter->addWidget(m_logTableChartTabWidget);
-    m_verticalSplitter->addWidget(m_codeEditorTabWidget);
-
-    QList<int> sizes;
-    sizes << 0x7FFFF << 0;
-    m_verticalSplitter->setSizes(sizes);
-
-    QVBoxLayout* mainLayout = new QVBoxLayout;
-    Q_ASSERT(mainLayout);
-    mainLayout->setMargin(0);
-
-    QWidget* logsTab = new QWidget(this);
-    QWidget* topBar = new QWidget(logsTab);
-    QHBoxLayout* topBarLayout = new QHBoxLayout;
-    topBarLayout->setMargin(0);
-    topBar->setLayout(topBarLayout);
-    QLabel* label = new QLabel(topBar);
-    label->setText("Search keyword:");
-    topBarLayout->addWidget(label);
-    m_cbSearchKeyword = new QComboBox(topBar);
-    topBarLayout->addWidget(m_cbSearchKeyword);
-    m_extraToolPanelVisibleButton = new QToolButton(topBar);
-    m_extraToolPanelVisibleButton->setIcon(QIcon(":/image/openedeye.png"));
-    topBarLayout->addWidget(m_extraToolPanelVisibleButton);
-    topBarLayout->setStretch(1, 1);
-
-    m_api = m_logModel->getQuickWidgetAPI();
-
-    m_extraToolPanel = new QQuickWidget(logsTab);
-    m_extraToolPanel->setAttribute(Qt::WA_TranslucentBackground, true);
-    m_extraToolPanel->setAttribute(Qt::WA_AlwaysStackOnTop, true);
-    m_extraToolPanel->setClearColor(Qt::transparent);
-    m_extraToolPanel->setResizeMode(QQuickWidget::SizeRootObjectToView);
-    m_extraToolPanel->engine()->rootContext()->setContextProperty("LogViewAPI", m_api);
-    m_extraToolPanel->setSource(QUrl("qrc:qml/main.qml"));
-
-    QVBoxLayout* logsTabLayout = new QVBoxLayout;
-    logsTabLayout->setMargin(0);
-    logsTabLayout->addWidget(topBar);
-    logsTabLayout->addWidget(m_extraToolPanel);
-    logsTabLayout->addWidget(m_logsTableView);
-    logsTabLayout->setStretch(2, 1);
-    logsTab->setLayout(logsTabLayout);
-
-    mainLayout->addWidget(m_verticalSplitter);
-    setLayout(mainLayout);
-
-    m_extraToolPanel->setVisible(false);
-    connect(m_extraToolPanelVisibleButton, &QToolButton::clicked, [&]() {
-            m_extraToolPanel->setVisible(!m_extraToolPanel->isVisible());
-            m_extraToolPanelVisibleButton->setIcon(m_extraToolPanel->isVisible() ? QIcon(":/image/closedeye.png") : QIcon(":/image/openedeye.png"));
-    });
-
-    m_logTableChartTabWidget->setTabPosition(QTabWidget::South);
-    m_logTableChartTabWidget->setTabsClosable(false);
-    m_logTableChartTabWidget->setDocumentMode(true);
-    m_logTableChartTabWidget->addTab(logsTab, "Logs");
-    m_logTableChartTabWidget->addTab(m_levelStatisticChart, "Level");
-    m_logTableChartTabWidget->addTab(m_threadStatisticChart, "Thread");
-    m_logTableChartTabWidget->addTab(m_sourceFileStatisticChart, "Source File");
-    m_logTableChartTabWidget->addTab(m_sourceLineStatisticChart, "Source Line");
-    m_logTableChartTabWidget->addTab(m_categoryStatisticChart, "Category");
-    m_logTableChartTabWidget->addTab(m_methodStatisticChart, "Method");
-    m_logTableChartTabWidget->addTab(m_presenceWidget, "Presence");
-
-    connect(m_logTableChartTabWidget, &QTabWidget::currentChanged, this, &LogView::onLogTableChartTabWidgetCurrentChanged);
-
-    m_logsTableView->setModel(m_logModel);
-    m_logsTableView->horizontalHeader()->setSectionResizeMode(7, QHeaderView::Stretch);
-    m_logsTableView->horizontalHeader()->setSectionsMovable(true);
-    m_logsTableView->horizontalHeader()->setContextMenuPolicy(Qt::CustomContextMenu);
-    m_logsTableView->setContextMenuPolicy(Qt::CustomContextMenu);
-
-    m_cbSearchKeyword->setEditable(true);
-    m_cbSearchKeyword->lineEdit()->setPlaceholderText(tr("Search Field Content"));
-    QAction* actionReloadSearchResult = new QAction(QIcon(":/image/keyword.png"), "Reload Search Result", this);
-    m_cbSearchKeyword->lineEdit()->addAction(actionReloadSearchResult, QLineEdit::ActionPosition::LeadingPosition);
-    QAction* actionClearKeyword = new QAction(QIcon(":/image/clear-keyword.png"), "Clear Keyword", this);
-    m_cbSearchKeyword->lineEdit()->addAction(actionClearKeyword, QLineEdit::ActionPosition::TrailingPosition);
-
-    m_keywordChangedTimer = new QTimer;
-    m_keywordChangedTimer->setSingleShot(true);
-    m_keywordChangedTimer->setInterval(500);
-
-    connect(actionReloadSearchResult, &QAction::triggered, this, &LogView::onReloadSearchResult);
-    connect(actionClearKeyword, &QAction::triggered, this, &LogView::onClearKeyword);
-    connect(m_cbSearchKeyword, &QComboBox::editTextChanged, this, &LogView::onCbKeywordEditTextChanged);
-    connect(m_cbSearchKeyword, static_cast<void(QComboBox::*)(const QString &)>(&QComboBox::currentIndexChanged), this, &LogView::onCbKeywordCurrentIndexChanged);
-    connect(m_logsTableView, &QAbstractItemView::doubleClicked, this, &LogView::onDoubleClicked);
-    connect(m_logsTableView, &QWidget::customContextMenuRequested, this, &LogView::onCustomContextMenuRequested);
-    connect(m_logsTableView->horizontalHeader(), &QWidget::customContextMenuRequested, this, &LogView::onHHeaderCustomContextMenuRequested);
-    connect(m_logModel, &LogModel::dataLoaded, this, &LogView::onDataLoaded);
-    connect(m_logModel, &LogModel::rowCountChanged, this, &LogView::onRowCountChanged);
-    connect(m_logModel, &LogModel::databaseCreated, m_presenceWidget, &PresenceWidget::databaseCreated);
-    connect(this, &LogView::runExtension, m_logModel, &LogModel::runLuaExtension);
+    initialize();
 }
 
 LogView::~LogView()
@@ -744,6 +646,109 @@ void LogView::openSourceFileWithOpenGrok(const QString &filePath, int line)
                 .arg(line);
         QDesktopServices::openUrl(url);
     }
+}
+
+void LogView::initialize()
+{
+    int res = g_settings->logTableColumnVisible();
+    for(int i = 0; i < 10; i++)
+        m_hheaderColumnHidden.append(!(res & (0x01 << i)));
+
+    m_verticalSplitter->addWidget(m_logTableChartTabWidget);
+    m_verticalSplitter->addWidget(m_codeEditorTabWidget);
+
+    QList<int> sizes;
+    sizes << 0x7FFFF << 0;
+    m_verticalSplitter->setSizes(sizes);
+
+    QVBoxLayout* mainLayout = new QVBoxLayout;
+    Q_ASSERT(mainLayout);
+    mainLayout->setMargin(0);
+
+    QWidget* logsTab = new QWidget(this);
+    QWidget* topBar = new QWidget(logsTab);
+    QHBoxLayout* topBarLayout = new QHBoxLayout;
+    topBarLayout->setMargin(0);
+    topBar->setLayout(topBarLayout);
+    QLabel* label = new QLabel(topBar);
+    label->setText("Search keyword:");
+    topBarLayout->addWidget(label);
+    m_cbSearchKeyword = new QComboBox(topBar);
+    topBarLayout->addWidget(m_cbSearchKeyword);
+    m_extraToolPanelVisibleButton = new QToolButton(topBar);
+    m_extraToolPanelVisibleButton->setIcon(QIcon(":/image/openedeye.png"));
+    topBarLayout->addWidget(m_extraToolPanelVisibleButton);
+    topBarLayout->setStretch(1, 1);
+
+    m_api = m_logModel->getQuickWidgetAPI();
+
+    m_extraToolPanel = new QQuickWidget(logsTab);
+    m_extraToolPanel->setAttribute(Qt::WA_TranslucentBackground, true);
+    m_extraToolPanel->setAttribute(Qt::WA_AlwaysStackOnTop, true);
+    m_extraToolPanel->setClearColor(Qt::transparent);
+    m_extraToolPanel->setResizeMode(QQuickWidget::SizeRootObjectToView);
+    m_extraToolPanel->engine()->rootContext()->setContextProperty("LogViewAPI", m_api);
+    m_extraToolPanel->setSource(QUrl("qrc:qml/main.qml"));
+
+    QVBoxLayout* logsTabLayout = new QVBoxLayout;
+    logsTabLayout->setMargin(0);
+    logsTabLayout->addWidget(topBar);
+    logsTabLayout->addWidget(m_extraToolPanel);
+    logsTabLayout->addWidget(m_logsTableView);
+    logsTabLayout->setStretch(2, 1);
+    logsTab->setLayout(logsTabLayout);
+
+    mainLayout->addWidget(m_verticalSplitter);
+    setLayout(mainLayout);
+
+    m_extraToolPanel->setVisible(false);
+    connect(m_extraToolPanelVisibleButton, &QToolButton::clicked, [&]() {
+            m_extraToolPanel->setVisible(!m_extraToolPanel->isVisible());
+            m_extraToolPanelVisibleButton->setIcon(m_extraToolPanel->isVisible() ? QIcon(":/image/closedeye.png") : QIcon(":/image/openedeye.png"));
+    });
+
+    m_logTableChartTabWidget->setTabPosition(QTabWidget::South);
+    m_logTableChartTabWidget->setTabsClosable(false);
+    m_logTableChartTabWidget->setDocumentMode(true);
+    m_logTableChartTabWidget->addTab(logsTab, "Logs");
+    m_logTableChartTabWidget->addTab(m_levelStatisticChart, "Level");
+    m_logTableChartTabWidget->addTab(m_threadStatisticChart, "Thread");
+    m_logTableChartTabWidget->addTab(m_sourceFileStatisticChart, "Source File");
+    m_logTableChartTabWidget->addTab(m_sourceLineStatisticChart, "Source Line");
+    m_logTableChartTabWidget->addTab(m_categoryStatisticChart, "Category");
+    m_logTableChartTabWidget->addTab(m_methodStatisticChart, "Method");
+    m_logTableChartTabWidget->addTab(m_presenceWidget, "Presence");
+
+    connect(m_logTableChartTabWidget, &QTabWidget::currentChanged, this, &LogView::onLogTableChartTabWidgetCurrentChanged);
+
+    m_logsTableView->setModel(m_logModel);
+    m_logsTableView->horizontalHeader()->setSectionResizeMode(7, QHeaderView::Stretch);
+    m_logsTableView->horizontalHeader()->setSectionsMovable(true);
+    m_logsTableView->horizontalHeader()->setContextMenuPolicy(Qt::CustomContextMenu);
+    m_logsTableView->setContextMenuPolicy(Qt::CustomContextMenu);
+
+    m_cbSearchKeyword->setEditable(true);
+    m_cbSearchKeyword->lineEdit()->setPlaceholderText(tr("Search Field Content"));
+    QAction* actionReloadSearchResult = new QAction(QIcon(":/image/keyword.png"), "Reload Search Result", this);
+    m_cbSearchKeyword->lineEdit()->addAction(actionReloadSearchResult, QLineEdit::ActionPosition::LeadingPosition);
+    QAction* actionClearKeyword = new QAction(QIcon(":/image/clear-keyword.png"), "Clear Keyword", this);
+    m_cbSearchKeyword->lineEdit()->addAction(actionClearKeyword, QLineEdit::ActionPosition::TrailingPosition);
+
+    m_keywordChangedTimer = new QTimer;
+    m_keywordChangedTimer->setSingleShot(true);
+    m_keywordChangedTimer->setInterval(500);
+
+    connect(actionReloadSearchResult, &QAction::triggered, this, &LogView::onReloadSearchResult);
+    connect(actionClearKeyword, &QAction::triggered, this, &LogView::onClearKeyword);
+    connect(m_cbSearchKeyword, &QComboBox::editTextChanged, this, &LogView::onCbKeywordEditTextChanged);
+    connect(m_cbSearchKeyword, static_cast<void(QComboBox::*)(const QString &)>(&QComboBox::currentIndexChanged), this, &LogView::onCbKeywordCurrentIndexChanged);
+    connect(m_logsTableView, &QAbstractItemView::doubleClicked, this, &LogView::onDoubleClicked);
+    connect(m_logsTableView, &QWidget::customContextMenuRequested, this, &LogView::onCustomContextMenuRequested);
+    connect(m_logsTableView->horizontalHeader(), &QWidget::customContextMenuRequested, this, &LogView::onHHeaderCustomContextMenuRequested);
+    connect(m_logModel, &LogModel::dataLoaded, this, &LogView::onDataLoaded);
+    connect(m_logModel, &LogModel::rowCountChanged, this, &LogView::onRowCountChanged);
+    connect(m_logModel, &LogModel::databaseCreated, m_presenceWidget, &PresenceWidget::databaseCreated);
+    connect(this, &LogView::runExtension, m_logModel, &LogModel::runLuaExtension);
 }
 
 void LogView::onDataLoaded()
