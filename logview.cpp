@@ -54,6 +54,7 @@ LogView::LogView(QWidget *parent, Sqlite3HelperPtr sqlite3Helper, QuickWidgetAPI
     , m_lastColumn(-1)
 {
     initialize();
+    m_logModel->postInitialize();
 }
 
 LogView::~LogView()
@@ -1085,6 +1086,16 @@ void LogView::onClearKeyword()
 {
     m_cbSearchKeyword->setFocus();
     m_cbSearchKeyword->clearEditText();
+}
+
+const QString &LogView::getPath() const
+{
+    return m_path;
+}
+
+void LogView::setPath(const QString &path)
+{
+    m_path = path;
 }
 
 void LogView::enableRegexpMode(bool enabled)

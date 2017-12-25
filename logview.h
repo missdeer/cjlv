@@ -80,6 +80,9 @@ public:
     void searchFieldLevel();
 
     void onRunExtension(ExtensionPtr e);
+    const QString& getPath() const;
+    void setPath(const QString &path);
+
 signals:
     void rowCountChanged();
     void runExtension(ExtensionPtr e);

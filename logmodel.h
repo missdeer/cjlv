@@ -74,6 +74,8 @@ public:
     int getMaxTotalRowCount() const;
 
     Sqlite3HelperPtr getSqlite3Helper() { return m_sqlite3Helper; }
+    void postInitialize();
+
 signals:
     void logItemReady(int, QSharedPointer<LogItem>);
     void logItemsReady(QMap<int, QSharedPointer<LogItem>>);
@@ -144,6 +146,7 @@ private:
     bool getStatistic(const QString& tableName, QList<QSharedPointer<StatisticItem>>& sis);
     void saveStatistic();
     QString getDataSource();
+    void initialize();
 };
 
 #endif // LOGMODEL_H

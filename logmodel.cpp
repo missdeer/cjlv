@@ -101,6 +101,21 @@ start_read:
 };
 
 
+void LogModel::initialize()
+{
+    m_forceQuerying.store(false);
+    qRegisterMetaType<QSharedPointer<LogItem>>("QSharedPointer<LogItem>");
+    connect(this, &LogModel::logItemReady, this, &LogModel::onLogItemReady);
+    qRegisterMetaType<QMap<int, QSharedPointer<LogItem>>>("QMap<int, QSharedPointer<LogItem>>");
+    connect(this, &LogModel::logItemsReady, this, &LogModel::onLogItemsReady);
+}
+
+void LogModel::postInitialize()
+{
+    if (m_sqlite3Helper->isDatabaseOpened())
+        loadFromDatabase();
+}
+
 LogModel::LogModel(QObject *parent, Sqlite3HelperPtr sqlite3Helper, QuickWidgetAPIPtr api)
     : QAbstractTableModel(parent)
     , m_sqlite3Helper(sqlite3Helper)
@@ -117,14 +132,7 @@ LogModel::LogModel(QObject *parent, Sqlite3HelperPtr sqlite3Helper, QuickWidgetA
     , m_luaMode(false)
     , m_allStanza(true)
 {
-    m_forceQuerying.store(false);
-    qRegisterMetaType<QSharedPointer<LogItem>>("QSharedPointer<LogItem>");
-    connect(this, &LogModel::logItemReady, this, &LogModel::onLogItemReady);
-    qRegisterMetaType<QMap<int, QSharedPointer<LogItem>>>("QMap<int, QSharedPointer<LogItem>>");
-    connect(this, &LogModel::logItemsReady, this, &LogModel::onLogItemsReady);
-
-    if (m_sqlite3Helper->isDatabaseOpened())
-        loadFromDatabase();
+    initialize();
 }
 
 LogModel::~LogModel()
@@ -1061,7 +1069,6 @@ void LogModel::loadFromDatabase()
         connect(m_api.data(), &QuickWidgetAPI::startTlsStanzaChanged,       this, &LogModel::onSearchScopeChanged);
         connect(m_api.data(), &QuickWidgetAPI::valueChanged,                this, &LogModel::onSearchScopeChanged);
     }
-    saveStatistic();
 
     QCoreApplication::postEvent(this, e);
     emit dataLoaded();

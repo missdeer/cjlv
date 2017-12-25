@@ -299,7 +299,7 @@ void TabWidget::onCloneTab()
         LogView* v = qobject_cast<LogView*>(w);
         int curIndex = currentIndex();
         LogView* nv = new LogView(this, v->getSqlite3Helper(), v->getQuickWidgetAPI());
-
+        nv->setPath(v->getPath());
         int index = addTab(nv, v->windowTitle(), v->toolTip());
         setTabIcon(index, tabIcon(curIndex) );
     }
