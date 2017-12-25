@@ -291,6 +291,20 @@ void TabWidget::onOpenContainerFolder()
 #endif
 }
 
+void TabWidget::onCloneTab()
+{
+    QWidget* w = currentWidget();
+    if (w)
+    {
+        LogView* v = qobject_cast<LogView*>(w);
+        int curIndex = currentIndex();
+        LogView* nv = new LogView(this, v->getSqlite3Helper(), v->getQuickWidgetAPI());
+
+        int index = addTab(nv, v->windowTitle(), v->toolTip());
+        setTabIcon(index, tabIcon(curIndex) );
+    }
+}
+
 void TabWidget::onScrollToTop()
 {
     QWidget* w = currentWidget();
@@ -397,6 +411,10 @@ void TabWidget::onCustomContextMenuRequested(const QPoint &pos)
         QAction* pOpenContainerFolderAction = new QAction("Open Container Folder", this);
         connect(pOpenContainerFolderAction, &QAction::triggered, this, &TabWidget::onOpenContainerFolder);
         menu.addAction(pOpenContainerFolderAction);
+
+        QAction* pCloneAction = new QAction("Clone", this);
+        connect(pCloneAction, &QAction::triggered, this, &TabWidget::onCloneTab);
+        menu.addAction(pCloneAction);
 
 #if defined(Q_OS_WIN)
         CShellContextMenu scm;

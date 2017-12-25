@@ -2,6 +2,7 @@
 #define QUICKWIDGETAPI_H
 
 #include <QObject>
+#include <QSharedPointer>
 
 class QuickWidgetAPI : public QObject
 {
@@ -141,5 +142,7 @@ private:
     bool m_startTlsStanza;
     bool m_proceedStanza;
 };
+
+typedef QSharedPointer<QuickWidgetAPI> QuickWidgetAPIPtr;
 
 #endif // QUICKWIDGETAPI_H

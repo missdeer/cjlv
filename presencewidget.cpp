@@ -2,7 +2,7 @@
 #include "presencemodel.h"
 #include "presencewidget.h"
 
-PresenceWidget::PresenceWidget(QWidget *parent)
+PresenceWidget::PresenceWidget(QWidget *parent, Sqlite3HelperPtr sqlite3Helper)
     : QWidget(parent)
     , m_presenceTableView(new QTableView(this))
 {
@@ -36,7 +36,7 @@ PresenceWidget::PresenceWidget(QWidget *parent)
 
     setLayout(m_mainLayout);
 
-    m_model = new PresenceModel(m_presenceTableView);
+    m_model = new PresenceModel(m_presenceTableView, sqlite3Helper);
     m_presenceTableView->setModel(m_model);
     m_presenceTableView->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
     m_presenceTableView->setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);

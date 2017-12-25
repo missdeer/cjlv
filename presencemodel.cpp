@@ -1,10 +1,10 @@
 #include "stdafx.h"
 #include <boost/scope_exit.hpp>
-#include "sqlite3helper.h"
 #include "presencemodel.h"
 
-PresenceModel::PresenceModel(QObject *parent)
+PresenceModel::PresenceModel(QObject *parent, Sqlite3HelperPtr sqlite3Helper)
     : QAbstractTableModel(parent)
+    , m_sqlite3Helper(sqlite3Helper)
 {
     connect(this, &PresenceModel::gotPresences, &PresenceModel::onGetPrsences);
 }
@@ -204,20 +204,14 @@ void PresenceModel::doQueryPresence(const QString &jid)
     QStringList jids;
     QList<QSharedPointer<PresenceItem>> results;
 
-    Sqlite3Helper sqlite3Helper;
-    if (!sqlite3Helper.openDatabase(m_dbFile))
-    {
-        qDebug() << "cannot open database file:" << m_dbFile;
-        return;
-    }
     bool eof = false;
     int nRet = 0;
     sqlite3_stmt* pVM = nullptr;
 
     do {
-        pVM = sqlite3Helper.compile("SELECT id,time,content FROM logs WHERE content LIKE '%'||?||'%' ORDER BY epoch LIMIT 1, 200000;");
-        sqlite3Helper.bind(pVM, 1, "Recv:<presence from=\""+jid);
-        nRet = sqlite3Helper.execQuery(pVM, eof);
+        pVM = m_sqlite3Helper->compile("SELECT id,time,content FROM logs WHERE content LIKE '%'||?||'%' ORDER BY epoch LIMIT 1, 200000;");
+        m_sqlite3Helper->bind(pVM, 1, "Recv:<presence from=\""+jid);
+        nRet = m_sqlite3Helper->execQuery(pVM, eof);
         if (nRet == SQLITE_DONE || nRet == SQLITE_ROW)
         {
             QRegularExpression re("from=\"([^\"]+)");
@@ -249,7 +243,7 @@ void PresenceModel::doQueryPresence(const QString &jid)
                 }
                 results.append(p);
 
-                sqlite3Helper.nextRow(pVM, eof);
+                m_sqlite3Helper->nextRow(pVM, eof);
             }
             break;
         }
@@ -273,19 +267,13 @@ void PresenceModel::doRequestReceivedPresenceBuddyList()
 
     QStringList result;
 
-    Sqlite3Helper sqlite3Helper;
-    if (!sqlite3Helper.openDatabase(m_dbFile))
-    {
-        qDebug() << "cannot open database file:" << m_dbFile;
-        return;
-    }
     bool eof = false;
     int nRet = 0;
     sqlite3_stmt* pVM = nullptr;
     do {
-        pVM = sqlite3Helper.compile("SELECT content FROM logs WHERE content LIKE '%'||?||'%' ORDER BY epoch LIMIT 1, 200000;");
-        sqlite3Helper.bind(pVM, 1, "Recv:<presence from=");
-        nRet = sqlite3Helper.execQuery(pVM, eof);
+        pVM = m_sqlite3Helper->compile("SELECT content FROM logs WHERE content LIKE '%'||?||'%' ORDER BY epoch LIMIT 1, 200000;");
+        m_sqlite3Helper->bind(pVM, 1, "Recv:<presence from=");
+        nRet = m_sqlite3Helper->execQuery(pVM, eof);
         if (nRet == SQLITE_DONE || nRet == SQLITE_ROW)
         {
             // extract from JID
@@ -302,7 +290,7 @@ void PresenceModel::doRequestReceivedPresenceBuddyList()
                         result.append(s);
                 }
 
-                sqlite3Helper.nextRow(pVM, eof);
+                m_sqlite3Helper->nextRow(pVM, eof);
             }
             break;
         }

@@ -2,6 +2,7 @@
 #define PRESENCEWIDGET_H
 
 #include <QWidget>
+#include "sqlite3helper.h"
 
 class PresenceModel;
 
@@ -9,7 +10,7 @@ class PresenceWidget : public QWidget
 {
     Q_OBJECT
 public:
-    explicit PresenceWidget(QWidget *parent = 0);
+    explicit PresenceWidget(QWidget *parent = 0, Sqlite3HelperPtr sqlite3Helper = nullptr);
 
 signals:
     void databaseCreated(QString);

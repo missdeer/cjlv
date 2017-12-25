@@ -6,11 +6,12 @@
 #include <QMutex>
 #include "codeeditortabwidget.h"
 #include "extension.h"
+#include "sqlite3helper.h"
+#include "quickwidgetapi.h"
 
 class MainWindow;
 class PresenceWidget;
 class LogModel;
-class QuickWidgetAPI;
 struct StatisticItem;
 
 QT_BEGIN_NAMESPACE
@@ -28,9 +29,11 @@ class LogView : public QWidget
 public:
     static QObject *APIProvider(QQmlEngine *engine, QJSEngine *scriptEngine);
 
-    LogView(QWidget *parent = NULL);
+    LogView(QWidget *parent = NULL, Sqlite3HelperPtr sqlite3Helper = Sqlite3HelperPtr(new Sqlite3Helper), QuickWidgetAPIPtr api = QuickWidgetAPIPtr(new QuickWidgetAPI));
     ~LogView();
 
+    Sqlite3HelperPtr getSqlite3Helper();
+    QuickWidgetAPIPtr getQuickWidgetAPI();
     void openZipBundle(const QString& zipBundle, const QString& crashInfo);
     void openZipBundle(const QString& path);
     void openRawLogFile(const QStringList& paths);
@@ -122,7 +125,7 @@ private:
     QComboBox* m_cbSearchKeyword;
     QQuickWidget* m_extraToolPanel;
     QToolButton* m_extraToolPanelVisibleButton;
-    QuickWidgetAPI* m_api;
+    QuickWidgetAPIPtr m_api;
     QTimer* m_keywordChangedTimer;
     QString m_path;
     QString m_extractDir;

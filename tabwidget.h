@@ -48,6 +48,7 @@ public slots:
     void onCopyFileName();
     void onCopyFileFullPath();
     void onOpenContainerFolder();
+    void onCloneTab();
 
     void onScrollToTop();
     void onScrollToBottom();

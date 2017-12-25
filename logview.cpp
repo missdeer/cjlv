@@ -35,7 +35,7 @@ public:
 };
 
 
-LogView::LogView(QWidget *parent)
+LogView::LogView(QWidget *parent, Sqlite3HelperPtr sqlite3Helper, QuickWidgetAPIPtr api)
     : QWidget (parent)
     , m_verticalSplitter(new QSplitter( Qt::Vertical, parent))
     , m_logTableChartTabWidget(new QTabWidget(m_verticalSplitter))
@@ -47,8 +47,9 @@ LogView::LogView(QWidget *parent)
     , m_categoryStatisticChart(new QtCharts::QChartView(m_logTableChartTabWidget))
     , m_methodStatisticChart(new QtCharts::QChartView(m_logTableChartTabWidget))
     , m_codeEditorTabWidget(new CodeEditorTabWidget(m_verticalSplitter))
-    , m_logModel(new LogModel(m_logsTableView))
-    , m_presenceWidget(new PresenceWidget(m_logTableChartTabWidget))
+    , m_logModel(new LogModel(m_logsTableView, sqlite3Helper, api))
+    , m_presenceWidget(new PresenceWidget(m_logTableChartTabWidget, sqlite3Helper))
+    , m_api(api)
     , m_lastId(-1)
     , m_lastColumn(-1)
 {
@@ -62,6 +63,16 @@ LogView::~LogView()
         QDir dir(m_extractDir);
         dir.removeRecursively();
     }
+}
+
+Sqlite3HelperPtr LogView::getSqlite3Helper()
+{
+    return m_logModel->getSqlite3Helper();
+}
+
+QuickWidgetAPIPtr LogView::getQuickWidgetAPI()
+{
+    return m_api;
 }
 
 void LogView::openZipBundle(const QString &zipBundle, const QString &crashInfo)
@@ -680,14 +691,12 @@ void LogView::initialize()
     topBarLayout->addWidget(m_extraToolPanelVisibleButton);
     topBarLayout->setStretch(1, 1);
 
-    m_api = m_logModel->getQuickWidgetAPI();
-
     m_extraToolPanel = new QQuickWidget(logsTab);
     m_extraToolPanel->setAttribute(Qt::WA_TranslucentBackground, true);
     m_extraToolPanel->setAttribute(Qt::WA_AlwaysStackOnTop, true);
     m_extraToolPanel->setClearColor(Qt::transparent);
     m_extraToolPanel->setResizeMode(QQuickWidget::SizeRootObjectToView);
-    m_extraToolPanel->engine()->rootContext()->setContextProperty("LogViewAPI", m_api);
+    m_extraToolPanel->engine()->rootContext()->setContextProperty("LogViewAPI", m_api.data());
     m_extraToolPanel->setSource(QUrl("qrc:qml/main.qml"));
 
     QVBoxLayout* logsTabLayout = new QVBoxLayout;

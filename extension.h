@@ -2,6 +2,7 @@
 #define EXTENSION_H
 
 #include <QString>
+#include <QSharedPointer>
 
 class Extension
 {

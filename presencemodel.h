@@ -1,6 +1,8 @@
 #ifndef PRESENCEMODEL_H
 #define PRESENCEMODEL_H
 
+#include "sqlite3helper.h"
+
 struct PresenceItem
 {
     int id;
@@ -13,8 +15,8 @@ class PresenceModel : public QAbstractTableModel
 {
     Q_OBJECT
 public:
-    explicit PresenceModel(QObject *parent = 0);
-    ~PresenceModel();
+    explicit PresenceModel(QObject *parent = 0, Sqlite3HelperPtr sqlite3Helper = nullptr);
+    virtual ~PresenceModel();
 
     virtual QModelIndex index(int row, int column, const QModelIndex & parent = QModelIndex()) const ;
     virtual int rowCount(const QModelIndex & parent = QModelIndex()) const ;
@@ -34,6 +36,7 @@ public slots:
     void onSelectedJIDChanged(const QString &text);
     void onGetPrsences(QStringList jidList, QList<QSharedPointer<PresenceItem>> presences);
 private:
+    Sqlite3HelperPtr m_sqlite3Helper;
     QMutex m_mutex;
     QString m_dbFile;
     QStringList m_fullJIDList;

@@ -3,9 +3,9 @@
 
 #include "extension.h"
 #include "sqlite3helper.h"
+#include "quickwidgetapi.h"
 
 struct lua_State;
-class QuickWidgetAPI;
 
 struct LogItem {
     int id;
@@ -34,8 +34,8 @@ class LogModel : public QAbstractTableModel
 {
     Q_OBJECT
 public:
-    explicit LogModel(QObject *parent = 0, Sqlite3HelperPtr sqlite3Helper = Sqlite3HelperPtr(new Sqlite3Helper));
-    ~LogModel();
+    explicit LogModel(QObject *parent, Sqlite3HelperPtr sqlite3Helper , QuickWidgetAPIPtr api);
+    virtual ~LogModel();
 
     virtual QModelIndex index(int row, int column, const QModelIndex & parent = QModelIndex()) const Q_DECL_OVERRIDE;
     virtual int rowCount(const QModelIndex & parent = QModelIndex()) const Q_DECL_OVERRIDE;
@@ -72,7 +72,8 @@ public:
     void setSearchField(const QString &searchField);
     void setRegexpMode(bool regexpMode);
     int getMaxTotalRowCount() const;
-    QuickWidgetAPI* getQuickWidgetAPI() { return m_api; }
+
+    Sqlite3HelperPtr getSqlite3Helper() { return m_sqlite3Helper; }
 signals:
     void logItemReady(int, QSharedPointer<LogItem>);
     void logItemsReady(QMap<int, QSharedPointer<LogItem>>);
@@ -86,8 +87,8 @@ public slots:
     void onSearchScopeChanged();
 private:
     Sqlite3HelperPtr m_sqlite3Helper;
+    QuickWidgetAPIPtr m_api;
     lua_State* m_L;
-    QuickWidgetAPI* m_api;
     QString m_lastFilterKeyword;
     QString m_searchField;
     QString m_searchFieldOption;
@@ -129,6 +130,7 @@ private:
     QMap<QString, int> m_categoryCountMap;
     QMap<QString, int> m_methodCountMap;
 
+    void loadFromDatabase();
     void createDatabase();
     int copyFromFileToDatabase(const QString& fileName);
     void doReload();

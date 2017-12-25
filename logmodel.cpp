@@ -101,11 +101,11 @@ start_read:
 };
 
 
-LogModel::LogModel(QObject *parent, Sqlite3HelperPtr sqlite3Helper)
+LogModel::LogModel(QObject *parent, Sqlite3HelperPtr sqlite3Helper, QuickWidgetAPIPtr api)
     : QAbstractTableModel(parent)
     , m_sqlite3Helper(sqlite3Helper)
+    , m_api(api)
     , m_L(nullptr)
-    , m_api(new QuickWidgetAPI)
     , m_searchField("content")
     , m_searchFieldOption("content")
     , m_rowCount(0)
@@ -122,6 +122,9 @@ LogModel::LogModel(QObject *parent, Sqlite3HelperPtr sqlite3Helper)
     connect(this, &LogModel::logItemReady, this, &LogModel::onLogItemReady);
     qRegisterMetaType<QMap<int, QSharedPointer<LogItem>>>("QMap<int, QSharedPointer<LogItem>>");
     connect(this, &LogModel::logItemsReady, this, &LogModel::onLogItemsReady);
+
+    if (m_sqlite3Helper->isDatabaseOpened())
+        loadFromDatabase();
 }
 
 LogModel::~LogModel()
@@ -130,8 +133,6 @@ LogModel::~LogModel()
     {
         lua_close(m_L);
     }
-
-    delete m_api;
 }
 
 QModelIndex LogModel::index(int row, int column, const QModelIndex &parent) const
@@ -987,29 +988,81 @@ void LogModel::doReload()
     {
         m_maxTotalRowCount = m_currentTotalRowCount;
 
-        connect(m_api, &QuickWidgetAPI::sentStanzaChanged,           this, &LogModel::onSearchScopeChanged);
-        connect(m_api, &QuickWidgetAPI::receivedStanzaChanged,       this, &LogModel::onSearchScopeChanged);
-        connect(m_api, &QuickWidgetAPI::aStanzaChanged,              this, &LogModel::onSearchScopeChanged);
-        connect(m_api, &QuickWidgetAPI::rStanzaChanged,              this, &LogModel::onSearchScopeChanged);
-        connect(m_api, &QuickWidgetAPI::xStanzaChanged,              this, &LogModel::onSearchScopeChanged);
-        connect(m_api, &QuickWidgetAPI::presenceStanzaChanged,       this, &LogModel::onSearchScopeChanged);
-        connect(m_api, &QuickWidgetAPI::enableStanzaChanged,         this, &LogModel::onSearchScopeChanged);
-        connect(m_api, &QuickWidgetAPI::enabledStanzaChanged,        this, &LogModel::onSearchScopeChanged);
-        connect(m_api, &QuickWidgetAPI::messageStanzaChanged,        this, &LogModel::onSearchScopeChanged);
-        connect(m_api, &QuickWidgetAPI::iqStanzaChanged,             this, &LogModel::onSearchScopeChanged);
-        connect(m_api, &QuickWidgetAPI::successStanzaChanged,        this, &LogModel::onSearchScopeChanged);
-        connect(m_api, &QuickWidgetAPI::streamStreamStanzaChanged,   this, &LogModel::onSearchScopeChanged);
-        connect(m_api, &QuickWidgetAPI::streamFeaturesStanzaChanged, this, &LogModel::onSearchScopeChanged);
-        connect(m_api, &QuickWidgetAPI::authStanzaChanged,           this, &LogModel::onSearchScopeChanged);
-        connect(m_api, &QuickWidgetAPI::proceedStanzaChanged,        this, &LogModel::onSearchScopeChanged);
-        connect(m_api, &QuickWidgetAPI::startTlsStanzaChanged,       this, &LogModel::onSearchScopeChanged);
-        connect(m_api, &QuickWidgetAPI::valueChanged,                this, &LogModel::onSearchScopeChanged);
+        connect(m_api.data(), &QuickWidgetAPI::sentStanzaChanged,           this, &LogModel::onSearchScopeChanged);
+        connect(m_api.data(), &QuickWidgetAPI::receivedStanzaChanged,       this, &LogModel::onSearchScopeChanged);
+        connect(m_api.data(), &QuickWidgetAPI::aStanzaChanged,              this, &LogModel::onSearchScopeChanged);
+        connect(m_api.data(), &QuickWidgetAPI::rStanzaChanged,              this, &LogModel::onSearchScopeChanged);
+        connect(m_api.data(), &QuickWidgetAPI::xStanzaChanged,              this, &LogModel::onSearchScopeChanged);
+        connect(m_api.data(), &QuickWidgetAPI::presenceStanzaChanged,       this, &LogModel::onSearchScopeChanged);
+        connect(m_api.data(), &QuickWidgetAPI::enableStanzaChanged,         this, &LogModel::onSearchScopeChanged);
+        connect(m_api.data(), &QuickWidgetAPI::enabledStanzaChanged,        this, &LogModel::onSearchScopeChanged);
+        connect(m_api.data(), &QuickWidgetAPI::messageStanzaChanged,        this, &LogModel::onSearchScopeChanged);
+        connect(m_api.data(), &QuickWidgetAPI::iqStanzaChanged,             this, &LogModel::onSearchScopeChanged);
+        connect(m_api.data(), &QuickWidgetAPI::successStanzaChanged,        this, &LogModel::onSearchScopeChanged);
+        connect(m_api.data(), &QuickWidgetAPI::streamStreamStanzaChanged,   this, &LogModel::onSearchScopeChanged);
+        connect(m_api.data(), &QuickWidgetAPI::streamFeaturesStanzaChanged, this, &LogModel::onSearchScopeChanged);
+        connect(m_api.data(), &QuickWidgetAPI::authStanzaChanged,           this, &LogModel::onSearchScopeChanged);
+        connect(m_api.data(), &QuickWidgetAPI::proceedStanzaChanged,        this, &LogModel::onSearchScopeChanged);
+        connect(m_api.data(), &QuickWidgetAPI::startTlsStanzaChanged,       this, &LogModel::onSearchScopeChanged);
+        connect(m_api.data(), &QuickWidgetAPI::valueChanged,                this, &LogModel::onSearchScopeChanged);
     }
     saveStatistic();
 
     qint64 q = t.secsTo(QDateTime::currentDateTime());
     createDatabaseIndex();
     qDebug() << "loaded elapsed " << q << " s";
+    QCoreApplication::postEvent(this, e);
+    emit dataLoaded();
+}
+
+void LogModel::loadFromDatabase()
+{
+    RowCountEvent* e = new RowCountEvent;
+    e->m_rowCount = 0;
+
+    // read records count from database
+    bool eof = false;
+    int nRet = 0;
+    sqlite3_stmt* pVM = nullptr;
+    do {
+        pVM = m_sqlite3Helper->compile("SELECT COUNT(*) FROM logs;");
+        nRet = m_sqlite3Helper->execQuery(pVM, eof);
+        if (nRet == SQLITE_DONE || nRet == SQLITE_ROW)
+        {
+            while (!eof)
+            {
+                e->m_rowCount = sqlite3_column_int(pVM, 0);
+                m_sqlite3Helper->nextRow(pVM, eof);
+            }
+            break;
+        }
+    }while(nRet == SQLITE_SCHEMA);
+
+    m_currentTotalRowCount = e->m_rowCount;
+    if (m_maxTotalRowCount < m_currentTotalRowCount)
+    {
+        m_maxTotalRowCount = m_currentTotalRowCount;
+
+        connect(m_api.data(), &QuickWidgetAPI::sentStanzaChanged,           this, &LogModel::onSearchScopeChanged);
+        connect(m_api.data(), &QuickWidgetAPI::receivedStanzaChanged,       this, &LogModel::onSearchScopeChanged);
+        connect(m_api.data(), &QuickWidgetAPI::aStanzaChanged,              this, &LogModel::onSearchScopeChanged);
+        connect(m_api.data(), &QuickWidgetAPI::rStanzaChanged,              this, &LogModel::onSearchScopeChanged);
+        connect(m_api.data(), &QuickWidgetAPI::xStanzaChanged,              this, &LogModel::onSearchScopeChanged);
+        connect(m_api.data(), &QuickWidgetAPI::presenceStanzaChanged,       this, &LogModel::onSearchScopeChanged);
+        connect(m_api.data(), &QuickWidgetAPI::enableStanzaChanged,         this, &LogModel::onSearchScopeChanged);
+        connect(m_api.data(), &QuickWidgetAPI::enabledStanzaChanged,        this, &LogModel::onSearchScopeChanged);
+        connect(m_api.data(), &QuickWidgetAPI::messageStanzaChanged,        this, &LogModel::onSearchScopeChanged);
+        connect(m_api.data(), &QuickWidgetAPI::iqStanzaChanged,             this, &LogModel::onSearchScopeChanged);
+        connect(m_api.data(), &QuickWidgetAPI::successStanzaChanged,        this, &LogModel::onSearchScopeChanged);
+        connect(m_api.data(), &QuickWidgetAPI::streamStreamStanzaChanged,   this, &LogModel::onSearchScopeChanged);
+        connect(m_api.data(), &QuickWidgetAPI::streamFeaturesStanzaChanged, this, &LogModel::onSearchScopeChanged);
+        connect(m_api.data(), &QuickWidgetAPI::authStanzaChanged,           this, &LogModel::onSearchScopeChanged);
+        connect(m_api.data(), &QuickWidgetAPI::proceedStanzaChanged,        this, &LogModel::onSearchScopeChanged);
+        connect(m_api.data(), &QuickWidgetAPI::startTlsStanzaChanged,       this, &LogModel::onSearchScopeChanged);
+        connect(m_api.data(), &QuickWidgetAPI::valueChanged,                this, &LogModel::onSearchScopeChanged);
+    }
+    saveStatistic();
+
     QCoreApplication::postEvent(this, e);
     emit dataLoaded();
 }
