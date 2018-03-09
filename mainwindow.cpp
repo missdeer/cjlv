@@ -42,6 +42,11 @@ MainWindow::MainWindow(QSplashScreen &splash, QWidget *parent) :
     connect(ui->actionCopyCurrentRow, &QAction::triggered, ui->tabWidget, &TabWidget::onCopyCurrentRow);
     connect(ui->actionCopySelectedCells, &QAction::triggered, ui->tabWidget, &TabWidget::onCopySelectedCells);
     connect(ui->actionCopySelectedRows, &QAction::triggered, ui->tabWidget, &TabWidget::onCopySelectedRows);
+    connect(ui->actionCloseAllButThis, &QAction::triggered, ui->tabWidget, &TabWidget::onCloseAllButThis);
+    connect(ui->actionCopyCurrentCellWithXMLFormatted, &QAction::triggered, ui->tabWidget, &TabWidget::onCopyCurrentCellWithXMLFormatted);
+    connect(ui->actionCopyCurrentRowWithXMLFormatted, &QAction::triggered, ui->tabWidget, &TabWidget::onCopyCurrentRowWithXMLFormatted);
+    connect(ui->actionCopySelectedCellsWithXMLFormatted, &QAction::triggered, ui->tabWidget, &TabWidget::onCopySelectedCellsWithXMLFormatted);
+    connect(ui->actionCopySelectedRowsWithXMLFormatted, &QAction::triggered, ui->tabWidget, &TabWidget::onCopySelectedRowsWithXMLFormatted);
     connect(ui->actionScrollToTop, &QAction::triggered, ui->tabWidget, &TabWidget::onScrollToTop);
     connect(ui->actionScrollToBottom, &QAction::triggered, ui->tabWidget, &TabWidget::onScrollToBottom);
     connect(ui->actionReload, &QAction::triggered, ui->tabWidget, &TabWidget::onReload);

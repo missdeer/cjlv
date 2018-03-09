@@ -44,6 +44,10 @@ public slots:
     void onCopyCurrentRow();
     void onCopySelectedCells();
     void onCopySelectedRows();
+    void onCopyCurrentCellWithXMLFormatted();
+    void onCopyCurrentRowWithXMLFormatted();
+    void onCopySelectedCellsWithXMLFormatted();
+    void onCopySelectedRowsWithXMLFormatted();
 
     void onCopyFileName();
     void onCopyFileFullPath();

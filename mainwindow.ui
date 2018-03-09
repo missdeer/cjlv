@@ -67,7 +67,7 @@
      <x>0</x>
      <y>0</y>
      <width>1156</width>
-     <height>22</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -161,9 +161,13 @@
      <string>Edit</string>
     </property>
     <addaction name="actionCopyCurrentCell"/>
+    <addaction name="actionCopyCurrentCellWithXMLFormatted"/>
     <addaction name="actionCopyCurrentRow"/>
+    <addaction name="actionCopyCurrentRowWithXMLFormatted"/>
     <addaction name="actionCopySelectedCells"/>
+    <addaction name="actionCopySelectedCellsWithXMLFormatted"/>
     <addaction name="actionCopySelectedRows"/>
+    <addaction name="actionCopySelectedRowsWithXMLFormatted"/>
     <addaction name="separator"/>
     <addaction name="actionPreference"/>
    </widget>
@@ -600,7 +604,7 @@
     <string>Copy Selected Cells</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+R, Ctrl+C</string>
+    <string>Ctrl+Shift+R</string>
    </property>
   </action>
   <action name="actionCopySelectedRows">
@@ -856,6 +860,38 @@
   <action name="actionGotoJabberWinPRTWebsite">
    <property name="text">
     <string>Goto Jabber Win PRT Website...</string>
+   </property>
+  </action>
+  <action name="actionCopyCurrentCellWithXMLFormatted">
+   <property name="text">
+    <string>Copy Current Cell with XML Formatted</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+F, Ctrl+Shift+C</string>
+   </property>
+  </action>
+  <action name="actionCopyCurrentRowWithXMLFormatted">
+   <property name="text">
+    <string>Copy Current Row with XML Formatted</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+F, Ctrl+C</string>
+   </property>
+  </action>
+  <action name="actionCopySelectedCellsWithXMLFormatted">
+   <property name="text">
+    <string>Copy Selected Cells with XML Formatted</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+F, Ctrl+Shift+R</string>
+   </property>
+  </action>
+  <action name="actionCopySelectedRowsWithXMLFormatted">
+   <property name="text">
+    <string>Copy Selected Rows with XML Formatted</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+F, Ctrl+R</string>
    </property>
   </action>
  </widget>

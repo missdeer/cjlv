@@ -197,6 +197,55 @@ void LogView::copySelectedRows()
     m_logModel->copyRows(rows);
 }
 
+void LogView::copyCurrentCellWithXMLFormatted()
+{
+    QItemSelectionModel* selected =  m_logsTableView->selectionModel();
+    if (!selected->hasSelection())
+        return;
+    QModelIndex i = selected->currentIndex();
+    m_logModel->copyCellWithXMLFormatted(i);
+}
+
+void LogView::copyCurrentRowWithXMLFormatted()
+{
+    if (m_codeEditorTabWidget->copyable())
+        m_codeEditorTabWidget->copy();
+    else
+    {
+        QItemSelectionModel* selected =  m_logsTableView->selectionModel();
+        if (!selected->hasSelection())
+            return;
+        int row = selected->currentIndex().row();
+        m_logModel->copyRowWithXMLFormatted(row);
+    }
+}
+
+void LogView::copySelectedCellsWithXMLFormatted()
+{
+    QItemSelectionModel* selected =  m_logsTableView->selectionModel();
+    if (!selected->hasSelection())
+        return;
+    QModelIndexList l = selected->selectedIndexes();
+    m_logModel->copyCellsWithXMLFormatted(l);
+}
+
+void LogView::copySelectedRowsWithXMLFormatted()
+{
+    QItemSelectionModel* selected =  m_logsTableView->selectionModel();
+    if (!selected->hasSelection())
+        return;
+    QModelIndexList l = selected->selectedIndexes();
+    QList<int> rows;
+    for(const QModelIndex& i : l)
+    {
+        rows.append(i.row());
+    }
+    auto t = rows.toStdList();
+    t.unique();
+    rows = QList<int>::fromStdList(t);
+    m_logModel->copyRowsWithXMLFormatted(rows);
+}
+
 void LogView::scrollToTop()
 {
     m_logsTableView->scrollToTop();
@@ -289,30 +338,7 @@ void LogView::extractContent(const QModelIndex& index)
 {
     showCodeEditorPane();
 
-    QString text = m_logModel->getLogContent(index);
-    // try to format XML document
-    int startPos = text.indexOf(QChar('<'));
-    int endPos = text.lastIndexOf(QChar('>'));
-    if (startPos > 0 && endPos > startPos)
-    {
-        QString header = text.mid(0, startPos);
-        QString xmlIn = text.mid(startPos, endPos - startPos + 1);
-#ifndef QT_NO_DEBUG
-        qDebug() << "raw text:" << text;
-        qDebug() << "xml in:" << xmlIn;
-#endif
-        QString xmlOut;
-
-        QDomDocument doc;
-        doc.setContent(xmlIn, false);
-        QTextStream writer(&xmlOut);
-        doc.save(writer, 4);
-
-        header.append("\n");
-        header.append(xmlOut);
-        if (header.length() > text.length())
-            text = header;
-    }
+    QString text = m_logModel->formatXML( m_logModel->getLogContent(index));
 
     if (g_settings->multiMonitorEnabled())
     {

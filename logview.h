@@ -46,6 +46,10 @@ public:
     void copyCurrentRow();
     void copySelectedCells();
     void copySelectedRows();
+    void copyCurrentCellWithXMLFormatted();
+    void copyCurrentRowWithXMLFormatted();
+    void copySelectedCellsWithXMLFormatted();
+    void copySelectedRowsWithXMLFormatted();
 
     void scrollToTop();
     void scrollToBottom();

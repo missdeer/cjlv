@@ -563,6 +563,144 @@ void LogModel::copyRows(const QList<int>& rows)
     clipboard->setText(text);
 }
 
+void LogModel::copyCellWithXMLFormatted(const QModelIndex &cell)
+{
+    auto it = m_logs.find(cell.row());
+    if (m_logs.end() == it)
+    {
+        return;
+    }
+
+    QSharedPointer<LogItem> r = *it;
+    QMap<int, QString> m = {
+        {0, QString("%1").arg(r->id)},
+        {1, r->time.toString("yyyy-MM-dd hh:mm:ss.zzz")},
+        {2, r->level},
+        {3, r->thread},
+        {4, r->source},
+        {5, r->category},
+        {6, r->method},
+        {7, formatXML(r->content)},
+        {8, "." % r->logFile},
+        {9, QString("%1").arg(r->line)},
+    };
+    auto mit = m.find(cell.column());
+    if (mit != m.end())
+    {
+        QClipboard *clipboard = QApplication::clipboard();
+        clipboard->setText(mit.value());
+    }
+}
+
+void LogModel::copyRowWithXMLFormatted(int row)
+{
+    auto it = m_logs.find(row);
+    if (m_logs.end() == it)
+    {
+        return;
+    }
+
+    QSharedPointer<LogItem> r = *it;
+    QClipboard *clipboard = QApplication::clipboard();
+    QString text = QString("%1 %2 [%3] [%4] [%5] [%6] - %7")
+                   .arg(r->time.toString("yyyy-MM-dd hh:mm:ss.zzz"))
+                   .arg(r->level)
+                   .arg(r->thread)
+                   .arg(r->source)
+                   .arg(r->category)
+                   .arg(r->method)
+                   .arg(formatXML(r->content));
+    clipboard->setText(text);
+}
+
+void LogModel::copyCellsWithXMLFormatted(const QModelIndexList &cells)
+{
+    QString text;
+    QString t;
+    bool contentOnly = true;
+    int lastRow = cells.at(0).row();
+    for(const QModelIndex& cell : cells)
+    {
+        if (cell.column() != 7)
+            contentOnly=false;
+        auto it = m_logs.find(cell.row());
+        if (m_logs.end() == it)
+        {
+            continue;
+        }
+
+        if (cell.row() != lastRow)
+        {
+            lastRow = cell.row();
+            text.append(t);
+            text.append("\n");
+            t.clear();
+        }
+
+        QSharedPointer<LogItem> r = *it;
+        switch (cell.column())
+        {
+        case 1:
+            t.append(r->time.toString("yyyy-MM-dd hh:mm:ss.zzz"));
+            text.append(" ");
+            break;
+        case 2:
+            t.append(r->level);
+            text.append(" ");
+            break;
+        case 3:
+            t.append(QString("[%1] ").arg(r->thread));
+            break;
+        case 4:
+            t.append(QString("[%1] ").arg(r->source));
+            break;
+        case 5:
+            t.append(QString("[%1] ").arg(r->category));
+            break;
+        case 6:
+            t.append(QString("[%1] ").arg(r->method));
+            break;
+        case 7:
+            if (contentOnly)
+                t = formatXML(r->content);
+            else
+                t.append(QString("- %1").arg(formatXML(r->content)));
+            break;
+        default:
+            break;
+        }
+    }
+    text.append(t);
+    QClipboard *clipboard = QApplication::clipboard();
+    clipboard->setText(text);
+}
+
+void LogModel::copyRowsWithXMLFormatted(const QList<int> &rows)
+{
+    QString text;
+    for(int row : rows)
+    {
+        auto it = m_logs.find(row);
+        if (m_logs.end() == it)
+        {
+            continue;
+        }
+
+        QSharedPointer<LogItem> r = *it;
+        QString t = QString("%1 %2 [%3] [%4] [%5] [%6] - %7\n")
+                       .arg(r->time.toString("yyyy-MM-dd hh:mm:ss.zzz"))
+                       .arg(r->level)
+                       .arg(r->thread)
+                       .arg(r->source)
+                       .arg(r->category)
+                       .arg(r->method)
+                       .arg(formatXML(r->content));
+        text.append(t);
+    }
+    QClipboard *clipboard = QApplication::clipboard();
+    clipboard->setText(text);
+}
+
 const QString& LogModel::getLogContent(const QModelIndex& index)
 {
     auto it = m_logs.find(index.row());
@@ -648,6 +786,35 @@ void LogModel::runLuaExtension(ExtensionPtr e)
     m_sqlite3Helper->setLuaState(m_L);
     // regexp mode is ignored
     doFilter(e->content(), e->field(), false, true);
+}
+
+QString LogModel::formatXML(const QString &text)
+{
+    // try to format XML document
+    int startPos = text.indexOf(QChar('<'));
+    int endPos = text.lastIndexOf(QChar('>'));
+    if (startPos > 0 && endPos > startPos)
+    {
+        QString header = text.mid(0, startPos);
+        QString xmlIn = text.mid(startPos, endPos - startPos + 1);
+#ifndef QT_NO_DEBUG
+        qDebug() << "raw text:" << text;
+        qDebug() << "xml in:" << xmlIn;
+#endif
+        QString xmlOut;
+
+        QDomDocument doc;
+        doc.setContent(xmlIn, false);
+        QTextStream writer(&xmlOut);
+        doc.save(writer, 4);
+
+        header.append("\n");
+        header.append(xmlOut);
+        if (header.length() > text.length())
+            return header;
+    }
+
+    return text;
 }
 
 void LogModel::saveRowsInFolder(const QList<int> &rows, const QString &folderName)

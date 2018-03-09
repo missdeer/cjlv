@@ -52,13 +52,17 @@ public:
     void copyRow(int row);
     void copyCells(const QModelIndexList& cells);
     void copyRows(const QList<int>& rows);
+    void copyCellWithXMLFormatted(const QModelIndex& cell);
+    void copyRowWithXMLFormatted(int row);
+    void copyCellsWithXMLFormatted(const QModelIndexList& cells);
+    void copyRowsWithXMLFormatted(const QList<int>& rows);
     const QString& getLogContent(const QModelIndex &index);
     QString getLogSourceFile(const QModelIndex &index);
     QString getLogFileName(const QModelIndex &index);
     int getLogFileLine(const QModelIndex &index, QString& fileName);
     int getId(const QModelIndex &index);
     void runLuaExtension(ExtensionPtr e);
-
+    QString formatXML(const QString& text);
     void saveRowsInFolder(const QList<int>& rows, const QString& folderName);
     void saveRowsBetweenAnchorsInFolder(const QModelIndex& beginAnchor, const QModelIndex& endAnchor, const QString& folderName);
     QString getSqlWhereClause(const QModelIndex& beginAnchor, const QModelIndex& endAnchor);

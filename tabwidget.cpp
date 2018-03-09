@@ -256,6 +256,46 @@ void TabWidget::onCopySelectedRows()
     }
 }
 
+void TabWidget::onCopyCurrentCellWithXMLFormatted()
+{
+    QWidget* w = currentWidget();
+    if (w)
+    {
+        LogView* v = qobject_cast<LogView*>(w);
+        v->copyCurrentCellWithXMLFormatted();
+    }
+}
+
+void TabWidget::onCopyCurrentRowWithXMLFormatted()
+{
+    QWidget* w = currentWidget();
+    if (w)
+    {
+        LogView* v = qobject_cast<LogView*>(w);
+        v->copyCurrentRowWithXMLFormatted();
+    }
+}
+
+void TabWidget::onCopySelectedCellsWithXMLFormatted()
+{
+    QWidget* w = currentWidget();
+    if (w)
+    {
+        LogView* v = qobject_cast<LogView*>(w);
+        v->copySelectedCellsWithXMLFormatted();
+    }
+}
+
+void TabWidget::onCopySelectedRowsWithXMLFormatted()
+{
+    QWidget* w = currentWidget();
+    if (w)
+    {
+        LogView* v = qobject_cast<LogView*>(w);
+        v->copySelectedRowsWithXMLFormatted();
+    }
+}
+
 void TabWidget::onCopyFileName()
 {
     QClipboard *clipboard = QApplication::clipboard();
