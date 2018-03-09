@@ -27,7 +27,7 @@ public:
 
 class ReadLineFromFile
 {
-    QFile* m_file;
+    QFile m_file;
     qint64 m_offset;
     qint64 m_fileSize;
     uchar* m_lineStartPos;
@@ -36,20 +36,19 @@ class ReadLineFromFile
     const qint64 mapSize = 1024 * 1024; // 1M
 public:
     ReadLineFromFile(const QString& fileName)
-        : m_offset(0)
+        : m_file(fileName)
+		, m_offset(0)
+		, m_fileSize(0)
+		, m_lineStartPos(nullptr)
+		, m_mapStartPos(nullptr)
+		, m_mapEndPos(nullptr)
     {
-        m_file = new QFile(fileName);
-        if (!m_file->open(QIODevice::ReadOnly))
+        if (m_file.open(QIODevice::ReadOnly))
         {
-            delete m_file;
-            m_file = nullptr;
-        }
-        else
-        {
-            m_fileSize = m_file->size();
+            m_fileSize = m_file.size();
             if (m_fileSize)
             {
-                m_lineStartPos = m_mapStartPos = m_file->map(m_offset, qMin(mapSize, m_fileSize - m_offset));
+                m_lineStartPos = m_mapStartPos = m_file.map(m_offset, qMin(mapSize, m_fileSize - m_offset));
                 m_mapEndPos = m_mapStartPos + qMin(mapSize, m_fileSize - m_offset);
             }
         }
@@ -57,13 +56,9 @@ public:
 
     ~ReadLineFromFile()
     {
-        if (m_file)
-        {
-            m_file->unmap(m_mapStartPos);
-            m_file->close();
-            delete m_file;
-            m_file = nullptr;
-        }
+		if (m_mapStartPos)
+			m_file.unmap(m_mapStartPos);
+		m_file.close();
     }
 
     QByteArray readLine()
@@ -83,11 +78,11 @@ start_read:
         }
 
         // re-map
-        m_file->unmap(m_mapStartPos);
+        m_file.unmap(m_mapStartPos);
         m_offset += m_lineStartPos - m_mapStartPos;
         if (m_offset != m_fileSize)
         {
-            m_lineStartPos = m_mapStartPos = m_file->map(m_offset, qMin(mapSize, m_fileSize - m_offset));
+            m_lineStartPos = m_mapStartPos = m_file.map(m_offset, qMin(mapSize, m_fileSize - m_offset));
             m_mapEndPos = m_mapStartPos + qMin(mapSize, m_fileSize - m_offset);
             goto start_read;
         }
