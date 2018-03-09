@@ -246,19 +246,55 @@ void LogView::copySelectedRowsWithXMLFormatted()
     m_logModel->copyRowsWithXMLFormatted(rows);
 }
 
+void LogView::addCurrentRowToBookmark()
+{
+
+}
+
+void LogView::removeCurrentRowFromBookmark()
+{
+
+}
+
+void LogView::addSelectedRowsToBookmark()
+{
+
+}
+
+void LogView::removeSelectedRowsFromBookmark()
+{
+
+}
+
+void LogView::gotoPreviousBookmark()
+{
+
+}
+
+void LogView::gotoNextBookmark()
+{
+
+}
+
 void LogView::scrollToTop()
 {
     m_logsTableView->scrollToTop();
+    m_logsTableView->selectRow(0);
+    m_logsTableView->setFocus();
 }
 
 void LogView::scrollToBottom()
 {
     m_logsTableView->scrollToBottom();
+    m_logsTableView->selectRow(rowCount() -1);
+    m_logsTableView->setFocus();
 }
 
 void LogView::gotoById(int i)
 {
     m_logsTableView->scrollTo(m_logModel->index(i-1, 0));
+    m_logsTableView->selectRow(i-1);
+    m_logsTableView->setFocus();
 }
 
 void LogView::reload()

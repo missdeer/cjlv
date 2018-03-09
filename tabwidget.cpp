@@ -296,6 +296,36 @@ void TabWidget::onCopySelectedRowsWithXMLFormatted()
     }
 }
 
+void TabWidget::onAddCurrentRowToBookmark()
+{
+
+}
+
+void TabWidget::onRemoveCurrentRowFromBookmark()
+{
+
+}
+
+void TabWidget::onAddSelectedRowsToBookmark()
+{
+
+}
+
+void TabWidget::onRemoveSelectedRowsFromBookmark()
+{
+
+}
+
+void TabWidget::onGotoPreviousBookmark()
+{
+
+}
+
+void TabWidget::onGotoNextBookmark()
+{
+
+}
+
 void TabWidget::onCopyFileName()
 {
     QClipboard *clipboard = QApplication::clipboard();

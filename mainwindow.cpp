@@ -47,6 +47,12 @@ MainWindow::MainWindow(QSplashScreen &splash, QWidget *parent) :
     connect(ui->actionCopyCurrentRowWithXMLFormatted, &QAction::triggered, ui->tabWidget, &TabWidget::onCopyCurrentRowWithXMLFormatted);
     connect(ui->actionCopySelectedCellsWithXMLFormatted, &QAction::triggered, ui->tabWidget, &TabWidget::onCopySelectedCellsWithXMLFormatted);
     connect(ui->actionCopySelectedRowsWithXMLFormatted, &QAction::triggered, ui->tabWidget, &TabWidget::onCopySelectedRowsWithXMLFormatted);
+    connect(ui->actionAddCurrentRowToBookmark, &QAction::triggered, ui->tabWidget, &TabWidget::onAddCurrentRowToBookmark);
+    connect(ui->actionRemoveCurrentRowFromBookmark, &QAction::triggered, ui->tabWidget, &TabWidget::onRemoveCurrentRowFromBookmark);
+    connect(ui->actionAddSelectedRowsToBookmark, &QAction::triggered, ui->tabWidget, &TabWidget::onAddSelectedRowsToBookmark);
+    connect(ui->actionRemoveSelectedRowsFromBookmark, &QAction::triggered, ui->tabWidget, &TabWidget::onRemoveSelectedRowsFromBookmark);
+    connect(ui->actionGotoPreviousBookmark, &QAction::triggered, ui->tabWidget, &TabWidget::onGotoPreviousBookmark);
+    connect(ui->actionGotoNextBookmark, &QAction::triggered, ui->tabWidget, &TabWidget::onGotoNextBookmark);
     connect(ui->actionScrollToTop, &QAction::triggered, ui->tabWidget, &TabWidget::onScrollToTop);
     connect(ui->actionScrollToBottom, &QAction::triggered, ui->tabWidget, &TabWidget::onScrollToBottom);
     connect(ui->actionReload, &QAction::triggered, ui->tabWidget, &TabWidget::onReload);

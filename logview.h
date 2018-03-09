@@ -51,6 +51,13 @@ public:
     void copySelectedCellsWithXMLFormatted();
     void copySelectedRowsWithXMLFormatted();
 
+    void addCurrentRowToBookmark();
+    void removeCurrentRowFromBookmark();
+    void addSelectedRowsToBookmark();
+    void removeSelectedRowsFromBookmark();
+    void gotoPreviousBookmark();
+    void gotoNextBookmark();
+
     void scrollToTop();
     void scrollToBottom();
     void gotoById(int i);

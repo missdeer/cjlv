@@ -171,9 +171,22 @@
     <addaction name="separator"/>
     <addaction name="actionPreference"/>
    </widget>
+   <widget class="QMenu" name="menu_Bookmark">
+    <property name="title">
+     <string>&amp;Bookmark</string>
+    </property>
+    <addaction name="actionAddCurrentRowToBookmark"/>
+    <addaction name="actionRemoveCurrentRowFromBookmark"/>
+    <addaction name="actionAddSelectedRowsToBookmark"/>
+    <addaction name="actionRemoveSelectedRowsFromBookmark"/>
+    <addaction name="separator"/>
+    <addaction name="actionGotoPreviousBookmark"/>
+    <addaction name="actionGotoNextBookmark"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
    <addaction name="menuFind"/>
+   <addaction name="menu_Bookmark"/>
    <addaction name="menuExtension"/>
    <addaction name="menuWindow"/>
    <addaction name="menuHelp"/>
@@ -422,9 +435,6 @@
    </property>
    <property name="toolTip">
     <string>Search Content Field</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+F, Ctrl+C</string>
    </property>
   </action>
   <action name="actionSearchFieldID">
@@ -892,6 +902,48 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+F, Ctrl+R</string>
+   </property>
+  </action>
+  <action name="actionAddCurrentRowToBookmark">
+   <property name="text">
+    <string>Add current row to bookmark</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Alt+B</string>
+   </property>
+  </action>
+  <action name="actionRemoveCurrentRowFromBookmark">
+   <property name="text">
+    <string>Remove current row from bookmark</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Alt+R</string>
+   </property>
+  </action>
+  <action name="actionAddSelectedRowsToBookmark">
+   <property name="text">
+    <string>Add selected rows to bookmark</string>
+   </property>
+  </action>
+  <action name="actionRemoveSelectedRowsFromBookmark">
+   <property name="text">
+    <string>Remove selected rows from bookmark</string>
+   </property>
+  </action>
+  <action name="actionGotoPreviousBookmark">
+   <property name="text">
+    <string>Goto previous bookmark</string>
+   </property>
+   <property name="shortcut">
+    <string>Alt+,</string>
+   </property>
+  </action>
+  <action name="actionGotoNextBookmark">
+   <property name="text">
+    <string>Goto next bookmark</string>
+   </property>
+   <property name="shortcut">
+    <string>Alt+.</string>
    </property>
   </action>
  </widget>

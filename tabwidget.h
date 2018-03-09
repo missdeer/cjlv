@@ -49,6 +49,13 @@ public slots:
     void onCopySelectedCellsWithXMLFormatted();
     void onCopySelectedRowsWithXMLFormatted();
 
+    void onAddCurrentRowToBookmark();
+    void onRemoveCurrentRowFromBookmark();
+    void onAddSelectedRowsToBookmark();
+    void onRemoveSelectedRowsFromBookmark();
+    void onGotoPreviousBookmark();
+    void onGotoNextBookmark();
+
     void onCopyFileName();
     void onCopyFileFullPath();
     void onOpenContainerFolder();
