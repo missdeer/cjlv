@@ -616,7 +616,7 @@
     <string>Copy Selected Rows</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+R, Ctrl+R</string>
+    <string>Ctrl+R</string>
    </property>
   </action>
   <action name="actionSearchFieldLevel">
