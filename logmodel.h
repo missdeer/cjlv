@@ -142,6 +142,8 @@ private:
     void doReload();
     void doQuery(int offset);
     bool parseLine(const QString &line, QStringList& results);
+    bool parseLine2(const QString &line, QStringList& results);
+    void updateStatistic(QStringList &results);
     bool event(QEvent *e) Q_DECL_OVERRIDE;
     void createDatabaseIndex();
     void generateSQLStatements(int offset, QString& sqlFetch, QString& sqlCount);

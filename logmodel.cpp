@@ -1617,6 +1617,7 @@ void LogModel::doQuery(int offset)
 
 bool LogModel::parseLine(const QString& line, QStringList& results)
 {
+    results.clear();
     // manual parse
     int startPos = 0;
     int endPos = line.indexOf(' ');
@@ -1648,11 +1649,19 @@ bool LogModel::parseLine(const QString& line, QStringList& results)
 
     results.append(line.mid(endPos + 3, -1)); // content
 
+    updateStatistic(results);
+
+    return true;
+}
+
+
+void LogModel::updateStatistic(QStringList &results)
+{
     auto it = m_levelCountMap.find(results.at(1));
     if (m_levelCountMap.end() == it)
         m_levelCountMap.insert(results.at(1), 1);
     else
-       (*it)++;
+        (*it)++;
 
     it = m_threadCountMap.find(results.at(2));
     if (m_threadCountMap.end() == it)
@@ -1687,6 +1696,85 @@ bool LogModel::parseLine(const QString& line, QStringList& results)
         m_methodCountMap.insert(results.at(5), 1);
     else
         (*it)++;
+}
+
+bool LogModel::parseLine2(const QString &line, QStringList& results)
+{
+    results.clear();
+    // manual parse
+    int startPos = 0;
+    int endPos = line.indexOf(' ');
+    if (endPos <= startPos)
+        return false;
+    endPos = line.indexOf(' ', endPos + 1);
+    if (endPos - startPos != 18) // MM-dd hh:mm:ss.zzz  18 characters
+        return false;
+    QString dt = line.mid(startPos, endPos - startPos);
+    dt = QString("%1-%2").arg(QDate::currentDate().year()).arg(dt);
+    dt = dt.replace(QChar('.'), QChar(','));
+    results.append(dt); // date time
+
+    startPos = endPos;
+    while (startPos < line.length() && line.at(startPos) == ' ')
+        startPos++;
+    endPos = line.indexOf(' ', startPos + 1);
+    if (endPos <= startPos)
+        return false;
+    QString pid = line.mid(startPos, endPos - startPos); // pid ?
+
+    startPos = endPos;
+    while (startPos < line.length() && line.at(startPos) == ' ')
+        startPos++;
+    endPos = line.indexOf(' ', startPos + 1);
+    if (endPos <= startPos)
+        return false;
+    QString tid = line.mid(startPos, endPos - startPos); // tid ?
+
+    startPos = endPos;
+    while (startPos < line.length() && line.at(startPos) == ' ')
+        startPos++;
+    endPos = line.indexOf(' ', startPos + 1);
+    if (endPos <= startPos)
+        return false;
+    QMap<QString, QString> m = {
+        {"I", "INFO"},
+        {"D", "DEBUG"},
+        {"W", "WARN"},
+        {"T", "TRACE"},
+        {"F", "FATAL"},
+    };
+    results.append(m[line.mid(startPos, endPos - startPos)]); // level 
+
+    startPos = endPos;
+    while (startPos < line.length() && line.at(startPos) == ' ')
+        startPos++;
+    endPos = line.indexOf(' ', startPos + 1);
+    if (endPos <= startPos)
+        return false;
+    QString cats = line.mid(startPos, endPos - startPos); // category ?
+
+    results.append(tid);
+
+    if (cats == "jcf.jni")
+        results << "jcf.jni" << "jcf.jni" << "jcf.jni";
+    else
+    {
+        for (int i = 0; i < 3; i++)
+        {
+            startPos = line.indexOf('[', endPos);
+            if (startPos < 0)
+                return false;
+            endPos = line.indexOf(']', startPos + 1);
+            if (endPos <= startPos)
+                return false;
+            results.append(line.mid(startPos + 1, endPos - startPos - 1)); // source, category, method
+        }
+    }
+
+    results.append(line.mid(endPos + 3, -1)); // content
+
+    updateStatistic(results);
+
     return true;
 }
 
@@ -1794,7 +1882,7 @@ int LogModel::copyFromFileToDatabase(const QString &fileName)
     QStringList results;
     QString line = f.readLine();
     int lineNo = 1;
-    if (!parseLine(line, results))
+    if (!parseLine(line, results) && !parseLine2(line, results))
     {
         // append to last line
         content.append(line);
@@ -1822,7 +1910,7 @@ int LogModel::copyFromFileToDatabase(const QString &fileName)
         QString lookAhead = f.readLine();
         lineNo++;
         results.clear();
-        if (!parseLine(lookAhead, results))
+        if (!parseLine(lookAhead, results) && !parseLine2(lookAhead, results))
         {
             // append to last line
             content.append(lookAhead);
