@@ -79,6 +79,15 @@ public:
     Sqlite3HelperPtr getSqlite3Helper() { return m_sqlite3Helper; }
     void postInitialize();
 
+    void addBookmark(int id);
+    void removeBookmark(int id);
+    void addBookmarks(const QList<int>& ids);
+    void removeBookmarks(const QList<int>& ids);
+    void clearBookmarks();
+    int getFirstBookmark();
+    int getPreviousBookmark(int currId);
+    int getNextBookmark(int currId);
+    int getLastBookmark();
 signals:
     void logItemReady(int, QSharedPointer<LogItem>);
     void logItemsReady(QMap<int, QSharedPointer<LogItem>>);
@@ -104,6 +113,8 @@ private:
     QStringList m_logFiles;
     QMap<int, QSharedPointer<LogItem>> m_logs;
     QList<int> m_inQuery;
+    QList<int> m_bookmarkIds;
+    int m_lastBookmarkId;
     QMutex m_eventMutex;
     QMutex m_queryMutex;
     QMutex m_dataMemberMutex;

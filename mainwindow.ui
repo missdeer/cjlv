@@ -176,12 +176,15 @@
      <string>&amp;Bookmark</string>
     </property>
     <addaction name="actionAddCurrentRowToBookmark"/>
-    <addaction name="actionRemoveCurrentRowFromBookmark"/>
     <addaction name="actionAddSelectedRowsToBookmark"/>
+    <addaction name="actionRemoveCurrentRowFromBookmark"/>
     <addaction name="actionRemoveSelectedRowsFromBookmark"/>
+    <addaction name="actionRemoveAllBookmarks"/>
     <addaction name="separator"/>
+    <addaction name="actionGotoFirstBookmark"/>
     <addaction name="actionGotoPreviousBookmark"/>
     <addaction name="actionGotoNextBookmark"/>
+    <addaction name="actionGotoLastBookmark"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
@@ -944,6 +947,27 @@
    </property>
    <property name="shortcut">
     <string>Alt+.</string>
+   </property>
+  </action>
+  <action name="actionRemoveAllBookmarks">
+   <property name="text">
+    <string>Remove all bookmarks</string>
+   </property>
+  </action>
+  <action name="actionGotoFirstBookmark">
+   <property name="text">
+    <string>Goto first bookmark</string>
+   </property>
+   <property name="shortcut">
+    <string>Alt+Up</string>
+   </property>
+  </action>
+  <action name="actionGotoLastBookmark">
+   <property name="text">
+    <string>Goto last bookmark</string>
+   </property>
+   <property name="shortcut">
+    <string>Alt+Down</string>
    </property>
   </action>
  </widget>

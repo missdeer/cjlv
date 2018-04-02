@@ -298,32 +298,92 @@ void TabWidget::onCopySelectedRowsWithXMLFormatted()
 
 void TabWidget::onAddCurrentRowToBookmark()
 {
-
+    QWidget* w = currentWidget();
+    if (w)
+    {
+        LogView* v = qobject_cast<LogView*>(w);
+        v->addCurrentRowToBookmark();
+    }
 }
 
 void TabWidget::onRemoveCurrentRowFromBookmark()
 {
-
+    QWidget* w = currentWidget();
+    if (w)
+    {
+        LogView* v = qobject_cast<LogView*>(w);
+        v->removeCurrentRowFromBookmark();
+    }
 }
 
 void TabWidget::onAddSelectedRowsToBookmark()
 {
-
+    QWidget* w = currentWidget();
+    if (w)
+    {
+        LogView* v = qobject_cast<LogView*>(w);
+        v->addSelectedRowsToBookmark();
+    }
 }
 
 void TabWidget::onRemoveSelectedRowsFromBookmark()
 {
+    QWidget* w = currentWidget();
+    if (w)
+    {
+        LogView* v = qobject_cast<LogView*>(w);
+        v->removeSelectedRowsFromBookmark();
+    }
+}
 
+void TabWidget::onRemoveAllBookmarks()
+{
+    QWidget* w = currentWidget();
+    if (w)
+    {
+        LogView* v = qobject_cast<LogView*>(w);
+        v->removeAllBookmarks();
+    }
+}
+
+void TabWidget::onGotoFirstBookmark()
+{
+    QWidget* w = currentWidget();
+    if (w)
+    {
+        LogView* v = qobject_cast<LogView*>(w);
+        v->gotoFirstBookmark();
+    }
 }
 
 void TabWidget::onGotoPreviousBookmark()
 {
-
+    QWidget* w = currentWidget();
+    if (w)
+    {
+        LogView* v = qobject_cast<LogView*>(w);
+        v->gotoPreviousBookmark();
+    }
 }
 
 void TabWidget::onGotoNextBookmark()
 {
+    QWidget* w = currentWidget();
+    if (w)
+    {
+        LogView* v = qobject_cast<LogView*>(w);
+        v->gotoNextBookmark();
+    }
+}
 
+void TabWidget::onGotoLastBookmark()
+{
+    QWidget* w = currentWidget();
+    if (w)
+    {
+        LogView* v = qobject_cast<LogView*>(w);
+        v->gotoLastBookmark();
+    }
 }
 
 void TabWidget::onCopyFileName()

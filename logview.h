@@ -55,8 +55,11 @@ public:
     void removeCurrentRowFromBookmark();
     void addSelectedRowsToBookmark();
     void removeSelectedRowsFromBookmark();
+    void removeAllBookmarks();
+    void gotoFirstBookmark();
     void gotoPreviousBookmark();
     void gotoNextBookmark();
+    void gotoLastBookmark();
 
     void scrollToTop();
     void scrollToBottom();

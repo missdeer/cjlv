@@ -51,8 +51,11 @@ MainWindow::MainWindow(QSplashScreen &splash, QWidget *parent) :
     connect(ui->actionRemoveCurrentRowFromBookmark, &QAction::triggered, ui->tabWidget, &TabWidget::onRemoveCurrentRowFromBookmark);
     connect(ui->actionAddSelectedRowsToBookmark, &QAction::triggered, ui->tabWidget, &TabWidget::onAddSelectedRowsToBookmark);
     connect(ui->actionRemoveSelectedRowsFromBookmark, &QAction::triggered, ui->tabWidget, &TabWidget::onRemoveSelectedRowsFromBookmark);
+    connect(ui->actionRemoveAllBookmarks, &QAction::triggered, ui->tabWidget, &TabWidget::onRemoveAllBookmarks);
+    connect(ui->actionGotoFirstBookmark, &QAction::triggered, ui->tabWidget, &TabWidget::onGotoFirstBookmark);
     connect(ui->actionGotoPreviousBookmark, &QAction::triggered, ui->tabWidget, &TabWidget::onGotoPreviousBookmark);
     connect(ui->actionGotoNextBookmark, &QAction::triggered, ui->tabWidget, &TabWidget::onGotoNextBookmark);
+    connect(ui->actionGotoLastBookmark, &QAction::triggered, ui->tabWidget, &TabWidget::onGotoLastBookmark);
     connect(ui->actionScrollToTop, &QAction::triggered, ui->tabWidget, &TabWidget::onScrollToTop);
     connect(ui->actionScrollToBottom, &QAction::triggered, ui->tabWidget, &TabWidget::onScrollToBottom);
     connect(ui->actionReload, &QAction::triggered, ui->tabWidget, &TabWidget::onReload);

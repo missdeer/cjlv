@@ -53,8 +53,11 @@ public slots:
     void onRemoveCurrentRowFromBookmark();
     void onAddSelectedRowsToBookmark();
     void onRemoveSelectedRowsFromBookmark();
+    void onRemoveAllBookmarks();
+    void onGotoFirstBookmark();
     void onGotoPreviousBookmark();
     void onGotoNextBookmark();
+    void onGotoLastBookmark();
 
     void onCopyFileName();
     void onCopyFileFullPath();

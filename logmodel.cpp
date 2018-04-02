@@ -112,6 +112,85 @@ void LogModel::postInitialize()
         loadFromDatabase();
 }
 
+void LogModel::addBookmark(int id)
+{
+    m_bookmarkIds.append(id);
+    qSort(m_bookmarkIds.begin(), m_bookmarkIds.end());
+    emit dataChanged(index(0, 0), index(m_rowCount, 0));
+}
+
+void LogModel::removeBookmark(int id)
+{
+    m_bookmarkIds.removeAll(id);
+    emit dataChanged(index(0, 0), index(m_rowCount, 0));
+}
+
+void LogModel::addBookmarks(const QList<int> &ids)
+{
+    m_bookmarkIds.append(ids);
+    qSort(m_bookmarkIds.begin(), m_bookmarkIds.end());
+    emit dataChanged(index(0, 0), index(m_rowCount, 0));
+}
+
+void LogModel::removeBookmarks(const QList<int> &ids)
+{
+    for (auto id : ids)
+    {
+        m_bookmarkIds.removeAll(id);
+    }
+    emit dataChanged(index(0, 0), index(m_rowCount, 0));
+}
+
+void LogModel::clearBookmarks()
+{
+    m_bookmarkIds.clear();
+    emit dataChanged(index(0, 0), index(m_rowCount, 0));
+}
+
+int LogModel::getFirstBookmark()
+{
+    if (!m_bookmarkIds.empty())
+        return m_bookmarkIds.first();
+    return -1;
+}
+
+int LogModel::getPreviousBookmark(int currId)
+{
+    if (currId == -1)
+        currId = m_lastBookmarkId;
+    for (int i = 0; i < m_bookmarkIds.length()-1; i++)
+    {
+        if (m_bookmarkIds.at(i) <= currId && m_bookmarkIds.at(i+1) > currId )
+        {
+            m_lastBookmarkId = m_bookmarkIds.at(i+1);
+            return m_lastBookmarkId;
+        }
+    }
+    return -1;
+}
+
+int LogModel::getNextBookmark(int currId)
+{
+    if (currId == -1)
+        currId = m_lastBookmarkId;
+    for (int i = 1; i < m_bookmarkIds.length(); i++)
+    {
+        if (m_bookmarkIds.at(i-1) < currId && m_bookmarkIds.at(i) >= currId )
+        {
+            m_lastBookmarkId = m_bookmarkIds.at(i-1);
+            return m_lastBookmarkId;
+        }
+    }
+    return -1;
+}
+
+int LogModel::getLastBookmark()
+{
+    if (!m_bookmarkIds.empty())
+        return m_bookmarkIds.last();
+    return -1;
+}
+
 LogModel::LogModel(QObject *parent, Sqlite3HelperPtr sqlite3Helper, QuickWidgetAPIPtr api)
     : QAbstractTableModel(parent)
     , m_sqlite3Helper(sqlite3Helper)
@@ -119,6 +198,7 @@ LogModel::LogModel(QObject *parent, Sqlite3HelperPtr sqlite3Helper, QuickWidgetA
     , m_L(nullptr)
     , m_searchField("content")
     , m_searchFieldOption("content")
+    , m_lastBookmarkId(-1)
     , m_rowCount(0)
     , m_currentTotalRowCount(0)
     , m_maxTotalRowCount(0)
@@ -162,12 +242,7 @@ QVariant LogModel::data(const QModelIndex &index, int role) const
     if (!index.isValid())
         return QVariant();
 
-    if (role == Qt::BackgroundRole && index.row() % 2 == 0)
-    {
-        return QVariant(QColor(0xF8, 0xF8, 0xF8));
-    }
-
-    if (role != Qt::DisplayRole && role != Qt::ToolTipRole)
+    if (role != Qt::DisplayRole && role != Qt::ToolTipRole && role != Qt::BackgroundRole)
         return QVariant();
 
     if (index.row() < 0 || index.row() >= m_rowCount)
@@ -185,6 +260,14 @@ QVariant LogModel::data(const QModelIndex &index, int role) const
     }
 
     const QSharedPointer<LogItem>& r = *it;
+
+    if (role == Qt::BackgroundRole)
+    {
+        if (m_bookmarkIds.contains(r->id))
+            return QVariant(QColor(0xD0, 0xFF, 0xFF));
+        if (index.row() % 2 == 0)
+            return QVariant(QColor(0xF8, 0xF8, 0xF8));
+    }
 
     QMap<int, QString> m = {
         {0, QString("%1").arg(r->id)},

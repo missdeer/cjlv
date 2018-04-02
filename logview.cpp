@@ -249,32 +249,101 @@ void LogView::copySelectedRowsWithXMLFormatted()
 
 void LogView::addCurrentRowToBookmark()
 {
-
+    QItemSelectionModel* selected =  m_logsTableView->selectionModel();
+    if (!selected->hasSelection())
+        return;
+    int row = selected->currentIndex().row();
+    m_logModel->addBookmark(row+1);
 }
 
 void LogView::removeCurrentRowFromBookmark()
 {
-
+    QItemSelectionModel* selected =  m_logsTableView->selectionModel();
+    if (!selected->hasSelection())
+        return;
+    int row = selected->currentIndex().row();
+    m_logModel->removeBookmark(row+1);
 }
 
 void LogView::addSelectedRowsToBookmark()
 {
-
+    QItemSelectionModel* selected =  m_logsTableView->selectionModel();
+    if (!selected->hasSelection())
+        return;
+    QModelIndexList l = selected->selectedIndexes();
+    QList<int> rows;
+    for(const QModelIndex& i : l)
+    {
+        rows.append(i.row()+1);
+    }
+    m_logModel->addBookmarks(rows);
 }
 
 void LogView::removeSelectedRowsFromBookmark()
 {
+    QItemSelectionModel* selected =  m_logsTableView->selectionModel();
+    if (!selected->hasSelection())
+        return;
+    QModelIndexList l = selected->selectedIndexes();
+    QList<int> rows;
+    for(const QModelIndex& i : l)
+    {
+        rows.append(i.row()+1);
+    }
+    m_logModel->removeBookmarks(rows);
+}
 
+void LogView::removeAllBookmarks()
+{
+    m_logModel->clearBookmarks();
+}
+
+void LogView::gotoFirstBookmark()
+{
+    int bookmark = m_logModel->getFirstBookmark();
+    m_logsTableView->scrollTo(m_logModel->index(bookmark-1, 0));
+    m_logsTableView->selectRow(bookmark-1);
+    m_logsTableView->setFocus();
 }
 
 void LogView::gotoPreviousBookmark()
 {
-
+    int id = -1;
+    QItemSelectionModel* selected =  m_logsTableView->selectionModel();
+    if (selected && selected->hasSelection())
+    {
+        // record the selected cell
+        QModelIndex i = selected->currentIndex();
+        id = m_logModel->getId(i);
+    }
+    int prevousBookmark = m_logModel->getPreviousBookmark(id);
+    m_logsTableView->scrollTo(m_logModel->index(prevousBookmark-1, 0));
+    m_logsTableView->selectRow(prevousBookmark-1);
+    m_logsTableView->setFocus();
 }
 
 void LogView::gotoNextBookmark()
 {
+    int id = -1;
+    QItemSelectionModel* selected =  m_logsTableView->selectionModel();
+    if (selected && selected->hasSelection())
+    {
+        // record the selected cell
+        QModelIndex i = selected->currentIndex();
+        id = m_logModel->getId(i);
+    }
+    int nextBookmark = m_logModel->getNextBookmark(id);
+    m_logsTableView->scrollTo(m_logModel->index(nextBookmark-1, 0));
+    m_logsTableView->selectRow(nextBookmark-1);
+    m_logsTableView->setFocus();
+}
 
+void LogView::gotoLastBookmark()
+{
+    int bookmark = m_logModel->getLastBookmark();
+    m_logsTableView->scrollTo(m_logModel->index(bookmark-1, 0));
+    m_logsTableView->selectRow(bookmark-1);
+    m_logsTableView->setFocus();
 }
 
 void LogView::scrollToTop()
