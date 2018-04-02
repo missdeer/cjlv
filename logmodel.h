@@ -62,7 +62,6 @@ public:
     int getLogFileLine(const QModelIndex &index, QString& fileName);
     int getId(const QModelIndex &index);
     void runLuaExtension(ExtensionPtr e);
-    QString formatXML(const QString& text);
     void saveRowsInFolder(const QList<int>& rows, const QString& folderName);
     void saveRowsBetweenAnchorsInFolder(const QModelIndex& beginAnchor, const QModelIndex& endAnchor, const QString& folderName);
     QString getSqlWhereClause(const QModelIndex& beginAnchor, const QModelIndex& endAnchor);

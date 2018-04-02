@@ -13,6 +13,7 @@
 #include "settings.h"
 #include "presencewidget.h"
 #include "quickwidgetapi.h"
+#include "utils.h"
 #include "logmodel.h"
 #include "logview.h"
 
@@ -374,7 +375,7 @@ void LogView::extractContent(const QModelIndex& index)
 {
     showCodeEditorPane();
 
-    QString text = m_logModel->formatXML( m_logModel->getLogContent(index));
+    QString text = Utils::formatXML( m_logModel->getLogContent(index));
 
     if (g_settings->multiMonitorEnabled())
     {

@@ -4,6 +4,7 @@
 #include <boost/scope_exit.hpp>
 #include "quickwidgetapi.h"
 #include "settings.h"
+#include "utils.h"
 #include "logmodel.h"
 
 static const QEvent::Type ROWCOUNT_EVENT = QEvent::Type(QEvent::User + 1);
@@ -166,7 +167,7 @@ QVariant LogModel::data(const QModelIndex &index, int role) const
         return QVariant(QColor(0xF8, 0xF8, 0xF8));
     }
 
-    if (role != Qt::DisplayRole)
+    if (role != Qt::DisplayRole && role != Qt::ToolTipRole)
         return QVariant();
 
     if (index.row() < 0 || index.row() >= m_rowCount)
@@ -200,6 +201,10 @@ QVariant LogModel::data(const QModelIndex &index, int role) const
     auto mit = m.find(index.column());
     if (mit != m.end())
     {
+        if (role == Qt::ToolTipRole && index.column() == 7)
+        {
+            return QVariant(Utils::formatXML(mit.value()));
+        }
         return QVariant(mit.value());
     }
 
@@ -575,7 +580,7 @@ void LogModel::copyCellWithXMLFormatted(const QModelIndex &cell)
         {4, r->source},
         {5, r->category},
         {6, r->method},
-        {7, formatXML(r->content)},
+        {7, Utils::formatXML(r->content)},
         {8, "." % r->logFile},
         {9, QString("%1").arg(r->line)},
     };
@@ -604,7 +609,7 @@ void LogModel::copyRowWithXMLFormatted(int row)
                    .arg(r->source)
                    .arg(r->category)
                    .arg(r->method)
-                   .arg(formatXML(r->content));
+                   .arg(Utils::formatXML(r->content));
     clipboard->setText(text);
 }
 
@@ -657,9 +662,9 @@ void LogModel::copyCellsWithXMLFormatted(const QModelIndexList &cells)
             break;
         case 7:
             if (contentOnly)
-                t = formatXML(r->content);
+                t = Utils::formatXML(r->content);
             else
-                t.append(QString("- %1").arg(formatXML(r->content)));
+                t.append(QString("- %1").arg(Utils::formatXML(r->content)));
             break;
         default:
             break;
@@ -689,7 +694,7 @@ void LogModel::copyRowsWithXMLFormatted(const QList<int> &rows)
                        .arg(r->source)
                        .arg(r->category)
                        .arg(r->method)
-                       .arg(formatXML(r->content));
+                       .arg(Utils::formatXML(r->content));
         text.append(t);
     }
     QClipboard *clipboard = QApplication::clipboard();
@@ -781,35 +786,6 @@ void LogModel::runLuaExtension(ExtensionPtr e)
     m_sqlite3Helper->setLuaState(m_L);
     // regexp mode is ignored
     doFilter(e->content(), e->field(), false, true);
-}
-
-QString LogModel::formatXML(const QString &text)
-{
-    // try to format XML document
-    int startPos = text.indexOf(QChar('<'));
-    int endPos = text.lastIndexOf(QChar('>'));
-    if (startPos > 0 && endPos > startPos)
-    {
-        QString header = text.mid(0, startPos);
-        QString xmlIn = text.mid(startPos, endPos - startPos + 1);
-#ifndef QT_NO_DEBUG
-        qDebug() << "raw text:" << text;
-        qDebug() << "xml in:" << xmlIn;
-#endif
-        QString xmlOut;
-
-        QDomDocument doc;
-        doc.setContent(xmlIn, false);
-        QTextStream writer(&xmlOut);
-        doc.save(writer, 4);
-
-        header.append("\n");
-        header.append(xmlOut);
-        if (header.length() > text.length())
-            return header;
-    }
-
-    return text;
 }
 
 void LogModel::saveRowsInFolder(const QList<int> &rows, const QString &folderName)
