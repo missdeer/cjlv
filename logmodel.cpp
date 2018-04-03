@@ -150,11 +150,14 @@ void LogModel::clearBookmarks()
 int LogModel::getFirstBookmark()
 {
     if (!m_bookmarkIds.empty())
-        return m_bookmarkIds.first();
+    {
+        m_lastBookmarkId = m_bookmarkIds.first();
+        return m_lastBookmarkId;
+    }
     return -1;
 }
 
-int LogModel::getPreviousBookmark(int currId)
+int LogModel::getNextBookmark(int currId)
 {
     if (currId == -1)
         currId = m_lastBookmarkId;
@@ -169,7 +172,7 @@ int LogModel::getPreviousBookmark(int currId)
     return -1;
 }
 
-int LogModel::getNextBookmark(int currId)
+int LogModel::getPreviousBookmark(int currId)
 {
     if (currId == -1)
         currId = m_lastBookmarkId;
@@ -187,7 +190,10 @@ int LogModel::getNextBookmark(int currId)
 int LogModel::getLastBookmark()
 {
     if (!m_bookmarkIds.empty())
-        return m_bookmarkIds.last();
+    {
+        m_lastBookmarkId = m_bookmarkIds.last();
+        return m_lastBookmarkId;
+    }
     return -1;
 }
 

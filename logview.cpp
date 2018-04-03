@@ -301,9 +301,12 @@ void LogView::removeAllBookmarks()
 void LogView::gotoFirstBookmark()
 {
     int bookmark = m_logModel->getFirstBookmark();
-    m_logsTableView->scrollTo(m_logModel->index(bookmark-1, 0));
-    m_logsTableView->selectRow(bookmark-1);
-    m_logsTableView->setFocus();
+    if (bookmark >= 0)
+    {
+        m_logsTableView->scrollTo(m_logModel->index(bookmark-1, 0));
+        m_logsTableView->selectRow(bookmark-1);
+        m_logsTableView->setFocus();
+    }
 }
 
 void LogView::gotoPreviousBookmark()
@@ -341,9 +344,12 @@ void LogView::gotoNextBookmark()
 void LogView::gotoLastBookmark()
 {
     int bookmark = m_logModel->getLastBookmark();
-    m_logsTableView->scrollTo(m_logModel->index(bookmark-1, 0));
-    m_logsTableView->selectRow(bookmark-1);
-    m_logsTableView->setFocus();
+    if (bookmark >= 0)
+    {
+        m_logsTableView->scrollTo(m_logModel->index(bookmark-1, 0));
+        m_logsTableView->selectRow(bookmark-1);
+        m_logsTableView->setFocus();
+    }
 }
 
 void LogView::scrollToTop()
