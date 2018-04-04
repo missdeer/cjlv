@@ -112,30 +112,37 @@ void LogModel::postInitialize()
         loadFromDatabase();
 }
 
-void LogModel::addBookmark(int id)
+void LogModel::addBookmark(int row)
 {
+    int id = getId(row);
     m_bookmarkIds.append(id);
     qSort(m_bookmarkIds.begin(), m_bookmarkIds.end());
     emit dataChanged(index(0, 0), index(m_rowCount, 0));
 }
 
-void LogModel::removeBookmark(int id)
+void LogModel::removeBookmark(int row)
 {
+    int id = getId(row);
     m_bookmarkIds.removeAll(id);
     emit dataChanged(index(0, 0), index(m_rowCount, 0));
 }
 
-void LogModel::addBookmarks(const QList<int> &ids)
+void LogModel::addBookmarks(const QList<int> &rows)
 {
-    m_bookmarkIds.append(ids);
+    for (int row : rows)
+    {
+        int id = getId(row);
+        m_bookmarkIds.append(id);
+    }
     qSort(m_bookmarkIds.begin(), m_bookmarkIds.end());
     emit dataChanged(index(0, 0), index(m_rowCount, 0));
 }
 
-void LogModel::removeBookmarks(const QList<int> &ids)
+void LogModel::removeBookmarks(const QList<int> &rows)
 {
-    for (auto id : ids)
+    for (auto row : rows)
     {
+        int id = getId(row);
         m_bookmarkIds.removeAll(id);
     }
     emit dataChanged(index(0, 0), index(m_rowCount, 0));
@@ -849,6 +856,14 @@ int LogModel::getLogFileLine(const QModelIndex &index, QString &fileName)
 int LogModel::getId(const QModelIndex &index)
 {
     auto it = m_logs.find(index.row());
+    Q_ASSERT(m_logs.end() != it);
+    QSharedPointer<LogItem> r = *it;
+    return r->id;
+}
+
+int LogModel::getId(int row)
+{
+    auto it = m_logs.find(row);
     Q_ASSERT(m_logs.end() != it);
     QSharedPointer<LogItem> r = *it;
     return r->id;

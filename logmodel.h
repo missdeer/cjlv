@@ -61,6 +61,7 @@ public:
     QString getLogFileName(const QModelIndex &index);
     int getLogFileLine(const QModelIndex &index, QString& fileName);
     int getId(const QModelIndex &index);
+    int getId(int row);
     void runLuaExtension(ExtensionPtr e);
     void saveRowsInFolder(const QList<int>& rows, const QString& folderName);
     void saveRowsBetweenAnchorsInFolder(const QModelIndex& beginAnchor, const QModelIndex& endAnchor, const QString& folderName);
@@ -79,10 +80,10 @@ public:
     Sqlite3HelperPtr getSqlite3Helper() { return m_sqlite3Helper; }
     void postInitialize();
 
-    void addBookmark(int id);
-    void removeBookmark(int id);
-    void addBookmarks(const QList<int>& ids);
-    void removeBookmarks(const QList<int>& ids);
+    void addBookmark(int row);
+    void removeBookmark(int row);
+    void addBookmarks(const QList<int>& rows);
+    void removeBookmarks(const QList<int>& rows);
     void clearBookmarks();
     int getFirstBookmark();
     int getPreviousBookmark(int currId);

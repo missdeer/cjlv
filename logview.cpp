@@ -253,7 +253,7 @@ void LogView::addCurrentRowToBookmark()
     if (!selected->hasSelection())
         return;
     int row = selected->currentIndex().row();
-    m_logModel->addBookmark(row+1);
+    m_logModel->addBookmark(row);
 }
 
 void LogView::removeCurrentRowFromBookmark()
@@ -262,7 +262,7 @@ void LogView::removeCurrentRowFromBookmark()
     if (!selected->hasSelection())
         return;
     int row = selected->currentIndex().row();
-    m_logModel->removeBookmark(row+1);
+    m_logModel->removeBookmark(row);
 }
 
 void LogView::addSelectedRowsToBookmark()
@@ -274,7 +274,7 @@ void LogView::addSelectedRowsToBookmark()
     QList<int> rows;
     for(const QModelIndex& i : l)
     {
-        rows.append(i.row()+1);
+        rows.append(i.row());
     }
     m_logModel->addBookmarks(rows);
 }
@@ -288,7 +288,7 @@ void LogView::removeSelectedRowsFromBookmark()
     QList<int> rows;
     for(const QModelIndex& i : l)
     {
-        rows.append(i.row()+1);
+        rows.append(i.row());
     }
     m_logModel->removeBookmarks(rows);
 }
@@ -319,6 +319,11 @@ void LogView::gotoPreviousBookmark()
         QModelIndex i = selected->currentIndex();
         id = m_logModel->getId(i);
     }
+    if (id == -1)
+    {
+        gotoFirstBookmark();
+        return;
+    }
     int prevousBookmark = m_logModel->getPreviousBookmark(id);
     m_logsTableView->scrollTo(m_logModel->index(prevousBookmark-1, 0));
     m_logsTableView->selectRow(prevousBookmark-1);
@@ -334,6 +339,11 @@ void LogView::gotoNextBookmark()
         // record the selected cell
         QModelIndex i = selected->currentIndex();
         id = m_logModel->getId(i);
+    }
+    if (id == -1)
+    {
+        gotoLastBookmark();
+        return;
     }
     int nextBookmark = m_logModel->getNextBookmark(id);
     m_logsTableView->scrollTo(m_logModel->index(nextBookmark-1, 0));
