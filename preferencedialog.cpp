@@ -137,9 +137,20 @@ void PreferenceDialog::accept()
         g_settings->setProxyType(QNetworkProxy::Socks5Proxy);
     else if (ui->rbHttpProxy->isChecked())
         g_settings->setProxyType(QNetworkProxy::HttpProxy);
-    QUrl u(ui->edtProxy->text());
-    g_settings->setProxyHostName(u.host());
-    g_settings->setProxyPort(u.port());
+    if (!ui->edtProxy->text().isEmpty())
+    {
+        QStringList sl = ui->edtProxy->text().split(QChar(':'));
+        if (sl.length() == 2)
+        {
+            bool ok = false;
+            int port = sl.at(1).toInt(&ok);
+            if (ok)
+            {
+                g_settings->setProxyHostName(sl.at(0));
+                g_settings->setProxyPort(port);
+            }
+        }
+    }
     g_settings->save();
 }
 
