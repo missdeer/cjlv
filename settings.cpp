@@ -114,6 +114,36 @@ void Settings::setLogTableColumnVisible(int logTableColumnVisible)
     m_logTableColumnVisible = logTableColumnVisible;
 }
 
+QNetworkProxy::ProxyType Settings::proxyType() const
+{
+    return m_proxyType;
+}
+
+void Settings::setProxyType(const QNetworkProxy::ProxyType &proxyType)
+{
+    m_proxyType = proxyType;
+}
+
+const QString &Settings::proxyHostName() const
+{
+    return m_proxyHostName;
+}
+
+void Settings::setProxyHostName(const QString &proxyHostName)
+{
+    m_proxyHostName = proxyHostName;
+}
+
+int Settings::proxyPort() const
+{
+    return m_proxyPort;
+}
+
+void Settings::setProxyPort(int proxyPort)
+{
+    m_proxyPort = proxyPort;
+}
+
 void Settings::save()
 {
     QSettings settings(QSettings::IniFormat, QSettings::UserScope, "cisco.com", "Cisco Jabber Log Viewer");
@@ -128,6 +158,9 @@ void Settings::save()
     if (!m_windbgPath.isEmpty())
         settings.setValue("windbgPath", m_windbgPath);
     settings.setValue("logTableColumnVisible", m_logTableColumnVisible);
+    settings.setValue("proxyType", m_proxyType);
+    settings.setValue("proxyHostName", m_proxyHostName);
+    settings.setValue("proxyPort", m_proxyPort);
     settings.sync();
 
     WritePasswordJob job( QLatin1String("com.cisco.jabber.viewer") );
@@ -160,6 +193,9 @@ void Settings::load()
         m_everythingPath = QApplication::applicationDirPath() % "/Everything.exe";
     m_windbgPath = settings.value("windbgPath").toString();
     m_logTableColumnVisible = settings.value("logTableColumnVisible", 0x7FFFFFFF).toInt();
+    m_proxyType = (QNetworkProxy::ProxyType)settings.value("proxyType", QNetworkProxy::NoProxy).toInt();
+    m_proxyHostName = settings.value("proxyHostName").toString();
+    m_proxyPort = settings.value("proxyPort", 0).toInt();
 
     ReadPasswordJob job( QLatin1String("com.cisco.jabber.viewer") );
     job.setAutoDelete( false );

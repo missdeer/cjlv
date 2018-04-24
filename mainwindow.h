@@ -30,6 +30,8 @@ public:
     TabWidget* getMainTabWidget();
     void showProgressDialog(const QString& title);
     void closeProgressDialog();
+    void applyProxySettings();
+
 public slots:
     void onStatusBarMessageChanges(const QString& msg);
 private slots:

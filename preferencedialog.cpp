@@ -56,7 +56,21 @@ PreferenceDialog::PreferenceDialog(QWidget *parent) :
     ui->edtWinDBG->setText(g_settings->windbgPath());
 #endif
     ui->fontComboBox->setCurrentFont(QFont(g_settings->sourceViewFontFamily()));
-
+    switch(g_settings->proxyType())
+    {
+    case QNetworkProxy::NoProxy:
+        ui->rbNoneProxy->setChecked(true);
+        break;
+    case QNetworkProxy::Socks5Proxy:
+        ui->rbSocksProxy->setChecked(true);
+        break;
+    case QNetworkProxy::HttpProxy:
+        ui->rbHttpProxy->setChecked(true);
+        break;
+    default:
+        break;
+    }
+    ui->edtProxy->setText(QString("%1:%2").arg(g_settings->proxyHostName()).arg(g_settings->proxyPort()));
 
     QDir dir(":/resource/themes");
     dir.setFilter(QDir::Dirs | QDir::NoSymLinks);
@@ -113,6 +127,15 @@ void PreferenceDialog::accept()
 #if defined(Q_OS_WIN)
     g_settings->setWindbgPath(ui->edtWinDBG->text());
 #endif
+    if (ui->rbNoneProxy->isChecked())
+        g_settings->setProxyType(QNetworkProxy::NoProxy);
+    else if (ui->rbSocksProxy->isChecked())
+        g_settings->setProxyType(QNetworkProxy::Socks5Proxy);
+    else if (ui->rbHttpProxy->isChecked())
+        g_settings->setProxyType(QNetworkProxy::HttpProxy);
+    QUrl u(ui->edtProxy->text());
+    g_settings->setProxyHostName(u.host());
+    g_settings->setProxyPort(u.port());
     g_settings->save();
 }
 

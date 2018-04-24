@@ -1,6 +1,8 @@
 #ifndef SETTINGS_H
 #define SETTINGS_H
 
+#include <QNetworkProxy>
+
 class Settings
 {
 public:
@@ -154,6 +156,15 @@ public:
     int logTableColumnVisible() const;
     void setLogTableColumnVisible(int logTableColumnVisible);
 
+    QNetworkProxy::ProxyType proxyType() const;
+    void setProxyType(const QNetworkProxy::ProxyType &proxyType);
+
+    const QString& proxyHostName() const;
+    void setProxyHostName(const QString &proxyHostName);
+
+    int proxyPort() const;
+    void setProxyPort(int proxyPort);
+
 private:
     bool m_inMemoryDatabase;
     bool m_searchOrFitler;
@@ -165,6 +176,9 @@ private:
     bool m_traceEnabled;
     bool m_multiMonitorEnabled;
     int m_logTableColumnVisible;
+    QNetworkProxy::ProxyType m_proxyType;
+    QString m_proxyHostName;
+    int m_proxyPort;
     QString m_temporaryDirectory;
     QString m_lastOpenedDirectory;
     QString m_sourceDirectory;
