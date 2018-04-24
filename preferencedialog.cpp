@@ -70,6 +70,10 @@ PreferenceDialog::PreferenceDialog(QWidget *parent) :
     default:
         break;
     }
+    if (g_settings->proxyType() != QNetworkProxy::NoProxy
+            && !g_settings->proxyHostName().isEmpty()
+            && g_settings->proxyPort() > 0
+            && g_settings->proxyPort() < 65535)
     ui->edtProxy->setText(QString("%1:%2").arg(g_settings->proxyHostName()).arg(g_settings->proxyPort()));
 
     QDir dir(":/resource/themes");
