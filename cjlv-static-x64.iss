@@ -48,8 +48,8 @@ Name: desktopicon; Description: {cm:CreateDesktopIcon}; GroupDescription: {cm:Ad
 
 [Files]
 Source: "CJLV.exe"; DestDir: "{app}"
-Source: "Everything.dll"; DestDir: "{app}"
-Source: "Everything.exe"; DestDir: "{app}"
+Source: "Everything64.dll"; DestDir: "{app}"
+Source: "Everything64.exe"; DestDir: "{app}"
 
 [Icons]
 Name: {commondesktop}\Cisco Jabber Log Viewer; Filename: {app}\CJLV.exe; WorkingDir: {app}; Tasks: desktopicon; Comment: Launch Cisco Jabber Log Viewer
