@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui concurrent widgets xml charts network qml quick quickwidgets
+QT       += core gui concurrent widgets xml charts network qml quick quickwidgets gui-private
 
 TARGET = "Cisco Jabber Log Viewer"
 TEMPLATE = app
@@ -12,7 +12,6 @@ CONFIG += c++11 precompile_header
 PRECOMPILED_HEADER = stdafx.h
 
 include($$PWD/3rdparty/qtkeychain/qt5keychain.pri)
-include($$PWD/3rdparty/quazip-0.7.2/quazip.pri)
 include($$PWD/3rdparty/qtsingleapplication/qtsingleapplication.pri)
 include($$PWD/3rdparty/lua-5.3.3/src/lua.pri)
 include($$PWD/3rdparty/scintilla/qt/ScintillaEdit/ScintillaEdit.pri)
@@ -101,7 +100,7 @@ macx: {
     #icon.files += cjlv.png
     INSTALLS += icon
     INCLUDEPATH += /usr/local/include
-    LIBS+=-L$$PWD/3rdparty/zlib-1.2.8 -lz -framework CoreServices -lobjc
+    LIBS+= -framework CoreServices -lobjc
 
     CONFIG(release, debug|release) : {
         QMAKE_INFO_PLIST = osxInfo.plist
@@ -132,13 +131,10 @@ macx: {
 win32: {
     RESOURCES += \
         win.qrc
-    win32-msvc* {
+    win32-*msvc* {
         QMAKE_LFLAGS += "/LTCG"
         QMAKE_CXXFLAGS_RELEASE += /Zi
         QMAKE_LFLAGS_RELEASE += /DEBUG
-        LIBS += -L$$PWD/3rdparty/zlib-1.2.8 -lzlib
-    } else {
-        LIBS += -lz
     }
 
     DISTFILES += \
@@ -164,7 +160,7 @@ win32: {
         #copy_fonts.commands = '$(COPY_DIR) $$shell_path($$PWD/Fonts) $$shell_path($$OUT_PWD/Release/)'
 
         contains(QMAKE_HOST.arch, x86_64): {
-            copy_everything_dll.commands = '$(COPY_FILE) $$shell_path($$PWD/3rdparty/Everything-SDK/dll/Everything64.dll) $$shell_path($$OUT_PWD/Release/Everything.dll)'
+            copy_everything_dll.commands = '$(COPY_FILE) $$shell_path($$PWD/3rdparty/Everything-SDK/dll/Everything64.dll) $$shell_path($$OUT_PWD/Release/Everything64.dll)'
             copy_everything_exe.commands = '$(COPY_FILE) $$shell_path($$PWD/3rdparty/Everything-SDK/exe/Everything64.exe) $$shell_path($$OUT_PWD/Release/Everything.exe)'
             win32-msvc* {
                 copy_iss.commands = '$(COPY_FILE) $$shell_path($$PWD/cjlv-msvc-x64.iss) $$shell_path($$OUT_PWD/Release/cjlv-msvc-x64.iss)'
@@ -173,7 +169,7 @@ win32: {
             }
         }
         else: {
-            copy_everything_dll.commands = '$(COPY_FILE) $$shell_path($$PWD/3rdparty/Everything-SDK/dll/Everything32.dll) $$shell_path($$OUT_PWD/Release/Everything.dll)'
+            copy_everything_dll.commands = '$(COPY_FILE) $$shell_path($$PWD/3rdparty/Everything-SDK/dll/Everything32.dll) $$shell_path($$OUT_PWD/Release/Everything32.dll)'
             copy_everything_exe.commands = '$(COPY_FILE) $$shell_path($$PWD/3rdparty/Everything-SDK/exe/Everything32.exe) $$shell_path($$OUT_PWD/Release/Everything.exe)'
             win32-msvc* {
                 copy_iss.commands = '$(COPY_FILE) $$shell_path($$PWD/cjlv-msvc-x86.iss) $$shell_path($$OUT_PWD/Release/cjlv-msvc-x86.iss)'

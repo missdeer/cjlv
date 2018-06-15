@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include <functional>
-#include <JlCompress.h>
 #include <QPieSeries>
 #include <QPieSlice>
+#include <private/qzipreader_p.h>
 #if defined(Q_OS_WIN)
 #include "ShellContextMenu.h"
 #endif
@@ -1457,7 +1457,13 @@ bool LogView::event(QEvent* e)
 
 void LogView::extract(LogView* v, const QString& fileName, const QString& dirName)
 {
+    QZipReader zr(fileName);
+    if (!zr.extractAll(dirName))
+    {
+        QMessageBox::critical(this, tr("Error"), QString("Extracting %1 to %2 failed.").arg(fileName).arg(dirName),
+                              QMessageBox::Ok);
+        return ;
+    }
     ExtractedEvent* e = new ExtractedEvent;
-    JlCompress::extractDir(fileName, dirName);
     QCoreApplication::postEvent(v, e);
 }
