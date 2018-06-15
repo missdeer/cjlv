@@ -51,7 +51,8 @@ SOURCES += main.cpp\
     quickwidgetapi.cpp \
     sqlite3helper.cpp \
     popupmenutoolbutton.cpp \
-    utils.cpp
+    utils.cpp \
+    logtableview.cpp
 
 HEADERS  += mainwindow.h \
     logview.h \
@@ -75,7 +76,8 @@ HEADERS  += mainwindow.h \
     quickwidgetapi.h \
     sqlite3helper.h \
     popupmenutoolbutton.h \
-    utils.h
+    utils.h \
+    logtableview.h
 
 FORMS    += mainwindow.ui \
     preferencedialog.ui \

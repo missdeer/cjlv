@@ -85,7 +85,7 @@ void LogView::openZipBundle(const QString &zipBundle, const QString &crashInfo)
 
 void LogView::openZipBundle(const QString &path)
 {
-    m_path = path;
+    setPath(path);
     QFileInfo fi(path);
     setWindowTitle(fi.fileName());
 
@@ -106,7 +106,7 @@ void LogView::openZipBundle(const QString &path)
 
 void LogView::openRawLogFile(const QStringList &paths)
 {
-    m_path = paths.join(":");
+    setPath(paths.join(":"));
     QString path = paths.at(0);
     QFileInfo fi(path);
     setWindowTitle(fi.fileName());
@@ -118,7 +118,7 @@ void LogView::openRawLogFile(const QStringList &paths)
 
 void LogView::openFolder(const QString &path)
 {
-    m_path = path;
+    setPath(path);
     QFileInfo fi(path);
     setWindowTitle(fi.fileName());
 
@@ -686,7 +686,7 @@ void LogView::openCrashReport()
     QString dirPath;
     if (QFileInfo(m_path).isDir())
         dirPath = m_path;
-    if (QFileInfo(m_path).suffix() == "zip")
+    if (QFileInfo(m_path).suffix().toLower() == "zip")
         dirPath = m_extractDir;
 
     QDir dir(dirPath);
