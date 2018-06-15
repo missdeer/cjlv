@@ -28,13 +28,10 @@ class LogView : public QWidget
 {
     Q_OBJECT
 public:
-    static QObject *APIProvider(QQmlEngine *engine, QJSEngine *scriptEngine);
-
-    LogView(QWidget *parent = NULL, Sqlite3HelperPtr sqlite3Helper = Sqlite3HelperPtr(new Sqlite3Helper), QuickWidgetAPIPtr api = QuickWidgetAPIPtr(new QuickWidgetAPI));
+    explicit LogView(QWidget *parent = NULL);
     ~LogView();
 
     Sqlite3HelperPtr getSqlite3Helper();
-    QuickWidgetAPIPtr getQuickWidgetAPI();
     void openZipBundle(const QString& zipBundle, const QString& crashInfo);
     void openZipBundle(const QString& path);
     void openRawLogFile(const QStringList& paths);
@@ -101,6 +98,7 @@ private slots:
     void openSourceFileWithOpenGrok(const QString& filePath, int line);
 
 private:
+    Sqlite3HelperPtr m_sqlite3Helper;
     QSplitter* m_verticalSplitter;
     QTabWidget* m_logTableChartTabWidget;
     QtCharts::QChartView* m_levelStatisticChart;
@@ -111,8 +109,6 @@ private:
     QtCharts::QChartView* m_methodStatisticChart;
     CodeEditorTabWidget* m_codeEditorTabWidget;
     PresenceWidget* m_presenceWidget;
-    Sqlite3HelperPtr m_sqlite3Helper;
-    QuickWidgetAPIPtr m_api;
     QString m_path;
     QString m_extractDir;
     QMutex m_mutex;

@@ -16,9 +16,11 @@
 
 bool QuickGetFilesByFileName(const QString& fileName, QStringList& results);
 
-LogTableView::LogTableView(QWidget *parent, Sqlite3HelperPtr sqlite3Helper, QuickWidgetAPIPtr api)
-    : QWidget(parent)
-    , m_logModel(new LogModel(m_logsTableView, sqlite3Helper, api))
+LogTableView::LogTableView(QWidget *parent, Sqlite3HelperPtr sqlite3Helper)
+	: QWidget(parent)
+    , m_api(new QuickWidgetAPI)
+	, m_logsTableView(new QTableView(this))
+    , m_logModel(new LogModel(m_logsTableView, sqlite3Helper, m_api))
 {
     initialize();
     m_logModel->postInitialize();

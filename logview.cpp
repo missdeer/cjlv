@@ -37,8 +37,9 @@ public:
 };
 
 
-LogView::LogView(QWidget *parent, Sqlite3HelperPtr sqlite3Helper, QuickWidgetAPIPtr api)
+LogView::LogView(QWidget *parent)
     : QWidget (parent)
+    , m_sqlite3Helper(new Sqlite3Helper)
     , m_verticalSplitter(new QSplitter( Qt::Vertical, parent))
     , m_logTableChartTabWidget(new QTabWidget(m_verticalSplitter))
     , m_levelStatisticChart(new QtCharts::QChartView(m_logTableChartTabWidget))
@@ -48,9 +49,7 @@ LogView::LogView(QWidget *parent, Sqlite3HelperPtr sqlite3Helper, QuickWidgetAPI
     , m_categoryStatisticChart(new QtCharts::QChartView(m_logTableChartTabWidget))
     , m_methodStatisticChart(new QtCharts::QChartView(m_logTableChartTabWidget))
     , m_codeEditorTabWidget(new CodeEditorTabWidget(m_verticalSplitter))
-    , m_presenceWidget(new PresenceWidget(m_logTableChartTabWidget, sqlite3Helper))
-    , m_sqlite3Helper(sqlite3Helper)
-    , m_api(api)
+    , m_presenceWidget(new PresenceWidget(m_logTableChartTabWidget, m_sqlite3Helper))
 {
     initialize();
 }
@@ -67,11 +66,6 @@ LogView::~LogView()
 Sqlite3HelperPtr LogView::getSqlite3Helper()
 {
     return m_sqlite3Helper;
-}
-
-QuickWidgetAPIPtr LogView::getQuickWidgetAPI()
-{
-    return m_api;
 }
 
 void LogView::openZipBundle(const QString &zipBundle, const QString &crashInfo)
@@ -694,7 +688,6 @@ void LogView::initialize()
 LogTableView *LogView::createLogTableView()
 {
     LogTableView *ltv = new LogTableView(m_logTableChartTabWidget, m_sqlite3Helper);
-
     connect(ltv, &LogTableView::databaseCreated, m_presenceWidget, &PresenceWidget::databaseCreated);
     connect(ltv, &LogTableView::rowCountChanged, this, &LogView::rowCountChanged);
     connect(ltv, &LogTableView::runExtension, this, &LogView::runExtension);
@@ -704,6 +697,7 @@ LogTableView *LogView::createLogTableView()
     connect(ltv, &LogTableView::openSourceFileInVS, this, &LogView::openSourceFileInVS);
     connect(ltv, &LogTableView::openSourceFileWithBuiltinEditor, this, &LogView::openSourceFileWithBuiltinEditor);
     connect(ltv, &LogTableView::openSourceFileWithOpenGrok, this, &LogView::openSourceFileWithOpenGrok);
+    m_logTableViews.append(ltv);
     return ltv;
 }
 
@@ -874,6 +868,10 @@ void LogView::onLogTableChartTabWidgetCurrentChanged(int index)
     {
         setChart(it->chartView, sis, it->label);
         it->created = true;
+    }
+    else
+    {
+        emit rowCountChanged();
     }
 }
 

@@ -26,7 +26,7 @@ class LogTableView : public QWidget
 {
     Q_OBJECT
 public:
-    explicit LogTableView(QWidget *parent, Sqlite3HelperPtr sqlite3Helper, QuickWidgetAPIPtr api = QuickWidgetAPIPtr(new QuickWidgetAPI));
+    LogTableView(QWidget *parent, Sqlite3HelperPtr sqlite3Helper);
 
     LogModel *getModel();
     const QString & path() const;
@@ -101,12 +101,12 @@ private slots:
     void onHHeaderContextMenuActionTriggered();
 
 private:
+    QuickWidgetAPIPtr m_api;
     QTableView *m_logsTableView;
     LogModel* m_logModel;
     QComboBox* m_cbSearchKeyword;
     QQuickWidget* m_extraToolPanel;
     QToolButton* m_extraToolPanelVisibleButton;
-    QuickWidgetAPIPtr m_api;
     QTimer* m_keywordChangedTimer;
     QString m_path;
     int m_lastId;
