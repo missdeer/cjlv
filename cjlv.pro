@@ -11,6 +11,9 @@ TEMPLATE = app
 CONFIG += c++11 precompile_header
 PRECOMPILED_HEADER = stdafx.h
 
+lessThan(QT_MAJOR_VERSION, 5): error("Qt 5 or higher is required")
+greaterThan(QT_MINOR_VERSION, 10): CONFIG+= qtquickcompiler
+
 include($$PWD/3rdparty/qtkeychain/qt5keychain.pri)
 include($$PWD/3rdparty/qtsingleapplication/qtsingleapplication.pri)
 include($$PWD/3rdparty/lua-5.3.3/src/lua.pri)
