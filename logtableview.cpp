@@ -166,6 +166,8 @@ void LogTableView::onDataLoaded()
         for (int idx = 0; idx < m_hheaderColumnHidden.length(); idx ++)
             m_logsTableView->setColumnHidden(idx, m_hheaderColumnHidden[idx] );
     });
+
+    emit dataLoaded();
 }
 
 void LogTableView::onRowCountChanged()

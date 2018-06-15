@@ -688,6 +688,7 @@ void LogView::initialize()
 LogTableView *LogView::createLogTableView()
 {
     LogTableView *ltv = new LogTableView(m_logTableChartTabWidget, m_sqlite3Helper);
+    connect(ltv, &LogTableView::dataLoaded, this, &LogView::onDataLoaded);
     connect(ltv, &LogTableView::databaseCreated, m_presenceWidget, &PresenceWidget::databaseCreated);
     connect(ltv, &LogTableView::rowCountChanged, this, &LogView::rowCountChanged);
     connect(ltv, &LogTableView::runExtension, this, &LogView::runExtension);

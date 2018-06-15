@@ -71,6 +71,7 @@ public:
 
     void onRunExtension(ExtensionPtr e);
 signals:
+    void dataLoaded();
     void databaseCreated(const QString&);
     void rowCountChanged();
     void runExtension(ExtensionPtr e);
