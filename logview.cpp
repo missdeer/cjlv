@@ -675,11 +675,11 @@ void LogView::initialize()
     Q_ASSERT(mainLayout);
     mainLayout->setMargin(0);
 
-    LogTableView* logsTab = new LogTableView(m_logTableChartTabWidget, m_sqlite3Helper);
+    LogTableView *ltv = createLogTableView();
     m_logTableChartTabWidget->setTabPosition(QTabWidget::South);
     m_logTableChartTabWidget->setTabsClosable(false);
     m_logTableChartTabWidget->setDocumentMode(true);
-    m_logTableChartTabWidget->addTab(logsTab, "Logs(1)");
+    m_logTableChartTabWidget->addTab(ltv, "Logs(1)");
     m_logTableChartTabWidget->addTab(m_levelStatisticChart, "Level");
     m_logTableChartTabWidget->addTab(m_threadStatisticChart, "Thread");
     m_logTableChartTabWidget->addTab(m_sourceFileStatisticChart, "Source File");
@@ -691,6 +691,22 @@ void LogView::initialize()
     connect(m_logTableChartTabWidget, &QTabWidget::currentChanged, this, &LogView::onLogTableChartTabWidgetCurrentChanged);
 }
 
+LogTableView *LogView::createLogTableView()
+{
+    LogTableView *ltv = new LogTableView(m_logTableChartTabWidget, m_sqlite3Helper);
+
+    connect(ltv, &LogTableView::databaseCreated, m_presenceWidget, &PresenceWidget::databaseCreated);
+    connect(ltv, &LogTableView::rowCountChanged, this, &LogView::rowCountChanged);
+    connect(ltv, &LogTableView::runExtension, this, &LogView::runExtension);
+    connect(ltv, &LogTableView::gotoLogLine, this, &LogView::gotoLogLine);
+    connect(ltv, &LogTableView::extractContent, this, &LogView::extractContent);
+    connect(ltv, &LogTableView::openLog, this, &LogView::openLog);
+    connect(ltv, &LogTableView::openSourceFileInVS, this, &LogView::openSourceFileInVS);
+    connect(ltv, &LogTableView::openSourceFileWithBuiltinEditor, this, &LogView::openSourceFileWithBuiltinEditor);
+    connect(ltv, &LogTableView::openSourceFileWithOpenGrok, this, &LogView::openSourceFileWithOpenGrok);
+    return ltv;
+}
+
 void LogView::onDataLoaded()
 {
     getMainWindow()->closeProgressDialog();
@@ -698,11 +714,6 @@ void LogView::onDataLoaded()
     QTimer::singleShot(100, [&](){
         openCrashReport();
     });
-}
-
-void LogView::onRowCountChanged()
-{
-
 }
 
 void LogView::searchFieldContent()

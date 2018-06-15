@@ -94,7 +94,6 @@ signals:
 
 private slots:
     void onDataLoaded();
-    void onRowCountChanged();
     void onShowLogItemsBetweenSelectedRows();
     void onLogTableChartTabWidgetCurrentChanged(int index);
     void openSourceFileWithBuiltinEditor(const QString& filePath, int line);
@@ -133,6 +132,7 @@ private:
     MainWindow *getMainWindow();
     void openCrashReport();
     void initialize();
+    LogTableView *createLogTableView();
 };
 
 class SourceWindow;
