@@ -143,7 +143,7 @@ void ScintillaConfig::initFolderStyle(ScintillaEdit *sci)
     sci->setProperty( "fold.symbols", "1");
     sci->setProperty( "fold.compact", "0");
     sci->setProperty( "fold.at.else", "1");
-    sci->setProperty( "fold.preprocessor", "1");
+    sci->setProperty( "fold.preprocessor", "0");
     sci->setProperty( "fold.view", "1");
     sci->setProperty( "fold.comment", "1");
     sci->setProperty( "fold.html", "1");
