@@ -72,7 +72,6 @@ MainWindow::MainWindow(QSplashScreen &splash, QWidget *parent) :
     connect(ui->actionGotoLastBookmark, &QAction::triggered, ui->tabWidget, &TabWidget::onGotoLastBookmark);
     connect(ui->actionScrollToTop, &QAction::triggered, ui->tabWidget, &TabWidget::onScrollToTop);
     connect(ui->actionScrollToBottom, &QAction::triggered, ui->tabWidget, &TabWidget::onScrollToBottom);
-    connect(ui->actionReload, &QAction::triggered, ui->tabWidget, &TabWidget::onReload);
     connect(ui->actionGotoById, &QAction::triggered, ui->tabWidget, &TabWidget::onGotoById);
     connect(ui->actionExit, &QAction::triggered, qApp, &QApplication::quit);
 

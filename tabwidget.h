@@ -16,8 +16,6 @@ public:
     void openRawLogFile(const QStringList& paths);
     void openFolder(const QString& path, bool installed);
 
-    void filter(const QString& keyword);
-
     void inputKeyword();
     void clearKeyword();
     void enableRegexpMode(bool enabled);
@@ -66,8 +64,6 @@ public slots:
 
     void onScrollToTop();
     void onScrollToBottom();
-
-    void onReload();
     void onGotoById();
 
     void onRunExtension(ExtensionPtr e);

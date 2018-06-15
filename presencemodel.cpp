@@ -155,7 +155,7 @@ void PresenceModel::requestReceivedPresenceBuddyList()
     QtConcurrent::run(this, &PresenceModel::doRequestReceivedPresenceBuddyList);
 }
 
-void PresenceModel::onDatabaseCreated(QString dbFile)
+void PresenceModel::onDatabaseCreated(const QString& dbFile)
 {
     m_dbFile = dbFile;
 }

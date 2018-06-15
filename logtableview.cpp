@@ -20,6 +20,21 @@ LogTableView::LogTableView(QWidget *parent, Sqlite3HelperPtr sqlite3Helper, Quic
     : QWidget(parent)
     , m_logModel(new LogModel(m_logsTableView, sqlite3Helper, api))
 {
+    initialize();
+    m_logModel->postInitialize();
+}
+
+LogModel *LogTableView::getModel()
+{
+    return m_logModel;
+}
+
+void LogTableView::initialize()
+{
+    int res = g_settings->logTableColumnVisible();
+    for(int i = 0; i < 10; i++)
+        m_hheaderColumnHidden.append(!(res & (0x01 << i)));
+
     QWidget* topBar = new QWidget(this);
     QHBoxLayout* topBarLayout = new QHBoxLayout;
     topBarLayout->setMargin(0);
@@ -78,6 +93,10 @@ LogTableView::LogTableView(QWidget *parent, Sqlite3HelperPtr sqlite3Helper, Quic
     connect(m_logsTableView, &QAbstractItemView::doubleClicked, this, &LogTableView::onDoubleClicked);
     connect(m_logsTableView, &QWidget::customContextMenuRequested, this, &LogTableView::onCustomContextMenuRequested);
     connect(m_logsTableView->horizontalHeader(), &QWidget::customContextMenuRequested, this, &LogTableView::onHHeaderCustomContextMenuRequested);
+    connect(m_logModel, &LogModel::dataLoaded, this, &LogTableView::onDataLoaded);
+    connect(m_logModel, &LogModel::rowCountChanged, this, &LogTableView::onRowCountChanged);
+    connect(m_logModel, &LogModel::databaseCreated, this, &LogTableView::databaseCreated);
+    connect(this, &LogTableView::runExtension, m_logModel, &LogModel::runLuaExtension);
 }
 
 void LogTableView::onClearKeyword()
@@ -88,17 +107,74 @@ void LogTableView::onClearKeyword()
 
 void LogTableView::onDoubleClicked(const QModelIndex &index)
 {
-    emit itemDoubleClicked(index);
+    switch (index.column())// the content field
+    {
+    case 4:
+#if defined(Q_OS_WIN)
+        if (qApp->keyboardModifiers() & Qt::ControlModifier)
+        {
+            openSourceFile(index, [this](const QString& filePath, int line){
+                emit openSourceFileInVS(filePath, line);
+            });
+        }
+        else
+#endif
+        {
+            openSourceFile(index, [this](const QString& filePath, int line){
+                emit openSourceFileWithBuiltinEditor(filePath, line);
+            });
+        }
+        break;
+    case 7:
+    {
+        QString text = Utils::formatXML( m_logModel->getLogContent(index));
+        emit extractContent(text);
+    }
+        break;
+    case 8:
+    {
+        QString file = m_logModel->getLogFileName(index);
+        emit openLog(file);
+    }
+        break;
+    case 9:
+    {
+        QString logFile;
+        int line = m_logModel->getLogFileLine(index, logFile);
+        emit gotoLogLine(line, logFile);
+    }
+        break;
+    default:
+        break;
+    }
 }
 
 void LogTableView::onDataLoaded()
 {
+    if (m_api->getTo() < m_logModel->getMaxTotalRowCount())
+    {
+        m_api->setTo( m_logModel->getMaxTotalRowCount());
+        emit m_api->toChanged();
+        m_api->setSecondValue( m_logModel->getMaxTotalRowCount());
+        emit m_api->secondValueChanged();
+    }
 
+    // let it run in main thread, so QMessageBox could work as expected
+    QTimer::singleShot(100, [&](){
+        for (int idx = 0; idx < m_hheaderColumnHidden.length(); idx ++)
+            m_logsTableView->setColumnHidden(idx, m_hheaderColumnHidden[idx] );
+    });
 }
 
 void LogTableView::onRowCountChanged()
 {
-
+    if (m_lastId >= 0 && m_lastColumn >= 0)
+    {
+        m_logsTableView->scrollTo(m_logModel->index(m_lastId -1, m_lastColumn));
+        m_logsTableView->selectRow(m_lastId -1);
+        m_lastId = m_lastColumn = -1;
+    }
+    emit rowCountChanged();
 }
 
 void LogTableView::onCustomContextMenuRequested(const QPoint &pos)
@@ -213,7 +289,9 @@ void LogTableView::onContentPreview()
     QItemSelectionModel* selected = m_logsTableView->selectionModel();
     if (selected && selected->hasSelection())
     {
-        emit extractContent(selected->currentIndex());
+        QModelIndex index = selected->currentIndex();
+        QString text = Utils::formatXML( m_logModel->getLogContent(index));
+        emit extractContent(text);
     }
 }
 
@@ -222,7 +300,10 @@ void LogTableView::onLogFilePreview()
     QItemSelectionModel* selected = m_logsTableView->selectionModel();
     if (selected && selected->hasSelection())
     {
-        emit gotoLogLine(selected->currentIndex());
+        QModelIndex index = selected->currentIndex();
+        QString logFile;
+        int line = m_logModel->getLogFileLine(index, logFile);
+        emit gotoLogLine(line, logFile);
     }
 }
 
@@ -239,11 +320,6 @@ void LogTableView::onCbKeywordEditTextChanged(const QString &text)
 void LogTableView::onCbKeywordCurrentIndexChanged(const QString &text)
 {
     filter(text.trimmed());
-}
-
-void LogTableView::onReloadSearchResult()
-{
-    filter(m_cbSearchKeyword->lineEdit()->text().trimmed());
 }
 
 void LogTableView::onShowLogItemsBetweenSelectedRows()
@@ -390,4 +466,351 @@ const QString &LogTableView::path() const
 void LogTableView::setPath(const QString &path)
 {
     m_path = path;
+}
+
+void LogTableView::loadFromFiles(const QStringList &fileNames)
+{
+    Q_ASSERT(m_logModel);
+    m_logModel->loadFromFiles(fileNames);
+}
+
+void LogTableView::copyCurrentCell()
+{
+    QItemSelectionModel* selected =  m_logsTableView->selectionModel();
+    if (!selected->hasSelection())
+        return;
+    QModelIndex i = selected->currentIndex();
+    m_logModel->copyCell(i);
+}
+
+void LogTableView::copyCurrentRow()
+{
+    QItemSelectionModel* selected =  m_logsTableView->selectionModel();
+    if (!selected->hasSelection())
+        return;
+    int row = selected->currentIndex().row();
+    m_logModel->copyRow(row);
+}
+
+void LogTableView::copySelectedCells()
+{
+    QItemSelectionModel* selected =  m_logsTableView->selectionModel();
+    if (!selected->hasSelection())
+        return;
+    QModelIndexList l = selected->selectedIndexes();
+    m_logModel->copyCells(l);
+}
+
+void LogTableView::copySelectedRows()
+{
+    QItemSelectionModel* selected =  m_logsTableView->selectionModel();
+    if (!selected->hasSelection())
+        return;
+    QModelIndexList l = selected->selectedIndexes();
+    QList<int> rows;
+    for(const QModelIndex& i : l)
+    {
+        rows.append(i.row());
+    }
+    auto t = rows.toStdList();
+    t.unique();
+    rows = QList<int>::fromStdList(t);
+    m_logModel->copyRows(rows);
+}
+
+void LogTableView::copyCurrentCellWithXMLFormatted()
+{
+    QItemSelectionModel* selected =  m_logsTableView->selectionModel();
+    if (!selected->hasSelection())
+        return;
+    QModelIndex i = selected->currentIndex();
+    m_logModel->copyCellWithXMLFormatted(i);
+}
+
+void LogTableView::copyCurrentRowWithXMLFormatted()
+{
+    QItemSelectionModel* selected =  m_logsTableView->selectionModel();
+    if (!selected->hasSelection())
+        return;
+    int row = selected->currentIndex().row();
+    m_logModel->copyRowWithXMLFormatted(row);
+}
+
+void LogTableView::copySelectedCellsWithXMLFormatted()
+{
+    QItemSelectionModel* selected =  m_logsTableView->selectionModel();
+    if (!selected->hasSelection())
+        return;
+    QModelIndexList l = selected->selectedIndexes();
+    m_logModel->copyCellsWithXMLFormatted(l);
+}
+
+void LogTableView::copySelectedRowsWithXMLFormatted()
+{
+    QItemSelectionModel* selected =  m_logsTableView->selectionModel();
+    if (!selected->hasSelection())
+        return;
+    QModelIndexList l = selected->selectedIndexes();
+    QList<int> rows;
+    for(const QModelIndex& i : l)
+    {
+        rows.append(i.row());
+    }
+    auto t = rows.toStdList();
+    t.unique();
+    rows = QList<int>::fromStdList(t);
+    m_logModel->copyRowsWithXMLFormatted(rows);
+}
+
+void LogTableView::addCurrentRowToBookmark()
+{
+    QItemSelectionModel* selected =  m_logsTableView->selectionModel();
+    if (!selected->hasSelection())
+        return;
+    int row = selected->currentIndex().row();
+    m_logModel->addBookmark(row);
+}
+
+void LogTableView::removeCurrentRowFromBookmark()
+{
+    QItemSelectionModel* selected =  m_logsTableView->selectionModel();
+    if (!selected->hasSelection())
+        return;
+    int row = selected->currentIndex().row();
+    m_logModel->removeBookmark(row);
+}
+
+void LogTableView::addSelectedRowsToBookmark()
+{
+    QItemSelectionModel* selected =  m_logsTableView->selectionModel();
+    if (!selected->hasSelection())
+        return;
+    QModelIndexList l = selected->selectedIndexes();
+    QList<int> rows;
+    for(const QModelIndex& i : l)
+    {
+        rows.append(i.row());
+    }
+    m_logModel->addBookmarks(rows);
+}
+
+void LogTableView::removeSelectedRowsFromBookmark()
+{
+    QItemSelectionModel* selected =  m_logsTableView->selectionModel();
+    if (!selected->hasSelection())
+        return;
+    QModelIndexList l = selected->selectedIndexes();
+    QList<int> rows;
+    for(const QModelIndex& i : l)
+    {
+        rows.append(i.row());
+    }
+    m_logModel->removeBookmarks(rows);
+}
+
+void LogTableView::removeAllBookmarks()
+{
+    m_logModel->clearBookmarks();
+}
+
+void LogTableView::gotoFirstBookmark()
+{
+    int bookmark = m_logModel->getFirstBookmark();
+    if (bookmark >= 0)
+    {
+        m_logsTableView->scrollTo(m_logModel->index(bookmark-1, 0));
+        m_logsTableView->selectRow(bookmark-1);
+        m_logsTableView->setFocus();
+    }
+}
+
+void LogTableView::gotoPreviousBookmark()
+{
+    int id = -1;
+    QItemSelectionModel* selected =  m_logsTableView->selectionModel();
+    if (selected && selected->hasSelection())
+    {
+        // record the selected cell
+        QModelIndex i = selected->currentIndex();
+        id = m_logModel->getId(i);
+    }
+    if (id == -1)
+    {
+        gotoFirstBookmark();
+        return;
+    }
+    int prevousBookmark = m_logModel->getPreviousBookmark(id);
+    m_logsTableView->scrollTo(m_logModel->index(prevousBookmark-1, 0));
+    m_logsTableView->selectRow(prevousBookmark-1);
+    m_logsTableView->setFocus();
+}
+
+void LogTableView::gotoNextBookmark()
+{
+    int id = -1;
+    QItemSelectionModel* selected =  m_logsTableView->selectionModel();
+    if (selected && selected->hasSelection())
+    {
+        // record the selected cell
+        QModelIndex i = selected->currentIndex();
+        id = m_logModel->getId(i);
+    }
+    if (id == -1)
+    {
+        gotoLastBookmark();
+        return;
+    }
+    int nextBookmark = m_logModel->getNextBookmark(id);
+    m_logsTableView->scrollTo(m_logModel->index(nextBookmark-1, 0));
+    m_logsTableView->selectRow(nextBookmark-1);
+    m_logsTableView->setFocus();
+}
+
+void LogTableView::gotoLastBookmark()
+{
+    int bookmark = m_logModel->getLastBookmark();
+    if (bookmark >= 0)
+    {
+        m_logsTableView->scrollTo(m_logModel->index(bookmark-1, 0));
+        m_logsTableView->selectRow(bookmark-1);
+        m_logsTableView->setFocus();
+    }
+}
+
+void LogTableView::scrollToTop()
+{
+    m_logsTableView->scrollToTop();
+    m_logsTableView->selectRow(0);
+    m_logsTableView->setFocus();
+}
+
+void LogTableView::scrollToBottom()
+{
+    m_logsTableView->scrollToBottom();
+    m_logsTableView->selectRow(rowCount() -1);
+    m_logsTableView->setFocus();
+}
+
+void LogTableView::gotoById(int i)
+{
+    m_logsTableView->scrollTo(m_logModel->index(i-1, 0));
+    m_logsTableView->selectRow(i-1);
+    m_logsTableView->setFocus();
+}
+
+int LogTableView::rowCount()
+{
+    return m_logModel->rowCount();
+}
+
+void LogTableView::enableRegexpMode(bool enabled)
+{
+    m_logModel->setRegexpMode(enabled);
+}
+
+void LogTableView::inputKeyword()
+{
+    m_cbSearchKeyword->setFocus();
+    m_cbSearchKeyword->lineEdit()->selectAll();
+}
+
+void LogTableView::searchFieldContent()
+{
+    m_cbSearchKeyword->lineEdit()->setPlaceholderText(tr("Search Field Content"));
+    m_logModel->setSearchField("content");
+}
+
+void LogTableView::searchFieldID()
+{
+    m_cbSearchKeyword->lineEdit()->setPlaceholderText(tr("Search Field ID"));
+    m_logModel->setSearchField("id");
+}
+
+void LogTableView::searchFieldDateTime()
+{
+    m_cbSearchKeyword->lineEdit()->setPlaceholderText(tr("Search Field Date Time"));
+    m_logModel->setSearchField("time");
+}
+
+void LogTableView::searchFieldThread()
+{
+    m_cbSearchKeyword->lineEdit()->setPlaceholderText(tr("Search Field Thread"));
+    m_logModel->setSearchField("thread");
+}
+
+void LogTableView::searchFieldCategory()
+{
+    m_cbSearchKeyword->lineEdit()->setPlaceholderText(tr("Search Field Category"));
+    m_logModel->setSearchField("category");
+}
+
+void LogTableView::searchFieldSourceFile()
+{
+    m_cbSearchKeyword->lineEdit()->setPlaceholderText(tr("Search Field Source File"));
+    m_logModel->setSearchField("source");
+}
+
+void LogTableView::searchFieldMethod()
+{
+    m_cbSearchKeyword->lineEdit()->setPlaceholderText(tr("Search Field Method"));
+    m_logModel->setSearchField("method");
+}
+
+void LogTableView::searchFieldLogFile()
+{
+    m_cbSearchKeyword->lineEdit()->setPlaceholderText(tr("Search Field Log File"));
+    m_logModel->setSearchField("log");
+}
+
+void LogTableView::searchFieldLine()
+{
+    m_cbSearchKeyword->lineEdit()->setPlaceholderText(tr("Search Field Line"));
+    m_logModel->setSearchField("line");
+}
+
+void LogTableView::searchFieldLevel()
+{
+    m_cbSearchKeyword->lineEdit()->setPlaceholderText(tr("Search Field Level"));
+    m_logModel->setSearchField("level");
+}
+
+void LogTableView::onRunExtension(ExtensionPtr e)
+{
+    if (e->method() == "Regexp")
+    {
+        m_cbSearchKeyword->lineEdit()->setText("r>" + e->content());
+    }
+    else if (e->method() == "Keyword")
+    {
+        QMap<QString, QString> m = {
+            { "id"      , "i"},
+            { "datetime", "d"},
+            { "level"   , "v"},
+            { "thread"  , "t"},
+            { "source"  , "s"},
+            { "category", "a"},
+            { "method"  , "m"},
+            { "content" , "c"},
+            { "logfile" , "f"},
+            { "line"    , "l"},
+        };
+
+        auto it = m.find(e->field());
+
+        if (m.end() != it)
+        {
+            m_cbSearchKeyword->lineEdit()->setText(*it % ">" % e->content());
+        }
+    }
+    else if (e->method() == "SQL WHERE clause")
+    {
+        m_cbSearchKeyword->lineEdit()->setText("sql>" + e->content());
+    }
+    else
+    {
+        m_cbSearchKeyword->lineEdit()->clear();
+        emit runExtension(e);
+    }
+    m_cbSearchKeyword->setFocus();
+    m_cbSearchKeyword->lineEdit()->end(false);
 }

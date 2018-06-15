@@ -32,7 +32,7 @@ signals:
     void gotPresences(QStringList, QList<QSharedPointer<PresenceItem>>);
     void resizeTableCells(int, int);
 public slots:
-    void onDatabaseCreated(QString dbFile);
+    void onDatabaseCreated(const QString &dbFile);
     void onSelectedJIDChanged(const QString &text);
     void onGetPrsences(QStringList jidList, QList<QSharedPointer<PresenceItem>> presences);
 private:

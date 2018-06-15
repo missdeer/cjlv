@@ -76,16 +76,6 @@ void TabWidget::openFolder(const QString &path, bool installed)
     setTabIcon(index, QIcon(installed ? ":/image/open-installed-folder.png" : ":/image/open-folder.png"));
 }
 
-void TabWidget::filter(const QString& keyword)
-{
-    QWidget* w = currentWidget();
-    if (w)
-    {
-        LogView* v = qobject_cast<LogView*>(w);
-        v->filter(keyword);
-    }
-}
-
 void TabWidget::inputKeyword()
 {
     QWidget* w = currentWidget();
@@ -452,16 +442,6 @@ void TabWidget::onScrollToBottom()
     {
         LogView* v = qobject_cast<LogView*>(w);
         v->scrollToBottom();
-    }
-}
-
-void TabWidget::onReload()
-{
-    QWidget* w = currentWidget();
-    if (w)
-    {
-        LogView* v = qobject_cast<LogView*>(w);
-        v->reload();
     }
 }
 

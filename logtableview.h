@@ -28,18 +28,62 @@ class LogTableView : public QWidget
 public:
     explicit LogTableView(QWidget *parent, Sqlite3HelperPtr sqlite3Helper, QuickWidgetAPIPtr api = QuickWidgetAPIPtr(new QuickWidgetAPI));
 
+    LogModel *getModel();
     const QString & path() const;
     void setPath(const QString &path);
+    void loadFromFiles(const QStringList& fileNames);
 
+    void copyCurrentCell();
+    void copyCurrentRow();
+    void copySelectedCells();
+    void copySelectedRows();
+    void copyCurrentCellWithXMLFormatted();
+    void copyCurrentRowWithXMLFormatted();
+    void copySelectedCellsWithXMLFormatted();
+    void copySelectedRowsWithXMLFormatted();
+    void addCurrentRowToBookmark();
+    void removeCurrentRowFromBookmark();
+    void addSelectedRowsToBookmark();
+    void removeSelectedRowsFromBookmark();
+    void removeAllBookmarks();
+    void gotoFirstBookmark();
+    void gotoPreviousBookmark();
+    void gotoNextBookmark();
+    void gotoLastBookmark();
+    void scrollToTop();
+    void scrollToBottom();
+    void gotoById(int i);
+
+    int rowCount();
+
+    void enableRegexpMode(bool enabled);
+    void inputKeyword();
+    void searchFieldContent();
+    void searchFieldID();
+    void searchFieldDateTime();
+    void searchFieldThread();
+    void searchFieldCategory();
+    void searchFieldSourceFile();
+    void searchFieldMethod();
+    void searchFieldLogFile();
+    void searchFieldLine();
+    void searchFieldLevel();
+
+    void onRunExtension(ExtensionPtr e);
 signals:
+    void databaseCreated(const QString&);
+    void rowCountChanged();
+    void runExtension(ExtensionPtr e);
     void itemDoubleClicked(const QModelIndex &index);
-    void gotoLogLine(const QModelIndex &index);
-    void extractContent(const QModelIndex &index);
+    void gotoLogLine(int line, const QString& filePath);
+    void extractContent(const QString &text);
+    void openLog(const QString& filePath);
     void openSourceFileWithBuiltinEditor(const QString& filePath, int line);
     void openSourceFileInVS(const QString& filePath, int line);
     void openSourceFileWithOpenGrok(const QString& filePath, int line);
 public slots:
     void onClearKeyword();
+    void onShowLogItemsBetweenSelectedRows();
 
 private slots:
     void onDoubleClicked(const QModelIndex &index);
@@ -54,8 +98,6 @@ private slots:
     void onLogFilePreview();
     void onCbKeywordEditTextChanged(const QString &text);
     void onCbKeywordCurrentIndexChanged(const QString &text);
-    void onReloadSearchResult();
-    void onShowLogItemsBetweenSelectedRows();
     void onHHeaderContextMenuActionTriggered();
 
 private:
@@ -77,6 +119,7 @@ private:
     void openSourceFile(const QModelIndex &index, std::function<void(const QString&, int)> callback);
 
     void filter(const QString &keyword);
+    void initialize();
 };
 
 #endif // LOGTABLEVIEW_H

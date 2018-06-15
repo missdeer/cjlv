@@ -94,7 +94,7 @@ signals:
     void logItemsReady(QMap<int, QSharedPointer<LogItem>>);
     void dataLoaded();
     void rowCountChanged();
-    void databaseCreated(QString);
+    void databaseCreated(const QString&);
 public slots:
     void onLogItemReady(int i, QSharedPointer<LogItem> log);
     void onLogItemsReady(QMap<int, QSharedPointer<LogItem>> logs);
