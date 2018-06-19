@@ -104,7 +104,7 @@ private slots:
     void openSourceFileWithBuiltinEditor(const QString& filePath, int line);
     void openSourceFileInVS(const QString& filePath, int line);
     void openSourceFileWithOpenGrok(const QString& filePath, int line);
-
+    void onLogTableChartTabWidgetTabBarDoubleClicked(int index);
 private:
     Sqlite3HelperPtr m_sqlite3Helper;
     QSplitter* m_verticalSplitter;

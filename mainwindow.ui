@@ -88,8 +88,8 @@
     <addaction name="actionNewLogSourceFilePieChart"/>
     <addaction name="actionNewLogSourceLinePieChart"/>
     <addaction name="actionNewLogCategoryPieChart"/>
-    <addaction name="actionNewLogPresenceTableView"/>
     <addaction name="actionNewLogMethodPieChart"/>
+    <addaction name="actionNewLogPresenceTableView"/>
     <addaction name="separator"/>
     <addaction name="actionClose"/>
     <addaction name="actionCloseAll"/>

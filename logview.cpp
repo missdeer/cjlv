@@ -96,8 +96,7 @@ void LogView::openZipBundle(const QString &path)
 
     getMainWindow()->showProgressDialog(QString(tr("Loading logs from ZIP bundle %1...")).arg(path));
 
-	extract(this, path, m_extractDir);
-    //QtConcurrent::run(this, &LogView::extract, this, path, m_extractDir);
+	QtConcurrent::run(this, &LogView::extract, this, path, m_extractDir);
 }
 
 void LogView::openRawLogFile(const QStringList &paths)
@@ -661,6 +660,20 @@ void LogView::openSourceFileWithOpenGrok(const QString &filePath, int line)
     }
 }
 
+void LogView::onLogTableChartTabWidgetTabBarDoubleClicked(int index)
+{
+	auto w = m_logTableChartTabWidget->widget(index);
+	auto ltv = qobject_cast<LogTableView*>(w);
+	if (ltv)
+	{
+		if (m_logTableViews.size() == 1)
+			return; // don't remove the last LogTableView tab
+		m_logTableViews.removeAll(ltv);
+	}
+    m_logTableChartTabWidget->removeTab(index);
+    delete w;
+}
+
 void LogView::initialize()
 {
     m_verticalSplitter->addWidget(m_logTableChartTabWidget);
@@ -676,15 +689,8 @@ void LogView::initialize()
 
     createLogTableView();
 
-//    m_logTableChartTabWidget->addTab(m_levelStatisticChart, "Level");
-//    m_logTableChartTabWidget->addTab(m_threadStatisticChart, "Thread");
-//    m_logTableChartTabWidget->addTab(m_sourceFileStatisticChart, "Source File");
-//    m_logTableChartTabWidget->addTab(m_sourceLineStatisticChart, "Source Line");
-//    m_logTableChartTabWidget->addTab(m_categoryStatisticChart, "Category");
-//    m_logTableChartTabWidget->addTab(m_methodStatisticChart, "Method");
-//    m_logTableChartTabWidget->addTab(m_presenceWidget, "Presence");
-
     connect(m_logTableChartTabWidget, &QTabWidget::currentChanged, this, &LogView::onLogTableChartTabWidgetCurrentChanged);
+    connect(m_logTableChartTabWidget, &QTabWidget::tabBarDoubleClicked, this, &LogView::onLogTableChartTabWidgetTabBarDoubleClicked);
 
 	QVBoxLayout* mainLayout = new QVBoxLayout;
 	Q_ASSERT(mainLayout);
