@@ -29,11 +29,22 @@ extern QWinTaskbarProgress *g_winTaskbarProgress;
 SourceWindow* g_sourceWindow = nullptr;
 
 static const QEvent::Type EXTRACTED_EVENT = QEvent::Type(QEvent::User + 1);
+static const QEvent::Type EXTRACT_FAILED_EVENT = QEvent::Type(QEvent::User + 2);
 
 class ExtractedEvent : public QEvent
 {
 public:
     ExtractedEvent() : QEvent(EXTRACTED_EVENT) {}
+};
+
+class ExtractFailedEvent : public QEvent
+{
+public:
+	ExtractFailedEvent() 
+		: QEvent(EXTRACT_FAILED_EVENT) 
+	{}
+	QString m_fileName;
+	QString m_dirName;
 };
 
 
@@ -85,7 +96,8 @@ void LogView::openZipBundle(const QString &path)
 
     getMainWindow()->showProgressDialog(QString(tr("Loading logs from ZIP bundle %1...")).arg(path));
 
-    QtConcurrent::run(this, &LogView::extract, this, path, m_extractDir);
+	extract(this, path, m_extractDir);
+    //QtConcurrent::run(this, &LogView::extract, this, path, m_extractDir);
 }
 
 void LogView::openRawLogFile(const QStringList &paths)
@@ -983,6 +995,16 @@ bool LogView::event(QEvent* e)
 			ltv->loadFromFiles(fileNames);
 	}
         return true;
+	case EXTRACT_FAILED_EVENT:
+	{
+		getMainWindow()->closeProgressDialog();
+		ExtractFailedEvent* efe = dynamic_cast<ExtractFailedEvent*>(e);
+		Q_ASSERT(efe);
+		QMessageBox::critical(this, tr("Error"), 
+			QString("Extracting %1 to %2 failed.").arg(efe->m_fileName).arg(efe->m_dirName),
+			QMessageBox::Ok);
+	}
+		return true;
     default:
         return QObject::event(e);
     }
@@ -991,12 +1013,30 @@ bool LogView::event(QEvent* e)
 void LogView::extract(LogView* v, const QString& fileName, const QString& dirName)
 {
     QZipReader zr(fileName);
-    if (!zr.extractAll(dirName))
-    {
-        QMessageBox::critical(this, tr("Error"), QString("Extracting %1 to %2 failed.").arg(fileName).arg(dirName),
-                              QMessageBox::Ok);
-        return ;
-    }
+	if (!zr.isReadable())
+	{
+		ExtractFailedEvent* e = new ExtractFailedEvent;
+		e->m_fileName = QDir::toNativeSeparators(fileName);
+		e->m_dirName = QDir::toNativeSeparators(dirName);
+		QCoreApplication::postEvent(v, e);
+		return;
+	}
+	int count = zr.count();
+	for (int i = 0; i < count; i++)
+	{
+		auto fi = zr.entryInfoAt(i);
+		if (!fi.isFile)
+			continue;
+		auto fileData = zr.fileData(fi.filePath);
+		QFile f(QString("%1/%2").arg(dirName).arg(fi.filePath));
+		if (f.open(QIODevice::WriteOnly | QIODevice::Truncate))
+		{
+			f.write(fileData);
+			f.close();
+		}
+	}
+	zr.close();
+
     ExtractedEvent* e = new ExtractedEvent;
     QCoreApplication::postEvent(v, e);
 }

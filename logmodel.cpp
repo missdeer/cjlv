@@ -96,114 +96,6 @@ start_read:
     }
 };
 
-
-void LogModel::initialize()
-{
-    m_forceQuerying.store(false);
-    qRegisterMetaType<QSharedPointer<LogItem>>("QSharedPointer<LogItem>");
-    connect(this, &LogModel::logItemReady, this, &LogModel::onLogItemReady);
-    qRegisterMetaType<QMap<int, QSharedPointer<LogItem>>>("QMap<int, QSharedPointer<LogItem>>");
-    connect(this, &LogModel::logItemsReady, this, &LogModel::onLogItemsReady);
-}
-
-void LogModel::postInitialize()
-{
-    if (m_sqlite3Helper->isDatabaseOpened())
-        loadFromDatabase();
-}
-
-void LogModel::addBookmark(int row)
-{
-    int id = getId(row);
-    m_bookmarkIds.append(id);
-    qSort(m_bookmarkIds.begin(), m_bookmarkIds.end());
-    emit dataChanged(index(0, 0), index(m_rowCount, 0));
-}
-
-void LogModel::removeBookmark(int row)
-{
-    int id = getId(row);
-    m_bookmarkIds.removeAll(id);
-    emit dataChanged(index(0, 0), index(m_rowCount, 0));
-}
-
-void LogModel::addBookmarks(const QList<int> &rows)
-{
-    for (int row : rows)
-    {
-        int id = getId(row);
-        m_bookmarkIds.append(id);
-    }
-    qSort(m_bookmarkIds.begin(), m_bookmarkIds.end());
-    emit dataChanged(index(0, 0), index(m_rowCount, 0));
-}
-
-void LogModel::removeBookmarks(const QList<int> &rows)
-{
-    for (auto row : rows)
-    {
-        int id = getId(row);
-        m_bookmarkIds.removeAll(id);
-    }
-    emit dataChanged(index(0, 0), index(m_rowCount, 0));
-}
-
-void LogModel::clearBookmarks()
-{
-    m_bookmarkIds.clear();
-    emit dataChanged(index(0, 0), index(m_rowCount, 0));
-}
-
-int LogModel::getFirstBookmark()
-{
-    if (!m_bookmarkIds.empty())
-    {
-        m_lastBookmarkId = m_bookmarkIds.first();
-        return m_lastBookmarkId;
-    }
-    return -1;
-}
-
-int LogModel::getNextBookmark(int currId)
-{
-    if (currId == -1)
-        currId = m_lastBookmarkId;
-    for (int i = 0; i < m_bookmarkIds.length()-1; i++)
-    {
-        if (m_bookmarkIds.at(i) <= currId && m_bookmarkIds.at(i+1) > currId )
-        {
-            m_lastBookmarkId = m_bookmarkIds.at(i+1);
-            return m_lastBookmarkId;
-        }
-    }
-    return -1;
-}
-
-int LogModel::getPreviousBookmark(int currId)
-{
-    if (currId == -1)
-        currId = m_lastBookmarkId;
-    for (int i = 1; i < m_bookmarkIds.length(); i++)
-    {
-        if (m_bookmarkIds.at(i-1) < currId && m_bookmarkIds.at(i) >= currId )
-        {
-            m_lastBookmarkId = m_bookmarkIds.at(i-1);
-            return m_lastBookmarkId;
-        }
-    }
-    return -1;
-}
-
-int LogModel::getLastBookmark()
-{
-    if (!m_bookmarkIds.empty())
-    {
-        m_lastBookmarkId = m_bookmarkIds.last();
-        return m_lastBookmarkId;
-    }
-    return -1;
-}
-
 LogModel::LogModel(QObject *parent, Sqlite3HelperPtr sqlite3Helper, QuickWidgetAPIPtr api)
     : QAbstractTableModel(parent)
     , m_sqlite3Helper(sqlite3Helper)
@@ -229,7 +121,8 @@ LogModel::~LogModel()
     if (m_L)
     {
         lua_close(m_L);
-    }
+	}
+	QFile::remove(m_dbFile);
 }
 
 QModelIndex LogModel::index(int row, int column, const QModelIndex &parent) const
@@ -337,6 +230,113 @@ QVariant LogModel::headerData(int section, Qt::Orientation orientation, int role
     }
 
     return QVariant();
+}
+
+void LogModel::initialize()
+{
+	m_forceQuerying.store(false);
+	qRegisterMetaType<QSharedPointer<LogItem>>("QSharedPointer<LogItem>");
+	connect(this, &LogModel::logItemReady, this, &LogModel::onLogItemReady);
+	qRegisterMetaType<QMap<int, QSharedPointer<LogItem>>>("QMap<int, QSharedPointer<LogItem>>");
+	connect(this, &LogModel::logItemsReady, this, &LogModel::onLogItemsReady);
+}
+
+void LogModel::postInitialize()
+{
+	if (m_sqlite3Helper->isDatabaseOpened())
+		loadFromDatabase();
+}
+
+void LogModel::addBookmark(int row)
+{
+	int id = getId(row);
+	m_bookmarkIds.append(id);
+	qSort(m_bookmarkIds.begin(), m_bookmarkIds.end());
+	emit dataChanged(index(0, 0), index(m_rowCount, 0));
+}
+
+void LogModel::removeBookmark(int row)
+{
+	int id = getId(row);
+	m_bookmarkIds.removeAll(id);
+	emit dataChanged(index(0, 0), index(m_rowCount, 0));
+}
+
+void LogModel::addBookmarks(const QList<int> &rows)
+{
+	for (int row : rows)
+	{
+		int id = getId(row);
+		m_bookmarkIds.append(id);
+	}
+	qSort(m_bookmarkIds.begin(), m_bookmarkIds.end());
+	emit dataChanged(index(0, 0), index(m_rowCount, 0));
+}
+
+void LogModel::removeBookmarks(const QList<int> &rows)
+{
+	for (auto row : rows)
+	{
+		int id = getId(row);
+		m_bookmarkIds.removeAll(id);
+	}
+	emit dataChanged(index(0, 0), index(m_rowCount, 0));
+}
+
+void LogModel::clearBookmarks()
+{
+	m_bookmarkIds.clear();
+	emit dataChanged(index(0, 0), index(m_rowCount, 0));
+}
+
+int LogModel::getFirstBookmark()
+{
+	if (!m_bookmarkIds.empty())
+	{
+		m_lastBookmarkId = m_bookmarkIds.first();
+		return m_lastBookmarkId;
+	}
+	return -1;
+}
+
+int LogModel::getNextBookmark(int currId)
+{
+	if (currId == -1)
+		currId = m_lastBookmarkId;
+	for (int i = 0; i < m_bookmarkIds.length() - 1; i++)
+	{
+		if (m_bookmarkIds.at(i) <= currId && m_bookmarkIds.at(i + 1) > currId)
+		{
+			m_lastBookmarkId = m_bookmarkIds.at(i + 1);
+			return m_lastBookmarkId;
+		}
+	}
+	return -1;
+}
+
+int LogModel::getPreviousBookmark(int currId)
+{
+	if (currId == -1)
+		currId = m_lastBookmarkId;
+	for (int i = 1; i < m_bookmarkIds.length(); i++)
+	{
+		if (m_bookmarkIds.at(i - 1) < currId && m_bookmarkIds.at(i) >= currId)
+		{
+			m_lastBookmarkId = m_bookmarkIds.at(i - 1);
+			return m_lastBookmarkId;
+		}
+	}
+	return -1;
+}
+
+int LogModel::getLastBookmark()
+{
+	if (!m_bookmarkIds.empty())
+	{
+		m_lastBookmarkId = m_bookmarkIds.last();
+		return m_lastBookmarkId;
+	}
+	return -1;
 }
 
 void LogModel::loadFromFiles(const QStringList& fileNames)

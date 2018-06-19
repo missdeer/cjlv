@@ -56,7 +56,7 @@ void LogTableView::initialize()
     m_extraToolPanel->setAttribute(Qt::WA_AlwaysStackOnTop, true);
     m_extraToolPanel->setClearColor(Qt::transparent);
     m_extraToolPanel->setResizeMode(QQuickWidget::SizeRootObjectToView);
-    m_extraToolPanel->engine()->rootContext()->setContextProperty("LogTableViewAPI", m_api.data());
+    m_extraToolPanel->engine()->rootContext()->setContextProperty("LogViewAPI", m_api.data());
     m_extraToolPanel->setSource(QUrl("qrc:qml/main.qml"));
 
     QVBoxLayout* thisLayout = new QVBoxLayout;
