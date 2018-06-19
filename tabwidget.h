@@ -67,6 +67,15 @@ public slots:
 
     void onRunExtension(ExtensionPtr e);
     void onExtensionActionTriggered();
+
+    void onNewLogTableView();
+    void onNewLogLevelPieChart();
+    void onNewLogThreadPieChart();
+    void onNewLogSourceFilePieChart();
+    void onNewLogSourceLinePieChart();
+    void onNewLogCategoryPieChart();
+    void onNewLogMethodPieChart();
+    void onNewLogPresenceTableView();
 private slots:
     void onCustomContextMenuRequested(const QPoint &pos);
     void onCurrentChanged(int index);

@@ -462,6 +462,86 @@ void TabWidget::onExtensionActionTriggered()
         onRunExtension(e);
 }
 
+void TabWidget::onNewLogTableView()
+{
+    QWidget* w = currentWidget();
+    if (w)
+    {
+        LogView* v = qobject_cast<LogView*>(w);
+        v->newLogTableView();
+    }
+}
+
+void TabWidget::onNewLogLevelPieChart()
+{
+    QWidget* w = currentWidget();
+    if (w)
+    {
+        LogView* v = qobject_cast<LogView*>(w);
+        v->newLogLevelPieChart();
+    }
+}
+
+void TabWidget::onNewLogThreadPieChart()
+{
+    QWidget* w = currentWidget();
+    if (w)
+    {
+        LogView* v = qobject_cast<LogView*>(w);
+        v->newLogThreadPieChart();
+    }
+}
+
+void TabWidget::onNewLogSourceFilePieChart()
+{
+    QWidget* w = currentWidget();
+    if (w)
+    {
+        LogView* v = qobject_cast<LogView*>(w);
+        v->newLogSourceFilePieChart();
+    }
+}
+
+void TabWidget::onNewLogSourceLinePieChart()
+{
+    QWidget* w = currentWidget();
+    if (w)
+    {
+        LogView* v = qobject_cast<LogView*>(w);
+        v->newLogSourceLinePieChart();
+    }
+}
+
+void TabWidget::onNewLogCategoryPieChart()
+{
+    QWidget* w = currentWidget();
+    if (w)
+    {
+        LogView* v = qobject_cast<LogView*>(w);
+        v->newLogCategoryPieChart();
+    }
+}
+
+void TabWidget::onNewLogMethodPieChart()
+{
+    QWidget* w = currentWidget();
+    if (w)
+    {
+        LogView* v = qobject_cast<LogView*>(w);
+        v->newLogMethodPieChart();
+    }
+}
+
+void TabWidget::onNewLogPresenceTableView()
+{
+    QWidget* w = currentWidget();
+    if (w)
+    {
+        LogView* v = qobject_cast<LogView*>(w);
+        v->newLogPresenceTableView();
+    }
+}
+
 void TabWidget::onCustomContextMenuRequested(const QPoint &pos)
 {
     int c = count();

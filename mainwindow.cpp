@@ -74,6 +74,14 @@ MainWindow::MainWindow(QSplashScreen &splash, QWidget *parent) :
     connect(ui->actionScrollToBottom, &QAction::triggered, ui->tabWidget, &TabWidget::onScrollToBottom);
     connect(ui->actionGotoById, &QAction::triggered, ui->tabWidget, &TabWidget::onGotoById);
     connect(ui->actionExit, &QAction::triggered, qApp, &QApplication::quit);
+    connect(ui->actionNewLogTableView, &QAction::triggered, ui->tabWidget, &TabWidget::onNewLogTableView);
+    connect(ui->actionNewLogLevelPieChart, &QAction::triggered, ui->tabWidget, &TabWidget::onNewLogLevelPieChart);
+    connect(ui->actionNewLogThreadPieChart, &QAction::triggered, ui->tabWidget, &TabWidget::onNewLogThreadPieChart);
+    connect(ui->actionNewLogSourceFilePieChart, &QAction::triggered, ui->tabWidget, &TabWidget::onNewLogSourceFilePieChart);
+    connect(ui->actionNewLogSourceLinePieChart, &QAction::triggered, ui->tabWidget, &TabWidget::onNewLogSourceLinePieChart);
+    connect(ui->actionNewLogCategoryPieChart, &QAction::triggered, ui->tabWidget, &TabWidget::onNewLogCategoryPieChart);
+    connect(ui->actionNewLogMethodPieChart, &QAction::triggered, ui->tabWidget, &TabWidget::onNewLogMethodPieChart);
+    connect(ui->actionNewLogPresenceTableView, &QAction::triggered, ui->tabWidget, &TabWidget::onNewLogPresenceTableView);
 
     splash.showMessage("Loading extensions...");
     ExtensionModel* em = ExtensionModel::instance(this);

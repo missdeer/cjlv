@@ -85,6 +85,14 @@ public:
     const QString& getPath() const;
     void setPath(const QString &path);
 
+    void newLogTableView();
+    void newLogLevelPieChart();
+    void newLogThreadPieChart();
+    void newLogSourceFilePieChart();
+    void newLogSourceLinePieChart();
+    void newLogCategoryPieChart();
+    void newLogMethodPieChart();
+    void newLogPresenceTableView();
 signals:
     void rowCountChanged();
     void runExtension(ExtensionPtr e);
@@ -101,21 +109,14 @@ private:
     Sqlite3HelperPtr m_sqlite3Helper;
     QSplitter* m_verticalSplitter;
     QTabWidget* m_logTableChartTabWidget;
-    QtCharts::QChartView* m_levelStatisticChart;
-    QtCharts::QChartView* m_threadStatisticChart;
-    QtCharts::QChartView* m_sourceFileStatisticChart;
-    QtCharts::QChartView* m_sourceLineStatisticChart;
-    QtCharts::QChartView* m_categoryStatisticChart;
-    QtCharts::QChartView* m_methodStatisticChart;
     CodeEditorTabWidget* m_codeEditorTabWidget;
-    PresenceWidget* m_presenceWidget;
     QString m_path;
     QString m_extractDir;
-    QMutex m_mutex;
 
     QString m_crashInfo;
 
     QList<LogTableView*> m_logTableViews;
+    int m_logTableViewNr = 0;
 
     bool event(QEvent *e) Q_DECL_OVERRIDE;
 

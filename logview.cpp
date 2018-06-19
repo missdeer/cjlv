@@ -42,14 +42,7 @@ LogView::LogView(QWidget *parent)
     , m_sqlite3Helper(new Sqlite3Helper)
     , m_verticalSplitter(new QSplitter( Qt::Vertical, this))
     , m_logTableChartTabWidget(new QTabWidget(m_verticalSplitter))
-    , m_levelStatisticChart(new QtCharts::QChartView(m_logTableChartTabWidget))
-    , m_threadStatisticChart(new QtCharts::QChartView(m_logTableChartTabWidget))
-    , m_sourceFileStatisticChart(new QtCharts::QChartView(m_logTableChartTabWidget))
-    , m_sourceLineStatisticChart(new QtCharts::QChartView(m_logTableChartTabWidget))
-    , m_categoryStatisticChart(new QtCharts::QChartView(m_logTableChartTabWidget))
-    , m_methodStatisticChart(new QtCharts::QChartView(m_logTableChartTabWidget))
     , m_codeEditorTabWidget(new CodeEditorTabWidget(m_verticalSplitter))
-    , m_presenceWidget(new PresenceWidget(m_logTableChartTabWidget, m_sqlite3Helper))
 {
     initialize();
 }
@@ -664,19 +657,20 @@ void LogView::initialize()
     QList<int> sizes;
     sizes << 0x7FFFF << 0;
     m_verticalSplitter->setSizes(sizes);
-	
-    LogTableView *ltv = createLogTableView();
+
     m_logTableChartTabWidget->setTabPosition(QTabWidget::South);
     m_logTableChartTabWidget->setTabsClosable(false);
     m_logTableChartTabWidget->setDocumentMode(true);
-    m_logTableChartTabWidget->addTab(ltv, "Logs(1)");
-    m_logTableChartTabWidget->addTab(m_levelStatisticChart, "Level");
-    m_logTableChartTabWidget->addTab(m_threadStatisticChart, "Thread");
-    m_logTableChartTabWidget->addTab(m_sourceFileStatisticChart, "Source File");
-    m_logTableChartTabWidget->addTab(m_sourceLineStatisticChart, "Source Line");
-    m_logTableChartTabWidget->addTab(m_categoryStatisticChart, "Category");
-    m_logTableChartTabWidget->addTab(m_methodStatisticChart, "Method");
-    m_logTableChartTabWidget->addTab(m_presenceWidget, "Presence");
+
+    createLogTableView();
+
+//    m_logTableChartTabWidget->addTab(m_levelStatisticChart, "Level");
+//    m_logTableChartTabWidget->addTab(m_threadStatisticChart, "Thread");
+//    m_logTableChartTabWidget->addTab(m_sourceFileStatisticChart, "Source File");
+//    m_logTableChartTabWidget->addTab(m_sourceLineStatisticChart, "Source Line");
+//    m_logTableChartTabWidget->addTab(m_categoryStatisticChart, "Category");
+//    m_logTableChartTabWidget->addTab(m_methodStatisticChart, "Method");
+//    m_logTableChartTabWidget->addTab(m_presenceWidget, "Presence");
 
     connect(m_logTableChartTabWidget, &QTabWidget::currentChanged, this, &LogView::onLogTableChartTabWidgetCurrentChanged);
 
@@ -691,7 +685,6 @@ LogTableView *LogView::createLogTableView()
 {
     LogTableView *ltv = new LogTableView(m_logTableChartTabWidget, m_sqlite3Helper);
     connect(ltv, &LogTableView::dataLoaded, this, &LogView::onDataLoaded);
-    connect(ltv, &LogTableView::databaseCreated, m_presenceWidget, &PresenceWidget::databaseCreated);
     connect(ltv, &LogTableView::rowCountChanged, this, &LogView::rowCountChanged);
     connect(ltv, &LogTableView::runExtension, this, &LogView::runExtension);
     connect(ltv, &LogTableView::gotoLogLine, this, &LogView::gotoLogLine);
@@ -699,8 +692,18 @@ LogTableView *LogView::createLogTableView()
     connect(ltv, &LogTableView::openLog, this, &LogView::openLog);
     connect(ltv, &LogTableView::openSourceFileInVS, this, &LogView::openSourceFileInVS);
     connect(ltv, &LogTableView::openSourceFileWithBuiltinEditor, this, &LogView::openSourceFileWithBuiltinEditor);
-    connect(ltv, &LogTableView::openSourceFileWithOpenGrok, this, &LogView::openSourceFileWithOpenGrok);
+	connect(ltv, &LogTableView::openSourceFileWithOpenGrok, this, &LogView::openSourceFileWithOpenGrok);
+	for (int i = 0; i < m_logTableChartTabWidget->count(); i++)
+	{
+		auto w = m_logTableChartTabWidget->widget(i);
+		auto pw = qobject_cast<PresenceWidget*>(w);
+		if (pw)
+			connect(ltv, &LogTableView::databaseCreated, pw, &PresenceWidget::databaseCreated);
+	}
     m_logTableViews.append(ltv);
+    m_logTableViewNr++;
+    m_logTableChartTabWidget->addTab(ltv, QString("Logs(%1)").arg(m_logTableViewNr));
+	m_logTableChartTabWidget->setCurrentWidget(ltv);
     return ltv;
 }
 
@@ -796,6 +799,118 @@ void LogView::setPath(const QString &path)
         ltv->setPath(path);
 }
 
+void LogView::newLogTableView()
+{
+    createLogTableView();
+}
+
+void LogView::newLogLevelPieChart()
+{
+    auto w = new QtCharts::QChartView(m_logTableChartTabWidget);
+
+    Q_ASSERT(!m_logTableViews.isEmpty());
+    LogModel* logModel = m_logTableViews.at(0)->getModel();
+    Q_ASSERT(logModel);
+
+    QList<QSharedPointer<StatisticItem>> sis;
+    logModel->getLevelStatistic(sis);
+    setChart(w, sis, "Level Count Statistic");
+
+	m_logTableChartTabWidget->addTab(w, "Level");
+	m_logTableChartTabWidget->setCurrentWidget(w);
+}
+
+void LogView::newLogThreadPieChart()
+{
+    auto w = new QtCharts::QChartView(m_logTableChartTabWidget);
+
+    Q_ASSERT(!m_logTableViews.isEmpty());
+    LogModel* logModel = m_logTableViews.at(0)->getModel();
+    Q_ASSERT(logModel);
+
+    QList<QSharedPointer<StatisticItem>> sis;
+    logModel->getThreadStatistic(sis);
+    setChart(w, sis, "Thread Count Statistic");
+
+	m_logTableChartTabWidget->addTab(w, "Thread");
+	m_logTableChartTabWidget->setCurrentWidget(w);
+}
+
+void LogView::newLogSourceFilePieChart()
+{
+    auto w = new QtCharts::QChartView(m_logTableChartTabWidget);
+
+    Q_ASSERT(!m_logTableViews.isEmpty());
+    LogModel* logModel = m_logTableViews.at(0)->getModel();
+    Q_ASSERT(logModel);
+
+    QList<QSharedPointer<StatisticItem>> sis;
+    logModel->getSourceFileStatistic(sis);
+    setChart(w, sis, "Source File Count Statistic");
+
+	m_logTableChartTabWidget->addTab(w, "Source File");
+	m_logTableChartTabWidget->setCurrentWidget(w);
+}
+
+void LogView::newLogSourceLinePieChart()
+{
+    auto w = new QtCharts::QChartView(m_logTableChartTabWidget);
+
+    Q_ASSERT(!m_logTableViews.isEmpty());
+    LogModel* logModel = m_logTableViews.at(0)->getModel();
+    Q_ASSERT(logModel);
+
+    QList<QSharedPointer<StatisticItem>> sis;
+    logModel->getSourceLineStatistic(sis);
+    setChart(w, sis, "Source Line Count Statistic");
+
+	m_logTableChartTabWidget->addTab(w, "Source Line");
+	m_logTableChartTabWidget->setCurrentWidget(w);
+}
+
+void LogView::newLogCategoryPieChart()
+{
+    auto w = new QtCharts::QChartView(m_logTableChartTabWidget);
+
+    Q_ASSERT(!m_logTableViews.isEmpty());
+    LogModel* logModel = m_logTableViews.at(0)->getModel();
+    Q_ASSERT(logModel);
+
+    QList<QSharedPointer<StatisticItem>> sis;
+    logModel->getCategoryStatistic(sis);
+    setChart(w, sis, "Category Count Statistic");
+
+	m_logTableChartTabWidget->addTab(w, "Category");
+	m_logTableChartTabWidget->setCurrentWidget(w);
+}
+
+void LogView::newLogMethodPieChart()
+{
+    auto w = new QtCharts::QChartView(m_logTableChartTabWidget);
+
+    Q_ASSERT(!m_logTableViews.isEmpty());
+    LogModel* logModel = m_logTableViews.at(0)->getModel();
+    Q_ASSERT(logModel);
+
+    QList<QSharedPointer<StatisticItem>> sis;
+    logModel->getMethodStatistic(sis);
+    setChart(w, sis, "Method Count Statistic");
+
+	m_logTableChartTabWidget->addTab(w, "Method");
+	m_logTableChartTabWidget->setCurrentWidget(w);
+}
+
+void LogView::newLogPresenceTableView()
+{
+    auto w = new PresenceWidget(m_logTableChartTabWidget, m_sqlite3Helper);
+	m_logTableChartTabWidget->addTab(w, "Presence");
+	m_logTableChartTabWidget->setCurrentWidget(w);
+    w->onRefreshBuddyList();
+	
+	for (auto ltv : m_logTableViews)
+		connect(ltv, &LogTableView::databaseCreated, w, &PresenceWidget::databaseCreated);
+}
+
 void LogView::enableRegexpMode(bool enabled)
 {
     for( auto ltv : m_logTableViews)
@@ -837,42 +952,9 @@ void LogView::onShowLogItemsBetweenSelectedRows()
 
 void LogView::onLogTableChartTabWidgetCurrentChanged(int index)
 {
-    if (index == 7)
-    {
-        // presence widget
-        m_presenceWidget->onRefreshBuddyList();
-        return;
-    }
-
-    Q_ASSERT(!m_logTableViews.isEmpty());
-    LogModel* logModel = m_logTableViews.at(0)->getModel();
-    Q_ASSERT(logModel);
-    // draw charts
-    static struct {
-        bool created;
-        int index;
-        std::function<bool(QList<QSharedPointer<StatisticItem>>&)> getter;
-        QtCharts::QChartView* chartView;
-        QString label;
-    }  m[] = {
-        {false, 1, std::bind(&LogModel::getLevelStatistic,      logModel, std::placeholders::_1), m_levelStatisticChart,      "Level Count Statistic"},
-        {false, 2, std::bind(&LogModel::getThreadStatistic,     logModel, std::placeholders::_1), m_threadStatisticChart,     "Thread Count Statistic"},
-        {false, 3, std::bind(&LogModel::getSourceFileStatistic, logModel, std::placeholders::_1), m_sourceFileStatisticChart, "Source File Count Statistic"},
-        {false, 4, std::bind(&LogModel::getSourceLineStatistic, logModel, std::placeholders::_1), m_sourceLineStatisticChart, "Source Line Count Statistic"},
-        {false, 5, std::bind(&LogModel::getCategoryStatistic,   logModel, std::placeholders::_1), m_categoryStatisticChart,   "Category Count Statistic"},
-        {false, 6, std::bind(&LogModel::getMethodStatistic,     logModel, std::placeholders::_1), m_methodStatisticChart,     "Method Count Statistic"},
-    };
-
-    QList<QSharedPointer<StatisticItem>> sis;
-    auto it = std::find_if(std::begin(m), std::end(m), [&](decltype(m[0])& t){
-        return !t.created && t.index == index && t.getter(sis);
-    });
-    if (it != std::end(m))
-    {
-        setChart(it->chartView, sis, it->label);
-        it->created = true;
-    }
-    else
+    auto w = m_logTableChartTabWidget->widget(index);
+    auto ltv = qobject_cast<LogTableView*>(w);
+    if (ltv)
     {
         emit rowCountChanged();
     }

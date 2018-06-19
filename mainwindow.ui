@@ -82,6 +82,15 @@
     <addaction name="actionOpenFromJabberWinPRTSite"/>
     <addaction name="actionReload"/>
     <addaction name="separator"/>
+    <addaction name="actionNewLogTableView"/>
+    <addaction name="actionNewLogLevelPieChart"/>
+    <addaction name="actionNewLogThreadPieChart"/>
+    <addaction name="actionNewLogSourceFilePieChart"/>
+    <addaction name="actionNewLogSourceLinePieChart"/>
+    <addaction name="actionNewLogCategoryPieChart"/>
+    <addaction name="actionNewLogPresenceTableView"/>
+    <addaction name="actionNewLogMethodPieChart"/>
+    <addaction name="separator"/>
     <addaction name="actionClose"/>
     <addaction name="actionCloseAll"/>
     <addaction name="actionCloseAllButThis"/>
@@ -968,6 +977,49 @@
    </property>
    <property name="shortcut">
     <string>Alt+Down</string>
+   </property>
+  </action>
+  <action name="actionNewLogTableView">
+   <property name="text">
+    <string>New Log Table View</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+N</string>
+   </property>
+  </action>
+  <action name="actionNewLogLevelPieChart">
+   <property name="text">
+    <string>New Log Level Pie Chart</string>
+   </property>
+  </action>
+  <action name="actionNewLogThreadPieChart">
+   <property name="text">
+    <string>New Log Thread Pie Chart</string>
+   </property>
+  </action>
+  <action name="actionNewLogSourceFilePieChart">
+   <property name="text">
+    <string>New Log Source File Pie Chart</string>
+   </property>
+  </action>
+  <action name="actionNewLogSourceLinePieChart">
+   <property name="text">
+    <string>New Log Source Line Pie Chart</string>
+   </property>
+  </action>
+  <action name="actionNewLogCategoryPieChart">
+   <property name="text">
+    <string>New Log Category Pie Chart</string>
+   </property>
+  </action>
+  <action name="actionNewLogMethodPieChart">
+   <property name="text">
+    <string>New Log Method Pie Chart</string>
+   </property>
+  </action>
+  <action name="actionNewLogPresenceTableView">
+   <property name="text">
+    <string>New Log Presence Table View</string>
    </property>
   </action>
  </widget>
