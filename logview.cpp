@@ -40,7 +40,7 @@ public:
 LogView::LogView(QWidget *parent)
     : QWidget (parent)
     , m_sqlite3Helper(new Sqlite3Helper)
-    , m_verticalSplitter(new QSplitter( Qt::Vertical, parent))
+    , m_verticalSplitter(new QSplitter( Qt::Vertical, this))
     , m_logTableChartTabWidget(new QTabWidget(m_verticalSplitter))
     , m_levelStatisticChart(new QtCharts::QChartView(m_logTableChartTabWidget))
     , m_threadStatisticChart(new QtCharts::QChartView(m_logTableChartTabWidget))
@@ -664,11 +664,7 @@ void LogView::initialize()
     QList<int> sizes;
     sizes << 0x7FFFF << 0;
     m_verticalSplitter->setSizes(sizes);
-
-    QVBoxLayout* mainLayout = new QVBoxLayout;
-    Q_ASSERT(mainLayout);
-    mainLayout->setMargin(0);
-
+	
     LogTableView *ltv = createLogTableView();
     m_logTableChartTabWidget->setTabPosition(QTabWidget::South);
     m_logTableChartTabWidget->setTabsClosable(false);
@@ -683,6 +679,12 @@ void LogView::initialize()
     m_logTableChartTabWidget->addTab(m_presenceWidget, "Presence");
 
     connect(m_logTableChartTabWidget, &QTabWidget::currentChanged, this, &LogView::onLogTableChartTabWidgetCurrentChanged);
+
+	QVBoxLayout* mainLayout = new QVBoxLayout;
+	Q_ASSERT(mainLayout);
+	mainLayout->setMargin(0);
+	mainLayout->addWidget(m_verticalSplitter);
+	setLayout(mainLayout);
 }
 
 LogTableView *LogView::createLogTableView()
@@ -878,28 +880,26 @@ void LogView::onLogTableChartTabWidgetCurrentChanged(int index)
 
 bool LogView::event(QEvent* e)
 {
-    QMutexLocker lock(&m_mutex);
-
     switch (int(e->type()))
     {
     case EXTRACTED_EVENT:
-        {
-            QDir dir(m_extractDir);
-            dir.setFilter(QDir::Files | QDir::NoSymLinks);
-            dir.setSorting(QDir::Name);
-            QStringList filters;
-            filters << "jabber.log" << "jabber.log.1" << "jabber.log.2" << "jabber.log.3" << "jabber.log.4" << "jabber.log.5";
-            dir.setNameFilters(filters);
+	{
+		QDir dir(m_extractDir);
+		dir.setFilter(QDir::Files | QDir::NoSymLinks);
+		dir.setSorting(QDir::Name);
+		QStringList filters;
+		filters << "jabber.log" << "jabber.log.1" << "jabber.log.2" << "jabber.log.3" << "jabber.log.4" << "jabber.log.5";
+		dir.setNameFilters(filters);
 
-            QStringList fileNames;
-            QFileInfoList list = dir.entryInfoList();
+		QStringList fileNames;
+		QFileInfoList list = dir.entryInfoList();
 
-            std::for_each(list.begin(), list.end(),
-                          [&fileNames](const QFileInfo& fileInfo){fileNames << fileInfo.filePath();});
+		std::for_each(list.begin(), list.end(),
+			[&fileNames](const QFileInfo& fileInfo) {fileNames << fileInfo.filePath(); });
 
-            for (auto ltv : m_logTableViews)
-                ltv->loadFromFiles(fileNames);
-        }
+		for (auto ltv : m_logTableViews)
+			ltv->loadFromFiles(fileNames);
+	}
         return true;
     default:
         return QObject::event(e);
