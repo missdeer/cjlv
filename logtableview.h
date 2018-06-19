@@ -107,6 +107,7 @@ private:
     LogModel* m_logModel;
     QComboBox* m_cbSearchKeyword;
     QQuickWidget* m_extraToolPanel;
+    QToolButton* m_inputKeywordlLockButton;
     QToolButton* m_extraToolPanelVisibleButton;
     QTimer* m_keywordChangedTimer;
     QString m_path;

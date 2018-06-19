@@ -1214,5 +1214,7 @@
         <file>qml/control/qmldir</file>
         <file>qml/control/RangeSliderBackground.qml</file>
         <file>qml/control/RangeSliderHandle.qml</file>
+        <file>image/lock.png</file>
+        <file>image/unlock.png</file>
     </qresource>
 </RCC>

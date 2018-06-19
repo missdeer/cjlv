@@ -46,6 +46,9 @@ void LogTableView::initialize()
     topBarLayout->addWidget(label);
     m_cbSearchKeyword = new QComboBox(topBar);
     topBarLayout->addWidget(m_cbSearchKeyword);
+    m_inputKeywordlLockButton = new QToolButton(topBar);
+    m_inputKeywordlLockButton->setIcon(QIcon(":/image/unlock.png"));
+    topBarLayout->addWidget(m_inputKeywordlLockButton);
     m_extraToolPanelVisibleButton = new QToolButton(topBar);
     m_extraToolPanelVisibleButton->setIcon(QIcon(":/image/openedeye.png"));
     topBarLayout->addWidget(m_extraToolPanelVisibleButton);
@@ -66,6 +69,11 @@ void LogTableView::initialize()
     thisLayout->addWidget(m_logsTableView);
     thisLayout->setStretch(2, 1);
     this->setLayout(thisLayout);
+
+    connect(m_inputKeywordlLockButton, &QToolButton::clicked, [&]() {
+        m_cbSearchKeyword->setEnabled(!m_cbSearchKeyword->isEnabled());
+        m_inputKeywordlLockButton->setIcon(m_cbSearchKeyword->isEnabled() ? QIcon(":/image/unlock.png") : QIcon(":/image/lock.png"));
+    });
 
     m_extraToolPanel->setVisible(false);
     connect(m_extraToolPanelVisibleButton, &QToolButton::clicked, [&]() {
@@ -103,8 +111,11 @@ void LogTableView::initialize()
 
 void LogTableView::onClearKeyword()
 {
-    m_cbSearchKeyword->setFocus();
-    m_cbSearchKeyword->clearEditText();
+    if (m_cbSearchKeyword->isEnabled())
+    {
+        m_cbSearchKeyword->setFocus();
+        m_cbSearchKeyword->clearEditText();
+    }
 }
 
 void LogTableView::onDoubleClicked(const QModelIndex &index)
