@@ -1,6 +1,6 @@
 # Find Boost library.
 
-win32 : {
+win32-*msvc* : {
     # Try to use qmake variable's value.
     _BOOST_ROOT = $$BOOST_ROOT
     isEmpty(_BOOST_ROOT) {
