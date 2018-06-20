@@ -18,3 +18,4 @@ moc_*.cpp
 CMakeCache.txt
 CMakeFiles
 .qmake.stash
+l*.c

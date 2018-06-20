@@ -463,9 +463,6 @@
    <property name="toolTip">
     <string>Search ID Field</string>
    </property>
-   <property name="shortcut">
-    <string>Ctrl+F, Ctrl+I</string>
-   </property>
   </action>
   <action name="actionSearchFieldDateTime">
    <property name="checkable">
@@ -480,9 +477,6 @@
    </property>
    <property name="toolTip">
     <string>Search DateTime Field</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+F, Ctrl+D</string>
    </property>
   </action>
   <action name="actionSearchFieldThread">
@@ -499,9 +493,6 @@
    <property name="toolTip">
     <string>Search Thread Field</string>
    </property>
-   <property name="shortcut">
-    <string>Ctrl+F, Ctrl+T</string>
-   </property>
   </action>
   <action name="actionSearchFieldCategory">
    <property name="checkable">
@@ -516,9 +507,6 @@
    </property>
    <property name="toolTip">
     <string>Search Category Field</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+F, Ctrl+A</string>
    </property>
   </action>
   <action name="actionSearchFieldSourceFile">
@@ -535,9 +523,6 @@
    <property name="toolTip">
     <string>Search Source File Field</string>
    </property>
-   <property name="shortcut">
-    <string>Ctrl+F, Ctrl+S</string>
-   </property>
   </action>
   <action name="actionSearchFieldMethod">
    <property name="checkable">
@@ -552,9 +537,6 @@
    </property>
    <property name="toolTip">
     <string>Search Method Field</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+F, Ctrl+M</string>
    </property>
   </action>
   <action name="actionSearchFieldLogFile">
@@ -571,9 +553,6 @@
    <property name="toolTip">
     <string>Search Log File Field</string>
    </property>
-   <property name="shortcut">
-    <string>Ctrl+F, Ctrl+F</string>
-   </property>
   </action>
   <action name="actionSearchFieldLine">
    <property name="checkable">
@@ -588,9 +567,6 @@
    </property>
    <property name="toolTip">
     <string>Search Line Field</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+F, Ctrl+L</string>
    </property>
   </action>
   <action name="actionCopyCurrentCell">
@@ -654,9 +630,6 @@
    </property>
    <property name="toolTip">
     <string>Search Level Field</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+F, Ctrl+V</string>
    </property>
   </action>
   <action name="actionClearKeyword">
@@ -776,9 +749,6 @@
    <property name="text">
     <string>Fatal</string>
    </property>
-   <property name="shortcut">
-    <string>Ctrl+L, Ctrl+F</string>
-   </property>
   </action>
   <action name="actionLogLevelError">
    <property name="checkable">
@@ -789,9 +759,6 @@
    </property>
    <property name="text">
     <string>Error</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+L, Ctrl+E</string>
    </property>
   </action>
   <action name="actionLogLevelWarn">
@@ -804,9 +771,6 @@
    <property name="text">
     <string>Warn</string>
    </property>
-   <property name="shortcut">
-    <string>Ctrl+L, Ctrl+W</string>
-   </property>
   </action>
   <action name="actionLogLevelInfo">
    <property name="checkable">
@@ -817,9 +781,6 @@
    </property>
    <property name="text">
     <string>Info</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+L, Ctrl+I</string>
    </property>
   </action>
   <action name="actionLogLevelDebug">
@@ -832,9 +793,6 @@
    <property name="text">
     <string>Debug</string>
    </property>
-   <property name="shortcut">
-    <string>Ctrl+L, Ctrl+D</string>
-   </property>
   </action>
   <action name="actionLogLevelTrace">
    <property name="checkable">
@@ -845,9 +803,6 @@
    </property>
    <property name="text">
     <string>Trace</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+L, Ctrl+T</string>
    </property>
   </action>
   <action name="actionOpenFromPRTTrackingSystemURL">

@@ -48,6 +48,19 @@ MainWindow::MainWindow(QSplashScreen &splash, QWidget *parent) :
     searchModeGroup->addAction(ui->actionFilter);
     searchModeGroup->addAction(ui->actionSearch);
 
+    QActionGroup *searchFieldGroup = new QActionGroup(this);
+    searchFieldGroup->addAction(ui->actionSearchFieldCategory);
+    searchFieldGroup->addAction(ui->actionSearchFieldContent);
+    searchFieldGroup->addAction(ui->actionSearchFieldID);
+    searchFieldGroup->addAction(ui->actionSearchFieldDateTime);
+    searchFieldGroup->addAction(ui->actionSearchFieldThread);
+    searchFieldGroup->addAction(ui->actionSearchFieldSourceFile);
+    searchFieldGroup->addAction(ui->actionSearchFieldLine);
+    searchFieldGroup->addAction(ui->actionSearchFieldLevel);
+    searchFieldGroup->addAction(ui->actionSearchFieldMethod);
+    searchFieldGroup->addAction(ui->actionSearchFieldLogFile);
+    searchFieldGroup->setExclusive(true);
+
     connect(ui->tabWidget, &TabWidget::statusBarMessage, this, &MainWindow::onStatusBarMessageChanges);
     connect(ui->actionClose, &QAction::triggered, ui->tabWidget, &TabWidget::onCloseCurrent);
     connect(ui->actionCloseAll, &QAction::triggered, ui->tabWidget, &TabWidget::onCloseAll);
