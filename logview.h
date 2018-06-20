@@ -101,10 +101,10 @@ private slots:
     void onDataLoaded();
     void onShowLogItemsBetweenSelectedRows();
     void onLogTableChartTabWidgetCurrentChanged(int index);
-    void openSourceFileWithBuiltinEditor(const QString& filePath, int line);
-    void openSourceFileInVS(const QString& filePath, int line);
-    void openSourceFileWithOpenGrok(const QString& filePath, int line);
-    void onLogTableChartTabWidgetTabBarDoubleClicked(int index);
+    void onOpenSourceFileWithBuiltinEditor(const QString& filePath, int line);
+    void onOpenSourceFileInVS(const QString& filePath, int line);
+    void onOpenSourceFileWithOpenGrok(const QString& filePath, int line);
+    void onCloseLogTableChartTabWidgetTab(int index);
 private:
     Sqlite3HelperPtr m_sqlite3Helper;
     QSplitter* m_verticalSplitter;

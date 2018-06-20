@@ -615,7 +615,7 @@ void LogView::openCrashReport()
 #endif
 }
 
-void LogView::openSourceFileWithBuiltinEditor(const QString &filePath, int line)
+void LogView::onOpenSourceFileWithBuiltinEditor(const QString &filePath, int line)
 {
     showCodeEditorPane();
     if (g_settings->multiMonitorEnabled())
@@ -628,7 +628,7 @@ void LogView::openSourceFileWithBuiltinEditor(const QString &filePath, int line)
     }
 }
 
-void LogView::openSourceFileInVS(const QString &filePath, int line)
+void LogView::onOpenSourceFileInVS(const QString &filePath, int line)
 {
 #if defined(Q_OS_WIN)
     // extract resource file
@@ -644,7 +644,7 @@ void LogView::openSourceFileInVS(const QString &filePath, int line)
 #endif
 }
 
-void LogView::openSourceFileWithOpenGrok(const QString &filePath, int line)
+void LogView::onOpenSourceFileWithOpenGrok(const QString &filePath, int line)
 {
     int index = filePath.indexOf("components");
     if (index == -1)
@@ -660,20 +660,6 @@ void LogView::openSourceFileWithOpenGrok(const QString &filePath, int line)
     }
 }
 
-void LogView::onLogTableChartTabWidgetTabBarDoubleClicked(int index)
-{
-	auto w = m_logTableChartTabWidget->widget(index);
-	auto ltv = qobject_cast<LogTableView*>(w);
-	if (ltv)
-	{
-		if (m_logTableViews.size() == 1)
-			return; // don't remove the last LogTableView tab
-		m_logTableViews.removeAll(ltv);
-	}
-    m_logTableChartTabWidget->removeTab(index);
-    delete w;
-}
-
 void LogView::initialize()
 {
     m_verticalSplitter->addWidget(m_logTableChartTabWidget);
@@ -684,13 +670,14 @@ void LogView::initialize()
     m_verticalSplitter->setSizes(sizes);
 
     m_logTableChartTabWidget->setTabPosition(QTabWidget::South);
-    m_logTableChartTabWidget->setTabsClosable(false);
+    m_logTableChartTabWidget->setTabsClosable(true);
     m_logTableChartTabWidget->setDocumentMode(true);
 
     createLogTableView();
 
     connect(m_logTableChartTabWidget, &QTabWidget::currentChanged, this, &LogView::onLogTableChartTabWidgetCurrentChanged);
-    connect(m_logTableChartTabWidget, &QTabWidget::tabBarDoubleClicked, this, &LogView::onLogTableChartTabWidgetTabBarDoubleClicked);
+    connect(m_logTableChartTabWidget, &QTabWidget::tabCloseRequested, this, &LogView::onCloseLogTableChartTabWidgetTab);
+    connect(m_logTableChartTabWidget, &QTabWidget::tabBarDoubleClicked, this, &LogView::onCloseLogTableChartTabWidgetTab);
 
 	QVBoxLayout* mainLayout = new QVBoxLayout;
 	Q_ASSERT(mainLayout);
@@ -708,9 +695,9 @@ LogTableView *LogView::createLogTableView()
     connect(ltv, &LogTableView::gotoLogLine, this, &LogView::gotoLogLine);
     connect(ltv, &LogTableView::extractContent, this, &LogView::extractContent);
     connect(ltv, &LogTableView::openLog, this, &LogView::openLog);
-    connect(ltv, &LogTableView::openSourceFileInVS, this, &LogView::openSourceFileInVS);
-    connect(ltv, &LogTableView::openSourceFileWithBuiltinEditor, this, &LogView::openSourceFileWithBuiltinEditor);
-	connect(ltv, &LogTableView::openSourceFileWithOpenGrok, this, &LogView::openSourceFileWithOpenGrok);
+    connect(ltv, &LogTableView::openSourceFileInVS, this, &LogView::onOpenSourceFileInVS);
+    connect(ltv, &LogTableView::openSourceFileWithBuiltinEditor, this, &LogView::onOpenSourceFileWithBuiltinEditor);
+    connect(ltv, &LogTableView::openSourceFileWithOpenGrok, this, &LogView::onOpenSourceFileWithOpenGrok);
 	for (int i = 0; i < m_logTableChartTabWidget->count(); i++)
 	{
 		auto w = m_logTableChartTabWidget->widget(i);
@@ -723,6 +710,20 @@ LogTableView *LogView::createLogTableView()
     m_logTableChartTabWidget->addTab(ltv, QString("Logs(%1)").arg(m_logTableViewNr));
 	m_logTableChartTabWidget->setCurrentWidget(ltv);
     return ltv;
+}
+
+void LogView::onCloseLogTableChartTabWidgetTab(int index)
+{
+    auto w = m_logTableChartTabWidget->widget(index);
+    auto ltv = qobject_cast<LogTableView*>(w);
+    if (ltv)
+    {
+        if (m_logTableViews.size() == 1)
+            return; // don't remove the last LogTableView tab
+        m_logTableViews.removeAll(ltv);
+    }
+    m_logTableChartTabWidget->removeTab(index);
+    delete w;
 }
 
 void LogView::onDataLoaded()
