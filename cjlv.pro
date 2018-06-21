@@ -19,6 +19,7 @@ include($$PWD/3rdparty/qtsingleapplication/qtsingleapplication.pri)
 include($$PWD/3rdparty/lua-5.3.3/src/lua.pri)
 include($$PWD/3rdparty/scintilla/qt/ScintillaEdit/ScintillaEdit.pri)
 include($$PWD/3rdparty/sqlite3/sqlite3.pri)
+include($$PWD/3rdparty/rapidxml-1.13/rapidxml.pri)
 include($$PWD/Boost.pri)
 
 DEFINES += SCINTILLA_QT=1 SCI_LEXER=1 _CRT_SECURE_NO_DEPRECATE=1 SCI_STATIC_LINK=1 LOKI_FUNCTOR_IS_NOT_A_SMALLOBJECT
