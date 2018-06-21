@@ -97,8 +97,8 @@ private slots:
     void onOpenSourceFileInVS();
     void onContentPreview();
     void onLogFilePreview();
-    void onCbKeywordEditTextChanged(const QString &text);
-    void onCbKeywordCurrentIndexChanged(const QString &text);
+    void onCbKeywordEditTextChanged(const QString &);
+    void onCbKeywordCurrentIndexChanged(const QString &);
     void onHHeaderContextMenuActionTriggered();
 
 private:

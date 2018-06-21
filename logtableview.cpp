@@ -322,7 +322,7 @@ void LogTableView::onLogFilePreview()
     }
 }
 
-void LogTableView::onCbKeywordEditTextChanged(const QString &text)
+void LogTableView::onCbKeywordEditTextChanged(const QString &)
 {
     m_keywordChangedTimer->disconnect();
     connect(m_keywordChangedTimer, &QTimer::timeout,
@@ -332,9 +332,9 @@ void LogTableView::onCbKeywordEditTextChanged(const QString &text)
     m_keywordChangedTimer->start();
 }
 
-void LogTableView::onCbKeywordCurrentIndexChanged(const QString &text)
+void LogTableView::onCbKeywordCurrentIndexChanged(const QString &)
 {
-    filter(text.trimmed());
+    filter(m_cbSearchKeyword->lineEdit()->text().trimmed());
 }
 
 void LogTableView::onShowLogItemsBetweenSelectedRows()
