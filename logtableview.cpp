@@ -48,6 +48,7 @@ void LogTableView::initialize()
     topBarLayout->addWidget(m_cbSearchKeyword);
     m_inputKeywordlLockButton = new QToolButton(topBar);
     m_inputKeywordlLockButton->setIcon(QIcon(":/image/unlock.png"));
+    m_inputKeywordlLockButton->setShortcut(QKeySequence("Ctrl+L"));
     topBarLayout->addWidget(m_inputKeywordlLockButton);
     m_extraToolPanelVisibleButton = new QToolButton(topBar);
     m_extraToolPanelVisibleButton->setIcon(QIcon(":/image/openedeye.png"));
@@ -89,14 +90,15 @@ void LogTableView::initialize()
 
     m_cbSearchKeyword->setEditable(true);
     m_cbSearchKeyword->lineEdit()->setPlaceholderText(tr("Search Field Content"));
-    QAction* actionReloadSearchResult = new QAction(QIcon(":/image/keyword.png"), "Reload Search Result", this);
-    m_cbSearchKeyword->lineEdit()->addAction(actionReloadSearchResult, QLineEdit::ActionPosition::LeadingPosition);
+    QAction* actionSearchKeywordOptions = new QAction(QIcon(":/image/keyword.png"), "Reload Search Result", this);
+    m_cbSearchKeyword->lineEdit()->addAction(actionSearchKeywordOptions, QLineEdit::ActionPosition::LeadingPosition);
     QAction* actionClearKeyword = new QAction(QIcon(":/image/clear-keyword.png"), "Clear Keyword", this);
     m_cbSearchKeyword->lineEdit()->addAction(actionClearKeyword, QLineEdit::ActionPosition::TrailingPosition);
 
     m_keywordChangedTimer = new QTimer;
     m_keywordChangedTimer->setSingleShot(true);
     m_keywordChangedTimer->setInterval(500);
+    connect(actionSearchKeywordOptions, &QAction::triggered, this, &LogTableView::onSearchKeywordOptions);
     connect(actionClearKeyword, &QAction::triggered, this, &LogTableView::onClearKeyword);
     connect(m_cbSearchKeyword, &QComboBox::editTextChanged, this, &LogTableView::onCbKeywordEditTextChanged);
     connect(m_cbSearchKeyword, static_cast<void(QComboBox::*)(const QString &)>(&QComboBox::currentIndexChanged), this, &LogTableView::onCbKeywordCurrentIndexChanged);
@@ -199,25 +201,25 @@ void LogTableView::onCustomContextMenuRequested(const QPoint &pos)
     {
         QMenu menu(this);
 
-        QAction* pOpengrokAction = new QAction("Browse Source File with OpenGrok", this);
+        QAction* pOpengrokAction = new QAction("Browse Source File with OpenGrok", &menu);
         connect(pOpengrokAction, &QAction::triggered, this, &LogTableView::onBrowseSourceFileWithOpenGrok);
         menu.addAction(pOpengrokAction);
 
 #if defined(Q_OS_WIN)
-        QAction* pOpenFileInVSAction = new QAction("Open Source File In Visual Studio", this);
+        QAction* pOpenFileInVSAction = new QAction("Open Source File In Visual Studio", &menu);
         connect(pOpenFileInVSAction, &QAction::triggered, this, &LogTableView::onOpenSourceFileInVS);
         menu.addAction(pOpenFileInVSAction);
 #endif
 
-        QAction* pSourceFilePreviewAction = new QAction("Source File Preview", this);
+        QAction* pSourceFilePreviewAction = new QAction("Source File Preview", &menu);
         connect(pSourceFilePreviewAction, &QAction::triggered, this, &LogTableView::onSourceFilePreview);
         menu.addAction(pSourceFilePreviewAction);
 
-        QAction* pContentPreviewAction = new QAction("Content Preview", this);
+        QAction* pContentPreviewAction = new QAction("Content Preview", &menu);
         connect(pContentPreviewAction, &QAction::triggered, this, &LogTableView::onContentPreview);
         menu.addAction(pContentPreviewAction);
 
-        QAction* pLogFilePreviewAction = new QAction("Log File Preview", this);
+        QAction* pLogFilePreviewAction = new QAction("Log File Preview", &menu);
         connect(pLogFilePreviewAction, &QAction::triggered, this, &LogTableView::onLogFilePreview);
         menu.addAction(pLogFilePreviewAction);
 
@@ -348,6 +350,20 @@ void LogTableView::onShowLogItemsBetweenSelectedRows()
 
     Q_ASSERT(m_cbSearchKeyword);
     m_cbSearchKeyword->lineEdit()->setText(QString("sql>%1").arg(sqlWhereClause));
+}
+
+void LogTableView::onSearchKeywordOptions()
+{
+    QMenu menu(this);
+
+    QAction* pRegexpModeAction = new QAction("Regexp Mode", &menu);
+    pRegexpModeAction->setCheckable(true);
+    pRegexpModeAction->setChecked(false);
+    menu.addAction(pRegexpModeAction);
+
+    QPoint pt = pos();
+    pt.setY(pt.y() + m_cbSearchKeyword->height());
+    menu.exec(m_cbSearchKeyword->mapToGlobal(pt));
 }
 
 void LogTableView::onHHeaderContextMenuActionTriggered()

@@ -87,6 +87,7 @@ public slots:
     void onShowLogItemsBetweenSelectedRows();
 
 private slots:
+    void onSearchKeywordOptions();
     void onDoubleClicked(const QModelIndex &index);
     void onDataLoaded();
     void onRowCountChanged();

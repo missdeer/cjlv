@@ -187,13 +187,13 @@ void CodeEditorTabWidget::onCustomContextMenuRequested(const QPoint &pos)
         }
     }
     QMenu menu(this);
-    QAction* pCloseAction = new QAction(QIcon(":/image/close.png"), "Close", this);
+    QAction* pCloseAction = new QAction(QIcon(":/image/close.png"), "Close", &menu);
     menu.addAction(pCloseAction);
     connect(pCloseAction, &QAction::triggered, this, &CodeEditorTabWidget::onCloseCurrent);
-    QAction* pCloseAllAction = new QAction(QIcon(":/image/closeall.png"), "Close All", this);
+    QAction* pCloseAllAction = new QAction(QIcon(":/image/closeall.png"), "Close All", &menu);
     menu.addAction(pCloseAllAction);
     connect(pCloseAllAction, &QAction::triggered, this, &CodeEditorTabWidget::onCloseAll);
-    QAction* pCloseAllButThisAction = new QAction("Close All But This", this);
+    QAction* pCloseAllButThisAction = new QAction("Close All But This", &menu);
     menu.addAction(pCloseAllButThisAction);
     connect(pCloseAllButThisAction, &QAction::triggered, this, &CodeEditorTabWidget::onCloseAllButThis);
 
@@ -201,20 +201,20 @@ void CodeEditorTabWidget::onCustomContextMenuRequested(const QPoint &pos)
     {
         menu.addSeparator();
 
-        QAction* pCopyFileNameAction = new QAction("Copy File Name", this);
+        QAction* pCopyFileNameAction = new QAction("Copy File Name", &menu);
         connect(pCopyFileNameAction, &QAction::triggered, this, &CodeEditorTabWidget::onCopyFileName);
         menu.addAction(pCopyFileNameAction);
-        QAction* pCopyFileFullPathAction = new QAction("Copy File Full Path", this);
+        QAction* pCopyFileFullPathAction = new QAction("Copy File Full Path", &menu);
         connect(pCopyFileFullPathAction, &QAction::triggered, this, &CodeEditorTabWidget::onCopyFileFullPath);
         menu.addAction(pCopyFileFullPathAction);
 
         menu.addSeparator();
 
-        QAction* pOpenContainerFolderAction = new QAction("Open Container Folder", this);
+        QAction* pOpenContainerFolderAction = new QAction("Open Container Folder", &menu);
         connect(pOpenContainerFolderAction, &QAction::triggered, this, &CodeEditorTabWidget::onOpenContainerFolder);
         menu.addAction(pOpenContainerFolderAction);
 #if defined(Q_OS_WIN)
-        QAction* pOpenFileInVSAction = new QAction("Open File In Visual Studio", this);
+        QAction* pOpenFileInVSAction = new QAction("Open File In Visual Studio", &menu);
         connect(pOpenFileInVSAction, &QAction::triggered, this, &CodeEditorTabWidget::onOpenFileInVS);
         menu.addAction(pOpenFileInVSAction);
 

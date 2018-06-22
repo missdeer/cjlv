@@ -563,28 +563,28 @@ void TabWidget::onCustomContextMenuRequested(const QPoint &pos)
             return;
 
         QMenu menu(this);
-        QAction* pCloseAction = new QAction(QIcon(":/image/close.png"), "Close", this);
+        QAction* pCloseAction = new QAction(QIcon(":/image/close.png"), "Close", &menu);
         menu.addAction(pCloseAction);
         connect(pCloseAction, &QAction::triggered, this, &TabWidget::onCloseCurrent);
-        QAction* pCloseAllAction = new QAction(QIcon(":/image/closeall.png"), "Close All", this);
+        QAction* pCloseAllAction = new QAction(QIcon(":/image/closeall.png"), "Close All", &menu);
         menu.addAction(pCloseAllAction);
         connect(pCloseAllAction, &QAction::triggered, this, &TabWidget::onCloseAll);
-        QAction* pCloseAllButThisAction = new QAction("Close All But This", this);
+        QAction* pCloseAllButThisAction = new QAction("Close All But This", &menu);
         menu.addAction(pCloseAllButThisAction);
         connect(pCloseAllButThisAction, &QAction::triggered, this, &TabWidget::onCloseAllButThis);
 
         menu.addSeparator();
 
-        QAction* pCopyFileNameAction = new QAction("Copy File Name", this);
+        QAction* pCopyFileNameAction = new QAction("Copy File Name", &menu);
         connect(pCopyFileNameAction, &QAction::triggered, this, &TabWidget::onCopyFileName);
         menu.addAction(pCopyFileNameAction);
-        QAction* pCopyFileFullPathAction = new QAction("Copy File Full Path", this);
+        QAction* pCopyFileFullPathAction = new QAction("Copy File Full Path", &menu);
         connect(pCopyFileFullPathAction, &QAction::triggered, this, &TabWidget::onCopyFileFullPath);
         menu.addAction(pCopyFileFullPathAction);
 
         menu.addSeparator();
 
-        QAction* pOpenContainerFolderAction = new QAction("Open Container Folder", this);
+        QAction* pOpenContainerFolderAction = new QAction("Open Container Folder", &menu);
         connect(pOpenContainerFolderAction, &QAction::triggered, this, &TabWidget::onOpenContainerFolder);
         menu.addAction(pOpenContainerFolderAction);
 
