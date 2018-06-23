@@ -50,6 +50,8 @@ public:
     void setLuaState(lua_State* L);
     void bindCustomFunctions();
 
+    void setRegexpPattern(const QString& pattern);
+
     static void levelGlob(sqlite3_context* ctx, int /*argc*/, sqlite3_value** argv);
     static void luaMatch(sqlite3_context* ctx, int /*argc*/, sqlite3_value** argv);
     static void qtRegexp(sqlite3_context* ctx, int /*argc*/, sqlite3_value** argv);
@@ -57,6 +59,7 @@ private:
     sqlite3* m_db;
     static lua_State* g_L;
     QString m_dbFile;
+    QRegularExpression m_regexp;
 };
 
 typedef QSharedPointer<Sqlite3Helper> Sqlite3HelperPtr;

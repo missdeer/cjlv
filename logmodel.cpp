@@ -1548,6 +1548,9 @@ void LogModel::doFilter(const QString &content, const QString &field, bool regex
         endRemoveRows();
     }
 
+    if (regexpMode)
+        m_sqlite3Helper->setRegexpPattern(content);
+
     m_luaMode = luaMode;
     bool regexpModeBackup = m_regexpMode;
     m_regexpMode = regexpMode;
