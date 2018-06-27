@@ -21,22 +21,22 @@ QString formatXML(const QString &text)
         qDebug() << "raw text:" << text;
         qDebug() << "xml in:" << xmlIn;
 #endif
-//        QString xmlOut;
-
-//        QDomDocument doc;
-//        doc.setContent(xmlIn, false);
-//        QTextStream writer(&xmlOut);
-//        doc.save(writer, 4);
 
         using namespace rapidxml;
-        xml_document<> doc;
-        std::istringstream in(xmlIn.toStdString());
-        std::vector<char> buffer((std::istreambuf_iterator<char>(in)), std::istreambuf_iterator<char>());
-        buffer.push_back('\0');
-        doc.parse<0>(&buffer[0]);
-
         QString xmlOut;
-        print(std::back_inserter(xmlOut), doc, 0);
+        try {
+            xml_document<> doc;
+            std::istringstream in(xmlIn.toStdString());
+            std::vector<char> buffer((std::istreambuf_iterator<char>(in)), std::istreambuf_iterator<char>());
+            buffer.push_back('\0');
+            doc.parse<0>(&buffer[0]);
+
+            print(std::back_inserter(xmlOut), doc, 0);
+        }
+        catch(...)
+        {
+            return text;
+        }
 
         header.append("\n");
         header.append(xmlOut);
