@@ -16,20 +16,6 @@ QTabWidget* g_mainTabWidget = nullptr;
 static QProgressDialog* g_progressDialog = nullptr;
 static QAtomicInt g_loadingReferenceCount;
 
-void MainWindow::applyProxySettings()
-{
-    if (g_settings->proxyType() != QNetworkProxy::NoProxy
-            && !g_settings->proxyHostName().isEmpty()
-            && g_settings->proxyPort() > 0
-            && g_settings->proxyPort() < 65535)
-    {
-        QNetworkProxy proxy(g_settings->proxyType(),
-                            g_settings->proxyHostName(),
-                            g_settings->proxyPort());
-        m_nam->setProxy(proxy);
-    }
-}
-
 MainWindow::MainWindow(QSplashScreen &splash, QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
@@ -149,6 +135,10 @@ MainWindow::MainWindow(QSplashScreen &splash, QWidget *parent) :
     createDockWindows();
 
     applyProxySettings();
+
+    QTimer* timer = new QTimer(this);
+    connect(timer, &QTimer::timeout, [this](){getPRTTrackingSystemToken(); });
+    timer->start(4*60*60*1000);
 }
 
 MainWindow::~MainWindow()
@@ -422,8 +412,6 @@ void MainWindow::onPRTTrackingSystemLoginFinished()
 
     QString token = tokenVal.toString();
     g_settings->setPrtTrackingSystemToken(token);
-
-    QTimer::singleShot(15*60*1000, [this](){getPRTTrackingSystemToken(); });
 
     // get PRT list
     getPRTList("Windows");
@@ -990,6 +978,20 @@ void MainWindow::closeProgressDialog()
         if (g_winTaskbarProgress)
             g_winTaskbarProgress->setVisible(false);
 #endif
+    }
+}
+
+void MainWindow::applyProxySettings()
+{
+    if (g_settings->proxyType() != QNetworkProxy::NoProxy
+            && !g_settings->proxyHostName().isEmpty()
+            && g_settings->proxyPort() > 0
+            && g_settings->proxyPort() < 65535)
+    {
+        QNetworkProxy proxy(g_settings->proxyType(),
+                            g_settings->proxyHostName(),
+                            g_settings->proxyPort());
+        m_nam->setProxy(proxy);
     }
 }
 
