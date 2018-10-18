@@ -263,9 +263,11 @@ void MainWindow::onClipboardChanged()
     QClipboard *clipboard = QApplication::clipboard();
     QString originalText = clipboard->text().trimmed();
 
-    QString pattern = "^http:\\/\\/prt\\.jabberqa\\.cisco.com\\/#\\/?conversations\\/[0-9a-zA-Z]{24,24}$";
-    QRegularExpression regex(pattern, QRegularExpression::CaseInsensitiveOption);
-    if (regex.match(originalText).hasMatch())
+    QString pattern1 = "^http:\\/\\/prt\\.jabberqa\\.cisco.com\\/#\\/?conversations\\/[0-9a-zA-Z]{24,24}$";
+    QString pattern2 = "^http:\\/\\/prts\\.cisco.com\\/#\\/?conversations\\/[0-9a-zA-Z]{24,24}$";
+    QRegularExpression regex1(pattern1, QRegularExpression::CaseInsensitiveOption);
+    QRegularExpression regex2(pattern2, QRegularExpression::CaseInsensitiveOption);
+    if (regex1.match(originalText).hasMatch() || regex2.match(originalText).hasMatch())
     {
         if (isMinimized())
             showMaximized();
