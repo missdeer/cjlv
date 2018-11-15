@@ -130,6 +130,7 @@ private:
     bool m_regexpMode;
     bool m_regexpModeOption;
     bool m_luaMode;
+    bool m_fts;
     bool m_allStanza;
     bool m_fullRange;
     QString dateTime;
@@ -159,7 +160,7 @@ private:
     void createDatabaseIndex();
     void generateSQLStatements(int offset, QString& sqlFetch, QString& sqlCount);
     QString generateSQLStatement(int from, int to);
-    void doFilter(const QString& content, const QString& field, bool regexpMode, bool luaMode, bool saveOptions = false);
+    void doFilter(const QString& content, bool fts, const QString& field, bool regexpMode, bool luaMode, bool saveOptions = false);
     bool getStatistic(const QString& tableName, QList<QSharedPointer<StatisticItem>>& sis);
     void saveStatistic();
     QString getDataSource();

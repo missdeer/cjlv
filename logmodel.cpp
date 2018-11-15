@@ -111,6 +111,7 @@ LogModel::LogModel(QObject *parent, Sqlite3HelperPtr sqlite3Helper, QuickWidgetA
     , m_regexpMode(false)
     , m_regexpModeOption(false)
     , m_luaMode(false)
+    , m_fts(false)
     , m_allStanza(true)
 {
     initialize();
@@ -360,6 +361,7 @@ void LogModel::onFilter(const QString &keyword)
         m_searchField = m_searchFieldOption;
     }
     bool regexpMode = m_regexpMode;
+    bool fts = false;
     QString searchField = m_searchField;
     QString kw = keyword;
 
@@ -381,6 +383,10 @@ void LogModel::onFilter(const QString &keyword)
             else if (ss.size() == 1 && prefix == "!r")
             {
                 regexpMode = false;
+            }
+            else if (ss.size() == 1 && prefix == "f")
+            {
+                fts = true;
             }
             else if (ss.size() == 1 && prefix == "sql")
             {
@@ -417,7 +423,7 @@ void LogModel::onFilter(const QString &keyword)
             }
         }
     }
-    doFilter(kw.trimmed(), searchField, regexpMode, false, true);
+    doFilter(kw.trimmed(), fts, searchField, regexpMode, false, true);
 }
 
 void LogModel::onSearchScopeChanged()
@@ -889,7 +895,7 @@ void LogModel::runLuaExtension(ExtensionPtr e)
     }
     m_sqlite3Helper->setLuaState(m_L);
     // regexp mode is ignored
-    doFilter(e->content(), e->field(), false, true);
+    doFilter(e->content(), false, e->field(), false, true);
 }
 
 void LogModel::saveRowsInFolder(const QList<int> &rows, const QString &folderName)
@@ -1320,6 +1326,12 @@ void LogModel::generateSQLStatements(int offset, QString &sqlFetch, QString &sql
 {    
     //qWarning() << __FUNCTION__ << m_keyword << m_searchField << m_regexpMode;
     qDebug() << "data source:" << getDataSource();
+    if (m_fts && !m_keyword.isEmpty())
+    {
+        sqlCount = QString("SELECT COUNT(*) FROM ftsLogs WHERE ftsLogs MATCH '%1'").arg(m_keyword);
+        sqlFetch = QString("SELECT rowid,* FROM ftsLogs WHERE ftsLogs MATCH '%1' ORDER BY epoch LIMIT %2, 200;").arg(m_keyword).arg(offset);
+        return;
+    }
     if (g_settings->allLogLevelEnabled() || m_searchField == "level")
     {
         if (m_luaMode)
@@ -1524,7 +1536,7 @@ QString LogModel::generateSQLStatement(int from, int to)
     return QString("SELECT * FROM " + getDataSource() + " WHERE %1 LIKE '%'||?||'%' AND level GLOB 'dummy' AND id >= %2 AND id <= %3 ORDER BY epoch LIMIT 400000;").arg(m_searchField).arg(from).arg(to);
 }
 
-void LogModel::doFilter(const QString &content, const QString &field, bool regexpMode, bool luaMode, bool saveOptions)
+void LogModel::doFilter(const QString &content, bool fts, const QString &field, bool regexpMode, bool luaMode, bool saveOptions)
 {
     if (m_keyword == content && !m_forceQuerying.load())
         return;
@@ -1551,13 +1563,14 @@ void LogModel::doFilter(const QString &content, const QString &field, bool regex
     if (regexpMode)
         m_sqlite3Helper->setRegexpPattern(content);
 
+    m_fts = fts;
     m_luaMode = luaMode;
     bool regexpModeBackup = m_regexpMode;
     m_regexpMode = regexpMode;
     QString searchFieldBackup = m_searchField;
     m_searchField = field;
     m_keyword = content;
-    qWarning() << __FUNCTION__ << content << field << regexpMode << m_keyword << m_searchField << m_regexpMode;
+    qWarning() << __FUNCTION__ << content << field << regexpMode << fts << m_keyword << m_searchField << m_regexpMode;
     query(0);
 
     QMutexLocker l(&m_dataMemberMutex);
@@ -1942,6 +1955,7 @@ void LogModel::createDatabase()
 
     emit databaseCreated(m_dbFile);
 
+    m_sqlite3Helper->execDML("CREATE VIRTUAL TABLE ftsLogs USING fts5(epoch, time, level ,thread ,source,category ,method, content, log, line);");
     m_sqlite3Helper->execDML("CREATE TABLE logs(id INTEGER PRIMARY KEY AUTOINCREMENT,epoch INTEGER, time DATETIME,level TEXT,thread TEXT,source TEXT,category TEXT,method TEXT, content TEXT, log TEXT, line INTEGER);");
     m_sqlite3Helper->execDML("CREATE TABLE level_statistic(id INTEGER PRIMARY KEY AUTOINCREMENT, key TEXT, count INTEGER);");
     m_sqlite3Helper->execDML("CREATE TABLE thread_statistic(id INTEGER PRIMARY KEY AUTOINCREMENT, key TEXT, count INTEGER);");
@@ -2004,6 +2018,11 @@ int LogModel::copyFromFileToDatabase(const QString &fileName)
             // save to database
             sqlite3_stmt* pVM = m_sqlite3Helper->compile("INSERT INTO logs (time, epoch, level, thread, source, category, method, content, log, line) "
                 "VALUES (:time, :epoch, :level, :thread, :source, :category, :method, :content, :log, :line );");
+            if (!pVM)
+            {
+                qDebug() << "logs inserting pVM is null";
+                continue;
+            }
             m_sqlite3Helper->bind(pVM, ":time", dateTime);
             m_sqlite3Helper->bind(pVM, ":epoch", QDateTime::fromString(dateTime, "yyyy-MM-dd hh:mm:ss,zzz").toMSecsSinceEpoch());
             m_sqlite3Helper->bind(pVM, ":level", level);
@@ -2021,7 +2040,28 @@ int LogModel::copyFromFileToDatabase(const QString &fileName)
             } else {
                 recordCount++;
             }
-
+            pVM = m_sqlite3Helper->compile("INSERT INTO ftsLogs (time, epoch, level, thread, source, category, method, content, log, line) "
+                "VALUES (:time, :epoch, :level, :thread, :source, :category, :method, :content, :log, :line );");
+            if (!pVM)
+            {
+                qDebug() << "ftsLogs inserting pVM is null";
+                continue;
+            }
+            m_sqlite3Helper->bind(pVM, ":time", dateTime);
+            m_sqlite3Helper->bind(pVM, ":epoch", QDateTime::fromString(dateTime, "yyyy-MM-dd hh:mm:ss,zzz").toMSecsSinceEpoch());
+            m_sqlite3Helper->bind(pVM, ":level", level);
+            m_sqlite3Helper->bind(pVM, ":thread", thread);
+            m_sqlite3Helper->bind(pVM, ":source", source);
+            m_sqlite3Helper->bind(pVM, ":category", category);
+            m_sqlite3Helper->bind(pVM, ":method", method);
+            m_sqlite3Helper->bind(pVM, ":content", content);
+            m_sqlite3Helper->bind(pVM, ":log", suffix);
+            m_sqlite3Helper->bind(pVM, ":line", lineNo - appendLine);
+            if (!m_sqlite3Helper->execDML(pVM)) {
+        #ifndef QT_NO_DEBUG
+                qDebug() << dateTime << level << thread << source << category << method << content << " inserting log into database failed!";
+        #endif
+            }
             appendLine = 1;
             // parse lookAhead
             dateTime = results.at(0);
