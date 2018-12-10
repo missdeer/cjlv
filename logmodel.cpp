@@ -1955,7 +1955,8 @@ void LogModel::createDatabase()
 
     emit databaseCreated(m_dbFile);
 
-    m_sqlite3Helper->execDML("CREATE VIRTUAL TABLE ftsLogs USING fts5(epoch, time, level ,thread ,source,category ,method, content, log, line);");
+    if (g_settings->ftsEnabled())
+        m_sqlite3Helper->execDML("CREATE VIRTUAL TABLE ftsLogs USING fts5(epoch, time, level ,thread ,source,category ,method, content, log, line);");
     m_sqlite3Helper->execDML("CREATE TABLE logs(id INTEGER PRIMARY KEY AUTOINCREMENT,epoch INTEGER, time DATETIME,level TEXT,thread TEXT,source TEXT,category TEXT,method TEXT, content TEXT, log TEXT, line INTEGER);");
     m_sqlite3Helper->execDML("CREATE TABLE level_statistic(id INTEGER PRIMARY KEY AUTOINCREMENT, key TEXT, count INTEGER);");
     m_sqlite3Helper->execDML("CREATE TABLE thread_statistic(id INTEGER PRIMARY KEY AUTOINCREMENT, key TEXT, count INTEGER);");
@@ -2040,27 +2041,31 @@ int LogModel::copyFromFileToDatabase(const QString &fileName)
             } else {
                 recordCount++;
             }
-            pVM = m_sqlite3Helper->compile("INSERT INTO ftsLogs (time, epoch, level, thread, source, category, method, content, log, line) "
-                "VALUES (:time, :epoch, :level, :thread, :source, :category, :method, :content, :log, :line );");
-            if (!pVM)
+
+            if (g_settings->ftsEnabled())
             {
-                qDebug() << "ftsLogs inserting pVM is null";
-                continue;
-            }
-            m_sqlite3Helper->bind(pVM, ":time", dateTime);
-            m_sqlite3Helper->bind(pVM, ":epoch", QDateTime::fromString(dateTime, "yyyy-MM-dd hh:mm:ss,zzz").toMSecsSinceEpoch());
-            m_sqlite3Helper->bind(pVM, ":level", level);
-            m_sqlite3Helper->bind(pVM, ":thread", thread);
-            m_sqlite3Helper->bind(pVM, ":source", source);
-            m_sqlite3Helper->bind(pVM, ":category", category);
-            m_sqlite3Helper->bind(pVM, ":method", method);
-            m_sqlite3Helper->bind(pVM, ":content", content);
-            m_sqlite3Helper->bind(pVM, ":log", suffix);
-            m_sqlite3Helper->bind(pVM, ":line", lineNo - appendLine);
-            if (!m_sqlite3Helper->execDML(pVM)) {
-        #ifndef QT_NO_DEBUG
-                qDebug() << dateTime << level << thread << source << category << method << content << " inserting log into database failed!";
-        #endif
+                pVM = m_sqlite3Helper->compile("INSERT INTO ftsLogs (time, epoch, level, thread, source, category, method, content, log, line) "
+                    "VALUES (:time, :epoch, :level, :thread, :source, :category, :method, :content, :log, :line );");
+                if (!pVM)
+                {
+                    qDebug() << "ftsLogs inserting pVM is null";
+                    continue;
+                }
+                m_sqlite3Helper->bind(pVM, ":time", dateTime);
+                m_sqlite3Helper->bind(pVM, ":epoch", QDateTime::fromString(dateTime, "yyyy-MM-dd hh:mm:ss,zzz").toMSecsSinceEpoch());
+                m_sqlite3Helper->bind(pVM, ":level", level);
+                m_sqlite3Helper->bind(pVM, ":thread", thread);
+                m_sqlite3Helper->bind(pVM, ":source", source);
+                m_sqlite3Helper->bind(pVM, ":category", category);
+                m_sqlite3Helper->bind(pVM, ":method", method);
+                m_sqlite3Helper->bind(pVM, ":content", content);
+                m_sqlite3Helper->bind(pVM, ":log", suffix);
+                m_sqlite3Helper->bind(pVM, ":line", lineNo - appendLine);
+                if (!m_sqlite3Helper->execDML(pVM)) {
+            #ifndef QT_NO_DEBUG
+                    qDebug() << dateTime << level << thread << source << category << method << content << " inserting log into database failed!";
+            #endif
+                }
             }
             appendLine = 1;
             // parse lookAhead
@@ -2079,20 +2084,47 @@ int LogModel::copyFromFileToDatabase(const QString &fileName)
         // save the last record to database
         sqlite3_stmt* pVM = m_sqlite3Helper->compile("INSERT INTO logs (time, epoch, level, thread, source, category, method, content, log, line) "
             "VALUES (:time, :epoch, :level, :thread, :source, :category, :method, :content, :log, :line );");
-        m_sqlite3Helper->bind(pVM, ":time", dateTime);
-        m_sqlite3Helper->bind(pVM, ":epoch", QDateTime::fromString(dateTime, "yyyy-MM-dd hh:mm:ss,zzz").toMSecsSinceEpoch());
-        m_sqlite3Helper->bind(pVM, ":level", level);
-        m_sqlite3Helper->bind(pVM, ":thread", thread);
-        m_sqlite3Helper->bind(pVM, ":source", source);
-        m_sqlite3Helper->bind(pVM, ":category", category);
-        m_sqlite3Helper->bind(pVM, ":method", method);
-        m_sqlite3Helper->bind(pVM, ":content", content);
-        m_sqlite3Helper->bind(pVM, ":log", suffix);
-        m_sqlite3Helper->bind(pVM, ":line", lineNo +1 - appendLine);
-        if (!m_sqlite3Helper->execDML(pVM)) {
-#ifndef QT_NO_DEBUG
-            qDebug() << dateTime << level << thread << source << category << method << content << " inserting log into database failed!" ;
-#endif
+        if (pVM)
+        {
+            m_sqlite3Helper->bind(pVM, ":time", dateTime);
+            m_sqlite3Helper->bind(pVM, ":epoch", QDateTime::fromString(dateTime, "yyyy-MM-dd hh:mm:ss,zzz").toMSecsSinceEpoch());
+            m_sqlite3Helper->bind(pVM, ":level", level);
+            m_sqlite3Helper->bind(pVM, ":thread", thread);
+            m_sqlite3Helper->bind(pVM, ":source", source);
+            m_sqlite3Helper->bind(pVM, ":category", category);
+            m_sqlite3Helper->bind(pVM, ":method", method);
+            m_sqlite3Helper->bind(pVM, ":content", content);
+            m_sqlite3Helper->bind(pVM, ":log", suffix);
+            m_sqlite3Helper->bind(pVM, ":line", lineNo +1 - appendLine);
+            if (!m_sqlite3Helper->execDML(pVM)) {
+    #ifndef QT_NO_DEBUG
+                qDebug() << dateTime << level << thread << source << category << method << content << " inserting log into database failed!" ;
+    #endif
+            }
+        }
+
+        if (g_settings->ftsEnabled())
+        {
+            pVM = m_sqlite3Helper->compile("INSERT INTO ftsLogs (time, epoch, level, thread, source, category, method, content, log, line) "
+                "VALUES (:time, :epoch, :level, :thread, :source, :category, :method, :content, :log, :line );");
+            if (pVM)
+            {
+                m_sqlite3Helper->bind(pVM, ":time", dateTime);
+                m_sqlite3Helper->bind(pVM, ":epoch", QDateTime::fromString(dateTime, "yyyy-MM-dd hh:mm:ss,zzz").toMSecsSinceEpoch());
+                m_sqlite3Helper->bind(pVM, ":level", level);
+                m_sqlite3Helper->bind(pVM, ":thread", thread);
+                m_sqlite3Helper->bind(pVM, ":source", source);
+                m_sqlite3Helper->bind(pVM, ":category", category);
+                m_sqlite3Helper->bind(pVM, ":method", method);
+                m_sqlite3Helper->bind(pVM, ":content", content);
+                m_sqlite3Helper->bind(pVM, ":log", suffix);
+                m_sqlite3Helper->bind(pVM, ":line", lineNo +1- appendLine);
+                if (!m_sqlite3Helper->execDML(pVM)) {
+            #ifndef QT_NO_DEBUG
+                    qDebug() << dateTime << level << thread << source << category << method << content << " inserting log into database failed!";
+            #endif
+                }
+            }
         }
     }
     m_sqlite3Helper->endTransaction();
