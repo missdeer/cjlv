@@ -147,6 +147,7 @@
     <addaction name="actionGotoJabberWinPRTWebsite"/>
     <addaction name="separator"/>
     <addaction name="actionAbout"/>
+    <addaction name="actionAboutQt"/>
    </widget>
    <widget class="QMenu" name="menuExtension">
     <property name="title">
@@ -975,6 +976,11 @@
   <action name="actionNewLogPresenceTableView">
    <property name="text">
     <string>New Log Presence Table View</string>
+   </property>
+  </action>
+  <action name="actionAboutQt">
+   <property name="text">
+    <string>About Qt...</string>
    </property>
   </action>
  </widget>

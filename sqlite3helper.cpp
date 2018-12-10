@@ -155,11 +155,14 @@ int Sqlite3Helper::execDML(const QString &szSQL)
 int Sqlite3Helper::execDML(const char * szSQL)
 {
     int nRet;
-    sqlite3_stmt* pVM;
 
     do {
-        pVM = compile(szSQL);
-
+        sqlite3_stmt* pVM = compile(szSQL);
+        if (!pVM)
+        {
+            qDebug() <<"VM null pointer";
+            return -1;
+        }
         nRet = sqlite3_step(pVM);
 
         if (nRet == SQLITE_ERROR) {
@@ -229,7 +232,7 @@ int Sqlite3Helper::execQuery(sqlite3_stmt* pVM, bool& eof)
     return -1;
 }
 
-void Sqlite3Helper::nextRow(sqlite3_stmt* pVM, bool& eof)
+bool Sqlite3Helper::nextRow(sqlite3_stmt* pVM, bool& eof)
 {
     int nRet = sqlite3_step(pVM);
 
@@ -252,8 +255,10 @@ void Sqlite3Helper::nextRow(sqlite3_stmt* pVM, bool& eof)
         if (sqlite3_finalize(pVM) != SQLITE_OK)
         {
             qDebug() << (const char *)sqlite3_errmsg(m_db);
+            return false;
         }
     }
+    return true;
 }
 
 bool Sqlite3Helper::isDatabaseOpened()
@@ -285,18 +290,17 @@ bool Sqlite3Helper::closeDatabaseConnection()
 
 int Sqlite3Helper::checkExists(const QString& field, const QString& name)
 {
-    bool eof = false;
     int nRet = 0;
-    sqlite3_stmt* pVM = nullptr;
     do
     {
-        pVM = compile("SELECT COUNT(*) FROM sqlite_master WHERE type = ? AND name = ?;");
+        sqlite3_stmt* pVM = compile("SELECT COUNT(*) FROM sqlite_master WHERE type = ? AND name = ?;");
         if (!pVM)
         {
             return -1;
         }
         bind(pVM, 1, field.toStdString().c_str());
         bind(pVM, 2, name.toStdString().c_str());
+        bool eof = false;
         nRet = execQuery(pVM, eof);
         if (nRet == SQLITE_DONE || nRet == SQLITE_ROW)
         {
@@ -304,7 +308,8 @@ int Sqlite3Helper::checkExists(const QString& field, const QString& name)
             while (!eof)
             {
                 size = (int)sqlite3_column_int(pVM, 0);
-                nextRow(pVM, eof);
+                if (!nextRow(pVM, eof))
+                    break;
             }
 
             if (size > 0)

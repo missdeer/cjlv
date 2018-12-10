@@ -47,15 +47,15 @@ Name: enu; MessagesFile: compiler:Default.isl
 Name: desktopicon; Description: {cm:CreateDesktopIcon}; GroupDescription: {cm:AdditionalIcons}
 
 [Files]
-Source: "iconengines\*"; DestDir: "{app}\iconengines"; Flags: recursesubdirs       
+Source: "bearer\*"; DestDir: "{app}\bearer"; Flags: recursesubdirs       
+Source: "iconengines\*"; DestDir: "{app}\iconengines"; Flags: recursesubdirs
 Source: "imageformats\*"; DestDir: "{app}\imageformats"; Flags: recursesubdirs
-Source: "language\*"; DestDir: "{app}\language"; Flags: recursesubdirs
+Source: "platforminputcontexts\*"; DestDir: "{app}\platforminputcontexts"; Flags: recursesubdirs
 Source: "platforms\*"; DestDir: "{app}\platforms"; Flags: recursesubdirs
-Source: "sqldrivers\qsqlite.dll"; DestDir: "{app}\sqldrivers"; Flags: recursesubdirs
-Source: "themes\*"; DestDir: "{app}\themes"; Flags: recursesubdirs
-Source: "extensions\*"; DestDir: "{app}\extensions"; Flags: recursesubdirs
-Source: "Fonts\*"; DestDir: "{app}\Fonts"; Flags: recursesubdirs
-Source: "*.xml"; DestDir: "{app}"
+Source: "qmltooling\*"; DestDir: "{app}\qmltooling"; Flags: recursesubdirs        
+Source: "scenegraph\*"; DestDir: "{app}\scenegraph"; Flags: recursesubdirs
+Source: "styles\*"; DestDir: "{app}\styles"; Flags: recursesubdirs
+Source: "translations\*"; DestDir: "{app}\translations"; Flags: recursesubdirs
 Source: "*.exe"; DestDir: "{app}"
 Source: "*.dll"; DestDir: "{app}"
 

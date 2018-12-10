@@ -33,7 +33,7 @@ public:
     int execDML(const char * szSQL);
     int execDML(sqlite3_stmt* pVM);
     int execQuery(sqlite3_stmt* pVM, bool& eof);
-    void nextRow(sqlite3_stmt* pVM, bool& eof);
+    bool nextRow(sqlite3_stmt* pVM, bool& eof);
 
     bool isDatabaseOpened();
     bool closeDatabaseConnection();
