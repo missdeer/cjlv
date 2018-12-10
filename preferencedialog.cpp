@@ -90,6 +90,8 @@ PreferenceDialog::PreferenceDialog(QWidget *parent) :
         ui->cbSourceViewTheme->addItem(fi.baseName());
     }
     ui->cbSourceViewTheme->setCurrentText(currentTheme);
+
+    ui->cbFTSSupport->setChecked(g_settings->ftsEnabled());
 }
 
 PreferenceDialog::~PreferenceDialog()
@@ -151,6 +153,7 @@ void PreferenceDialog::accept()
             }
         }
     }
+    g_settings->setFtsEnabled(ui->cbFTSSupport->isChecked());
     g_settings->save();
 }
 
@@ -270,6 +273,14 @@ void PreferenceDialog::onCheckBoxStateChanged(int)
     }
 #if defined(Q_OS_MAC)
     g_settings->setLogTableColumnVisible(res);
+    g_settings->save();
+#endif
+}
+
+void PreferenceDialog::on_cbFTSSupport_stateChanged(int )
+{
+#if defined(Q_OS_MAC)
+    g_settings->setFtsEnabled(ui->cbFTSSupport->isChecked());
     g_settings->save();
 #endif
 }

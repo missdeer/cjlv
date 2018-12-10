@@ -31,6 +31,8 @@ private slots:
     void on_cbSourceViewTheme_currentIndexChanged(const QString &theme);
 
     void onCheckBoxStateChanged(int state);
+    void on_cbFTSSupport_stateChanged(int);
+
 private:
     Ui::PreferenceDialog *ui;
 };

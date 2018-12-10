@@ -15,6 +15,7 @@ Settings::Settings()
     , m_infoEnabled(true)
     , m_debugEnabled(true)
     , m_traceEnabled(true)
+    , m_ftsEnabled(true)
 {
 
 }
@@ -142,6 +143,16 @@ int Settings::proxyPort() const
 void Settings::setProxyPort(int proxyPort)
 {
     m_proxyPort = proxyPort;
+}
+
+bool Settings::ftsEnabled() const
+{
+    return m_ftsEnabled;
+}
+
+void Settings::setFtsEnabled(bool ftsEnabled)
+{
+    m_ftsEnabled = ftsEnabled;
 }
 
 void Settings::save()

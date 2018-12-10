@@ -165,6 +165,9 @@ public:
     int proxyPort() const;
     void setProxyPort(int proxyPort);
 
+    bool ftsEnabled() const;
+    void setFtsEnabled(bool ftsEnabled);
+
 private:
     bool m_inMemoryDatabase;
     bool m_searchOrFitler;
@@ -175,6 +178,7 @@ private:
     bool m_debugEnabled;
     bool m_traceEnabled;
     bool m_multiMonitorEnabled;
+    bool m_ftsEnabled;
     int m_logTableColumnVisible;
     QNetworkProxy::ProxyType m_proxyType;
     QString m_proxyHostName;
