@@ -172,6 +172,7 @@ void Settings::save()
     settings.setValue("proxyType", m_proxyType);
     settings.setValue("proxyHostName", m_proxyHostName);
     settings.setValue("proxyPort", m_proxyPort);
+    settings.setValue("ftsEnabled", m_ftsEnabled);
     settings.sync();
 
     WritePasswordJob job( QLatin1String("com.cisco.jabber.viewer") );
@@ -204,9 +205,10 @@ void Settings::load()
         m_everythingPath = QApplication::applicationDirPath() % "/Everything.exe";
     m_windbgPath = settings.value("windbgPath").toString();
     m_logTableColumnVisible = settings.value("logTableColumnVisible", 0x7FFFFFFF).toInt();
-    m_proxyType = (QNetworkProxy::ProxyType)settings.value("proxyType", QNetworkProxy::NoProxy).toInt();
+    m_proxyType = static_cast<QNetworkProxy::ProxyType>(settings.value("proxyType", QNetworkProxy::NoProxy).toInt());
     m_proxyHostName = settings.value("proxyHostName").toString();
     m_proxyPort = settings.value("proxyPort", 0).toInt();
+    m_ftsEnabled = settings.value("ftsEnabled", true).toBool();
 
     ReadPasswordJob job( QLatin1String("com.cisco.jabber.viewer") );
     job.setAutoDelete( false );
