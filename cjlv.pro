@@ -12,8 +12,8 @@ CONFIG += c++11 precompile_header
 PRECOMPILED_HEADER = stdafx.h
 
 lessThan(QT_MAJOR_VERSION, 5): error("Qt 5 or higher is required")
-!win32-*g++*: greaterThan(QT_MINOR_VERSION, 10): CONFIG+= qtquickcompiler
-
+equals(QT_MINOR_VERSION, 12): *-clang*: !win32-clang-msvc: LIBS += /usr/local/lib
+greaterThan(QT_MINOR_VERSION, 10): win32-*g++*: CONFIG-= qtquickcompiler
 
 include($$PWD/3rdparty/qtkeychain/qt5keychain.pri)
 include($$PWD/3rdparty/qtsingleapplication/qtsingleapplication.pri)
@@ -107,7 +107,7 @@ macx: {
     #icon.files += cjlv.png
     INSTALLS += icon
     INCLUDEPATH += /usr/local/include
-    LIBS+= /usr/local/lib -framework CoreServices -lobjc
+    LIBS+= -framework CoreServices -lobjc
 
     CONFIG(release, debug|release) : {
         QMAKE_INFO_PLIST = osxInfo.plist
