@@ -106,7 +106,7 @@ macx: {
     #icon.files += cjlv.png
     INSTALLS += icon
     INCLUDEPATH += /usr/local/include
-    LIBS+= -lobjc -framework CoreServices
+    LIBS+=-lobjc -framework CoreServices
 
     CONFIG(release, debug|release) : {
         QMAKE_INFO_PLIST = osxInfo.plist
