@@ -98,7 +98,8 @@ RC_FILE = cjlv.rc
 # Mac OS X icon
 macx: {
     OBJECTIVE_SOURCES += \
-        mdfindwrapper.mm
+        mdfindwrapper.mm \
+        darkmode.mm
 
     #QMAKE_MAC_SDK = macosx10.11
     ICON = cjlv.icns
@@ -106,7 +107,7 @@ macx: {
     #icon.files += cjlv.png
     INSTALLS += icon
     INCLUDEPATH += /usr/local/include
-    LIBS+=-lobjc -framework CoreServices
+    LIBS+= -lobjc -framework CoreServices
 
     CONFIG(release, debug|release) : {
         QMAKE_INFO_PLIST = osxInfo.plist

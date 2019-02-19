@@ -170,6 +170,13 @@ QVariant LogModel::data(const QModelIndex &index, int role) const
 
     if (role == Qt::BackgroundRole)
     {
+#if defined(Q_OS_MAC)
+        bool isDarkMode();
+        if (isDarkMode())
+        {
+            return QVariant();
+        }
+#endif
         if (m_bookmarkIds.contains(r->id))
             return QVariant(QColor(0xD0, 0xFF, 0xFF));
         if (index.row() % 2 == 0)
