@@ -10,6 +10,7 @@
 TabWidget::TabWidget(QWidget *parent)
     : QTabWidget(parent)
 {
+    setTabBarAutoHide(true);
     connect(this, &QTabWidget::tabCloseRequested, this, &TabWidget::onTabCloseRequested);
     connect(this, &QTabWidget::tabBarDoubleClicked, this, &TabWidget::onTabCloseRequested);
     connect(this, &QWidget::customContextMenuRequested, this, &TabWidget::onCustomContextMenuRequested);

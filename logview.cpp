@@ -672,6 +672,7 @@ void LogView::initialize()
     m_logTableChartTabWidget->setTabPosition(QTabWidget::South);
     m_logTableChartTabWidget->setTabsClosable(true);
     m_logTableChartTabWidget->setDocumentMode(true);
+    m_logTableChartTabWidget->setTabBarAutoHide(true);
 
     createLogTableView();
 
@@ -679,11 +680,11 @@ void LogView::initialize()
     connect(m_logTableChartTabWidget, &QTabWidget::tabCloseRequested, this, &LogView::onCloseLogTableChartTabWidgetTab);
     connect(m_logTableChartTabWidget, &QTabWidget::tabBarDoubleClicked, this, &LogView::onCloseLogTableChartTabWidgetTab);
 
-	QVBoxLayout* mainLayout = new QVBoxLayout;
-	Q_ASSERT(mainLayout);
-	mainLayout->setMargin(0);
-	mainLayout->addWidget(m_verticalSplitter);
-	setLayout(mainLayout);
+    QVBoxLayout* mainLayout = new QVBoxLayout;
+    Q_ASSERT(mainLayout);
+    mainLayout->setMargin(0);
+    mainLayout->addWidget(m_verticalSplitter);
+    setLayout(mainLayout);
 }
 
 LogTableView *LogView::createLogTableView()

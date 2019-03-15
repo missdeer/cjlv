@@ -12,7 +12,7 @@ CodeEditorTabWidget::CodeEditorTabWidget(QWidget *parent)
     setTabsClosable(true);
     setDocumentMode(true);
     setContextMenuPolicy(Qt::CustomContextMenu);
-
+    setTabBarAutoHide(true);
     connect(this, &QTabWidget::tabCloseRequested, this, &CodeEditorTabWidget::onTabCloseRequested);
     connect(this, &QTabWidget::tabBarDoubleClicked, this, &CodeEditorTabWidget::onTabCloseRequested);
     connect(this, &QTabWidget::currentChanged, this, &CodeEditorTabWidget::onCurrentChanged);

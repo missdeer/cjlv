@@ -15,7 +15,7 @@ SourceViewTabWidget::SourceViewTabWidget(QWidget *parent /*= 0*/)
     setTabsClosable(true);
     setDocumentMode(true);
     setContextMenuPolicy(Qt::CustomContextMenu);
-
+    setTabBarAutoHide(true);
     connect(this, &QTabWidget::tabCloseRequested, this, &SourceViewTabWidget::onTabCloseRequested);
     connect(this, &QTabWidget::tabBarDoubleClicked, this, &SourceViewTabWidget::onTabCloseRequested);
     connect(this, &QWidget::customContextMenuRequested, this, &SourceViewTabWidget::onCustomContextMenuRequested);
