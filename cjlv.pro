@@ -16,7 +16,7 @@ greaterThan(QT_MINOR_VERSION, 10): win32-*g++*: CONFIG-= qtquickcompiler
 
 include($$PWD/3rdparty/qtkeychain/qt5keychain.pri)
 include($$PWD/3rdparty/qtsingleapplication/qtsingleapplication.pri)
-include($$PWD/3rdparty/lua-5.3.3/src/lua.pri)
+include($$PWD/3rdparty/lua/src/lua.pri)
 include($$PWD/3rdparty/scintilla/qt/ScintillaEdit/ScintillaEdit.pri)
 include($$PWD/3rdparty/sqlite3/sqlite3.pri)
 include($$PWD/3rdparty/rapidxml-1.13/rapidxml.pri)
