@@ -34,6 +34,7 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     logview.cpp \
     logmodel.cpp \
+    readlinefromfile.cpp \
     tabwidget.cpp \
     settings.cpp \
     scintillaconfig.cpp \
@@ -56,8 +57,11 @@ SOURCES += main.cpp\
     logtableview.cpp
 
 HEADERS  += mainwindow.h \
+    finishedqueryevent.h \
     logview.h \
     logmodel.h \
+    readlinefromfile.h \
+    rowcountevent.h \
     tabwidget.h \
     settings.h \
     scintillaconfig.h \

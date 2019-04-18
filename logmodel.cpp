@@ -2,99 +2,15 @@
 #include <tuple>
 #include <lua.hpp>
 #include <boost/scope_exit.hpp>
+#include "rowcountevent.h"
+#include "finishedqueryevent.h"
+#include "readlinefromfile.h"
 #include "quickwidgetapi.h"
 #include "settings.h"
 #include "utils.h"
 #include "logmodel.h"
 
-static const QEvent::Type ROWCOUNT_EVENT = QEvent::Type(QEvent::User + 1);
-static const QEvent::Type FINISHEDQUERY_EVENT = QEvent::Type(QEvent::User + 2);
 static const int g_rowCountLimit = 200;
-
-class RowCountEvent : public QEvent
-{
-public:
-    RowCountEvent() : QEvent(ROWCOUNT_EVENT) {}
-    int m_rowCount;
-};
-
-class FinishedQueryEvent : public QEvent
-{
-public:
-    FinishedQueryEvent() : QEvent(FINISHEDQUERY_EVENT){}
-    int m_offset;
-    int m_size;
-};
-
-class ReadLineFromFile
-{
-    QFile m_file;
-    qint64 m_offset;
-    qint64 m_fileSize;
-    uchar* m_lineStartPos;
-    uchar* m_mapStartPos;
-    uchar* m_mapEndPos;
-    const qint64 mapSize = 1024 * 1024; // 1M
-public:
-    ReadLineFromFile(const QString& fileName)
-        : m_file(fileName)
-		, m_offset(0)
-		, m_fileSize(0)
-		, m_lineStartPos(nullptr)
-		, m_mapStartPos(nullptr)
-		, m_mapEndPos(nullptr)
-    {
-        if (m_file.open(QIODevice::ReadOnly))
-        {
-            m_fileSize = m_file.size();
-            if (m_fileSize)
-            {
-                m_lineStartPos = m_mapStartPos = m_file.map(m_offset, qMin(mapSize, m_fileSize - m_offset));
-                m_mapEndPos = m_mapStartPos + qMin(mapSize, m_fileSize - m_offset);
-            }
-        }
-    }
-
-    ~ReadLineFromFile()
-    {
-		if (m_mapStartPos)
-			m_file.unmap(m_mapStartPos);
-		m_file.close();
-    }
-
-    QByteArray readLine()
-    {
-start_read:
-        uchar * p = m_lineStartPos;
-        while (p != m_mapEndPos && *p != '\r' && *p != '\n')
-            p++;
-        if (p != m_mapEndPos)
-        {
-            if (*p == '\r' && (p+1) != m_mapEndPos && *(p+1) == '\n')
-                p++;
-            QByteArray b(reinterpret_cast<const char*>(m_lineStartPos), p - m_lineStartPos);
-
-            m_lineStartPos = p + 1;
-            return b;
-        }
-
-        // re-map
-        m_file.unmap(m_mapStartPos);
-        m_offset += m_lineStartPos - m_mapStartPos;
-        if (m_offset != m_fileSize)
-        {
-            m_lineStartPos = m_mapStartPos = m_file.map(m_offset, qMin(mapSize, m_fileSize - m_offset));
-            m_mapEndPos = m_mapStartPos + qMin(mapSize, m_fileSize - m_offset);
-            goto start_read;
-        }
-        return QByteArray();
-    }
-
-    bool atEnd()
-    {
-        return m_offset == m_fileSize;
-    }
-};
 
 LogModel::LogModel(QObject *parent, Sqlite3HelperPtr sqlite3Helper, QuickWidgetAPIPtr api)
     : QAbstractTableModel(parent)
