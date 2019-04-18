@@ -1,13 +1,13 @@
 #include "stdafx.h"
 #include <tuple>
 #include <lua.hpp>
-#include <boost/scope_exit.hpp>
 #include "rowcountevent.h"
 #include "finishedqueryevent.h"
 #include "readlinefromfile.h"
 #include "quickwidgetapi.h"
 #include "settings.h"
 #include "utils.h"
+#include "scopedguard.h"
 #include "logmodel.h"
 
 static const int g_rowCountLimit = 200;
@@ -891,9 +891,7 @@ void LogModel::saveRowsBetweenAnchorsInFolder(const QModelIndex &beginAnchor, co
         return;
     }
 
-    BOOST_SCOPE_EXIT(this_) {
-        this_->m_queryMutex.unlock();
-    } BOOST_SCOPE_EXIT_END
+    ScopedGuard queryMutexUnlock([this](){m_queryMutex.unlock();});
 
     QString sql = generateSQLStatement(qMin(br->id, er->id), qMax(br->id, er->id));
 
@@ -1519,10 +1517,8 @@ void LogModel::doQuery(int offset)
         m_toQueryOffset = offset;
         return;
     }
-
-    BOOST_SCOPE_EXIT(this_) {
-        this_->m_queryMutex.unlock();
-    } BOOST_SCOPE_EXIT_END
+    
+    ScopedGuard queryMutexUnlock([this](){m_queryMutex.unlock();});
 
     QString sqlCount;
     QString sqlFetch ;
@@ -1533,9 +1529,7 @@ void LogModel::doQuery(int offset)
     e->m_offset = offset;
     e->m_size = 0;
 
-    BOOST_SCOPE_EXIT(this_, e) {
-        QCoreApplication::postEvent(this_, e);
-    } BOOST_SCOPE_EXIT_END
+    ScopedGuard postFinishedQueryEvent([this, e](){QCoreApplication::postEvent(this, e);});
 
     if (sqlFetch == m_sqlFetch && sqlCount == m_sqlCount && m_keyword.isEmpty() && !m_forceQuerying)
     {
