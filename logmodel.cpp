@@ -811,9 +811,15 @@ void LogModel::runLuaExtension(ExtensionPtr e)
     if (error)
     {
         QString msg(lua_tostring(m_L, -1));
-        lua_pop(m_L, 1);  /* pop error message from the stack */
-        QWidget* p = QApplication::desktop()->screen();
-        QMessageBox::warning(p, tr("Warning"), msg, QMessageBox::Ok);
+        lua_pop(m_L, 1);  /* pop error message from the stack */        
+        for (QWidget *w : qApp->topLevelWidgets())
+        {
+            if (QMainWindow* mainWin = qobject_cast<QMainWindow*>(w))
+            {
+                QMessageBox::warning(mainWin, tr("Warning"), msg, QMessageBox::Ok);
+                break;
+            }
+        }
         return;
     }
     m_sqlite3Helper->setLuaState(m_L);
