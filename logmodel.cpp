@@ -175,7 +175,7 @@ void LogModel::addBookmark(int row)
 {
 	int id = getId(row);
 	m_bookmarkIds.append(id);
-	qSort(m_bookmarkIds.begin(), m_bookmarkIds.end());
+	std::sort(m_bookmarkIds.begin(), m_bookmarkIds.end());
 	emit dataChanged(index(0, 0), index(m_rowCount, 0));
 }
 
@@ -193,7 +193,7 @@ void LogModel::addBookmarks(const QList<int> &rows)
 		int id = getId(row);
 		m_bookmarkIds.append(id);
 	}
-	qSort(m_bookmarkIds.begin(), m_bookmarkIds.end());
+	std::sort(m_bookmarkIds.begin(), m_bookmarkIds.end());
 	emit dataChanged(index(0, 0), index(m_rowCount, 0));
 }
 
