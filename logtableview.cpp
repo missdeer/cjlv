@@ -101,7 +101,7 @@ void LogTableView::initialize()
     connect(actionSearchKeywordOptions, &QAction::triggered, this, &LogTableView::onSearchKeywordOptions);
     connect(actionClearKeyword, &QAction::triggered, this, &LogTableView::onClearKeyword);
     connect(m_cbSearchKeyword, &QComboBox::editTextChanged, this, &LogTableView::onCbKeywordEditTextChanged);
-    connect(m_cbSearchKeyword, static_cast<void(QComboBox::*)(const QString &)>(&QComboBox::currentIndexChanged), this, &LogTableView::onCbKeywordCurrentIndexChanged);
+    connect(m_cbSearchKeyword, &QComboBox::currentTextChanged, this, &LogTableView::onCbKeywordCurrentIndexChanged);
     connect(m_logsTableView, &QAbstractItemView::doubleClicked, this, &LogTableView::onDoubleClicked);
     connect(m_logsTableView, &QWidget::customContextMenuRequested, this, &LogTableView::onCustomContextMenuRequested);
     connect(m_logsTableView->horizontalHeader(), &QWidget::customContextMenuRequested, this, &LogTableView::onHHeaderCustomContextMenuRequested);
