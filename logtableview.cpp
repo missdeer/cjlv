@@ -105,7 +105,7 @@ void LogTableView::initialize()
     connect(m_logsTableView, &QAbstractItemView::doubleClicked, this, &LogTableView::onDoubleClicked);
     connect(m_logsTableView, &QWidget::customContextMenuRequested, this, &LogTableView::onCustomContextMenuRequested);
     connect(m_logsTableView->horizontalHeader(), &QWidget::customContextMenuRequested, this, &LogTableView::onHHeaderCustomContextMenuRequested);
-    connect(m_logModel, &LogModel::dataLoaded, this, &LogTableView::onDataLoaded);
+    connect(m_logModel, &LogModel::dataLoaded, this, &LogTableView::onDataLoaded, Qt::QueuedConnection);
     connect(m_logModel, &LogModel::rowCountChanged, this, &LogTableView::onRowCountChanged);
     connect(m_logModel, &LogModel::databaseCreated, this, &LogTableView::databaseCreated);
     connect(this, &LogTableView::runExtension, m_logModel, &LogModel::runLuaExtension);
@@ -175,10 +175,10 @@ void LogTableView::onDataLoaded()
     }
 
     // let it run in main thread, so QMessageBox could work as expected
-    QTimer::singleShot(100, [&](){
+    //QTimer::singleShot(100, [&](){
         for (int idx = 0; idx < m_hheaderColumnHidden.length(); idx ++)
             m_logsTableView->setColumnHidden(idx, m_hheaderColumnHidden[idx] );
-    });
+    //});
 
     emit dataLoaded();
 }

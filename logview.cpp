@@ -106,7 +106,7 @@ void LogView::openRawLogFile(const QStringList &paths)
     QFileInfo fi(path);
     setWindowTitle(fi.fileName());
 
-    getMainWindow()->showProgressDialog(QString(tr("Loading logs from raw log files: %1...")).arg(paths.join(",")));
+    //getMainWindow()->showProgressDialog(QString(tr("Loading logs from raw log files: %1...")).arg(paths.join(",")));
 
     for(auto ltv : m_logTableViews)
         ltv->loadFromFiles(paths);
@@ -130,7 +130,7 @@ void LogView::openFolder(const QString &path)
     std::for_each(list.begin(), list.end(),
                   [&fileNames](const QFileInfo& fileInfo){fileNames << fileInfo.filePath();});
 
-    getMainWindow()->showProgressDialog(QString(tr("Loading logs from folder %1...")).arg(path));
+    //getMainWindow()->showProgressDialog(QString(tr("Loading logs from folder %1...")).arg(path));
 
     for(auto ltv : m_logTableViews)
         ltv->loadFromFiles(fileNames);
@@ -729,11 +729,11 @@ void LogView::onCloseLogTableChartTabWidgetTab(int index)
 
 void LogView::onDataLoaded()
 {
-    getMainWindow()->closeProgressDialog();
+    //getMainWindow()->closeProgressDialog();
 
-    QTimer::singleShot(100, [&](){
+    //QTimer::singleShot(100, [&](){
         openCrashReport();
-    });
+    //});
 }
 
 void LogView::searchFieldContent()
@@ -986,6 +986,7 @@ bool LogView::event(QEvent* e)
     {
     case EXTRACTED_EVENT:
 	{
+        getMainWindow()->closeProgressDialog();
 		QDir dir(m_extractDir);
 		dir.setFilter(QDir::Files | QDir::NoSymLinks);
 		dir.setSorting(QDir::Name);

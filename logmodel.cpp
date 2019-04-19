@@ -29,6 +29,7 @@ LogModel::LogModel(QObject *parent, Sqlite3HelperPtr sqlite3Helper, QuickWidgetA
     , m_luaMode(false)
     , m_fts(false)
     , m_allStanza(true)
+    , m_fullRange(true)
 {
     initialize();
 }
@@ -1159,14 +1160,16 @@ void LogModel::onLogItemsReady(QMap<int, QSharedPointer<LogItem> > logs)
 
 void LogModel::doReload()
 {
-    RowCountEvent* e = new RowCountEvent;
-    e->m_rowCount = 0;
     createDatabase();
     QDateTime t = QDateTime::currentDateTime();
 
-    std::for_each(m_logFiles.rbegin(), m_logFiles.rend(),
-                  [&](const QString& log) { e->m_rowCount += copyFromFileToDatabase(log); });
-    m_currentTotalRowCount = e->m_rowCount;
+    for (const auto &log : m_logFiles)
+    {
+        m_currentTotalRowCount += copyFromFileToDatabase(log);
+        RowCountEvent* e = new RowCountEvent;
+        e->m_rowCount = m_currentTotalRowCount;
+        QCoreApplication::postEvent(this, e);
+    }
     if (m_maxTotalRowCount < m_currentTotalRowCount)
     {
         m_maxTotalRowCount = m_currentTotalRowCount;
@@ -1194,7 +1197,6 @@ void LogModel::doReload()
     qint64 q = t.secsTo(QDateTime::currentDateTime());
     createDatabaseIndex();
     qDebug() << "loaded elapsed " << q << " s";
-    QCoreApplication::postEvent(this, e);
     emit dataLoaded();
 }
 
@@ -1799,22 +1801,32 @@ bool LogModel::parseLine2(const QString &line, QStringList& results)
 
 bool LogModel::event(QEvent *e)
 {
-    QMutexLocker lock(&m_eventMutex);
-
     switch (int(e->type()))
     {
     case ROWCOUNT_EVENT:
-        if (m_rowCount != 0)
+        if (dynamic_cast<RowCountEvent*>(e)->m_rowCount > m_rowCount)
         {
-            beginRemoveRows(QModelIndex(), 0, m_rowCount-1);
-            endRemoveRows();
-        }
-        m_rowCount = dynamic_cast<RowCountEvent*>(e)->m_rowCount;
-        qDebug() << "row count event:" << m_rowCount;
-        if (m_rowCount != 0)
-        {
-            beginInsertRows(QModelIndex(), 0, m_rowCount-1);
+            // append
+            int oldRowCount = m_rowCount;
+            m_rowCount = dynamic_cast<RowCountEvent*>(e)->m_rowCount;
+            beginInsertRows(QModelIndex(), oldRowCount, m_rowCount-1);
             endInsertRows();
+        } 
+        else 
+        {
+            // re add
+            if (m_rowCount != 0)
+            {
+                beginRemoveRows(QModelIndex(), 0, m_rowCount-1);
+                endRemoveRows();
+            }
+            m_rowCount = dynamic_cast<RowCountEvent*>(e)->m_rowCount;
+            qDebug() << "row count event:" << m_rowCount;
+            if (m_rowCount != 0)
+            {
+                beginInsertRows(QModelIndex(), 0, m_rowCount-1);
+                endInsertRows();
+            }
         }
         emit rowCountChanged();
         return true;
