@@ -1162,7 +1162,7 @@ void LogModel::doReload()
 {
     createDatabase();
     QDateTime t = QDateTime::currentDateTime();
-
+    std::sort(m_logFiles.begin(), m_logFiles.end(), [](const QString &f1, const QString &f2){return f1 > f2;});
     for (const auto &log : m_logFiles)
     {
         m_currentTotalRowCount += copyFromFileToDatabase(log);
