@@ -119,6 +119,26 @@ MainWindow::MainWindow(QSplashScreen &splash, QWidget *parent) :
     actionOpenJabberLog5->setIcon(QIcon(":/image/open-installed-folder.png"));
     connect(actionOpenJabberLog5, &QAction::triggered, this, &MainWindow::onActionOpenJabberLogTriggered);
     popupMenu->addAction(actionOpenJabberLog5);
+    QAction* actionOpenJabberLog6 = new QAction(tr("Open jabber.log.6"), this);
+    actionOpenJabberLog6->setIcon(QIcon(":/image/open-installed-folder.png"));
+    connect(actionOpenJabberLog6, &QAction::triggered, this, &MainWindow::onActionOpenJabberLogTriggered);
+    popupMenu->addAction(actionOpenJabberLog6);
+    QAction* actionOpenJabberLog7 = new QAction(tr("Open jabber.log.7"), this);
+    actionOpenJabberLog7->setIcon(QIcon(":/image/open-installed-folder.png"));
+    connect(actionOpenJabberLog7, &QAction::triggered, this, &MainWindow::onActionOpenJabberLogTriggered);
+    popupMenu->addAction(actionOpenJabberLog7);
+    QAction* actionOpenJabberLog8 = new QAction(tr("Open jabber.log.8"), this);
+    actionOpenJabberLog8->setIcon(QIcon(":/image/open-installed-folder.png"));
+    connect(actionOpenJabberLog8, &QAction::triggered, this, &MainWindow::onActionOpenJabberLogTriggered);
+    popupMenu->addAction(actionOpenJabberLog8);
+    QAction* actionOpenJabberLog9 = new QAction(tr("Open jabber.log.9"), this);
+    actionOpenJabberLog9->setIcon(QIcon(":/image/open-installed-folder.png"));
+    connect(actionOpenJabberLog9, &QAction::triggered, this, &MainWindow::onActionOpenJabberLogTriggered);
+    popupMenu->addAction(actionOpenJabberLog9);
+    QAction* actionOpenJabberLog10 = new QAction(tr("Open jabber.log.10"), this);
+    actionOpenJabberLog10->setIcon(QIcon(":/image/open-installed-folder.png"));
+    connect(actionOpenJabberLog10, &QAction::triggered, this, &MainWindow::onActionOpenJabberLogTriggered);
+    popupMenu->addAction(actionOpenJabberLog10);
 
     PopupMenuToolButton* toolButton = new PopupMenuToolButton(this);
     toolButton->setMenu(popupMenu);
@@ -725,7 +745,7 @@ void MainWindow::onActionOpenJabberLogTriggered()
 
     QAction *action = qobject_cast<QAction*>(sender());
     QString caption = action->text();
-    QStringList prefixes = { ".1", ".2", ".3", ".4", ".5"};
+    QStringList prefixes = { ".1", ".2", ".3", ".4", ".5", ".6", ".7", ".8", ".9", ".10"};
     for (const auto & prefix : prefixes)
     {
         if (caption.endsWith(prefix))

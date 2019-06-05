@@ -122,7 +122,8 @@ void LogView::openFolder(const QString &path)
     dir.setFilter(QDir::Files | QDir::NoSymLinks);
     dir.setSorting(QDir::Time);
     QStringList filters;
-    filters << "jabber.log" << "jabber.log.1" << "jabber.log.2" << "jabber.log.3" << "jabber.log.4" << "jabber.log.5";
+    filters << "jabber.log" << "jabber.log.1" << "jabber.log.2" << "jabber.log.3" << "jabber.log.4" << "jabber.log.5"
+               << "jabber.log.6" << "jabber.log.7" << "jabber.log.8" << "jabber.log.9" << "jabber.log.10";
     dir.setNameFilters(filters);
 
     QStringList fileNames;
@@ -991,7 +992,8 @@ bool LogView::event(QEvent* e)
 		dir.setFilter(QDir::Files | QDir::NoSymLinks);
 		dir.setSorting(QDir::Name);
 		QStringList filters;
-		filters << "jabber.log" << "jabber.log.1" << "jabber.log.2" << "jabber.log.3" << "jabber.log.4" << "jabber.log.5";
+		filters << "jabber.log" << "jabber.log.1" << "jabber.log.2" << "jabber.log.3" << "jabber.log.4" << "jabber.log.5"
+                << "jabber.log.6" << "jabber.log.7" << "jabber.log.8" << "jabber.log.9" << "jabber.log.10";
 		dir.setNameFilters(filters);
 
 		QStringList fileNames;
