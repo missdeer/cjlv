@@ -8,7 +8,7 @@ QT       += core gui concurrent widgets xml charts network qml quick quickwidget
 
 TARGET = "Cisco Jabber Log Viewer"
 TEMPLATE = app
-CONFIG += c++11 precompile_header
+CONFIG += c++17 precompile_header
 PRECOMPILED_HEADER = stdafx.h
 
 lessThan(QT_MAJOR_VERSION, 5): error("Qt 5 or higher is required")
@@ -17,7 +17,7 @@ greaterThan(QT_MINOR_VERSION, 10): win32-*g++*: CONFIG-= qtquickcompiler
 include($$PWD/3rdparty/qtkeychain/qt5keychain.pri)
 include($$PWD/3rdparty/qtsingleapplication/qtsingleapplication.pri)
 include($$PWD/3rdparty/lua/src/lua.pri)
-include($$PWD/3rdparty/scintilla/qt/ScintillaEdit/ScintillaEdit.pri)
+include($$PWD/3rdparty/scintilla-latest.pri)
 include($$PWD/3rdparty/sqlite3/sqlite3.pri)
 include($$PWD/3rdparty/rapidxml-1.13/rapidxml.pri)
 include($$PWD/Boost.pri)
