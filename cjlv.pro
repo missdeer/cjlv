@@ -164,35 +164,18 @@ win32: {
 
     CONFIG(release, debug|release): {
         WINDEPLOYQT = $$[QT_INSTALL_BINS]/windeployqt.exe
-        #copy_extensions.commands = '$(COPY_DIR) $$shell_path($$PWD/extensions) $$shell_path($$OUT_PWD/Release/)'
-        #copy_themes.commands = '$(COPY_DIR) $$shell_path($$PWD/resource/themes) $$shell_path($$OUT_PWD/Release/)'
-        #copy_language.commands = '$(COPY_DIR) $$shell_path($$PWD/resource/language) $$shell_path($$OUT_PWD/Release/)'
-        #copy_langmap.commands = '$(COPY_FILE) $$shell_path($$PWD/resource/langmap.xml) $$shell_path($$OUT_PWD/Release/langmap.xml)'
-        #copy_fonts.commands = '$(COPY_DIR) $$shell_path($$PWD/Fonts) $$shell_path($$OUT_PWD/Release/)'
 
         contains(QMAKE_HOST.arch, x86_64): {
             copy_everything_dll.commands = '$(COPY_FILE) $$shell_path($$PWD/3rdparty/Everything-SDK/dll/Everything64.dll) $$shell_path($$OUT_PWD/Release/Everything64.dll)'
             copy_everything_exe.commands = '$(COPY_FILE) $$shell_path($$PWD/3rdparty/Everything-SDK/exe/Everything64.exe) $$shell_path($$OUT_PWD/Release/Everything.exe)'
-            win32-msvc* {
-                copy_iss.commands = '$(COPY_FILE) $$shell_path($$PWD/cjlv-msvc-x64.iss) $$shell_path($$OUT_PWD/Release/cjlv-msvc-x64.iss)'
-            } else {
-                copy_iss.commands = '$(COPY_FILE) $$shell_path($$PWD/cjlv-static-x64.iss) $$shell_path($$OUT_PWD/Release/cjlv-msvc-x64.iss)'
-            }
         }
         else: {
             copy_everything_dll.commands = '$(COPY_FILE) $$shell_path($$PWD/3rdparty/Everything-SDK/dll/Everything32.dll) $$shell_path($$OUT_PWD/Release/Everything32.dll)'
             copy_everything_exe.commands = '$(COPY_FILE) $$shell_path($$PWD/3rdparty/Everything-SDK/exe/Everything32.exe) $$shell_path($$OUT_PWD/Release/Everything.exe)'
-            win32-msvc* {
-                copy_iss.commands = '$(COPY_FILE) $$shell_path($$PWD/cjlv-msvc-x86.iss) $$shell_path($$OUT_PWD/Release/cjlv-msvc-x86.iss)'
-            } else {
-                copy_iss.commands = '$(COPY_FILE) $$shell_path($$PWD/cjlv-static-x86.iss) $$shell_path($$OUT_PWD/Release/cjlv-msvc-x64.iss)'
-            }
         }
 
-        QMAKE_EXTRA_TARGETS += copy_iss copy_everything_dll copy_everything_exe
-        POST_TARGETDEPS += copy_iss copy_everything_dll copy_everything_exe
-        #QMAKE_POST_LINK += $$quote($$WINDEPLOYQT --release --force \"$${OUT_PWD}/Release/$${TARGET}.exe\")
+        QMAKE_EXTRA_TARGETS += copy_everything_dll copy_everything_exe
+        POST_TARGETDEPS += copy_everything_dll copy_everything_exe
     }
-    else: LIBS += -L$$PWD/3rdparty/scintilla/bin/debug
 }
 
