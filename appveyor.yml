@@ -55,10 +55,11 @@ after_build:
     - echo %APPVEYOR_REPO_COMMIT% >> "distrib\cjlv\version.txt"
     - copy "distrib\cjlv\cjlv.exe" "distrib\cjlv_%MKSPEC%.exe"
     - cd distrib
-    - 7z a cjlv_%MKSPEC%_portable_%cjlv_version%.zip cjlv
+    - 7z a cjlv_%MKSPEC%_portable_%cjlv_version%.7z cjlv
+    - 7z a cjlv_%MKSPEC%.7z cjlv_%MKSPEC%.exe
 
 artifacts:
-    - path: build\distrib\cjlv_%MKSPEC%_portable_%cjlv_version%.zip
+    - path: build\distrib\cjlv_%MKSPEC%_portable_%cjlv_version%.7z
       name: portable
-    - path: build\distrib\cjlv_%MKSPEC%.exe
+    - path: build\distrib\cjlv_%MKSPEC%.7z
       name: exe_only
