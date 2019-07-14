@@ -25,9 +25,9 @@ HEADERS  += \
     $$PWD/scintilla/qt/ScintillaEdit/ScintillaDocument.h \
     $$PWD/scintilla/qt/ScintillaEditBase/ScintillaEditBase.h \
     $$PWD/scintilla/qt/ScintillaEditBase/ScintillaQt.h \
-    $$PWD/scintlla/src/*.h \
-    $$PWD/scintlla/lexlib/*.h \
-    $$PWD/scintlla/include/*.h
+    $$PWD/scintilla/src/*.h \
+    $$PWD/scintilla/lexlib/*.h \
+    $$PWD/scintilla/include/*.h
 
 
 OTHER_FILES +=
