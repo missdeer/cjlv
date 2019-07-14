@@ -53,13 +53,13 @@ after_build:
     - copy "%APPVEYOR_BUILD_FOLDER%\build\release\Everything.exe" "distrib\cjlv\"
     - echo %cjlv_version% > "distrib\cjlv\version.txt"
     - echo %APPVEYOR_REPO_COMMIT% >> "distrib\cjlv\version.txt"
-    - copy "distrib\cjlv\cjlv.exe" "distrib\cjlv_%MKSPEC%.exe"
+    - copy "distrib\cjlv\cjlv.exe" "distrib\cjlv.exe"
     - cd distrib
     - 7z a cjlv_%MKSPEC%_portable_%cjlv_version%.7z cjlv
-    - 7z a cjlv_%MKSPEC%.7z cjlv_%MKSPEC%.exe
+    - 7z a cjlv_%MKSPEC%.7z cjlv.exe
 
 artifacts:
     - path: build\distrib\cjlv_%MKSPEC%_portable_%cjlv_version%.7z
-      name: portable
+      name: full_package
     - path: build\distrib\cjlv_%MKSPEC%.7z
       name: exe_only
