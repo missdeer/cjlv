@@ -22,7 +22,7 @@ clone_depth: 1
 
 # scripts that run after cloning repository
 install:
-    - set PATH=%QT%\bin\;%PATH%
+    - set PATH=%QT%\bin\;C:\Qt\Tools\QtCreator\bin\;%PATH%
     - set BOOST_ROOT=C:\Libraries\boost_1_69_0
     - git submodule update --init --recursive
 
