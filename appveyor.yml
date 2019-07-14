@@ -1,0 +1,63 @@
+image: Visual Studio 2017
+
+version: 1.0.{build}
+
+branches:
+    only:
+        - master
+
+environment:
+    COMPILER: msvc
+    VSVER: 14.1
+
+    matrix:
+        - QT: C:\Qt\5.12\msvc2017_64
+          PLATFORM: amd64
+          MKSPEC: win64-msvc
+        - QT: C:\Qt\5.12\msvc2017
+          PLATFORM: x86
+          MKSPEC: win32-msvc
+
+clone_depth: 1
+
+# scripts that run after cloning repository
+install:
+    - set PATH=%QT%\bin\;%PATH%
+    - set BOOST_ROOT=C:\Libraries\boost_1_69_0
+    - git submodule update --init --recursive
+
+# scripts that run before build
+before_build:
+    - cd 3rdparty\scintilla\qt\ScintillaEdit
+    - python WidgetGen.py
+    - cd "%APPVEYOR_BUILD_FOLDER%"
+    - if "%MKSPEC%" EQU "win64-msvc" (call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars64.bat")
+    - if "%MKSPEC%" EQU "win64-clang-msvc" (call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars64.bat")
+    - if "%MKSPEC%" EQU "win32-msvc" (call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars32.bat")
+    - qmake --version
+    - mkdir build
+    - cd build
+    - if "%MKSPEC%" EQU "win64-msvc" (qmake -r -spec win32-msvc CONFIG+=x86_64 CONFIG-=debug CONFIG+=release ../cjlv.pro)
+    - if "%MKSPEC%" EQU "win64-clang-msvc" (qmake -r -spec win32-clang-msvc CONFIG+=x86_64 CONFIG-=debug CONFIG+=release ../cjlv.pro)
+    - if "%MKSPEC%" EQU "win32-msvc" (qmake -r -spec win32-msvc CONFIG+=Win32 CONFIG-=debug CONFIG+=release ../cjlv.pro)
+
+# custom build scripts
+build_script:
+    - jom -j 4
+
+# scripts that run after build
+after_build:
+    - mkdir distrib\cjlv
+    - windeployqt.exe --dir .\distrib\cjlv %APPVEYOR_BUILD_FOLDER%\build\src\release\cjlv.exe
+    - copy "%APPVEYOR_BUILD_FOLDER%\build\src\release\cjlv.exe" "distrib\cjlv\cjlv.exe"
+    - echo %cjlv_version% > "distrib\cjlv\version.txt"
+    - echo %APPVEYOR_REPO_COMMIT% >> "distrib\cjlv\version.txt"
+    - copy "distrib\cjlv\cjlv.exe" "distrib\cjlv_%MKSPEC%.exe"
+    - cd distrib
+    - 7z a cjlv_%MKSPEC%_portable_%cjlv_version%.zip cjlv
+
+artifacts:
+    - path: build\distrib\cjlv_%MKSPEC%_portable_%cjlv_version%.zip
+      name: portable
+    - path: build\distrib\cjlv_%MKSPEC%.exe
+      name: exe_only
