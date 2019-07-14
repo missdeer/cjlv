@@ -47,9 +47,10 @@ build_script:
 after_build:
     - set cjlv_version=1.0
     - mkdir distrib\cjlv
-    - windeployqt.exe --dir .\distrib\cjlv %APPVEYOR_BUILD_FOLDER%\build\release\cjlv.exe
+    - windeployqt.exe --dir .\distrib\cjlv --qmldir "%APPVEYOR_BUILD_FOLDER%\qml" %APPVEYOR_BUILD_FOLDER%\build\release\cjlv.exe
     - copy "%APPVEYOR_BUILD_FOLDER%\build\release\cjlv.exe" "distrib\cjlv\cjlv.exe"
-    - copy "%APPVEYOR_BUILD_FOLDER%\build\release\Everything*.*" "distrib\cjlv\"
+    - copy "%APPVEYOR_BUILD_FOLDER%\build\release\Everything*.dll" "distrib\cjlv\"
+    - copy "%APPVEYOR_BUILD_FOLDER%\build\release\Everything.exe" "distrib\cjlv\"
     - echo %cjlv_version% > "distrib\cjlv\version.txt"
     - echo %APPVEYOR_REPO_COMMIT% >> "distrib\cjlv\version.txt"
     - copy "distrib\cjlv\cjlv.exe" "distrib\cjlv_%MKSPEC%.exe"
