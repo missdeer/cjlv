@@ -32,14 +32,12 @@ before_build:
     - python WidgetGen.py
     - cd "%APPVEYOR_BUILD_FOLDER%"
     - if "%MKSPEC%" EQU "win64-msvc" (call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars64.bat")
-    - if "%MKSPEC%" EQU "win64-clang-msvc" (call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars64.bat")
     - if "%MKSPEC%" EQU "win32-msvc" (call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars32.bat")
     - qmake --version
     - mkdir build
     - cd build
-    - if "%MKSPEC%" EQU "win64-msvc" (qmake -r -spec win32-msvc CONFIG+=x86_64 CONFIG-=debug CONFIG+=release ../cjlv.pro)
-    - if "%MKSPEC%" EQU "win64-clang-msvc" (qmake -r -spec win32-clang-msvc CONFIG+=x86_64 CONFIG-=debug CONFIG+=release ../cjlv.pro)
-    - if "%MKSPEC%" EQU "win32-msvc" (qmake -r -spec win32-msvc CONFIG+=Win32 CONFIG-=debug CONFIG+=release ../cjlv.pro)
+    - if "%MKSPEC%" EQU "win64-msvc" (qmake -r -spec win32-msvc CONFIG+=x86_64 CONFIG+=qtquickcompiler CONFIG-=debug CONFIG+=release ../cjlv.pro)
+    - if "%MKSPEC%" EQU "win32-msvc" (qmake -r -spec win32-msvc CONFIG+=Win32 CONFIG+=qtquickcompiler CONFIG-=debug CONFIG+=release ../cjlv.pro)
 
 # custom build scripts
 build_script:
@@ -48,8 +46,8 @@ build_script:
 # scripts that run after build
 after_build:
     - mkdir distrib\cjlv
-    - windeployqt.exe --dir .\distrib\cjlv %APPVEYOR_BUILD_FOLDER%\build\src\release\cjlv.exe
-    - copy "%APPVEYOR_BUILD_FOLDER%\build\src\release\cjlv.exe" "distrib\cjlv\cjlv.exe"
+    - windeployqt.exe --dir .\distrib\cjlv %APPVEYOR_BUILD_FOLDER%\build\release\cjlv.exe
+    - copy "%APPVEYOR_BUILD_FOLDER%\build\release\cjlv.exe" "distrib\cjlv\cjlv.exe"
     - echo %cjlv_version% > "distrib\cjlv\version.txt"
     - echo %APPVEYOR_REPO_COMMIT% >> "distrib\cjlv\version.txt"
     - copy "distrib\cjlv\cjlv.exe" "distrib\cjlv_%MKSPEC%.exe"
