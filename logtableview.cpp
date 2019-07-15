@@ -336,7 +336,7 @@ void LogTableView::onCbKeywordEditTextChanged(const QString &)
 
 void LogTableView::onCbKeywordCurrentIndexChanged(const QString &)
 {
-    filter(m_cbSearchKeyword->lineEdit()->text().trimmed());
+    //filter(m_cbSearchKeyword->lineEdit()->text().trimmed());
 }
 
 void LogTableView::onShowLogItemsBetweenSelectedRows()
