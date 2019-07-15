@@ -67,7 +67,7 @@
      <x>0</x>
      <y>0</y>
      <width>1156</width>
-     <height>22</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -143,6 +143,8 @@
      <string>&amp;Help</string>
     </property>
     <addaction name="actionHelpContent"/>
+    <addaction name="actionHomepage"/>
+    <addaction name="actionReportIssue"/>
     <addaction name="actionGotoPRTTrackingSystem"/>
     <addaction name="actionGotoJabberWinPRTWebsite"/>
     <addaction name="separator"/>
@@ -984,6 +986,16 @@
    </property>
    <property name="menuRole">
     <enum>QAction::AboutQtRole</enum>
+   </property>
+  </action>
+  <action name="actionHomepage">
+   <property name="text">
+    <string>Homepage...</string>
+   </property>
+  </action>
+  <action name="actionReportIssue">
+   <property name="text">
+    <string>Report Issue...</string>
    </property>
   </action>
  </widget>
