@@ -8,7 +8,7 @@ if [ -z ${TRAVIS_COMMIT+x} ]; then
 fi
 
 brew update > /dev/null
-brew install qt
+brew install qt lua
 
 QTDIR="/usr/local/opt/qt"
 PATH="$QTDIR/bin:$PATH"
@@ -36,6 +36,7 @@ fi
 mkdir -p distrib/cjlv
 cd distrib/cjlv
 mv ../../*.app ./
+macdeployqt *.app
 cp "${project_dir}/README.md" "README.md"
 echo "${version}" > version
 echo "${TRAVIS_COMMIT}" >> version
