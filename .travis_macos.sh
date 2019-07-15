@@ -17,6 +17,9 @@ CPPFLAGS=-I$QTDIR/include
 
 # Build your app
 cd ${project_dir}
+cd 3rdparty/scintilla/qt/ScintillaEdit
+python WidgetGen.py
+cd ${project_dir}
 mkdir build
 cd build
 qmake -v
