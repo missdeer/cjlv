@@ -1262,7 +1262,7 @@ void MainWindow::downloadPRT(const QString &u)
 
 void MainWindow::on_actionHelpContent_triggered()
 {
-    QDesktopServices::openUrl(QUrl::fromUserInput("https://wiki.cisco.com/display/CUCBU/Cisco+Jabber+Log+Viewer"));
+    QDesktopServices::openUrl(QUrl::fromUserInput("https://https://github.com/missdeer/cjlv/wiki"));
 }
 
 void MainWindow::on_actionLogLevelFatal_triggered()
@@ -1315,7 +1315,7 @@ void MainWindow::on_actionGotoJabberWinPRTWebsite_triggered()
 
 void MainWindow::on_actionHomepage_triggered()
 {
-    QDesktopServices::openUrl(QUrl("https://github.com/missdeer/cjlv"));
+    QDesktopServices::openUrl(QUrl("https://minidump.info/cjlv"));
 }
 
 void MainWindow::on_actionReportIssue_triggered()
