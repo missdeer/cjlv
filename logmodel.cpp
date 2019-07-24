@@ -332,11 +332,11 @@ void LogModel::onFilter(const QString &keyword)
                     { "l", "line"},
                 };
 
-                for (auto t: m)
+                for (const auto& [kwPrefix, kwName]: m)
                 {
-                    if (std::get<0>(t) == prefix || (prefix.size() > 1 && std::get<1>(t).startsWith(prefix)))
+                    if (kwPrefix == prefix || (prefix.size() > 1 && kwName.startsWith(prefix)))
                     {
-                        searchField = std::get<1>(t);
+                        searchField = kwName;
                         if (ss.size() == 2 && ss.at(1) == "r")
                             regexpMode = true;
                         else if (ss.size() == 2 && ss.at(1) == "!r")
