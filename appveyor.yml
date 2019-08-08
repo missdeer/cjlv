@@ -11,10 +11,10 @@ environment:
     VSVER: 14.1
 
     matrix:
-        - QT: C:\Qt\5.12\msvc2017_64
+        - QT: C:\Qt\5.13\msvc2017_64
           PLATFORM: amd64
           MKSPEC: win64-msvc
-        - QT: C:\Qt\5.12\msvc2017
+        - QT: C:\Qt\5.13\msvc2017
           PLATFORM: x86
           MKSPEC: win32-msvc
 
