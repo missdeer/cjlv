@@ -841,6 +841,7 @@ void MainWindow::openPRTFromURL(const QString &u)
     QUrl url(rawURL.replace("#/", "api/v1/").replace("#", "api/v1/"));
     QNetworkRequest req(url);
     req.setRawHeader("token", g_settings->prtTrackingSystemToken().toUtf8());
+    req.setAttribute(QNetworkRequest::HTTP2AllowedAttribute, true);
     m_prtInfo.clear();
     QNetworkReply* reply = m_nam->get(req);
     connect(reply, SIGNAL(readyRead()), this, SLOT(onPRTInfoRequestReadyRead()));
@@ -854,6 +855,7 @@ void MainWindow::getPRTTrackingSystemToken()
 {
     QUrl url("http://prt.jabberqa.cisco.com/api/v1/login");
     QNetworkRequest req(url);
+    req.setAttribute(QNetworkRequest::HTTP2AllowedAttribute, true);
     req.setHeader(QNetworkRequest::ContentTypeHeader, "application/json;charset=UTF-8");
     req.setRawHeader("Accept", "application/json, text/plain, */*");
     QString postBody = QString("{\"username\":\"%1\",\"password\":\"%2\"}").arg(g_settings->cecId()).arg(g_settings->cecPassword());
@@ -910,6 +912,7 @@ void MainWindow::getPRTList(const QString& platform)
     url.setQuery(query);
     QNetworkRequest req(url);
     req.setHeader(QNetworkRequest::ContentTypeHeader, "application/json;charset=UTF-8");
+    req.setAttribute(QNetworkRequest::HTTP2AllowedAttribute, true);
     req.setRawHeader("Accept", "application/json, text/plain, */*");
     req.setRawHeader("token", g_settings->prtTrackingSystemToken().toUtf8());
     m_prtList.clear();
@@ -927,6 +930,7 @@ void MainWindow::getJabberWinPRTInfo(const QString &id)
     query.addQueryItem("reportID", id);
     url.setQuery(query);
     QNetworkRequest req(url);
+    req.setAttribute(QNetworkRequest::HTTP2AllowedAttribute, true);
     m_prtInfo.clear();
     QNetworkReply* reply = m_nam->get(req);
     connect(reply, SIGNAL(readyRead()), this, SLOT(onPRTInfoRequestReadyRead()));
@@ -949,6 +953,7 @@ void MainWindow::getCrashInfo(const QString &id, const QString &fileDirectory, c
     query.addQueryItem("crypto", "false");
     url.setQuery(query);
     QNetworkRequest req(url);
+    req.setAttribute(QNetworkRequest::HTTP2AllowedAttribute, true);
     req.setAttribute(QNetworkRequest::FollowRedirectsAttribute, QVariant(true));
     m_crashInfo.clear();
 
@@ -1234,6 +1239,7 @@ void MainWindow::downloadPRT(const QString &u)
 {
     QUrl url(u);
     QNetworkRequest req(url);
+    req.setAttribute(QNetworkRequest::HTTP2AllowedAttribute, true);
     req.setRawHeader("token", g_settings->prtTrackingSystemToken().toUtf8());
 
     QString tempDir = g_settings->temporaryDirectory();
