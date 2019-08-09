@@ -188,15 +188,15 @@ void ScintillaConfig::applyLanguageStyle(ScintillaEdit *sci, const QString &conf
     file.close();
 
     QDomElement docElem = doc.documentElement();
-    QString commentLine = docElem.attribute("comment_line");
-    QString commentStart = docElem.attribute("comment_start");
-    QString commentEnd = docElem.attribute("comment_end");
+//    [[maybe_unused]] QString commentLine = docElem.attribute("comment_line");
+//    [[maybe_unused]] QString commentStart = docElem.attribute("comment_start");
+//    [[maybe_unused]] QString commentEnd = docElem.attribute("comment_end");
 
     QDomElement keywordElem = docElem.firstChildElement("keyword");
     int keywordSet = 0;
     while(!keywordElem.isNull())
     {
-        QString name = keywordElem.attribute("name");
+//        [[maybe_unused]] QString name = keywordElem.attribute("name");
         QString keyword = keywordElem.text();
         sci->setKeyWords(keywordSet++, keyword.toStdString().c_str());
         keywordElem = keywordElem.nextSiblingElement("keyword");
@@ -233,14 +233,14 @@ void ScintillaConfig::applyThemeStyle(ScintillaEdit *sci, const QString &themePa
         QString foreColor = styleElem.attribute("fg_color");
         if (!foreColor.isEmpty())
         {
-            int color = foreColor.toLong(NULL, 16);
+            int color = foreColor.toLong(nullptr, 16);
             color = ((color & 0xFF0000) >> 16) | (color & 0xFF00) | ((color & 0xFF) << 16);
             sci->styleSetFore(id, color);
         }
         QString backColor = styleElem.attribute("bg_color");
         if (!backColor.isEmpty())
         {
-            int color = backColor.toLong(NULL, 16);
+            int color = backColor.toLong(nullptr, 16);
             color = ((color & 0xFF0000) >> 16) | (color & 0xFF00) | ((color & 0xFF) << 16);
             sci->styleSetBack(id, color);
         }
@@ -329,9 +329,7 @@ bool ScintillaConfig::matchPattern(const QString &filename, const QString &patte
     QRegExp regex(pattern, Qt::CaseSensitive);
 #endif
     QFileInfo fi(filename);
-    if (regex.exactMatch(fi.fileName()))
-        return true;
-    return false;
+    return regex.exactMatch(fi.fileName());
 }
 
 bool ScintillaConfig::matchSuffix(const QString &filename, const QString &suffix)
