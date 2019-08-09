@@ -26,7 +26,13 @@ void ScintillaConfig::initScintilla(ScintillaEdit* sci)
     sci->setViewWS(SCWS_INVISIBLE);
     //sci->setStyleBits(5);
     sci->setCaretFore(0x0000FF);
+    
+#if defined(Q_OS_MAC)
+    bool isDarkMode();
+    sci->setCaretLineVisible(!isDarkMode());
+#else
     sci->setCaretLineVisible(true);
+#endif
     sci->setCaretLineBack(0xFFFFD0);
     sci->setCaretLineBackAlpha(256);
     sci->setCaretPeriod(500);
@@ -95,7 +101,7 @@ void ScintillaConfig::initScintilla(ScintillaEdit* sci)
     sci->setCodePage(SC_CP_UTF8);
     sci->setWordChars("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_");
     sci->setZoom(1);
-    sci->setWhitespaceChars(NULL);
+    sci->setWhitespaceChars(nullptr);
     sci->setMouseDwellTime(2500);
 
     sci->setSavePoint();
