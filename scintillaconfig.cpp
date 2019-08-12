@@ -3,6 +3,10 @@
 #include "ScintillaEdit.h"
 #include "scintillaconfig.h"
 
+#if defined(Q_OS_MAC)
+bool isDarkMode();
+#endif
+
 void ScintillaConfig::initScintilla(ScintillaEdit* sci)
 {
     sci->styleResetDefault();
@@ -28,7 +32,6 @@ void ScintillaConfig::initScintilla(ScintillaEdit* sci)
     sci->setCaretFore(0x0000FF);
     
 #if defined(Q_OS_MAC)
-    bool isDarkMode();
     sci->setCaretLineVisible(!isDarkMode());
 #else
     sci->setCaretLineVisible(true);
@@ -66,6 +69,13 @@ void ScintillaConfig::initScintilla(ScintillaEdit* sci)
 
     sci->setFoldMarginColour(true, 0xE9E9E9);
     sci->setFoldMarginHiColour(true, 0xFFFFFF);
+#if defined(Q_OS_MAC)
+    if (isDarkMode())
+    {
+        sci->setFoldMarginColour(true, 0xF8F8F2);
+        sci->setFoldMarginHiColour(true, 0x272822);
+    }
+#endif
 
     sci->setTabWidth(4);
     sci->setUseTabs(false);
@@ -129,21 +139,31 @@ void ScintillaConfig::initFolderStyle(ScintillaEdit *sci)
     sci->markerDefine(SC_MARKNUM_FOLDEREND, SC_MARK_BOXPLUSCONNECTED);
     sci->markerDefine(SC_MARKNUM_FOLDEROPENMID, SC_MARK_BOXMINUSCONNECTED);
     sci->markerDefine(SC_MARKNUM_FOLDERMIDTAIL, SC_MARK_TCORNER);
-
-    sci->markerSetFore(SC_MARKNUM_FOLDEROPEN, 0xFFFFFF);
-    sci->markerSetBack(SC_MARKNUM_FOLDEROPEN, 0x808080);
-    sci->markerSetFore(SC_MARKNUM_FOLDER, 0xFFFFFF);
-    sci->markerSetBack(SC_MARKNUM_FOLDER, 0x808080);
-    sci->markerSetFore(SC_MARKNUM_FOLDERSUB, 0xFFFFFF);
-    sci->markerSetBack(SC_MARKNUM_FOLDERSUB, 0x808080);
-    sci->markerSetFore(SC_MARKNUM_FOLDERTAIL, 0xFFFFFF);
-    sci->markerSetBack(SC_MARKNUM_FOLDERTAIL, 0x808080);
-    sci->markerSetFore(SC_MARKNUM_FOLDEREND, 0xFFFFFF);
-    sci->markerSetBack(SC_MARKNUM_FOLDEREND, 0x808080);
-    sci->markerSetFore(SC_MARKNUM_FOLDEROPENMID, 0xFFFFFF);
-    sci->markerSetBack(SC_MARKNUM_FOLDEROPENMID, 0x808080);
-    sci->markerSetFore(SC_MARKNUM_FOLDERMIDTAIL, 0xFFFFFF);
-    sci->markerSetBack(SC_MARKNUM_FOLDERMIDTAIL, 0x808080);
+    
+    sptr_t backgroundColor = 0x808080;
+    sptr_t foregroundColor = 0xFFFFFF;
+#if defined(Q_OS_MAC)
+    if (isDarkMode())
+    {
+        backgroundColor = 0xF8F8F2;
+        foregroundColor = 0x272822;
+    }
+#endif
+    sci->markerSetFore(SC_MARKNUM_FOLDEROPEN, foregroundColor);
+    sci->markerSetFore(SC_MARKNUM_FOLDER, foregroundColor);
+    sci->markerSetFore(SC_MARKNUM_FOLDERSUB, foregroundColor);
+    sci->markerSetFore(SC_MARKNUM_FOLDERTAIL, foregroundColor);
+    sci->markerSetFore(SC_MARKNUM_FOLDEREND, foregroundColor);
+    sci->markerSetFore(SC_MARKNUM_FOLDEROPENMID, foregroundColor);
+    sci->markerSetFore(SC_MARKNUM_FOLDERMIDTAIL, foregroundColor);
+    
+    sci->markerSetBack(SC_MARKNUM_FOLDEROPEN, backgroundColor);
+    sci->markerSetBack(SC_MARKNUM_FOLDER, backgroundColor);
+    sci->markerSetBack(SC_MARKNUM_FOLDERSUB, backgroundColor);
+    sci->markerSetBack(SC_MARKNUM_FOLDERTAIL, backgroundColor);
+    sci->markerSetBack(SC_MARKNUM_FOLDEREND, backgroundColor);
+    sci->markerSetBack(SC_MARKNUM_FOLDEROPENMID, backgroundColor);
+    sci->markerSetBack(SC_MARKNUM_FOLDERMIDTAIL, backgroundColor);
     sci->setProperty( "fold", "1");
     sci->setProperty( "fold.flags", "16");
     sci->setProperty( "fold.symbols", "1");
