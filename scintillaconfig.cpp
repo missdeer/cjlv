@@ -3,10 +3,6 @@
 #include "ScintillaEdit.h"
 #include "scintillaconfig.h"
 
-#if defined(Q_OS_MAC)
-bool isDarkMode();
-#endif
-
 void ScintillaConfig::initScintilla(ScintillaEdit* sci)
 {
     sci->styleResetDefault();
@@ -31,11 +27,7 @@ void ScintillaConfig::initScintilla(ScintillaEdit* sci)
     //sci->setStyleBits(5);
     sci->setCaretFore(0x0000FF);
     
-#if defined(Q_OS_MAC)
-    sci->setCaretLineVisible(!isDarkMode());
-#else
     sci->setCaretLineVisible(true);
-#endif
     sci->setCaretLineBack(0xFFFFD0);
     sci->setCaretLineBackAlpha(256);
     sci->setCaretPeriod(500);
@@ -74,6 +66,7 @@ void ScintillaConfig::initScintilla(ScintillaEdit* sci)
     {
         sci->setFoldMarginColour(true, 0xF8F8F2);
         sci->setFoldMarginHiColour(true, 0x272822);
+        sci->setCaretLineVisible(false);
     }
 #endif
 

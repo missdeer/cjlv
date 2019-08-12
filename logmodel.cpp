@@ -88,7 +88,6 @@ QVariant LogModel::data(const QModelIndex &index, int role) const
     if (role == Qt::BackgroundRole)
     {
 #if defined(Q_OS_MAC)
-        bool isDarkMode();
         if (isDarkMode())
         {
             return QVariant();

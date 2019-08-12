@@ -90,8 +90,11 @@
 #include <QWinThumbnailToolButton>
 #include <QWinTaskbarButton>
 #include <QWinTaskbarProgress>
+#elif defined (Q_OS_MAC)
+#include "macheader.h"
 #endif
 
+bool QuickGetFilesByFileName(const QString& fileName, QStringList& results);
 #endif
 
 #endif // STDAFX_H

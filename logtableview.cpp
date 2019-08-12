@@ -14,8 +14,6 @@
 #include "logmodel.h"
 #include "logtableview.h"
 
-bool QuickGetFilesByFileName(const QString& fileName, QStringList& results);
-
 LogTableView::LogTableView(QWidget *parent, Sqlite3HelperPtr sqlite3Helper)
 	: QWidget(parent)
     , m_api(new QuickWidgetAPI)

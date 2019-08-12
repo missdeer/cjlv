@@ -20,8 +20,6 @@
 
 QT_CHARTS_USE_NAMESPACE
 
-bool QuickGetFilesByFileName(const QString& fileName, QStringList& results);
-
 #if defined(Q_OS_WIN)
 extern QWinTaskbarButton *g_winTaskbarButton;
 extern QWinTaskbarProgress *g_winTaskbarProgress;
