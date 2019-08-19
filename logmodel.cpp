@@ -1267,7 +1267,7 @@ void LogModel::generateSQLStatements(int offset, QString &sqlFetch, QString &sql
         {
             // lua match
             sqlCount = QString("SELECT COUNT(*) FROM " + getDataSource() + " WHERE %1 MATCH 'dummy'").arg(m_searchField);
-            sqlFetch = QString("SELECT * FROM " + getDataSource() + " WHERE %1 MATCH 'dummy' ORDER BY epoch LIMIT %2, 200;").arg(m_searchField).arg(offset);
+            sqlFetch = QString("SELECT * FROM " + getDataSource() + " WHERE %1 MATCH 'dummy' ORDER BY id LIMIT %2, 200;").arg(m_searchField).arg(offset);
             return;
         }
 
@@ -1275,7 +1275,7 @@ void LogModel::generateSQLStatements(int offset, QString &sqlFetch, QString &sql
         {
             // no search, no filter
             sqlCount = "SELECT COUNT(*) FROM " + getDataSource();
-            sqlFetch = QString("SELECT * FROM " + getDataSource() + " ORDER BY epoch LIMIT %1, 200;").arg(offset);
+            sqlFetch = QString("SELECT * FROM " + getDataSource() + " ORDER BY id LIMIT %1, 200;").arg(offset);
             return;
         }
 
@@ -1283,7 +1283,7 @@ void LogModel::generateSQLStatements(int offset, QString &sqlFetch, QString &sql
         {
             // SQL WHERE clause extension
             sqlCount = QString("SELECT COUNT(*) FROM " + getDataSource() + " WHERE %1").arg(m_keyword);
-            sqlFetch = QString("SELECT * FROM " + getDataSource() + " WHERE %1 ORDER BY epoch LIMIT %2, 200;").arg(m_keyword).arg(offset);
+            sqlFetch = QString("SELECT * FROM " + getDataSource() + " WHERE %1 ORDER BY id LIMIT %2, 200;").arg(m_keyword).arg(offset);
             return;
         }
 
@@ -1291,7 +1291,7 @@ void LogModel::generateSQLStatements(int offset, QString &sqlFetch, QString &sql
         {
             // regexp filter
             sqlCount = QString("SELECT COUNT(*) FROM " + getDataSource() + " WHERE %1 REGEXP ?").arg(m_searchField);
-            sqlFetch = QString("SELECT * FROM " + getDataSource() + " WHERE %1 REGEXP ? ORDER BY epoch LIMIT %2, 200;").arg(m_searchField).arg(offset);
+            sqlFetch = QString("SELECT * FROM " + getDataSource() + " WHERE %1 REGEXP ? ORDER BY id LIMIT %2, 200;").arg(m_searchField).arg(offset);
             return;
         }
 
@@ -1316,7 +1316,7 @@ void LogModel::generateSQLStatements(int offset, QString &sqlFetch, QString &sql
 
         // simple keyword, SQL LIKE fitler
         sqlCount = QString("SELECT COUNT(*) FROM " + getDataSource() + " WHERE %1 LIKE '%'||?||'%'").arg(m_searchField);
-        sqlFetch = QString("SELECT * FROM " + getDataSource() + " WHERE %1 LIKE '%'||?||'%' ORDER BY epoch LIMIT %2, 200;").arg(m_searchField).arg(offset);
+        sqlFetch = QString("SELECT * FROM " + getDataSource() + " WHERE %1 LIKE '%'||?||'%' ORDER BY id LIMIT %2, 200;").arg(m_searchField).arg(offset);
         return;
     }
 
@@ -1324,7 +1324,7 @@ void LogModel::generateSQLStatements(int offset, QString &sqlFetch, QString &sql
     {
         // lua match
         sqlCount = QString("SELECT COUNT(*) FROM " + getDataSource() + " WHERE %1 MATCH 'dummy' AND level GLOB 'dummy'").arg(m_searchField);
-        sqlFetch = QString("SELECT * FROM " + getDataSource() + " WHERE %1 MATCH 'dummy' AND level GLOB 'dummy' ORDER BY epoch LIMIT %2, 200;").arg(m_searchField).arg(offset);
+        sqlFetch = QString("SELECT * FROM " + getDataSource() + " WHERE %1 MATCH 'dummy' AND level GLOB 'dummy' ORDER BY id LIMIT %2, 200;").arg(m_searchField).arg(offset);
         return;
     }
 
@@ -1332,7 +1332,7 @@ void LogModel::generateSQLStatements(int offset, QString &sqlFetch, QString &sql
     {
         // no search, no filter
         sqlCount = "SELECT COUNT(*) FROM " + getDataSource() + " WHERE level GLOB 'dummy'";
-        sqlFetch = QString("SELECT * FROM " + getDataSource() + " WHERE level GLOB 'dummy' ORDER BY epoch LIMIT %1, 200;").arg(offset);
+        sqlFetch = QString("SELECT * FROM " + getDataSource() + " WHERE level GLOB 'dummy' ORDER BY id LIMIT %1, 200;").arg(offset);
         return;
     }
 
@@ -1340,7 +1340,7 @@ void LogModel::generateSQLStatements(int offset, QString &sqlFetch, QString &sql
     {
         // SQL WHERE clause extension
         sqlCount = QString("SELECT COUNT(*) FROM " + getDataSource() + " WHERE %1 AND level GLOB 'dummy'").arg(m_keyword);
-        sqlFetch = QString("SELECT * FROM " + getDataSource() + " WHERE %1 AND level GLOB 'dummy' ORDER BY epoch LIMIT %2, 200;").arg(m_keyword).arg(offset);
+        sqlFetch = QString("SELECT * FROM " + getDataSource() + " WHERE %1 AND level GLOB 'dummy' ORDER BY id LIMIT %2, 200;").arg(m_keyword).arg(offset);
         return;
     }
 
@@ -1348,7 +1348,7 @@ void LogModel::generateSQLStatements(int offset, QString &sqlFetch, QString &sql
     {
         // regexp filter
         sqlCount = QString("SELECT COUNT(*) FROM " + getDataSource() + " WHERE %1 REGEXP ? AND level GLOB 'dummy'").arg(m_searchField);
-        sqlFetch = QString("SELECT * FROM " + getDataSource() + " WHERE %1 REGEXP ? AND level GLOB 'dummy' ORDER BY epoch LIMIT %2, 200;").arg(m_searchField).arg(offset);
+        sqlFetch = QString("SELECT * FROM " + getDataSource() + " WHERE %1 REGEXP ? AND level GLOB 'dummy' ORDER BY id LIMIT %2, 200;").arg(m_searchField).arg(offset);
         return;
     }
 
