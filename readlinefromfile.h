@@ -11,7 +11,7 @@ class ReadLineFromFile
     uchar* m_lineStartPos;
     uchar* m_mapStartPos;
     uchar* m_mapEndPos;
-    const qint64 mapSize = 1024 * 1024; // 1M
+    const qint64 mapSize = 10 * 1024 * 1024; // 1M
 public:
     ReadLineFromFile(const QString& fileName);
 

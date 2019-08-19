@@ -32,14 +32,11 @@ QByteArray ReadLineFromFile::readLine()
     for(;;)
     {
         uchar * p = m_lineStartPos;
-        while (p != m_mapEndPos && *p != '\r' && *p != '\n')
+        while (p < m_mapEndPos && *p != '\n')
             p++;
-        if (p != m_mapEndPos)
+        if (p < m_mapEndPos)
         {
-            if (*p == '\r' && (p+1) != m_mapEndPos && *(p+1) == '\n')
-                p++;
             QByteArray b(reinterpret_cast<const char*>(m_lineStartPos), p - m_lineStartPos);
-            
             m_lineStartPos = p + 1;
             return b;
         }

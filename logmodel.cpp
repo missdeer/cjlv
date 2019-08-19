@@ -1913,6 +1913,8 @@ int LogModel::copyFromFileToDatabase(const QString &fileName)
     QString suffix = fi.suffix();
     QStringList results;
     QString line = f.readLine();
+    while (line.isEmpty() && !f.atEnd())
+        line = f.readLine();
     int lineNo = 1;
     if (!parseLine(line, results) && !parseLine2(line, results))
     {
@@ -1940,6 +1942,8 @@ int LogModel::copyFromFileToDatabase(const QString &fileName)
     while(!f.atEnd())
     {
         QString lookAhead = f.readLine();
+        while (lookAhead.isEmpty() && !f.atEnd())
+            lookAhead = f.readLine();
         lineNo++;
         results.clear();
         if (!parseLine(lookAhead, results) && !parseLine2(lookAhead, results))
