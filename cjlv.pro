@@ -101,6 +101,8 @@ RC_FILE = cjlv.rc
 
 # Mac OS X icon
 macx: {
+    HEADERS += \
+        macheader.h 
     OBJECTIVE_SOURCES += \
         mdfindwrapper.mm \
         darkmode.mm

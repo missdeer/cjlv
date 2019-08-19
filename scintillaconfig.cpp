@@ -26,6 +26,7 @@ void ScintillaConfig::initScintilla(ScintillaEdit* sci)
     sci->setViewWS(SCWS_INVISIBLE);
     //sci->setStyleBits(5);
     sci->setCaretFore(0x0000FF);
+    
     sci->setCaretLineVisible(true);
     sci->setCaretLineBack(0xFFFFD0);
     sci->setCaretLineBackAlpha(256);
@@ -60,6 +61,14 @@ void ScintillaConfig::initScintilla(ScintillaEdit* sci)
 
     sci->setFoldMarginColour(true, 0xE9E9E9);
     sci->setFoldMarginHiColour(true, 0xFFFFFF);
+#if defined(Q_OS_MAC)
+    if (isDarkMode())
+    {
+        sci->setFoldMarginColour(true, 0xF8F8F2);
+        sci->setFoldMarginHiColour(true, 0x272822);
+        sci->setCaretLineVisible(false);
+    }
+#endif
 
     sci->setTabWidth(4);
     sci->setUseTabs(false);
@@ -95,7 +104,7 @@ void ScintillaConfig::initScintilla(ScintillaEdit* sci)
     sci->setCodePage(SC_CP_UTF8);
     sci->setWordChars("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_");
     sci->setZoom(1);
-    sci->setWhitespaceChars(NULL);
+    sci->setWhitespaceChars(nullptr);
     sci->setMouseDwellTime(2500);
 
     sci->setSavePoint();
@@ -123,21 +132,31 @@ void ScintillaConfig::initFolderStyle(ScintillaEdit *sci)
     sci->markerDefine(SC_MARKNUM_FOLDEREND, SC_MARK_BOXPLUSCONNECTED);
     sci->markerDefine(SC_MARKNUM_FOLDEROPENMID, SC_MARK_BOXMINUSCONNECTED);
     sci->markerDefine(SC_MARKNUM_FOLDERMIDTAIL, SC_MARK_TCORNER);
-
-    sci->markerSetFore(SC_MARKNUM_FOLDEROPEN, 0xFFFFFF);
-    sci->markerSetBack(SC_MARKNUM_FOLDEROPEN, 0x808080);
-    sci->markerSetFore(SC_MARKNUM_FOLDER, 0xFFFFFF);
-    sci->markerSetBack(SC_MARKNUM_FOLDER, 0x808080);
-    sci->markerSetFore(SC_MARKNUM_FOLDERSUB, 0xFFFFFF);
-    sci->markerSetBack(SC_MARKNUM_FOLDERSUB, 0x808080);
-    sci->markerSetFore(SC_MARKNUM_FOLDERTAIL, 0xFFFFFF);
-    sci->markerSetBack(SC_MARKNUM_FOLDERTAIL, 0x808080);
-    sci->markerSetFore(SC_MARKNUM_FOLDEREND, 0xFFFFFF);
-    sci->markerSetBack(SC_MARKNUM_FOLDEREND, 0x808080);
-    sci->markerSetFore(SC_MARKNUM_FOLDEROPENMID, 0xFFFFFF);
-    sci->markerSetBack(SC_MARKNUM_FOLDEROPENMID, 0x808080);
-    sci->markerSetFore(SC_MARKNUM_FOLDERMIDTAIL, 0xFFFFFF);
-    sci->markerSetBack(SC_MARKNUM_FOLDERMIDTAIL, 0x808080);
+    
+    sptr_t backgroundColor = 0x808080;
+    sptr_t foregroundColor = 0xFFFFFF;
+#if defined(Q_OS_MAC)
+    if (isDarkMode())
+    {
+        backgroundColor = 0xF8F8F2;
+        foregroundColor = 0x272822;
+    }
+#endif
+    sci->markerSetFore(SC_MARKNUM_FOLDEROPEN, foregroundColor);
+    sci->markerSetFore(SC_MARKNUM_FOLDER, foregroundColor);
+    sci->markerSetFore(SC_MARKNUM_FOLDERSUB, foregroundColor);
+    sci->markerSetFore(SC_MARKNUM_FOLDERTAIL, foregroundColor);
+    sci->markerSetFore(SC_MARKNUM_FOLDEREND, foregroundColor);
+    sci->markerSetFore(SC_MARKNUM_FOLDEROPENMID, foregroundColor);
+    sci->markerSetFore(SC_MARKNUM_FOLDERMIDTAIL, foregroundColor);
+    
+    sci->markerSetBack(SC_MARKNUM_FOLDEROPEN, backgroundColor);
+    sci->markerSetBack(SC_MARKNUM_FOLDER, backgroundColor);
+    sci->markerSetBack(SC_MARKNUM_FOLDERSUB, backgroundColor);
+    sci->markerSetBack(SC_MARKNUM_FOLDERTAIL, backgroundColor);
+    sci->markerSetBack(SC_MARKNUM_FOLDEREND, backgroundColor);
+    sci->markerSetBack(SC_MARKNUM_FOLDEROPENMID, backgroundColor);
+    sci->markerSetBack(SC_MARKNUM_FOLDERMIDTAIL, backgroundColor);
     sci->setProperty( "fold", "1");
     sci->setProperty( "fold.flags", "16");
     sci->setProperty( "fold.symbols", "1");
@@ -182,15 +201,15 @@ void ScintillaConfig::applyLanguageStyle(ScintillaEdit *sci, const QString &conf
     file.close();
 
     QDomElement docElem = doc.documentElement();
-    QString commentLine = docElem.attribute("comment_line");
-    QString commentStart = docElem.attribute("comment_start");
-    QString commentEnd = docElem.attribute("comment_end");
+//    [[maybe_unused]] QString commentLine = docElem.attribute("comment_line");
+//    [[maybe_unused]] QString commentStart = docElem.attribute("comment_start");
+//    [[maybe_unused]] QString commentEnd = docElem.attribute("comment_end");
 
     QDomElement keywordElem = docElem.firstChildElement("keyword");
     int keywordSet = 0;
     while(!keywordElem.isNull())
     {
-        QString name = keywordElem.attribute("name");
+//        [[maybe_unused]] QString name = keywordElem.attribute("name");
         QString keyword = keywordElem.text();
         sci->setKeyWords(keywordSet++, keyword.toStdString().c_str());
         keywordElem = keywordElem.nextSiblingElement("keyword");
@@ -227,14 +246,14 @@ void ScintillaConfig::applyThemeStyle(ScintillaEdit *sci, const QString &themePa
         QString foreColor = styleElem.attribute("fg_color");
         if (!foreColor.isEmpty())
         {
-            int color = foreColor.toLong(NULL, 16);
+            int color = foreColor.toLong(nullptr, 16);
             color = ((color & 0xFF0000) >> 16) | (color & 0xFF00) | ((color & 0xFF) << 16);
             sci->styleSetFore(id, color);
         }
         QString backColor = styleElem.attribute("bg_color");
         if (!backColor.isEmpty())
         {
-            int color = backColor.toLong(NULL, 16);
+            int color = backColor.toLong(nullptr, 16);
             color = ((color & 0xFF0000) >> 16) | (color & 0xFF00) | ((color & 0xFF) << 16);
             sci->styleSetBack(id, color);
         }
@@ -323,9 +342,7 @@ bool ScintillaConfig::matchPattern(const QString &filename, const QString &patte
     QRegExp regex(pattern, Qt::CaseSensitive);
 #endif
     QFileInfo fi(filename);
-    if (regex.exactMatch(fi.fileName()))
-        return true;
-    return false;
+    return regex.exactMatch(fi.fileName());
 }
 
 bool ScintillaConfig::matchSuffix(const QString &filename, const QString &suffix)
