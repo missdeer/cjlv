@@ -43,7 +43,7 @@ SOURCES *= \
     }
 
     macx {
-        LIBS += "-framework Security" "-framework Foundation"
+        LIBS += -framework Security -framework Foundation
         SOURCES += $$QT5KEYCHAIN_PWD/keychain_mac.cpp
     }
 } else {
