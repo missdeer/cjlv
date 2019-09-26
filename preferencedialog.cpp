@@ -35,6 +35,7 @@ PreferenceDialog::PreferenceDialog(QWidget *parent) :
     ui->labelWinDBGPath->setVisible(false);
     ui->btnSelectWinDBGPath->setVisible(false);
     ui->edtWinDBG->setVisible(false);
+    ui->topFormLayout->removeRow(2);
     connect(ui->cbId,         &QCheckBox::stateChanged, this, &PreferenceDialog::onCheckBoxStateChanged);
     connect(ui->cbTime,       &QCheckBox::stateChanged, this, &PreferenceDialog::onCheckBoxStateChanged);
     connect(ui->cbLevel,      &QCheckBox::stateChanged, this, &PreferenceDialog::onCheckBoxStateChanged);
