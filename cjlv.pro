@@ -101,6 +101,7 @@ RC_FILE = cjlv.rc
 
 # Mac OS X icon
 macx: {
+    include($$PWD/3rdparty/kdmactouchbar.pri)
     HEADERS += \
         macheader.h 
     OBJECTIVE_SOURCES += \
@@ -180,4 +181,3 @@ win32: {
         POST_TARGETDEPS += copy_everything_dll copy_everything_exe
     }
 }
-
