@@ -1,6 +1,6 @@
 #ifndef MACHEADER_H
 #define MACHEADER_H
 
-bool isDarkMode();
+bool isMacDarkMode();
 
 #endif // MACHEADER_H

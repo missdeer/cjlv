@@ -62,7 +62,7 @@ void ScintillaConfig::initScintilla(ScintillaEdit* sci)
     sci->setFoldMarginColour(true, 0xE9E9E9);
     sci->setFoldMarginHiColour(true, 0xFFFFFF);
 #if defined(Q_OS_MAC)
-    if (isDarkMode())
+    if (isMacDarkMode())
     {
         sci->setFoldMarginColour(true, 0xF8F8F2);
         sci->setFoldMarginHiColour(true, 0x272822);
@@ -136,7 +136,7 @@ void ScintillaConfig::initFolderStyle(ScintillaEdit *sci)
     sptr_t backgroundColor = 0x808080;
     sptr_t foregroundColor = 0xFFFFFF;
 #if defined(Q_OS_MAC)
-    if (isDarkMode())
+    if (isMacDarkMode())
     {
         backgroundColor = 0xF8F8F2;
         foregroundColor = 0x272822;

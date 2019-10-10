@@ -1,6 +1,6 @@
 #import <Foundation/Foundation.h>
 
-bool isDarkMode()
+bool isMacDarkMode()
 {
     NSString *osxMode = [[NSUserDefaults standardUserDefaults] stringForKey:@"AppleInterfaceStyle"];
     if (osxMode == nil)
