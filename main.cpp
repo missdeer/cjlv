@@ -1,12 +1,16 @@
 #include "stdafx.h"
+
 #include <QFontDatabase>
+#include <QSslSocket>
+
 #include <boost/scope_exit.hpp>
-#include "qtsingleapplication.h"
+
 #include "mainwindow.h"
+#include "qtsingleapplication.h"
 #include "settings.h"
 
 #if defined(Q_OS_WIN)
-#include "everythingwrapper.h"
+#    include "everythingwrapper.h"
 #endif
 
 int main(int argc, char *argv[])
@@ -20,6 +24,14 @@ int main(int argc, char *argv[])
     setrlimit(RLIMIT_NOFILE, &rl);
 #endif
     SharedTools::QtSingleApplication a("Cisco Jabber Log Viewer", argc, argv);
+
+    if (!QSslSocket::supportsSsl()) {
+        QMessageBox::critical(nullptr,
+                              QObject::tr("Critical error"),
+                              QObject::tr("SSL not supported, exit now."),
+                              QMessageBox::Ok);
+        return -1;
+    }
 
     QPixmap pixmap(":/cjlv.png");
     QSplashScreen splash(pixmap.scaled(500, 500));
@@ -51,7 +63,10 @@ int main(int argc, char *argv[])
     QDate d =  QLocale(QLocale::C).toDate(QString(__DATE__).simplified(), QLatin1String("MMM d yyyy"));
     if (d.daysTo(QDate::currentDate()) > 365)
     {
-        QMessageBox::critical(NULL, "Expired", "This application has been expired, please contact fyang3@cisco.com for a new build.", QMessageBox::Ok );
+        QMessageBox::critical(nullptr,
+                              QObject::tr("Expired"),
+                              QObject::tr("This application has been expired, please contact fyang3@cisco.com for a new build."),
+                              QMessageBox::Ok);
         return 1;
     }
 
