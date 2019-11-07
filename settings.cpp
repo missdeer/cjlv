@@ -1,24 +1,10 @@
 #include "stdafx.h"
+
 #include <keychain.h>
+
 #include "settings.h"
 
 using namespace QKeychain;
-
-Settings* g_settings = nullptr;
-
-Settings::Settings()
-    : m_inMemoryDatabase(true)
-    , m_searchOrFitler(false)
-    , m_fatalEnabled(true)
-    , m_errorEnabled(true)
-    , m_warnEnabled(true)
-    , m_infoEnabled(true)
-    , m_debugEnabled(true)
-    , m_traceEnabled(true)
-    , m_ftsEnabled(true)
-{
-
-}
 
 Settings::~Settings()
 {
@@ -32,7 +18,8 @@ void Settings::initialize()
     if (m_lastOpenedDirectory.isEmpty())
     {
 #if defined(Q_OS_WIN)
-        m_lastOpenedDirectory = QStandardPaths::writableLocation(QStandardPaths::HomeLocation) % "/AppData/Local/Cisco/Unified Communications/Jabber/CSF/Logs";
+        m_lastOpenedDirectory =
+            QStandardPaths::writableLocation(QStandardPaths::HomeLocation) % "/AppData/Local/Cisco/Unified Communications/Jabber/CSF/Logs";
 #endif
 #if defined(Q_OS_MAC)
         m_lastOpenedDirectory = QStandardPaths::writableLocation(QStandardPaths::HomeLocation) % "/Library/Logs/Jabber";
@@ -45,7 +32,7 @@ void Settings::initialize()
     }
 }
 
-const QString& Settings::prtTrackingSystemToken() const
+const QString &Settings::prtTrackingSystemToken() const
 {
     return m_prtTrackingSystemToken;
 }
@@ -163,7 +150,7 @@ void Settings::save()
     settings.setValue("sourceDirectory", m_sourceDirectory);
     settings.setValue("sourceViewFontFamily", m_sourceViewFontFamily);
     settings.setValue("sourceViewTheme", m_sourceViewTheme);
-    settings.setValue("lastOpenedDirectory",QDir::toNativeSeparators(m_lastOpenedDirectory));
+    settings.setValue("lastOpenedDirectory", QDir::toNativeSeparators(m_lastOpenedDirectory));
     if (!m_everythingPath.isEmpty())
         settings.setValue("everythingPath", m_everythingPath);
     if (!m_windbgPath.isEmpty())
@@ -175,18 +162,18 @@ void Settings::save()
     settings.setValue("ftsEnabled", m_ftsEnabled);
     settings.sync();
 
-    WritePasswordJob job( QLatin1String("com.cisco.jabber.viewer") );
-    job.setAutoDelete( false );
+    WritePasswordJob job(QLatin1String("com.cisco.jabber.viewer"));
+    job.setAutoDelete(false);
     QEventLoop loop;
-    job.connect( &job, SIGNAL(finished(QKeychain::Job*)), &loop, SLOT(quit()) );
+    job.connect(&job, SIGNAL(finished(QKeychain::Job *)), &loop, SLOT(quit()));
 
-    job.setKey( "username");
-    job.setTextData( m_cecId);
+    job.setKey("username");
+    job.setTextData(m_cecId);
     job.start();
     loop.exec();
 
-    job.setKey( "password");
-    job.setTextData( m_cecPassword);
+    job.setKey("password");
+    job.setTextData(m_cecPassword);
     job.start();
     loop.exec();
 }
@@ -195,39 +182,35 @@ void Settings::load()
 {
     QSettings settings(QSettings::IniFormat, QSettings::UserScope, "cisco.com", "Cisco Jabber Log Viewer");
     m_searchOrFitler = settings.value("searchOrFilter", false).toBool();
-    m_temporaryDirectory = settings.value("temporaryDirectory").toString();
-    m_sourceDirectory = settings.value("sourceDirectory").toString();
+    setTemporaryDirectory(settings.value("temporaryDirectory").toString());
+    setSourceDirectory(m_sourceDirectory = settings.value("sourceDirectory").toString());
     m_sourceViewFontFamily = settings.value("sourceViewFontFamily", QVariant("Source Code Pro")).toString();
-    m_sourceViewTheme = settings.value("sourceViewTheme", QVariant("Default")).toString();
-    m_lastOpenedDirectory = settings.value("lastOpenedDirectory").toString();
-    m_everythingPath = settings.value("everythingPath").toString();
+    m_sourceViewTheme      = settings.value("sourceViewTheme", QVariant("Default")).toString();
+    m_lastOpenedDirectory  = settings.value("lastOpenedDirectory").toString();
+    m_everythingPath       = settings.value("everythingPath").toString();
     if (m_everythingPath.isEmpty())
         m_everythingPath = QApplication::applicationDirPath() % "/Everything.exe";
-    m_windbgPath = settings.value("windbgPath").toString();
+    m_windbgPath            = settings.value("windbgPath").toString();
     m_logTableColumnVisible = settings.value("logTableColumnVisible", 0x7FFFFFFF).toInt();
-    m_proxyType = static_cast<QNetworkProxy::ProxyType>(settings.value("proxyType", QNetworkProxy::NoProxy).toInt());
-    m_proxyHostName = settings.value("proxyHostName").toString();
-    m_proxyPort = settings.value("proxyPort", 0).toInt();
-    m_ftsEnabled = settings.value("ftsEnabled", true).toBool();
+    m_proxyType             = static_cast<QNetworkProxy::ProxyType>(settings.value("proxyType", QNetworkProxy::NoProxy).toInt());
+    m_proxyHostName         = settings.value("proxyHostName").toString();
+    m_proxyPort             = settings.value("proxyPort", 0).toInt();
+    m_ftsEnabled            = settings.value("ftsEnabled", true).toBool();
 
-    ReadPasswordJob job( QLatin1String("com.cisco.jabber.viewer") );
-    job.setAutoDelete( false );
+    ReadPasswordJob job(QLatin1String("com.cisco.jabber.viewer"));
+    job.setAutoDelete(false);
     QEventLoop loop;
-    job.connect( &job, SIGNAL(finished(QKeychain::Job*)), &loop, SLOT(quit()) );
+    job.connect(&job, SIGNAL(finished(QKeychain::Job *)), &loop, SLOT(quit()));
 
-    job.setKey( "username");
+    job.setKey("username");
     job.start();
     loop.exec();
     if (!job.textData().isEmpty())
         m_cecId = job.textData();
 
-    job.setKey( "password");
+    job.setKey("password");
     job.start();
     loop.exec();
     if (!job.textData().isEmpty())
         m_cecPassword = job.textData();
 }
-
-
-
-

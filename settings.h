@@ -1,12 +1,14 @@
 #ifndef SETTINGS_H
 #define SETTINGS_H
 
+#include <QDir>
+#include <QFile>
 #include <QNetworkProxy>
 
 class Settings
 {
 public:
-    Settings();
+    Settings() = default;
     ~Settings();
 
     void save();
@@ -21,16 +23,22 @@ public:
         m_searchOrFitler = searchOrFitler;
     }
 
-    const QString & temporaryDirectory() const
+    const QString &temporaryDirectory() const
     {
         return m_temporaryDirectory;
     }
     void setTemporaryDirectory(const QString &temporaryDirectory)
     {
-        m_temporaryDirectory = temporaryDirectory;
+        QDir d(temporaryDirectory);
+        if (!d.exists(temporaryDirectory))
+            d.mkpath(temporaryDirectory);
+        if (d.exists(temporaryDirectory))
+            m_temporaryDirectory = temporaryDirectory;
+        else
+            m_temporaryDirectory.clear();
     }
 
-    const QString & lastOpenedDirectory() const
+    const QString &lastOpenedDirectory() const
     {
         return m_lastOpenedDirectory;
     }
@@ -39,13 +47,19 @@ public:
         m_lastOpenedDirectory = lastOpenedDirectory;
     }
 
-    const QString & sourceDirectory() const
+    const QString &sourceDirectory() const
     {
         return m_sourceDirectory;
     }
     void setSourceDirectory(const QString &sourceDirectory)
     {
-        m_sourceDirectory = sourceDirectory;
+        QDir d(sourceDirectory);
+        if (!d.exists(sourceDirectory))
+            d.mkpath(sourceDirectory);
+        if (d.exists(sourceDirectory))
+            m_sourceDirectory = sourceDirectory;
+        else
+            m_sourceDirectory.clear();
     }
 
     bool inMemoryDatabase() const
@@ -59,11 +73,11 @@ public:
 
     void initialize();
 
-    const QString & everythingPath() const
+    const QString &everythingPath() const
     {
         return m_everythingPath;
     }
-    void setEverythingPath(const QString& everythingPath)
+    void setEverythingPath(const QString &everythingPath)
     {
         m_everythingPath = everythingPath;
     }
@@ -136,65 +150,65 @@ public:
     }
 
     const QString &prtTrackingSystemToken() const;
-    void setPrtTrackingSystemToken(const QString &prtTrackingSystemToken);
+    void           setPrtTrackingSystemToken(const QString &prtTrackingSystemToken);
 
-    const QString & cecId() const;
-    void setCecId(const QString &cecId);
+    const QString &cecId() const;
+    void           setCecId(const QString &cecId);
 
-    const QString & cecPassword() const;
-    void setCecPassword(const QString &cecPassword);
+    const QString &cecPassword() const;
+    void           setCecPassword(const QString &cecPassword);
 
-    const QString & windbgPath() const;
-    void setWindbgPath(const QString &windbgPath);
+    const QString &windbgPath() const;
+    void           setWindbgPath(const QString &windbgPath);
 
-    const QString & sourceViewFontFamily() const;
-    void setSourceViewFontFamily(const QString &sourceViewFontFamily);
+    const QString &sourceViewFontFamily() const;
+    void           setSourceViewFontFamily(const QString &sourceViewFontFamily);
 
-    const QString & sourceViewTheme() const;
-    void setSourceViewTheme(const QString &sourceViewTheme);
+    const QString &sourceViewTheme() const;
+    void           setSourceViewTheme(const QString &sourceViewTheme);
 
-    int logTableColumnVisible() const;
+    int  logTableColumnVisible() const;
     void setLogTableColumnVisible(int logTableColumnVisible);
 
     QNetworkProxy::ProxyType proxyType() const;
-    void setProxyType(const QNetworkProxy::ProxyType &proxyType);
+    void                     setProxyType(const QNetworkProxy::ProxyType &proxyType);
 
-    const QString& proxyHostName() const;
-    void setProxyHostName(const QString &proxyHostName);
+    const QString &proxyHostName() const;
+    void           setProxyHostName(const QString &proxyHostName);
 
-    int proxyPort() const;
+    int  proxyPort() const;
     void setProxyPort(int proxyPort);
 
     bool ftsEnabled() const;
     void setFtsEnabled(bool ftsEnabled);
 
 private:
-    bool m_inMemoryDatabase;
-    bool m_searchOrFitler;
-    bool m_fatalEnabled;
-    bool m_errorEnabled;
-    bool m_warnEnabled;
-    bool m_infoEnabled;
-    bool m_debugEnabled;
-    bool m_traceEnabled;
-    bool m_multiMonitorEnabled;
-    bool m_ftsEnabled;
-    int m_logTableColumnVisible;
+    bool                     m_inMemoryDatabase {true};
+    bool                     m_searchOrFitler {false};
+    bool                     m_fatalEnabled {true};
+    bool                     m_errorEnabled {true};
+    bool                     m_warnEnabled {true};
+    bool                     m_infoEnabled {true};
+    bool                     m_debugEnabled {true};
+    bool                     m_traceEnabled {true};
+    bool                     m_multiMonitorEnabled {true};
+    bool                     m_ftsEnabled {true};
+    int                      m_logTableColumnVisible;
     QNetworkProxy::ProxyType m_proxyType;
-    QString m_proxyHostName;
-    int m_proxyPort;
-    QString m_temporaryDirectory;
-    QString m_lastOpenedDirectory;
-    QString m_sourceDirectory;
-    QString m_everythingPath;
-    QString m_prtTrackingSystemToken;
-    QString m_cecId;
-    QString m_cecPassword;
-    QString m_windbgPath;
-    QString m_sourceViewFontFamily;
-    QString m_sourceViewTheme;
+    QString                  m_proxyHostName;
+    int                      m_proxyPort;
+    QString                  m_temporaryDirectory;
+    QString                  m_lastOpenedDirectory;
+    QString                  m_sourceDirectory;
+    QString                  m_everythingPath;
+    QString                  m_prtTrackingSystemToken;
+    QString                  m_cecId;
+    QString                  m_cecPassword;
+    QString                  m_windbgPath;
+    QString                  m_sourceViewFontFamily;
+    QString                  m_sourceViewTheme;
 };
 
-extern Settings *g_settings;
+inline Settings *g_settings = nullptr;
 
 #endif // SETTINGS_H
