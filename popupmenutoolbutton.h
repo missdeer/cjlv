@@ -7,7 +7,7 @@ class PopupMenuToolButton : public QToolButton
 {
     Q_OBJECT
 public:
-    explicit PopupMenuToolButton(QWidget* parent = nullptr);
+    explicit PopupMenuToolButton(QWidget *parent = nullptr);
 };
 
 #endif // POPUPMENUTOOLBUTTON_H

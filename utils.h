@@ -1,9 +1,9 @@
 #ifndef UTILS_H
 #define UTILS_H
 
-
-namespace Utils {
-    QString formatXML(const QString& text);
+namespace Utils
+{
+    QString formatXML(const QString &text);
 
 }
 

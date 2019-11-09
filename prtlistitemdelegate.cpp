@@ -1,33 +1,29 @@
 #include "stdafx.h"
+
 #include "prtlistitemdelegate.h"
 
 #if defined(Q_OS_WIN)
-#define globalDefaultFontFamily "Microsoft YaHei"
+#    define globalDefaultFontFamily "Microsoft YaHei"
 #else
-#define globalDefaultFontFamily "PingFang CS"
+#    define globalDefaultFontFamily "PingFang CS"
 #endif
 
-PRTListItemDelegate::PRTListItemDelegate(QListWidget *parent)
-    : QAbstractItemDelegate (parent),
-      m_parentListWidget(parent)
-{
-
-}
+PRTListItemDelegate::PRTListItemDelegate(QListWidget *parent) : QAbstractItemDelegate(parent), m_parentListWidget(parent) {}
 
 void PRTListItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
     QRect r = option.rect;
 
-    //Color: #C4C4C4
+    // Color: #C4C4C4
     QPen linePen(QColor::fromRgb(211, 211, 211), 1, Qt::SolidLine);
 
-    //Color: #005A83
+    // Color: #005A83
     QPen lineMarkedPen(QColor::fromRgb(0, 90, 131), 1, Qt::SolidLine);
 
-    //Color: #333
+    // Color: #333
     QPen fontPen(QColor::fromRgb(51, 51, 51), 1, Qt::SolidLine);
 
-    //Color: #fff
+    // Color: #fff
     QPen fontMarkedPen(Qt::white, 1, Qt::SolidLine);
 
     if (option.state & QStyle::State_Selected)
@@ -39,7 +35,7 @@ void PRTListItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &o
         painter->setBrush(gradientSelected);
         painter->drawRect(r);
 
-        //BORDER
+        // BORDER
         painter->setPen(lineMarkedPen);
         painter->drawLine(r.topLeft(), r.topRight());
         painter->drawLine(r.topRight(), r.bottomRight());
@@ -50,12 +46,12 @@ void PRTListItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &o
     }
     else
     {
-        //BACKGROUND
-        //ALTERNATING COLORS
+        // BACKGROUND
+        // ALTERNATING COLORS
         painter->setBrush((index.row() % 2) ? Qt::white : QColor(252, 252, 252));
         painter->drawRect(r);
 
-        //BORDER
+        // BORDER
         painter->setPen(linePen);
         painter->drawLine(r.topLeft(), r.topRight());
         painter->drawLine(r.topRight(), r.bottomRight());
@@ -64,37 +60,37 @@ void PRTListItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &o
 
         painter->setPen(fontPen);
     }
-    QString title = index.data(Qt::DisplayRole).toString();
-    QString topic = index.data(Qt::UserRole + 1).toString();
-    QString owner = index.data(Qt::UserRole + 2).toString();
+    QString title   = index.data(Qt::DisplayRole).toString();
+    QString topic   = index.data(Qt::UserRole + 1).toString();
+    QString owner   = index.data(Qt::UserRole + 2).toString();
     QString content = index.data(Qt::UserRole + 3).toString();
 
     painter->setFont(QFont(globalDefaultFontFamily,
-                       #if defined(Q_OS_WIN)
+#if defined(Q_OS_WIN)
                            12,
-                       #else
+#else
                            14,
-                       #endif
+#endif
                            QFont::Normal));
     painter->drawText(r, Qt::AlignLeft | Qt::AlignVCenter | Qt::TextWordWrap, title, &r);
 }
 
-QSize PRTListItemDelegate::sizeHint(const QStyleOptionViewItem &/*option*/, const QModelIndex &index) const
+QSize PRTListItemDelegate::sizeHint(const QStyleOptionViewItem & /*option*/, const QModelIndex &index) const
 {
     QFontMetrics fm(QFont(globalDefaultFontFamily,
-                      #if defined(Q_OS_WIN)
+#if defined(Q_OS_WIN)
                           12,
-                      #else
+#else
                           14,
-                      #endif
+#endif
                           QFont::Normal));
     QString title = index.data(Qt::DisplayRole).toString();
-    QRect rc = fm.boundingRect(title + "paddingpadding"); // since this method doesn't support word wrap detection
-    int width = m_parentListWidget->width() -4;
+    QRect   rc    = fm.boundingRect(title + "paddingpadding"); // since this method doesn't support word wrap detection
+    int     width = m_parentListWidget->width() - 4;
 #if defined(Q_OS_WIN)
     if (m_parentListWidget->verticalScrollBar() && m_parentListWidget->verticalScrollBar()->isVisible())
         width -= m_parentListWidget->verticalScrollBar()->width();
 #endif
-    int height = (rc.width() /width +1)* rc.height();
-    return QSize(width+4, height+4);
+    int height = (rc.width() / width + 1) * rc.height();
+    return QSize(width + 4, height + 4);
 }

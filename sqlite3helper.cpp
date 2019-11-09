@@ -1,18 +1,16 @@
 #include "stdafx.h"
-#include "settings.h"
+
 #include "sqlite3helper.h"
 
-lua_State* Sqlite3Helper::g_L = nullptr;
+#include "settings.h"
 
-Sqlite3Helper::Sqlite3Helper()
-    :m_db(nullptr)
-{
+lua_State *Sqlite3Helper::g_L = nullptr;
 
-}
+Sqlite3Helper::Sqlite3Helper() : m_db(nullptr) {}
 
 Sqlite3Helper::~Sqlite3Helper()
 {
-    if(isDatabaseOpened())
+    if (isDatabaseOpened())
         closeDatabaseConnection();
     m_db = nullptr;
 
@@ -24,37 +22,37 @@ void Sqlite3Helper::bind(sqlite3_stmt *pVM, int nParam, const QString &sValue)
     bind(pVM, nParam, sValue.toStdString().c_str());
 }
 
-void Sqlite3Helper::bind(sqlite3_stmt* mpVM, const char * szParam, const char * szValue)
+void Sqlite3Helper::bind(sqlite3_stmt *mpVM, const char *szParam, const char *szValue)
 {
     int nParam = bindParameterIndex(mpVM, szParam);
     bind(mpVM, nParam, szValue);
 }
 
-void Sqlite3Helper::bind(sqlite3_stmt* mpVM, const char * szParam, int const nValue)
+void Sqlite3Helper::bind(sqlite3_stmt *mpVM, const char *szParam, int const nValue)
 {
     int nParam = bindParameterIndex(mpVM, szParam);
     bind(mpVM, nParam, nValue);
 }
 
-void Sqlite3Helper::bind(sqlite3_stmt* mpVM, const char * szParam, int64_t const nValue)
+void Sqlite3Helper::bind(sqlite3_stmt *mpVM, const char *szParam, int64_t const nValue)
 {
     int nParam = bindParameterIndex(mpVM, szParam);
     bind(mpVM, nParam, nValue);
 }
 
-void Sqlite3Helper::bind(sqlite3_stmt* mpVM, const char * szParam, double const dwValue)
+void Sqlite3Helper::bind(sqlite3_stmt *mpVM, const char *szParam, double const dwValue)
 {
     int nParam = bindParameterIndex(mpVM, szParam);
     bind(mpVM, nParam, dwValue);
 }
 
-void Sqlite3Helper::bind(sqlite3_stmt* mpVM, const char * szParam, unsigned char const* blobValue, int nLen)
+void Sqlite3Helper::bind(sqlite3_stmt *mpVM, const char *szParam, unsigned char const *blobValue, int nLen)
 {
     int nParam = bindParameterIndex(mpVM, szParam);
     bind(mpVM, nParam, blobValue, nLen);
 }
 
-void Sqlite3Helper::bindNull(sqlite3_stmt* mpVM, const char * szParam)
+void Sqlite3Helper::bindNull(sqlite3_stmt *mpVM, const char *szParam)
 {
     int nParam = bindParameterIndex(mpVM, szParam);
     bindNull(mpVM, nParam);
@@ -65,66 +63,66 @@ sqlite3_stmt *Sqlite3Helper::compile(const QString &szSQL)
     return compile(szSQL.toStdString().c_str());
 }
 
-void Sqlite3Helper::bind(sqlite3_stmt* mpVM, int nParam, const char * szValue)
+void Sqlite3Helper::bind(sqlite3_stmt *mpVM, int nParam, const char *szValue)
 {
     int nRes = sqlite3_bind_text(mpVM, nParam, szValue, -1, SQLITE_TRANSIENT);
     if (nRes != SQLITE_OK)
     {
-        qDebug() <<"Error binding string param";
+        qDebug() << "Error binding string param";
     }
 }
 
-void Sqlite3Helper::bind(sqlite3_stmt* mpVM, int nParam, const int nValue)
+void Sqlite3Helper::bind(sqlite3_stmt *mpVM, int nParam, const int nValue)
 {
     int nRes = sqlite3_bind_int(mpVM, nParam, nValue);
     if (nRes != SQLITE_OK)
     {
-        qDebug() <<"Error binding int param";
+        qDebug() << "Error binding int param";
     }
 }
 
-
-void Sqlite3Helper::bind(sqlite3_stmt* mpVM, int nParam, const int64_t nValue)
+void Sqlite3Helper::bind(sqlite3_stmt *mpVM, int nParam, const int64_t nValue)
 {
     int nRes = sqlite3_bind_int64(mpVM, nParam, nValue);
     if (nRes != SQLITE_OK)
     {
-        qDebug() <<"Error binding int param";
+        qDebug() << "Error binding int param";
     }
 }
 
-void Sqlite3Helper::bind(sqlite3_stmt* mpVM, int nParam, const double dValue)
+void Sqlite3Helper::bind(sqlite3_stmt *mpVM, int nParam, const double dValue)
 {
     int nRes = sqlite3_bind_double(mpVM, nParam, dValue);
     if (nRes != SQLITE_OK)
     {
-        qDebug() <<"Error binding double param";
+        qDebug() << "Error binding double param";
     }
 }
 
-void Sqlite3Helper::bind(sqlite3_stmt* mpVM, int nParam, const unsigned char* blobValue, int nLen)
+void Sqlite3Helper::bind(sqlite3_stmt *mpVM, int nParam, const unsigned char *blobValue, int nLen)
 {
-    int nRes = sqlite3_bind_blob(mpVM, nParam, (const void*)blobValue, nLen, SQLITE_TRANSIENT);
+    int nRes = sqlite3_bind_blob(mpVM, nParam, (const void *)blobValue, nLen, SQLITE_TRANSIENT);
     if (nRes != SQLITE_OK)
     {
-        qDebug() <<"Error binding blob param";
+        qDebug() << "Error binding blob param";
     }
 }
 
-void Sqlite3Helper::bindNull(sqlite3_stmt* mpVM, int nParam)
+void Sqlite3Helper::bindNull(sqlite3_stmt *mpVM, int nParam)
 {
     int nRes = sqlite3_bind_null(mpVM, nParam);
     if (nRes != SQLITE_OK)
     {
-        qDebug() <<"Error binding NULL param";
+        qDebug() << "Error binding NULL param";
     }
 }
 
-int Sqlite3Helper::bindParameterIndex(sqlite3_stmt* mpVM, const char * szParam)
+int Sqlite3Helper::bindParameterIndex(sqlite3_stmt *mpVM, const char *szParam)
 {
     int nParam = sqlite3_bind_parameter_index(mpVM, szParam);
-    if (!nParam) {
-        qDebug() <<"Parameter '" << szParam << "' is not valid for this statement";
+    if (!nParam)
+    {
+        qDebug() << "Parameter '" << szParam << "' is not valid for this statement";
     }
 
     return nParam;
@@ -135,13 +133,13 @@ void Sqlite3Helper::bind(sqlite3_stmt *pVM, const char *szParam, const QString &
     bind(pVM, szParam, sValue.toStdString().c_str());
 }
 
-sqlite3_stmt* Sqlite3Helper::compile(const char * szSQL)
+sqlite3_stmt *Sqlite3Helper::compile(const char *szSQL)
 {
-    sqlite3_stmt* pVM = nullptr;
-    int res = sqlite3_prepare(m_db, szSQL, -1, &pVM, nullptr);
+    sqlite3_stmt *pVM = nullptr;
+    int           res = sqlite3_prepare(m_db, szSQL, -1, &pVM, nullptr);
     if (res != SQLITE_OK)
     {
-        qDebug() <<"prepare SQL statement " << szSQL << " failed:" << res << (const char *)sqlite3_errmsg(m_db);
+        qDebug() << "prepare SQL statement " << szSQL << " failed:" << res << (const char *)sqlite3_errmsg(m_db);
     }
 
     return pVM;
@@ -152,20 +150,22 @@ int Sqlite3Helper::execDML(const QString &szSQL)
     return execDML(szSQL.toStdString().c_str());
 }
 
-int Sqlite3Helper::execDML(const char * szSQL)
+int Sqlite3Helper::execDML(const char *szSQL)
 {
     int nRet;
 
-    do {
-        sqlite3_stmt* pVM = compile(szSQL);
+    do
+    {
+        sqlite3_stmt *pVM = compile(szSQL);
         if (!pVM)
         {
-            qDebug() <<"VM null pointer";
+            qDebug() << "VM null pointer";
             return -1;
         }
         nRet = sqlite3_step(pVM);
 
-        if (nRet == SQLITE_ERROR) {
+        if (nRet == SQLITE_ERROR)
+        {
             qDebug() << (const char *)sqlite3_errmsg(m_db);
             sqlite3_finalize(pVM);
             break;
@@ -176,16 +176,16 @@ int Sqlite3Helper::execDML(const char * szSQL)
     return nRet;
 }
 
-int Sqlite3Helper::execDML(sqlite3_stmt* pVM)
+int Sqlite3Helper::execDML(sqlite3_stmt *pVM)
 {
     if (!isDatabaseOpened())
     {
-        qDebug() <<"database is not opened";
+        qDebug() << "database is not opened";
         return -1;
     }
     if (!pVM)
     {
-        qDebug() <<"VM null pointer";
+        qDebug() << "VM null pointer";
         return -1;
     }
 
@@ -210,16 +210,18 @@ int Sqlite3Helper::execDML(sqlite3_stmt* pVM)
     return -1;
 }
 
-int Sqlite3Helper::execQuery(sqlite3_stmt* pVM, bool& eof)
+int Sqlite3Helper::execQuery(sqlite3_stmt *pVM, bool &eof)
 {
     int nRet = sqlite3_step(pVM);
 
-    if (nRet == SQLITE_DONE) { // no rows
+    if (nRet == SQLITE_DONE)
+    { // no rows
         sqlite3_finalize(pVM);
         eof = true;
         return nRet;
     }
-    else if (nRet == SQLITE_ROW) { // at least 1 row
+    else if (nRet == SQLITE_ROW)
+    { // at least 1 row
         eof = false;
         return nRet;
     }
@@ -232,7 +234,7 @@ int Sqlite3Helper::execQuery(sqlite3_stmt* pVM, bool& eof)
     return -1;
 }
 
-bool Sqlite3Helper::nextRow(sqlite3_stmt* pVM, bool& eof)
+bool Sqlite3Helper::nextRow(sqlite3_stmt *pVM, bool &eof)
 {
     int nRet = sqlite3_step(pVM);
 
@@ -270,7 +272,7 @@ bool Sqlite3Helper::closeDatabaseConnection()
 {
     if (!m_db)
     {
-        qDebug() <<"Database is not opened!";
+        qDebug() << "Database is not opened!";
         return false;
     }
 
@@ -278,22 +280,21 @@ bool Sqlite3Helper::closeDatabaseConnection()
 
     if (result != SQLITE_OK)
     {
-        qDebug() <<"Close DB failed: " << sqlite3_errmsg(m_db);
+        qDebug() << "Close DB failed: " << sqlite3_errmsg(m_db);
         return false;
     }
 
-    qDebug() <<"Database is closed!";
+    qDebug() << "Database is closed!";
     m_db = nullptr;
     return true;
 }
 
-
-int Sqlite3Helper::checkExists(const QString& field, const QString& name)
+int Sqlite3Helper::checkExists(const QString &field, const QString &name)
 {
     int nRet = 0;
     do
     {
-        sqlite3_stmt* pVM = compile("SELECT COUNT(*) FROM sqlite_master WHERE type = ? AND name = ?;");
+        sqlite3_stmt *pVM = compile("SELECT COUNT(*) FROM sqlite_master WHERE type = ? AND name = ?;");
         if (!pVM)
         {
             return -1;
@@ -301,7 +302,7 @@ int Sqlite3Helper::checkExists(const QString& field, const QString& name)
         bind(pVM, 1, field.toStdString().c_str());
         bind(pVM, 2, name.toStdString().c_str());
         bool eof = false;
-        nRet = execQuery(pVM, eof);
+        nRet     = execQuery(pVM, eof);
         if (nRet == SQLITE_DONE || nRet == SQLITE_ROW)
         {
             int size = 0;
@@ -314,11 +315,11 @@ int Sqlite3Helper::checkExists(const QString& field, const QString& name)
 
             if (size > 0)
             {
-                qDebug() <<"found expected " << field << ":" << name;
+                qDebug() << "found expected " << field << ":" << name;
                 return size;
             }
 
-            qDebug() <<"not found expected " << field << ":" << name;
+            qDebug() << "not found expected " << field << ":" << name;
             return 0;
         }
     } while (nRet == SQLITE_SCHEMA);
@@ -330,13 +331,13 @@ bool Sqlite3Helper::openDatabase(const QString &name)
 {
     if (sqlite3_open_v2(name.toStdString().c_str(), &m_db, SQLITE_OPEN_READWRITE, nullptr) != SQLITE_OK)
     {
-        qDebug() <<"Cannot open the database.";
+        qDebug() << "Cannot open the database.";
         return false;
     }
 
     bindCustomFunctions();
     m_dbFile = name;
-    qDebug() <<"The database is opened.";
+    qDebug() << "The database is opened.";
     return true;
 }
 
@@ -344,13 +345,13 @@ bool Sqlite3Helper::createDatabase(const QString &name)
 {
     if (sqlite3_open_v2(name.toStdString().c_str(), &m_db, SQLITE_OPEN_CREATE | SQLITE_OPEN_READWRITE, nullptr) != SQLITE_OK)
     {
-        qDebug() <<"Cannot create the database.";
+        qDebug() << "Cannot create the database.";
         return false;
     }
 
     bindCustomFunctions();
     m_dbFile = name;
-    qDebug() <<"The database is created.";
+    qDebug() << "The database is created.";
     return true;
 }
 
@@ -374,7 +375,7 @@ bool Sqlite3Helper::vacuum()
     return execDML("VACUUM;") == SQLITE_OK;
 }
 
-void Sqlite3Helper::setLuaState(lua_State* L)
+void Sqlite3Helper::setLuaState(lua_State *L)
 {
     Sqlite3Helper::g_L = L;
 }
@@ -400,7 +401,7 @@ void Sqlite3Helper::setRegexpPattern(const QString &pattern)
 
 void Sqlite3Helper::levelGlob(sqlite3_context *ctx, int, sqlite3_value **argv)
 {
-    QString text(reinterpret_cast<const char*>(sqlite3_value_text(argv[1])));
+    QString text(reinterpret_cast<const char *>(sqlite3_value_text(argv[1])));
 
     QMap<QString, bool> v {
         {"FATAL", g_settings->fatalEnabled()},
@@ -424,8 +425,8 @@ void Sqlite3Helper::levelGlob(sqlite3_context *ctx, int, sqlite3_value **argv)
 
 void Sqlite3Helper::qtRegexp(sqlite3_context *ctx, int, sqlite3_value **argv)
 {
-    QString text(reinterpret_cast<const char*>(sqlite3_value_text(argv[1])));
-    Sqlite3Helper* pThis = reinterpret_cast<Sqlite3Helper*>(sqlite3_user_data(ctx));
+    QString        text(reinterpret_cast<const char *>(sqlite3_value_text(argv[1])));
+    Sqlite3Helper *pThis = reinterpret_cast<Sqlite3Helper *>(sqlite3_user_data(ctx));
 
     bool b = text.contains(pThis->m_regexp);
 
@@ -441,7 +442,7 @@ void Sqlite3Helper::qtRegexp(sqlite3_context *ctx, int, sqlite3_value **argv)
 
 void Sqlite3Helper::luaMatch(sqlite3_context *ctx, int, sqlite3_value **argv)
 {
-    const char * text = reinterpret_cast<const char*>(sqlite3_value_text(argv[1]));
+    const char *text = reinterpret_cast<const char *>(sqlite3_value_text(argv[1]));
     lua_getglobal(g_L, "match");
     lua_pushstring(g_L, text);
 
@@ -449,7 +450,7 @@ void Sqlite3Helper::luaMatch(sqlite3_context *ctx, int, sqlite3_value **argv)
     if (lua_pcall(g_L, 1, 1, 0) != 0)
     {
         qDebug() << QString(lua_tostring(g_L, -1));
-        lua_pop(g_L, 1);  /* pop error message from the stack */
+        lua_pop(g_L, 1); /* pop error message from the stack */
         sqlite3_result_int(ctx, 0);
         return;
     }

@@ -2,99 +2,91 @@
 #define STDAFX_H
 
 #if defined(_WIN32)
-#define NOMINMAX
-#include <Windows.h>
-#include <Shellapi.h>
-#include <shobjidl.h>
-#include <shlguid.h>
-#include <Shlobj.h>
-#include <strsafe.h>
-#include <PSapi.h>
-#include <Everything.h>
-#include <everything_ipc.h>
+#    define NOMINMAX
+#    include <Everything.h>
+#    include <PSapi.h>
+#    include <Shellapi.h>
+#    include <Shlobj.h>
+#    include <Windows.h>
+#    include <everything_ipc.h>
+#    include <shlguid.h>
+#    include <shobjidl.h>
+#    include <strsafe.h>
 #endif
 
 // it's needed by clang
 #if defined(__cplusplus)
 
-#include <atomic>
+#    include <QAbstractTableModel>
+#    include <QApplication>
+#    include <QClipboard>
+#    include <QCommandLineOption>
+#    include <QCommandLineParser>
+#    include <QCryptographicHash>
+#    include <QDate>
+#    include <QDateTime>
+#    include <QDesktopServices>
+#    include <QDesktopWidget>
+#    include <QDialog>
+#    include <QDir>
+#    include <QDomDocument>
+#    include <QDragEnterEvent>
+#    include <QDropEvent>
+#    include <QFile>
+#    include <QFileDialog>
+#    include <QFileInfo>
+#    include <QFuture>
+#    include <QHBoxLayout>
+#    include <QHeaderView>
+#    include <QInputDialog>
+#    include <QItemSelection>
+#    include <QJsonDocument>
+#    include <QJsonObject>
+#    include <QLineEdit>
+#    include <QList>
+#    include <QMainWindow>
+#    include <QMenu>
+#    include <QMessageBox>
+#    include <QNetworkAccessManager>
+#    include <QNetworkReply>
+#    include <QNetworkRequest>
+#    include <QPoint>
+#    include <QProcess>
+#    include <QProgressDialog>
+#    include <QQmlContext>
+#    include <QQmlEngine>
+#    include <QQuickWidget>
+#    include <QSettings>
+#    include <QSharedPointer>
+#    include <QShortcut>
+#    include <QSplitter>
+#    include <QSslError>
+#    include <QStandardPaths>
+#    include <QStringBuilder>
+#    include <QTabWidget>
+#    include <QTableView>
+#    include <QTemporaryFile>
+#    include <QTextStream>
+#    include <QThreadPool>
+#    include <QTimer>
+#    include <QUrl>
+#    include <QWaitCondition>
+#    include <QtCharts>
+#    include <QtConcurrent>
+#    include <QtCore>
+#    include <QtGui>
+#    include <atomic>
 
-#include <QtCore>
-#include <QSettings>
-#include <QDir>
-#include <QFile>
-#include <QFileInfo>
-#include <QTemporaryFile>
-#include <QDate>
-#include <QDesktopServices>
-#include <QDateTime>
-#include <QList>
-#include <QPoint>
-#include <QClipboard>
-#include <QApplication>
-#include <QTextStream>
-#include <QStringBuilder>
-#include <QStandardPaths>
-#include <QCryptographicHash>
+#    if defined(Q_OS_WIN)
+#        include <QWinTaskbarButton>
+#        include <QWinTaskbarProgress>
+#        include <QWinThumbnailToolBar>
+#        include <QWinThumbnailToolButton>
+#    elif defined(Q_OS_MAC)
+#        include "macheader.h"
+#    endif
 
-#include <QtGui>
-#include <QDialog>
-#include <QMessageBox>
-#include <QFileDialog>
-#include <QProgressDialog>
-#include <QMenu>
-#include <QSplitter>
-#include <QHeaderView>
-#include <QDesktopWidget>
-#include <QInputDialog>
-#include <QSharedPointer>
-#include <QTabWidget>
-#include <QItemSelection>
-#include <QAbstractTableModel>
-#include <QMainWindow>
-#include <QTableView>
-#include <QShortcut>
-
-#include <QTimer>
-#include <QProcess>
-#include <QDomDocument>
-
-#include <QJsonDocument>
-#include <QJsonObject>
-
-#include <QtConcurrent>
-#include <QFuture>
-#include <QWaitCondition>
-#include <QThreadPool>
-
-#include <QNetworkAccessManager>
-#include <QNetworkReply>
-#include <QNetworkRequest>
-#include <QUrl>
-#include <QSslError>
-
-#include <QCommandLineOption>
-#include <QCommandLineParser>
-#include <QLineEdit>
-#include <QDropEvent>
-#include <QDragEnterEvent>
-#include <QHBoxLayout>
-
-#include <QtCharts>
-#include <QQuickWidget>
-#include <QQmlEngine>
-#include <QQmlContext>
-
-#if defined(Q_OS_WIN)
-#include <QWinThumbnailToolBar>
-#include <QWinThumbnailToolButton>
-#include <QWinTaskbarButton>
-#include <QWinTaskbarProgress>
-#elif defined (Q_OS_MAC)
-#include "macheader.h"
-#endif
-
-bool QuickGetFilesByFileName(const QString& fileName, QStringList& results);
+bool QuickGetFilesByFileName(const QString &fileName, QStringList &results);
 #endif
 
 #endif // STDAFX_H

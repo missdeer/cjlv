@@ -1,47 +1,48 @@
 #include "stdafx.h"
+
 #include "extension.h"
 
 Extension::Extension(const Extension &e)
 {
-    m_title = e.m_title;
-    m_author = e.m_author;
-    m_comment = e.m_comment;
-    m_shortcut = e.m_shortcut;
-    m_field = e.m_field;
-    m_method = e.m_method;
-    m_content = e.m_content;
-    m_createdAt = e.m_createdAt;
+    m_title          = e.m_title;
+    m_author         = e.m_author;
+    m_comment        = e.m_comment;
+    m_shortcut       = e.m_shortcut;
+    m_field          = e.m_field;
+    m_method         = e.m_method;
+    m_content        = e.m_content;
+    m_createdAt      = e.m_createdAt;
     m_lastModifiedAt = e.m_lastModifiedAt;
-    m_uuid = e.m_uuid;
-    m_from = e.m_from;
-    m_category = e.m_category;
+    m_uuid           = e.m_uuid;
+    m_from           = e.m_from;
+    m_category       = e.m_category;
 
     m_path = e.m_path;
 }
 
 Extension &Extension::operator=(const Extension &e)
 {
-    m_title = e.m_title;
-    m_author = e.m_author;
-    m_comment = e.m_comment;
-    m_shortcut = e.m_shortcut;
-    m_field = e.m_field;
-    m_method = e.m_method;
-    m_content = e.m_content;
-    m_createdAt = e.m_createdAt;
+    m_title          = e.m_title;
+    m_author         = e.m_author;
+    m_comment        = e.m_comment;
+    m_shortcut       = e.m_shortcut;
+    m_field          = e.m_field;
+    m_method         = e.m_method;
+    m_content        = e.m_content;
+    m_createdAt      = e.m_createdAt;
     m_lastModifiedAt = e.m_lastModifiedAt;
-    m_uuid = e.m_uuid;
-    m_from = e.m_from;
-    m_category = e.m_category;
+    m_uuid           = e.m_uuid;
+    m_from           = e.m_from;
+    m_category       = e.m_category;
 
     m_path = e.m_path;
     return *this;
 }
 
-bool Extension::load(const QString& path)
+bool Extension::load(const QString &path)
 {
     QDomDocument doc;
-    QFile file(path);
+    QFile        file(path);
     if (!file.open(QIODevice::ReadOnly))
         return false;
     if (!doc.setContent(&file))
@@ -74,7 +75,7 @@ bool Extension::load(const QString& path)
 bool Extension::save()
 {
     QDomDocument doc;
-    QDomElement root = doc.createElement("extension");
+    QDomElement  root = doc.createElement("extension");
     doc.appendChild(root);
     root.setAttribute("uuid", m_uuid);
     root.setAttribute("field", m_field);
@@ -87,7 +88,7 @@ bool Extension::save()
     root.setAttribute("lastModifiedAt", m_lastModifiedAt);
     root.setAttribute("category", m_category);
 
-    QDomElement contentElem = doc.createElement("content");
+    QDomElement      contentElem  = doc.createElement("content");
     QDomCDATASection contentCData = doc.createCDATASection(m_content);
     contentElem.appendChild(contentCData);
     root.appendChild(contentElem);
@@ -97,7 +98,7 @@ bool Extension::save()
         return false;
 
     QTextStream out(&file);
-    const int IndentSize = 4;
+    const int   IndentSize = 4;
     doc.save(out, IndentSize);
     file.close();
     return true;

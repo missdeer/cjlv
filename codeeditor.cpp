@@ -1,11 +1,8 @@
 #include "stdafx.h"
+
 #include "codeeditor.h"
 
-CodeEditor::CodeEditor(QWidget *parent)
-    : ScintillaEdit (parent)
-    , m_isContent(false)
-{
-}
+CodeEditor::CodeEditor(QWidget *parent) : ScintillaEdit(parent), m_isContent(false) {}
 
 void CodeEditor::initialize()
 {
@@ -19,7 +16,7 @@ void CodeEditor::initialize()
 void CodeEditor::setContent(const QString &content)
 {
     m_isContent = true;
-    auto b = content.toUtf8();
+    auto b      = content.toUtf8();
     setText(b.data());
 
     emptyUndoBuffer();
@@ -31,7 +28,7 @@ void CodeEditor::gotoLine(const QString &fileName, int line)
 {
     m_fileName = fileName;
 
-    const QString& lang = m_sc.matchPatternLanguage(fileName);
+    const QString &lang = m_sc.matchPatternLanguage(fileName);
 
     QFile f(fileName);
     if (f.open(QIODevice::ReadOnly))
@@ -49,16 +46,16 @@ void CodeEditor::gotoLine(const QString &fileName, int line)
         colourise(0, -1);
 
         grabFocus();
-        gotoPos(positionFromLine(line-1));
-        setCurrentPos(positionFromLine(line-1));
+        gotoPos(positionFromLine(line - 1));
+        setCurrentPos(positionFromLine(line - 1));
     }
 }
 
 void CodeEditor::gotoLine(int line)
 {
     grabFocus();
-    gotoPos(positionFromLine(line-1));
-    setCurrentPos(positionFromLine(line-1));
+    gotoPos(positionFromLine(line - 1));
+    setCurrentPos(positionFromLine(line - 1));
 }
 
 bool CodeEditor::matched(const QString &fileName)
@@ -68,30 +65,30 @@ bool CodeEditor::matched(const QString &fileName)
 
 void CodeEditor::linesAdded(int /*linesAdded*/)
 {
-    ScintillaEdit* sci = qobject_cast<ScintillaEdit*>(sender());
-    sptr_t line_count = sci->lineCount();
-    sptr_t left = sci->marginLeft() + 2;
-    sptr_t right = sci->marginRight() + 2;
-    sptr_t width = left + right + sci->textWidth(STYLE_LINENUMBER, QString("%1").arg(line_count).toStdString().c_str());
+    ScintillaEdit *sci        = qobject_cast<ScintillaEdit *>(sender());
+    sptr_t         line_count = sci->lineCount();
+    sptr_t         left       = sci->marginLeft() + 2;
+    sptr_t         right      = sci->marginRight() + 2;
+    sptr_t         width      = left + right + sci->textWidth(STYLE_LINENUMBER, QString("%1").arg(line_count).toStdString().c_str());
     if (width > sci->marginWidthN(0))
         sci->setMarginWidthN(0, width);
 }
 
 void CodeEditor::marginClicked(int position, int /*modifiers*/, int margin)
 {
-    ScintillaEdit* sci = qobject_cast<ScintillaEdit*>(sender());
+    ScintillaEdit *sci = qobject_cast<ScintillaEdit *>(sender());
     if (sci->marginTypeN(margin) == SC_MARGIN_SYMBOL)
     {
         sptr_t maskN = sci->marginMaskN(margin);
         if ((maskN & 0xFFFFFFFF) == SC_MASK_FOLDERS)
-		{
-			sptr_t line = sci->lineFromPosition(position);
-			sptr_t foldLevel = sci->foldLevel(line);
-			if (foldLevel & SC_FOLDLEVELHEADERFLAG)
-			{
-				sci->toggleFold(line);
-			}
-		}
+        {
+            sptr_t line      = sci->lineFromPosition(position);
+            sptr_t foldLevel = sci->foldLevel(line);
+            if (foldLevel & SC_FOLDLEVELHEADERFLAG)
+            {
+                sci->toggleFold(line);
+            }
+        }
     }
 }
 

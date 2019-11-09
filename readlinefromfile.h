@@ -5,15 +5,15 @@
 
 class ReadLineFromFile
 {
-    QFile m_file;
-    qint64 m_offset;
-    qint64 m_fileSize;
-    uchar* m_lineStartPos;
-    uchar* m_mapStartPos;
-    uchar* m_mapEndPos;
+    QFile        m_file;
+    qint64       m_offset;
+    qint64       m_fileSize;
+    uchar *      m_lineStartPos;
+    uchar *      m_mapStartPos;
+    uchar *      m_mapEndPos;
     const qint64 mapSize = 10 * 1024 * 1024; // 1M
 public:
-    ReadLineFromFile(const QString& fileName);
+    ReadLineFromFile(const QString &fileName);
 
     ~ReadLineFromFile();
 
@@ -21,6 +21,5 @@ public:
 
     bool atEnd() const;
 };
-
 
 #endif // READLINEFROMFILE_H

@@ -1,15 +1,13 @@
 #include "stdafx.h"
+
 #include "sourcewindow.h"
+
 #include "ui_sourcewindow.h"
 
-SourceWindow::SourceWindow(QWidget *parent) :
-    QMainWindow(parent),
-    ui(new Ui::SourceWindow)
+SourceWindow::SourceWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::SourceWindow)
 {
     ui->setupUi(this);
-    connect(this, &SourceWindow::currentChanged, [this](int i){
-        ui->tabWidget->setCurrentIndex(i);
-    });
+    connect(this, &SourceWindow::currentChanged, [this](int i) { ui->tabWidget->setCurrentIndex(i); });
     connect(this, &SourceWindow::tabCloseRequested, ui->tabWidget, &SourceViewTabWidget::onTabCloseRequested);
 }
 

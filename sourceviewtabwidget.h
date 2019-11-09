@@ -21,21 +21,25 @@ public slots:
     void onTabCloseRequested(int index);
     void onCurrentChanged(int index);
 
-    void setMainTabWidget(TabWidget* w) { m_mainTabWidget = w; }
-    void gotoLine(const QString &logFile, const QString& sourceFile, int line = -1);
-    void setContent(const QString& logFile, const QString& text);
+    void setMainTabWidget(TabWidget *w)
+    {
+        m_mainTabWidget = w;
+    }
+    void gotoLine(const QString &logFile, const QString &sourceFile, int line = -1);
+    void setContent(const QString &logFile, const QString &text);
 private slots:
     void onCopyFileName();
     void onCopyFileFullPath();
     void onOpenContainerFolder();
 
     void onCustomContextMenuRequested(const QPoint &pos);
+
 private:
-    TabWidget* m_mainTabWidget;
-    QStringList m_logFiles;
-    int findTab(const QString &path);
-    int addTab(CodeEditorTabWidget *w, const QString &text, const QString &tooltip);
-    CodeEditorTabWidget* getCodeEditorTabWidget(const QString &file);
+    TabWidget *          m_mainTabWidget;
+    QStringList          m_logFiles;
+    int                  findTab(const QString &path);
+    int                  addTab(CodeEditorTabWidget *w, const QString &text, const QString &tooltip);
+    CodeEditorTabWidget *getCodeEditorTabWidget(const QString &file);
 };
 
 #endif // SOURCEVIEWTABWIDGET_H

@@ -3,8 +3,9 @@
 
 #include "extension.h"
 
-namespace Ui {
-class MainWindow;
+namespace Ui
+{
+    class MainWindow;
 }
 
 class TabWidget;
@@ -24,16 +25,16 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit MainWindow(QSplashScreen& splash, QWidget *parent = 0);
+    explicit MainWindow(QSplashScreen &splash, QWidget *parent = 0);
     ~MainWindow();
-    void openLogs(const QStringList& logs);
-    TabWidget* getMainTabWidget();
-    void showProgressDialog(const QString& title);
-    void closeProgressDialog();
-    void applyProxySettings();
+    void       openLogs(const QStringList &logs);
+    TabWidget *getMainTabWidget();
+    void       showProgressDialog(const QString &title);
+    void       closeProgressDialog();
+    void       applyProxySettings();
 
 public slots:
-    void onStatusBarMessageChanges(const QString& msg);
+    void onStatusBarMessageChanges(const QString &msg);
 private slots:
     void onPRTListItemDoubleClicked(QListWidgetItem *item);
     void onPRTListItemActivated(QListWidgetItem *item);
@@ -131,41 +132,41 @@ private slots:
     void on_actionGotoJabberWinPRTWebsite_triggered();
 
     void on_actionHomepage_triggered();
-    
+
     void on_actionReportIssue_triggered();
-    
+
 private:
-    Ui::MainWindow *ui;
-    QWinThumbnailToolBar *thumbbar;
+    Ui::MainWindow *       ui;
+    QWinThumbnailToolBar * thumbbar;
     QNetworkAccessManager *m_nam;
-    QFile *m_prt;
-    QListWidget *m_windowsPRTList;
-    QListWidget *m_macPRTList;
-    QListWidget *m_iOSPRTList;
-    QListWidget *m_androidPRTList;
-    QByteArray m_prtInfo;
-    QByteArray m_prtTrackingSystemLoginInfo;
-    QByteArray m_prtList;
-    QByteArray m_crashInfo;
-    QString m_crashUrl;
-    QMap<QString, QMenu*> m_extensionMenu;
+    QFile *                m_prt;
+    QListWidget *          m_windowsPRTList;
+    QListWidget *          m_macPRTList;
+    QListWidget *          m_iOSPRTList;
+    QListWidget *          m_androidPRTList;
+    QByteArray             m_prtInfo;
+    QByteArray             m_prtTrackingSystemLoginInfo;
+    QByteArray             m_prtList;
+    QByteArray             m_crashInfo;
+    QString                m_crashUrl;
+    QMap<QString, QMenu *> m_extensionMenu;
 
     void dragEnterEvent(QDragEnterEvent *e);
     void dropEvent(QDropEvent *e);
     void showEvent(QShowEvent *e);
 
-    void downloadPRT(const QString& u);
-    void openPRTFromURL(const QString& u);
+    void downloadPRT(const QString &u);
+    void openPRTFromURL(const QString &u);
     void getPRTTrackingSystemToken();
 
     void createDockWindows();
-    void getPRTList(const QString& platform);
-    void getJabberWinPRTInfo(const QString& id);
-    void getCrashInfo(const QString& id, const QString& fileDirectory, const QString& fileName, const QString& platform);
+    void getPRTList(const QString &platform);
+    void getJabberWinPRTInfo(const QString &id);
+    void getCrashInfo(const QString &id, const QString &fileDirectory, const QString &fileName, const QString &platform);
 };
 
 #if defined(Q_OS_WIN)
-extern QWinTaskbarButton *g_winTaskbarButton;
+extern QWinTaskbarButton *  g_winTaskbarButton;
 extern QWinTaskbarProgress *g_winTaskbarProgress;
 #endif
 #endif // MAINWINDOW_H

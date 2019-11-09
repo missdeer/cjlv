@@ -1,13 +1,14 @@
 #ifndef LOGVIEW_H
 #define LOGVIEW_H
 
-#include <QWidget>
-#include <QStringList>
 #include <QMutex>
+#include <QStringList>
+#include <QWidget>
+
 #include "codeeditortabwidget.h"
 #include "extension.h"
-#include "sqlite3helper.h"
 #include "quickwidgetapi.h"
+#include "sqlite3helper.h"
 
 class MainWindow;
 class PresenceWidget;
@@ -23,7 +24,6 @@ class QQmlEngine;
 class QJSEngine;
 QT_END_NAMESPACE
 
-
 class LogView : public QWidget
 {
     Q_OBJECT
@@ -32,13 +32,13 @@ public:
     ~LogView();
 
     Sqlite3HelperPtr getSqlite3Helper();
-    void openZipBundle(const QString& zipBundle, const QString& crashInfo);
-    void openZipBundle(const QString& path);
-    void openRawLogFile(const QStringList& paths);
-    void openFolder(const QString& path);
+    void             openZipBundle(const QString &zipBundle, const QString &crashInfo);
+    void             openZipBundle(const QString &path);
+    void             openRawLogFile(const QStringList &paths);
+    void             openFolder(const QString &path);
 
-    bool matched(const QString& path);
-    bool matched(const QStringList& paths);
+    bool matched(const QString &path);
+    bool matched(const QStringList &paths);
 
     void copyCurrentCell();
     void copyCurrentRow();
@@ -82,8 +82,8 @@ public:
 
     void onRunExtension(ExtensionPtr e);
 
-    const QString& getPath() const;
-    void setPath(const QString &path);
+    const QString &getPath() const;
+    void           setPath(const QString &path);
 
     void newLogTableView();
     void newLogLevelPieChart();
@@ -101,37 +101,38 @@ private slots:
     void onDataLoaded();
     void onShowLogItemsBetweenSelectedRows();
     void onLogTableChartTabWidgetCurrentChanged(int index);
-    void onOpenSourceFileWithBuiltinEditor(const QString& filePath, int line);
-    void onOpenSourceFileInVS(const QString& filePath, int line);
-    void onOpenSourceFileWithOpenGrok(const QString& filePath, int line);
+    void onOpenSourceFileWithBuiltinEditor(const QString &filePath, int line);
+    void onOpenSourceFileInVS(const QString &filePath, int line);
+    void onOpenSourceFileWithOpenGrok(const QString &filePath, int line);
     void onCloseLogTableChartTabWidgetTab(int index);
+
 private:
-    Sqlite3HelperPtr m_sqlite3Helper;
-    QSplitter* m_verticalSplitter;
-    QTabWidget* m_logTableChartTabWidget;
-    CodeEditorTabWidget* m_codeEditorTabWidget;
-    QString m_path;
-    QString m_extractDir;
+    Sqlite3HelperPtr     m_sqlite3Helper;
+    QSplitter *          m_verticalSplitter;
+    QTabWidget *         m_logTableChartTabWidget;
+    CodeEditorTabWidget *m_codeEditorTabWidget;
+    QString              m_path;
+    QString              m_extractDir;
 
     QString m_crashInfo;
 
-    QList<LogTableView*> m_logTableViews;
-    int m_logTableViewNr = 0;
+    QList<LogTableView *> m_logTableViews;
+    int                   m_logTableViewNr = 0;
 
     bool event(QEvent *e) Q_DECL_OVERRIDE;
 
-    void extract(LogView* v, const QString& fileName, const QString& dirName);
-    void extractContent(const QString& text);
-    void openLog(const QString &logFile);
-    void gotoLogLine(int line, const QString& logFile);
-    void showCodeEditorPane();
-    void setChart(QtCharts::QChartView* chartView, const QList<QSharedPointer<StatisticItem> >& sis, const QString& label);
-    MainWindow *getMainWindow();
-    void openCrashReport();
-    void initialize();
+    void          extract(LogView *v, const QString &fileName, const QString &dirName);
+    void          extractContent(const QString &text);
+    void          openLog(const QString &logFile);
+    void          gotoLogLine(int line, const QString &logFile);
+    void          showCodeEditorPane();
+    void          setChart(QtCharts::QChartView *chartView, const QList<QSharedPointer<StatisticItem>> &sis, const QString &label);
+    MainWindow *  getMainWindow();
+    void          openCrashReport();
+    void          initialize();
     LogTableView *createLogTableView();
 };
 
 class SourceWindow;
-extern SourceWindow* g_sourceWindow;
+extern SourceWindow *g_sourceWindow;
 #endif // LOGVIEW_H

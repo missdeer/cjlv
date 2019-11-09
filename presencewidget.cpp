@@ -1,34 +1,34 @@
 #include "stdafx.h"
-#include "presencemodel.h"
+
 #include "presencewidget.h"
 
-PresenceWidget::PresenceWidget(QWidget *parent, Sqlite3HelperPtr sqlite3Helper)
-    : QWidget(parent)
-    , m_presenceTableView(new QTableView(this))
+#include "presencemodel.h"
+
+PresenceWidget::PresenceWidget(QWidget *parent, Sqlite3HelperPtr sqlite3Helper) : QWidget(parent), m_presenceTableView(new QTableView(this))
 {
-    QVBoxLayout* m_mainLayout = new QVBoxLayout;
+    auto *m_mainLayout = new QVBoxLayout;
     Q_ASSERT(m_mainLayout);
     m_mainLayout->setMargin(0);
 
-    QWidget* topBar = new QWidget(this);
-    QHBoxLayout* topBarLayout = new QHBoxLayout;
+    auto *topBar       = new QWidget(this);
+    auto *topBarLayout = new QHBoxLayout;
     topBarLayout->setMargin(0);
     topBar->setLayout(topBarLayout);
-    QLabel* label = new QLabel(topBar);
+    auto *label = new QLabel(topBar);
     label->setText("Buddy List:");
     topBarLayout->addWidget(label);
     m_cbBuddyList = new QComboBox(topBar);
     topBarLayout->addWidget(m_cbBuddyList);
 
-    QPushButton* btnRefreshBuddyList = new QPushButton(topBar);
+    auto *btnRefreshBuddyList = new QPushButton(topBar);
     btnRefreshBuddyList->setText("Refresh");
     connect(btnRefreshBuddyList, &QPushButton::pressed, this, &PresenceWidget::onRefreshBuddyList);
     topBarLayout->addWidget(btnRefreshBuddyList);
     topBarLayout->setStretch(1, 1);
 
-    QPushButton* btnResizeRowsToContents = new QPushButton(topBar);
+    auto *btnResizeRowsToContents = new QPushButton(topBar);
     btnResizeRowsToContents->setText("Rows Fit");
-    connect(btnResizeRowsToContents, &QPushButton::pressed, [&](){m_presenceTableView->resizeRowsToContents();});
+    connect(btnResizeRowsToContents, &QPushButton::pressed, [&]() { m_presenceTableView->resizeRowsToContents(); });
     topBarLayout->addWidget(btnResizeRowsToContents);
 
     m_mainLayout->addWidget(topBar);
@@ -56,7 +56,7 @@ void PresenceWidget::onRefreshBuddyList()
 void PresenceWidget::onReceivedPresenceBuddyList(QStringList bl)
 {
     m_cbBuddyList->clear();
-    qSort(bl);
+    std::sort(bl.begin(), bl.end());
     bl.insert(0, "--NONE--");
     m_cbBuddyList->addItems(bl);
 }
@@ -68,8 +68,9 @@ void PresenceWidget::onResizeTableCells(int columns, int /*rows*/)
     if (columns > 2)
     {
         QRect rc = m_presenceTableView->geometry();
-        int leftWidth = rc.width() - m_presenceTableView->horizontalHeader()->sectionSize(0) - m_presenceTableView->horizontalHeader()->sectionSize(1);
-        int toWidth = leftWidth/(columns-2);
+        int   leftWidth =
+            rc.width() - m_presenceTableView->horizontalHeader()->sectionSize(0) - m_presenceTableView->horizontalHeader()->sectionSize(1);
+        int toWidth = leftWidth / (columns - 2);
         for (int i = 2; i < columns; i++)
             m_presenceTableView->setColumnWidth(i, toWidth);
     }

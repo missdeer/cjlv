@@ -1,28 +1,30 @@
 #include "stdafx.h"
-#include "popupmenutoolbutton.h"
-#include "prtlistitemdelegate.h"
-#include "settings.h"
-#include "preferencedialog.h"
+
+#include "mainwindow.h"
+
 #include "extensiondialog.h"
 #include "extensionmodel.h"
-#include "mainwindow.h"
+#include "popupmenutoolbutton.h"
+#include "preferencedialog.h"
+#include "prtlistitemdelegate.h"
+#include "settings.h"
 #include "ui_mainwindow.h"
 
 #if defined(Q_OS_WIN)
-QWinTaskbarButton *g_winTaskbarButton = nullptr;
+QWinTaskbarButton *  g_winTaskbarButton   = nullptr;
 QWinTaskbarProgress *g_winTaskbarProgress = nullptr;
 #endif
-QTabWidget* g_mainTabWidget = nullptr;
-static QProgressDialog* g_progressDialog = nullptr;
-static QAtomicInt g_loadingReferenceCount;
+QTabWidget *            g_mainTabWidget  = nullptr;
+static QProgressDialog *g_progressDialog = nullptr;
+static QAtomicInt       g_loadingReferenceCount;
 
-MainWindow::MainWindow(QSplashScreen &splash, QWidget *parent) :
-    QMainWindow(parent),
-    ui(new Ui::MainWindow),
-    thumbbar(nullptr),
-    m_nam(new QNetworkAccessManager(this)),
-    m_prt(nullptr),
-    m_crashInfo(nullptr)
+MainWindow::MainWindow(QSplashScreen &splash, QWidget *parent)
+    : QMainWindow(parent)
+    , ui(new Ui::MainWindow)
+    , thumbbar(nullptr)
+    , m_nam(new QNetworkAccessManager(this))
+    , m_prt(nullptr)
+    , m_crashInfo(nullptr)
 {
     ui->setupUi(this);
     g_mainTabWidget = ui->tabWidget;
@@ -30,11 +32,11 @@ MainWindow::MainWindow(QSplashScreen &splash, QWidget *parent) :
     ui->tabbarTopPlaceholder->setVisible(false);
 #endif
 
-    QActionGroup *searchModeGroup = new QActionGroup(this);
+    auto *searchModeGroup = new QActionGroup(this);
     searchModeGroup->addAction(ui->actionFilter);
     searchModeGroup->addAction(ui->actionSearch);
 
-    QActionGroup *searchFieldGroup = new QActionGroup(this);
+    auto *searchFieldGroup = new QActionGroup(this);
     searchFieldGroup->addAction(ui->actionSearchFieldCategory);
     searchFieldGroup->addAction(ui->actionSearchFieldContent);
     searchFieldGroup->addAction(ui->actionSearchFieldID);
@@ -83,64 +85,65 @@ MainWindow::MainWindow(QSplashScreen &splash, QWidget *parent) :
     connect(ui->actionNewLogPresenceTableView, &QAction::triggered, ui->tabWidget, &TabWidget::onNewLogPresenceTableView);
 
     splash.showMessage("Loading extensions...");
-    ExtensionModel* em = ExtensionModel::instance(this);
-    em->scanExtensions();;
+    auto *em = ExtensionModel::instance(this);
+    em->scanExtensions();
+
     connect(em, &ExtensionModel::extensionCreated, this, &MainWindow::onExtensionCreated);
     connect(em, &ExtensionModel::extensionModified, this, &MainWindow::onExtensionModified);
     connect(em, &ExtensionModel::extensionRemoved, this, &MainWindow::onExtensionRemoved);
     connect(em, &ExtensionModel::extensionScanned, this, &MainWindow::onExtensionScanned);
 
     // add popup menu tool button
-    QMenu* popupMenu = new QMenu(this);
+    auto *popupMenu = new QMenu(this);
     popupMenu->addAction(ui->actionOpenCurrentInstalledJabberLogFolder);
     popupMenu->addSeparator();
 
-    QAction* actionOpenJabberLog  = new QAction(tr("Open jabber.log"), this);
+    auto *actionOpenJabberLog = new QAction(tr("Open jabber.log"), this);
     actionOpenJabberLog->setIcon(QIcon(":/image/open-installed-folder.png"));
     connect(actionOpenJabberLog, &QAction::triggered, this, &MainWindow::onActionOpenJabberLogTriggered);
     popupMenu->addAction(actionOpenJabberLog);
-    QAction* actionOpenJabberLog1 = new QAction(tr("Open jabber.log.1"), this);
+    auto *actionOpenJabberLog1 = new QAction(tr("Open jabber.log.1"), this);
     actionOpenJabberLog1->setIcon(QIcon(":/image/open-installed-folder.png"));
     connect(actionOpenJabberLog1, &QAction::triggered, this, &MainWindow::onActionOpenJabberLogTriggered);
     popupMenu->addAction(actionOpenJabberLog1);
-    QAction* actionOpenJabberLog2 = new QAction(tr("Open jabber.log.2"), this);
+    auto *actionOpenJabberLog2 = new QAction(tr("Open jabber.log.2"), this);
     actionOpenJabberLog2->setIcon(QIcon(":/image/open-installed-folder.png"));
     connect(actionOpenJabberLog2, &QAction::triggered, this, &MainWindow::onActionOpenJabberLogTriggered);
     popupMenu->addAction(actionOpenJabberLog2);
-    QAction* actionOpenJabberLog3 = new QAction(tr("Open jabber.log.3"), this);
+    auto *actionOpenJabberLog3 = new QAction(tr("Open jabber.log.3"), this);
     actionOpenJabberLog3->setIcon(QIcon(":/image/open-installed-folder.png"));
     connect(actionOpenJabberLog3, &QAction::triggered, this, &MainWindow::onActionOpenJabberLogTriggered);
     popupMenu->addAction(actionOpenJabberLog3);
-    QAction* actionOpenJabberLog4 = new QAction(tr("Open jabber.log.4"), this);
+    auto *actionOpenJabberLog4 = new QAction(tr("Open jabber.log.4"), this);
     actionOpenJabberLog4->setIcon(QIcon(":/image/open-installed-folder.png"));
     connect(actionOpenJabberLog4, &QAction::triggered, this, &MainWindow::onActionOpenJabberLogTriggered);
     popupMenu->addAction(actionOpenJabberLog4);
-    QAction* actionOpenJabberLog5 = new QAction(tr("Open jabber.log.5"), this);
+    auto *actionOpenJabberLog5 = new QAction(tr("Open jabber.log.5"), this);
     actionOpenJabberLog5->setIcon(QIcon(":/image/open-installed-folder.png"));
     connect(actionOpenJabberLog5, &QAction::triggered, this, &MainWindow::onActionOpenJabberLogTriggered);
     popupMenu->addAction(actionOpenJabberLog5);
-    QAction* actionOpenJabberLog6 = new QAction(tr("Open jabber.log.6"), this);
+    auto *actionOpenJabberLog6 = new QAction(tr("Open jabber.log.6"), this);
     actionOpenJabberLog6->setIcon(QIcon(":/image/open-installed-folder.png"));
     connect(actionOpenJabberLog6, &QAction::triggered, this, &MainWindow::onActionOpenJabberLogTriggered);
     popupMenu->addAction(actionOpenJabberLog6);
-    QAction* actionOpenJabberLog7 = new QAction(tr("Open jabber.log.7"), this);
+    auto *actionOpenJabberLog7 = new QAction(tr("Open jabber.log.7"), this);
     actionOpenJabberLog7->setIcon(QIcon(":/image/open-installed-folder.png"));
     connect(actionOpenJabberLog7, &QAction::triggered, this, &MainWindow::onActionOpenJabberLogTriggered);
     popupMenu->addAction(actionOpenJabberLog7);
-    QAction* actionOpenJabberLog8 = new QAction(tr("Open jabber.log.8"), this);
+    auto *actionOpenJabberLog8 = new QAction(tr("Open jabber.log.8"), this);
     actionOpenJabberLog8->setIcon(QIcon(":/image/open-installed-folder.png"));
     connect(actionOpenJabberLog8, &QAction::triggered, this, &MainWindow::onActionOpenJabberLogTriggered);
     popupMenu->addAction(actionOpenJabberLog8);
-    QAction* actionOpenJabberLog9 = new QAction(tr("Open jabber.log.9"), this);
+    auto *actionOpenJabberLog9 = new QAction(tr("Open jabber.log.9"), this);
     actionOpenJabberLog9->setIcon(QIcon(":/image/open-installed-folder.png"));
     connect(actionOpenJabberLog9, &QAction::triggered, this, &MainWindow::onActionOpenJabberLogTriggered);
     popupMenu->addAction(actionOpenJabberLog9);
-    QAction* actionOpenJabberLog10 = new QAction(tr("Open jabber.log.10"), this);
+    auto *actionOpenJabberLog10 = new QAction(tr("Open jabber.log.10"), this);
     actionOpenJabberLog10->setIcon(QIcon(":/image/open-installed-folder.png"));
     connect(actionOpenJabberLog10, &QAction::triggered, this, &MainWindow::onActionOpenJabberLogTriggered);
     popupMenu->addAction(actionOpenJabberLog10);
 
-    PopupMenuToolButton* toolButton = new PopupMenuToolButton(this);
+    auto *toolButton = new PopupMenuToolButton(this);
     toolButton->setMenu(popupMenu);
     toolButton->setDefaultAction(ui->actionOpenCurrentInstalledJabberLogFolder);
     ui->mainToolBar->insertWidget(ui->actionOpenFromPRTTrackingSystemURL, toolButton);
@@ -156,9 +159,9 @@ MainWindow::MainWindow(QSplashScreen &splash, QWidget *parent) :
 
     applyProxySettings();
 
-    QTimer* timer = new QTimer(this);
-    connect(timer, &QTimer::timeout, [this](){getPRTTrackingSystemToken(); });
-    timer->start(4*60*60*1000);
+    auto *timer = new QTimer(this);
+    connect(timer, &QTimer::timeout, [this]() { getPRTTrackingSystemToken(); });
+    timer->start(4 * 60 * 60 * 1000);
 }
 
 MainWindow::~MainWindow()
@@ -171,15 +174,8 @@ MainWindow::~MainWindow()
 
 void MainWindow::openLogs(const QStringList &logs)
 {
-    QList<QString> names {
-        "jabber.log",
-        "jabber.log.1",
-        "jabber.log.2",
-        "jabber.log.3",
-        "jabber.log.4",
-        "jabber.log.5"
-    };
-    for(const QString& fileName : logs)
+    QStringList names = {"jabber.log", "jabber.log.1", "jabber.log.2", "jabber.log.3", "jabber.log.4", "jabber.log.5"};
+    for (const auto &fileName : logs)
     {
         QFileInfo fi(fileName);
         if (fi.isFile())
@@ -189,7 +185,7 @@ void MainWindow::openLogs(const QStringList &logs)
                 ui->tabWidget->openZipBundle(fileName);
             }
 
-            if (names.contains( fi.fileName()))
+            if (names.contains(fi.fileName()))
             {
                 ui->tabWidget->openRawLogFile(QStringList() << fileName);
             }
@@ -210,9 +206,8 @@ TabWidget *MainWindow::getMainTabWidget()
 void MainWindow::onExtensionScanned()
 {
     ui->menuExtension->addSeparator();
-    QList<ExtensionPtr>& extensions = ExtensionModel::instance(this)->extensions();
-    std::for_each(extensions.begin(), extensions.end(),
-                  std::bind(&MainWindow::onExtensionCreated, this, std::placeholders::_1));
+    auto &extensions = ExtensionModel::instance(this)->extensions();
+    std::for_each(extensions.begin(), extensions.end(), std::bind(&MainWindow::onExtensionCreated, this, std::placeholders::_1));
 }
 
 void MainWindow::onStatusBarMessageChanges(const QString &msg)
@@ -239,9 +234,9 @@ void MainWindow::onOpenPRTListByDefaultWebBrowser()
 
 void MainWindow::onOpenConversationByDefaultWebBrowser()
 {
-    QAction* action = qobject_cast<QAction*>(sender());
-    QListWidget* list = qobject_cast<QListWidget*>(action->parentWidget()->parentWidget());
-    QListWidgetItem* item = list->currentItem();
+    auto *action = qobject_cast<QAction *>(sender());
+    auto *list   = qobject_cast<QListWidget *>(action->parentWidget()->parentWidget());
+    auto *item   = list->currentItem();
     if (item)
     {
         QVariant d = item->data(Qt::UserRole);
@@ -251,9 +246,9 @@ void MainWindow::onOpenConversationByDefaultWebBrowser()
 
 void MainWindow::onOpenPRTViaListWidgetContextMenuItem()
 {
-    QAction* action = qobject_cast<QAction*>(sender());
-    QListWidget* list = qobject_cast<QListWidget*>(action->parentWidget()->parentWidget());
-    QListWidgetItem* item = list->currentItem();
+    auto *action = qobject_cast<QAction *>(sender());
+    auto *list   = qobject_cast<QListWidget *>(action->parentWidget()->parentWidget());
+    auto *item   = list->currentItem();
     if (item)
     {
         QVariant d = item->data(Qt::UserRole);
@@ -263,10 +258,10 @@ void MainWindow::onOpenPRTViaListWidgetContextMenuItem()
 
 void MainWindow::onListWidgetCustomContextMenuRequested(const QPoint &pos)
 {
-    QListWidget* list = qobject_cast<QListWidget*>(sender());
+    auto *list = qobject_cast<QListWidget *>(sender());
     QMenu menu(list);
 
-    QAction* action = menu.addAction(tr("Open PRT"));
+    auto *action = menu.addAction(tr("Open PRT"));
     connect(action, &QAction::triggered, this, &MainWindow::onOpenPRTViaListWidgetContextMenuItem);
 
     action = menu.addAction(tr("Browse PRT information..."));
@@ -280,13 +275,13 @@ void MainWindow::onListWidgetCustomContextMenuRequested(const QPoint &pos)
 
 void MainWindow::onClipboardChanged()
 {
-    QClipboard *clipboard = QApplication::clipboard();
+    auto *  clipboard    = QApplication::clipboard();
     QString originalText = clipboard->text().trimmed();
 
-    QString pattern1 = "^http:\\/\\/prt\\.jabberqa\\.cisco.com\\/#\\/?conversations\\/[0-9a-zA-Z]{24,24}$";
-    QString pattern2 = "^http:\\/\\/prts\\.cisco.com\\/#\\/?conversations\\/[0-9a-zA-Z]{24,24}$";
-    QRegularExpression regex1(pattern1, QRegularExpression::CaseInsensitiveOption);
-    QRegularExpression regex2(pattern2, QRegularExpression::CaseInsensitiveOption);
+    const static QString            pattern1 = "^http:\\/\\/prt\\.jabberqa\\.cisco.com\\/#\\/?conversations\\/[0-9a-zA-Z]{24,24}$";
+    const static QString            pattern2 = "^http:\\/\\/prts\\.cisco.com\\/#\\/?conversations\\/[0-9a-zA-Z]{24,24}$";
+    const static QRegularExpression regex1(pattern1, QRegularExpression::CaseInsensitiveOption);
+    const static QRegularExpression regex2(pattern2, QRegularExpression::CaseInsensitiveOption);
     if (regex1.match(originalText).hasMatch() || regex2.match(originalText).hasMatch())
     {
         if (isMinimized())
@@ -307,7 +302,7 @@ void MainWindow::onClipboardChanged()
 
 void MainWindow::onCrashInfoRequestFinished()
 {
-    QNetworkReply* reply = qobject_cast<QNetworkReply*>(sender());
+    auto *reply = qobject_cast<QNetworkReply *>(sender());
     reply->deleteLater();
     // save to file and open it
     QString tempDir = g_settings->temporaryDirectory();
@@ -319,7 +314,7 @@ void MainWindow::onCrashInfoRequestFinished()
     if (!dir.exists())
         dir.mkpath(tempDir);
 
-    QFile f(tempDir % "/" % m_crashUrl.mid(m_crashUrl.lastIndexOf(QChar('/')),-1));
+    QFile f(tempDir % "/" % m_crashUrl.mid(m_crashUrl.lastIndexOf(QChar('/')), -1));
     f.open(QIODevice::WriteOnly | QIODevice::Truncate);
     f.write(m_crashInfo);
     f.close();
@@ -327,8 +322,8 @@ void MainWindow::onCrashInfoRequestFinished()
 
 void MainWindow::onCrashInfoRequestReadyRead()
 {
-    QNetworkReply* reply = qobject_cast<QNetworkReply*>(sender());
-    int statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+    auto *reply      = qobject_cast<QNetworkReply *>(sender());
+    int   statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
     if (statusCode >= 200 && statusCode < 300)
     {
         m_crashInfo.append(reply->readAll());
@@ -342,7 +337,7 @@ void MainWindow::onCrashInfoRequestRedirected(const QUrl &url)
 
 void MainWindow::onPRTListFinished()
 {
-    QNetworkReply* reply = qobject_cast<QNetworkReply*>(sender());
+    auto *reply = qobject_cast<QNetworkReply *>(sender());
     reply->deleteLater();
 
     // parse json response
@@ -353,29 +348,29 @@ void MainWindow::onPRTListFinished()
         return;
     }
 
-    QJsonObject docObj = doc.object();
-    QJsonValue conversationsVal = docObj["conversations"];
+    QJsonObject docObj           = doc.object();
+    QJsonValue  conversationsVal = docObj["conversations"];
     if (!conversationsVal.isArray())
     {
         qDebug() << "conversation node is expected to be an array";
         return;
     }
 
-    QUrlQuery query(reply->request().url());
-    QString platform = query.queryItemValue("platform");
-    QMap<QString, QListWidget*> listWidgetMap = {
-        { "Windows", m_windowsPRTList },
-        { "Mac", m_macPRTList },
-        { "iOS", m_iOSPRTList },
-        { "Android", m_androidPRTList },
+    QUrlQuery                    query(reply->request().url());
+    QString                      platform      = query.queryItemValue("platform");
+    QMap<QString, QListWidget *> listWidgetMap = {
+        {"Windows", m_windowsPRTList},
+        {"Mac", m_macPRTList},
+        {"iOS", m_iOSPRTList},
+        {"Android", m_androidPRTList},
     };
-    QListWidget* list = listWidgetMap[platform];
+    auto *list = listWidgetMap[platform];
     list->clear();
     QJsonArray conversations = conversationsVal.toArray();
     for (auto conversation : conversations)
     {
-        QJsonObject con = conversation.toObject();
-        QListWidgetItem* item = new QListWidgetItem(con["topic"].toString(),list);
+        QJsonObject con  = conversation.toObject();
+        auto *      item = new QListWidgetItem(con["topic"].toString(), list);
         item->setToolTip(con["content"].toString().replace(" [", " \n["));
         item->setData(Qt::UserRole, con["id"].toString());
         item->setData(Qt::UserRole + 1, con["topic"].toString());
@@ -386,26 +381,26 @@ void MainWindow::onPRTListFinished()
 
     // next platform
     QMap<QString, QString> nextMap = {
-        { "Windows", "Mac" },
-        { "Mac", "iOS" },
-        { "iOS", "Android" },
-        { "Android", "Windows" },
+        {"Windows", "Mac"},
+        {"Mac", "iOS"},
+        {"iOS", "Android"},
+        {"Android", "Windows"},
     };
-    const QString& nextPlatform = nextMap[platform];
+    const QString &nextPlatform = nextMap[platform];
     if (nextPlatform != "Windows")
     {
         getPRTList(nextPlatform);
     }
     else
     {
-        QTimer::singleShot(60 * 60 * 1000, [this, nextPlatform]() { getPRTList(nextPlatform);});
+        QTimer::singleShot(60 * 60 * 1000, [this, nextPlatform]() { getPRTList(nextPlatform); });
     }
 }
 
 void MainWindow::onPRTListReadyRead()
 {
-    QNetworkReply* reply = qobject_cast<QNetworkReply*>(sender());
-    int statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+    auto *reply      = qobject_cast<QNetworkReply *>(sender());
+    int   statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
     if (statusCode >= 200 && statusCode < 300)
     {
         m_prtList.append(reply->readAll());
@@ -414,7 +409,7 @@ void MainWindow::onPRTListReadyRead()
 
 void MainWindow::onPRTTrackingSystemLoginFinished()
 {
-    QNetworkReply* reply = qobject_cast<QNetworkReply*>(sender());
+    auto *reply = qobject_cast<QNetworkReply *>(sender());
     reply->deleteLater();
 
     QJsonDocument doc = QJsonDocument::fromJson(m_prtTrackingSystemLoginInfo);
@@ -424,8 +419,8 @@ void MainWindow::onPRTTrackingSystemLoginFinished()
         return;
     }
 
-    QJsonObject docObj = doc.object();
-    QJsonValue tokenVal = docObj["token"];
+    QJsonObject docObj   = doc.object();
+    QJsonValue  tokenVal = docObj["token"];
     if (!tokenVal.isString())
     {
         qDebug() << "token node is expected to be a string";
@@ -441,8 +436,8 @@ void MainWindow::onPRTTrackingSystemLoginFinished()
 
 void MainWindow::onPRTTrackingSystemLoginReadyRead()
 {
-    QNetworkReply* reply = qobject_cast<QNetworkReply*>(sender());
-    int statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+    auto *reply      = qobject_cast<QNetworkReply *>(sender());
+    int   statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
     if (statusCode >= 200 && statusCode < 300)
     {
         m_prtTrackingSystemLoginInfo.append(reply->readAll());
@@ -451,7 +446,7 @@ void MainWindow::onPRTTrackingSystemLoginReadyRead()
 
 void MainWindow::onPRTDownloadFinished()
 {
-    QNetworkReply* reply = qobject_cast<QNetworkReply*>(sender());
+    auto *reply = qobject_cast<QNetworkReply *>(sender());
     reply->deleteLater();
     closeProgressDialog();
     m_prt->close();
@@ -467,7 +462,7 @@ void MainWindow::onPRTDownloadFinished()
         if (!dir.exists())
             dir.mkpath(tempDir);
 
-        QString crashInfo = tempDir % "/" % m_crashUrl.mid(m_crashUrl.lastIndexOf(QChar('/')),-1);
+        QString crashInfo = tempDir % "/" % m_crashUrl.mid(m_crashUrl.lastIndexOf(QChar('/')), -1);
         ui->tabWidget->openZipBundle(m_prt->fileName(), crashInfo);
     }
     else
@@ -477,8 +472,8 @@ void MainWindow::onPRTDownloadFinished()
 
 void MainWindow::onPRTDownloadReadyRead()
 {
-    QNetworkReply* reply = qobject_cast<QNetworkReply*>(sender());
-    int statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+    auto *reply      = qobject_cast<QNetworkReply *>(sender());
+    int   statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
     if (statusCode >= 200 && statusCode < 300)
     {
         m_prt->write(reply->readAll());
@@ -488,7 +483,7 @@ void MainWindow::onPRTDownloadReadyRead()
 void MainWindow::onPRTInfoRequestFinished()
 {
     closeProgressDialog();
-    QNetworkReply* reply = qobject_cast<QNetworkReply*>(sender());
+    auto *reply = qobject_cast<QNetworkReply *>(sender());
     reply->deleteLater();
 
     m_crashUrl.clear();
@@ -503,7 +498,7 @@ void MainWindow::onPRTInfoRequestFinished()
     QJsonObject docObj = doc.object();
 
     QJsonValue tagName = docObj["tagName"];
-    bool isCrash = false;
+    bool       isCrash = false;
     if (tagName.isString() && tagName.toString() == "Crash")
         isCrash = true;
 
@@ -530,18 +525,19 @@ void MainWindow::onPRTInfoRequestFinished()
             QJsonValue bodyConvertVal = ele["body_converted"];
             if (bodyConvertVal.isString())
             {
-                QString bodyConverted = bodyConvertVal.toString();
-                QString pattern = "http:\\/\\/jabber\\-prt\\.cisco\\.com\\/ProblemReportTriageTool\\/\\?prt_id=(\\d+)";
-                QRegularExpression re(pattern);
-                QRegularExpressionMatch match = re.match(bodyConverted);
-                QString captured = match.captured(1);
+                QString                 bodyConverted = bodyConvertVal.toString();
+                QString                 pattern       = "http:\\/\\/jabber\\-prt\\.cisco\\.com\\/ProblemReportTriageTool\\/\\?prt_id=(\\d+)";
+                QRegularExpression      re(pattern);
+                QRegularExpressionMatch match    = re.match(bodyConverted);
+                QString                 captured = match.captured(1);
 
                 if (!captured.isEmpty())
                 {
-                    if (QMessageBox::question(this, tr("Found PRT with dump"),
-                                          tr("It seems to be a crash PRT, do you want to download the PRT with dump file?"),
-                                          QMessageBox::Yes | QMessageBox::No,
-                                          QMessageBox::Yes) == QMessageBox::Yes)
+                    if (QMessageBox::question(this,
+                                              tr("Found PRT with dump"),
+                                              tr("It seems to be a crash PRT, do you want to download the PRT with dump file?"),
+                                              QMessageBox::Yes | QMessageBox::No,
+                                              QMessageBox::Yes) == QMessageBox::Yes)
                     {
                         getJabberWinPRTInfo(captured);
                         return;
@@ -566,8 +562,8 @@ void MainWindow::onPRTInfoRequestFinished()
                 continue;
             }
             QJsonObject attachmentObj = attachment.toObject();
-            QJsonValue path = attachmentObj["file_directory"];
-            QJsonValue name = attachmentObj["file_name"];
+            QJsonValue  path          = attachmentObj["file_directory"];
+            QJsonValue  name          = attachmentObj["file_name"];
             if (!path.isString() || !name.isString())
             {
                 qDebug() << "path or name is missing.";
@@ -583,10 +579,11 @@ void MainWindow::onPRTInfoRequestFinished()
             {
                 if (docObj["platform"].isString() && docObj["platform"].toString() != "Windows")
                 {
-                    if (QMessageBox::question(this, tr("Found PRT with crash information"),
-                                          tr("It seems to be a crash PRT, do you want to download crash information?"),
-                                          QMessageBox::Yes | QMessageBox::No,
-                                          QMessageBox::Yes) == QMessageBox::Yes)
+                    if (QMessageBox::question(this,
+                                              tr("Found PRT with crash information"),
+                                              tr("It seems to be a crash PRT, do you want to download crash information?"),
+                                              QMessageBox::Yes | QMessageBox::No,
+                                              QMessageBox::Yes) == QMessageBox::Yes)
                     {
                         getCrashInfo(docObj["id"].toString(), path.toString(), name.toString(), docObj["platform"].toString());
                     }
@@ -602,8 +599,8 @@ void MainWindow::onPRTInfoRequestFinished()
 
 void MainWindow::onPRTInfoRequestReadyRead()
 {
-    QNetworkReply* reply = qobject_cast<QNetworkReply*>(sender());
-    int statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+    auto *reply      = qobject_cast<QNetworkReply *>(sender());
+    int   statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
     if (statusCode >= 200 && statusCode < 300)
     {
         m_prtInfo.append(reply->readAll());
@@ -613,13 +610,13 @@ void MainWindow::onPRTInfoRequestReadyRead()
 void MainWindow::onJabberWinPRTInfoRequestFinished()
 {
     closeProgressDialog();
-    QNetworkReply* reply = qobject_cast<QNetworkReply*>(sender());
+    QNetworkReply *reply = qobject_cast<QNetworkReply *>(sender());
     reply->deleteLater();
 
-    QString pattern = "http:\\/\\/jabber\\-prt\\.cisco\\.com\\/jabberPrtReport\\/uploads\\/[0-9a-zA-Z_\\-]+\\.zip";
-    QRegularExpression re(pattern);
-    QRegularExpressionMatch match = re.match(QString(m_prtInfo));
-    QString u = match.captured();
+    const static QString            pattern = "http:\\/\\/jabber\\-prt\\.cisco\\.com\\/jabberPrtReport\\/uploads\\/[0-9a-zA-Z_\\-]+\\.zip";
+    const static QRegularExpression re(pattern);
+    QRegularExpressionMatch         match = re.match(QString(m_prtInfo));
+    QString                         u     = match.captured();
     if (!u.isEmpty())
         downloadPRT(u);
     else
@@ -628,12 +625,12 @@ void MainWindow::onJabberWinPRTInfoRequestFinished()
 
 void MainWindow::onPRTRequestError(QNetworkReply::NetworkError e)
 {
-    QNetworkReply* reply = qobject_cast<QNetworkReply*>(sender());
+    auto *reply = qobject_cast<QNetworkReply *>(sender());
 
     qDebug() << "network error:" << e << reply->errorString();
 }
 
-void MainWindow::onIPCMessageReceived(const QString &message, QObject* /*socket*/)
+void MainWindow::onIPCMessageReceived(const QString &message, QObject * /*socket*/)
 {
     QStringList logs = message.split('\n');
     openLogs(logs);
@@ -645,9 +642,9 @@ void MainWindow::onIPCMessageReceived(const QString &message, QObject* /*socket*
 
 void MainWindow::onExtensionRemoved(ExtensionPtr e)
 {
-    QList<QAction*> actions;
-    QMenu* pMenu = nullptr;
-    auto itMenu = m_extensionMenu.find(e->category());
+    QList<QAction *> actions;
+    QMenu *          pMenu  = nullptr;
+    auto             itMenu = m_extensionMenu.find(e->category());
     if (m_extensionMenu.end() != itMenu)
     {
         pMenu = *itMenu;
@@ -658,8 +655,7 @@ void MainWindow::onExtensionRemoved(ExtensionPtr e)
         pMenu = ui->menuExtension;
         actions.append(ui->menuExtension->actions());
     }
-    auto it = std::find_if(actions.begin(), actions.end(),
-                           [e](QAction* action) { return (action->data().toString() == e->uuid());});
+    auto it = std::find_if(actions.begin(), actions.end(), [e](QAction *action) { return (action->data().toString() == e->uuid()); });
 
     if (actions.end() != it)
     {
@@ -671,7 +667,7 @@ void MainWindow::onExtensionRemoved(ExtensionPtr e)
 void MainWindow::onExtensionCreated(ExtensionPtr e)
 {
     static int extensionCount = 1;
-    QAction* action = new QAction(QString("%1 by %2").arg(e->title()).arg(e->author()), this);
+    auto *     action         = new QAction(QString("%1 by %2").arg(e->title()).arg(e->author()), this);
     connect(action, &QAction::triggered, ui->tabWidget, &TabWidget::onExtensionActionTriggered);
     action->setData(e->uuid());
     action->setToolTip(e->comment());
@@ -682,11 +678,11 @@ void MainWindow::onExtensionCreated(ExtensionPtr e)
         if (extensionCount <= 10)
             action->setShortcut(QKeySequence(QString("Ctrl+%1").arg(extensionCount++)));
         else if (extensionCount <= 20)
-            action->setShortcut(QKeySequence(QString("Ctrl+Shift+%1").arg(extensionCount++%10)));
+            action->setShortcut(QKeySequence(QString("Ctrl+Shift+%1").arg(extensionCount++ % 10)));
         else if (extensionCount <= 30)
-            action->setShortcut(QKeySequence(QString("Ctrl+Alt+%1").arg(extensionCount++%10)));
+            action->setShortcut(QKeySequence(QString("Ctrl+Alt+%1").arg(extensionCount++ % 10)));
         else if (extensionCount <= 40)
-            action->setShortcut(QKeySequence(QString("Shift+Alt+%1").arg(extensionCount++%10)));
+            action->setShortcut(QKeySequence(QString("Shift+Alt+%1").arg(extensionCount++ % 10)));
     }
     if (e->category().isEmpty())
     {
@@ -697,12 +693,12 @@ void MainWindow::onExtensionCreated(ExtensionPtr e)
         auto it = m_extensionMenu.find(e->category());
         if (m_extensionMenu.end() != it)
         {
-            QMenu* pMenu = *it;
+            auto *pMenu = *it;
             pMenu->addAction(action);
         }
         else
         {
-            QMenu* pMenu = ui->menuExtension->addMenu(e->category());
+            auto *pMenu = ui->menuExtension->addMenu(e->category());
             m_extensionMenu.insert(e->category(), pMenu);
             pMenu->addAction(action);
         }
@@ -711,9 +707,9 @@ void MainWindow::onExtensionCreated(ExtensionPtr e)
 
 void MainWindow::onExtensionModified(ExtensionPtr e)
 {
-    QList<QAction*> actions;
-    QMenu* pMenu = nullptr;
-    auto itMenu = m_extensionMenu.find(e->category());
+    QList<QAction *> actions;
+    QMenu *          pMenu  = nullptr;
+    auto             itMenu = m_extensionMenu.find(e->category());
     if (m_extensionMenu.end() != itMenu)
     {
         pMenu = *itMenu;
@@ -725,8 +721,7 @@ void MainWindow::onExtensionModified(ExtensionPtr e)
         actions.append(ui->menuExtension->actions());
     }
 
-    auto it = std::find_if(actions.begin(), actions.end(),
-                           [e](QAction* action) { return (action->data().toString() == e->uuid());});
+    auto it = std::find_if(actions.begin(), actions.end(), [e](QAction *action) { return (action->data().toString() == e->uuid()); });
 
     if (actions.end() != it)
     {
@@ -737,16 +732,17 @@ void MainWindow::onExtensionModified(ExtensionPtr e)
 void MainWindow::onActionOpenJabberLogTriggered()
 {
 #if defined(Q_OS_WIN)
-    QString path = QStandardPaths::writableLocation(QStandardPaths::HomeLocation) % "/AppData/Local/Cisco/Unified Communications/Jabber/CSF/Logs/jabber.log";
+    QString path =
+        QStandardPaths::writableLocation(QStandardPaths::HomeLocation) % "/AppData/Local/Cisco/Unified Communications/Jabber/CSF/Logs/jabber.log";
 #endif
 #if defined(Q_OS_MAC)
     QString path = QStandardPaths::writableLocation(QStandardPaths::HomeLocation) % "/Library/Logs/Jabber/jabber.log";
 #endif
 
-    QAction *action = qobject_cast<QAction*>(sender());
-    QString caption = action->text();
-    QStringList prefixes = { ".1", ".2", ".3", ".4", ".5", ".6", ".7", ".8", ".9", ".10"};
-    for (const auto & prefix : prefixes)
+    auto *      action   = qobject_cast<QAction *>(sender());
+    QString     caption  = action->text();
+    QStringList prefixes = {".1", ".2", ".3", ".4", ".5", ".6", ".7", ".8", ".9", ".10"};
+    for (const auto &prefix : prefixes)
     {
         if (caption.endsWith(prefix))
         {
@@ -757,10 +753,7 @@ void MainWindow::onActionOpenJabberLogTriggered()
 
     if (!QFile::exists(path))
     {
-        QMessageBox::critical(this,
-                             tr("Warning"),
-                             QString(tr("File '%1' doesn't exist.")).arg(path),
-                             QMessageBox::Ok);
+        QMessageBox::critical(this, tr("Warning"), QString(tr("File '%1' doesn't exist.")).arg(path), QMessageBox::Ok);
         return;
     }
     QStringList files;
@@ -770,25 +763,21 @@ void MainWindow::onActionOpenJabberLogTriggered()
 
 void MainWindow::on_actionOpenZipLogBundle_triggered()
 {
-    QStringList fileNames = QFileDialog::getOpenFileNames(this,
-                                                    tr("Open Cisco Jabber Log Zip Bundles"),
-                                                    g_settings->lastOpenedDirectory(),
-                                                    tr("Cisco Jabber Log Zip Bundle (*.zip);;All files (*.*)"));
+    QStringList fileNames = QFileDialog::getOpenFileNames(
+        this, tr("Open Cisco Jabber Log Zip Bundles"), g_settings->lastOpenedDirectory(), tr("Cisco Jabber Log Zip Bundle (*.zip);;All files (*.*)"));
     if (fileNames.isEmpty())
         return;
 
     QFileInfo fi(fileNames.at(0));
     g_settings->setLastOpenedDirectory(fi.absolutePath());
 
-    std::for_each(fileNames.begin(), fileNames.end(),[&](const QString& p){ ui->tabWidget->openZipBundle(p);});
+    std::for_each(fileNames.begin(), fileNames.end(), [&](const QString &p) { ui->tabWidget->openZipBundle(p); });
 }
 
 void MainWindow::on_actionOpenRawLogFile_triggered()
 {
-    QStringList fileNames = QFileDialog::getOpenFileNames(this,
-                                                          tr("Open Cisco Jabber Log Files"),
-                                                          g_settings->lastOpenedDirectory(),
-                                                          tr("Cisco Jabber Log Files (jabber.log*);;All files (*.*)"));
+    QStringList fileNames = QFileDialog::getOpenFileNames(
+        this, tr("Open Cisco Jabber Log Files"), g_settings->lastOpenedDirectory(), tr("Cisco Jabber Log Files (jabber.log*);;All files (*.*)"));
 
     if (fileNames.isEmpty())
         return;
@@ -801,10 +790,8 @@ void MainWindow::on_actionOpenRawLogFile_triggered()
 
 void MainWindow::on_actionOpenLogFolder_triggered()
 {
-    QString dir = QFileDialog::getExistingDirectory(this,
-                                                    tr("Open Cisco Jabber Log Folder"),
-                                                    g_settings->lastOpenedDirectory(),
-                                                    QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+    QString dir = QFileDialog::getExistingDirectory(
+        this, tr("Open Cisco Jabber Log Folder"), g_settings->lastOpenedDirectory(), QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
 
     if (dir.isEmpty())
         return;
@@ -825,10 +812,7 @@ void MainWindow::on_actionOpenCurrentInstalledJabberLogFolder_triggered()
     QDir d(dir);
     if (!d.exists())
     {
-        QMessageBox::critical(this,
-                             tr("Warning"),
-                             QString(tr("Folder '%1' doesn't exist.")).arg(dir),
-                             QMessageBox::Ok);
+        QMessageBox::critical(this, tr("Warning"), QString(tr("Folder '%1' doesn't exist.")).arg(dir), QMessageBox::Ok);
         return;
     }
 
@@ -837,33 +821,31 @@ void MainWindow::on_actionOpenCurrentInstalledJabberLogFolder_triggered()
 
 void MainWindow::openPRTFromURL(const QString &u)
 {
-    QString rawURL(u);
-    QUrl url(rawURL.replace("#/", "api/v1/").replace("#", "api/v1/"));
+    QString         rawURL(u);
+    QUrl            url(rawURL.replace("#/", "api/v1/").replace("#", "api/v1/"));
     QNetworkRequest req(url);
     req.setRawHeader("token", g_settings->prtTrackingSystemToken().toUtf8());
     req.setAttribute(QNetworkRequest::HTTP2AllowedAttribute, true);
     m_prtInfo.clear();
-    QNetworkReply* reply = m_nam->get(req);
+    auto *reply = m_nam->get(req);
     connect(reply, SIGNAL(readyRead()), this, SLOT(onPRTInfoRequestReadyRead()));
-    connect(reply, SIGNAL(error(QNetworkReply::NetworkError)),
-            this, SLOT(onPRTRequestError(QNetworkReply::NetworkError)));
+    connect(reply, SIGNAL(error(QNetworkReply::NetworkError)), this, SLOT(onPRTRequestError(QNetworkReply::NetworkError)));
     connect(reply, SIGNAL(finished()), this, SLOT(onPRTInfoRequestFinished()));
     showProgressDialog(QString(tr("Getting PRT information of %1...")).arg(u));
 }
 
 void MainWindow::getPRTTrackingSystemToken()
 {
-    QUrl url("http://prt.jabberqa.cisco.com/api/v1/login");
+    QUrl            url("http://prt.jabberqa.cisco.com/api/v1/login");
     QNetworkRequest req(url);
     req.setAttribute(QNetworkRequest::HTTP2AllowedAttribute, true);
     req.setHeader(QNetworkRequest::ContentTypeHeader, "application/json;charset=UTF-8");
     req.setRawHeader("Accept", "application/json, text/plain, */*");
     QString postBody = QString("{\"username\":\"%1\",\"password\":\"%2\"}").arg(g_settings->cecId()).arg(g_settings->cecPassword());
     m_prtTrackingSystemLoginInfo.clear();
-    QNetworkReply* reply = m_nam->post(req, postBody.toUtf8());
+    auto *reply = m_nam->post(req, postBody.toUtf8());
     connect(reply, SIGNAL(readyRead()), this, SLOT(onPRTTrackingSystemLoginReadyRead()));
-    connect(reply, SIGNAL(error(QNetworkReply::NetworkError)),
-            this, SLOT(onPRTRequestError(QNetworkReply::NetworkError)));
+    connect(reply, SIGNAL(error(QNetworkReply::NetworkError)), this, SLOT(onPRTRequestError(QNetworkReply::NetworkError)));
     connect(reply, SIGNAL(finished()), this, SLOT(onPRTTrackingSystemLoginFinished()));
 }
 
@@ -871,20 +853,21 @@ void MainWindow::createDockWindows()
 {
     ui->menuWindow->addSeparator();
 
-    struct {
-        QString title;
-        QListWidget*& listWidget;
-        QKeySequence shortcut;
-    } mm [] = {
+    struct
+    {
+        QString       title;
+        QListWidget *&listWidget;
+        QKeySequence  shortcut;
+    } mm[] = {
         {tr("Windows PRT"), m_windowsPRTList, QKeySequence("Shift+W")},
-        {tr("macOS PRT"),   m_macPRTList,     QKeySequence("Shift+M")},
-        {tr("iOS PRT"),     m_iOSPRTList,     QKeySequence("Shift+I")},
+        {tr("macOS PRT"), m_macPRTList, QKeySequence("Shift+M")},
+        {tr("iOS PRT"), m_iOSPRTList, QKeySequence("Shift+I")},
         {tr("Android PRT"), m_androidPRTList, QKeySequence("Shift+A")},
     };
 
-    for ( auto m : mm)
+    for (auto m : mm)
     {
-        QDockWidget *dock = new QDockWidget(m.title, this);
+        auto *dock = new QDockWidget(m.title, this);
         dock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::TopDockWidgetArea | Qt::BottomDockWidgetArea);
         m.listWidget = new QListWidget(dock);
         m.listWidget->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
@@ -898,17 +881,17 @@ void MainWindow::createDockWindows()
         dock->setWidget(m.listWidget);
         addDockWidget(Qt::LeftDockWidgetArea, dock);
         ui->menuWindow->addAction(dock->toggleViewAction());
-        QAction* action = dock->toggleViewAction();
+        auto *action = dock->toggleViewAction();
         action->setShortcut(m.shortcut);
         dock->close();
     }
 }
 
-void MainWindow::getPRTList(const QString& platform)
+void MainWindow::getPRTList(const QString &platform)
 {
-    QUrl url("http://prt.jabberqa.cisco.com/api/v1/conversations/page/1");
+    QUrl      url("http://prt.jabberqa.cisco.com/api/v1/conversations/page/1");
     QUrlQuery query;
-    query.addQueryItem("platform",  platform);
+    query.addQueryItem("platform", platform);
     url.setQuery(query);
     QNetworkRequest req(url);
     req.setHeader(QNetworkRequest::ContentTypeHeader, "application/json;charset=UTF-8");
@@ -916,33 +899,31 @@ void MainWindow::getPRTList(const QString& platform)
     req.setRawHeader("Accept", "application/json, text/plain, */*");
     req.setRawHeader("token", g_settings->prtTrackingSystemToken().toUtf8());
     m_prtList.clear();
-    QNetworkReply* reply = m_nam->get(req);
+    auto *reply = m_nam->get(req);
     connect(reply, SIGNAL(readyRead()), this, SLOT(onPRTListReadyRead()));
-    connect(reply, SIGNAL(error(QNetworkReply::NetworkError)),
-            this, SLOT(onPRTRequestError(QNetworkReply::NetworkError)));
+    connect(reply, SIGNAL(error(QNetworkReply::NetworkError)), this, SLOT(onPRTRequestError(QNetworkReply::NetworkError)));
     connect(reply, SIGNAL(finished()), this, SLOT(onPRTListFinished()));
 }
 
 void MainWindow::getJabberWinPRTInfo(const QString &id)
 {
-    QUrl url("http://jabber-prt.cisco.com/ProblemReportTriageTool/scripts/getReportById.php");
+    QUrl      url("http://jabber-prt.cisco.com/ProblemReportTriageTool/scripts/getReportById.php");
     QUrlQuery query;
     query.addQueryItem("reportID", id);
     url.setQuery(query);
     QNetworkRequest req(url);
     req.setAttribute(QNetworkRequest::HTTP2AllowedAttribute, true);
     m_prtInfo.clear();
-    QNetworkReply* reply = m_nam->get(req);
+    auto *reply = m_nam->get(req);
     connect(reply, SIGNAL(readyRead()), this, SLOT(onPRTInfoRequestReadyRead()));
-    connect(reply, SIGNAL(error(QNetworkReply::NetworkError)),
-            this, SLOT(onPRTRequestError(QNetworkReply::NetworkError)));
+    connect(reply, SIGNAL(error(QNetworkReply::NetworkError)), this, SLOT(onPRTRequestError(QNetworkReply::NetworkError)));
     connect(reply, SIGNAL(finished()), this, SLOT(onJabberWinPRTInfoRequestFinished()));
     showProgressDialog(QString(tr("Getting Jabber Win PRT information of ID %1...")).arg(id));
 }
 
 void MainWindow::getCrashInfo(const QString &id, const QString &fileDirectory, const QString &fileName, const QString &platform)
 {
-    QUrl url("http://prt.jabberqa.cisco.com/analysis");
+    QUrl      url("http://prt.jabberqa.cisco.com/analysis");
     QUrlQuery query;
     query.addQueryItem("conversation_id", id);
     query.addQueryItem("file_directory", fileDirectory);
@@ -957,12 +938,11 @@ void MainWindow::getCrashInfo(const QString &id, const QString &fileDirectory, c
     req.setAttribute(QNetworkRequest::FollowRedirectsAttribute, QVariant(true));
     m_crashInfo.clear();
 
-    QNetworkReply* reply = m_nam->get(req);
+    auto *reply = m_nam->get(req);
     connect(reply, SIGNAL(readyRead()), this, SLOT(onCrashInfoRequestReadyRead()));
-    connect(reply, SIGNAL(error(QNetworkReply::NetworkError)),
-            this, SLOT(onPRTRequestError(QNetworkReply::NetworkError)));
+    connect(reply, SIGNAL(error(QNetworkReply::NetworkError)), this, SLOT(onPRTRequestError(QNetworkReply::NetworkError)));
     connect(reply, SIGNAL(finished()), this, SLOT(onCrashInfoRequestFinished()));
-    connect(reply, SIGNAL(redirected(const QUrl&)), this, SLOT(onCrashInfoRequestRedirected(const QUrl&)));
+    connect(reply, SIGNAL(redirected(const QUrl &)), this, SLOT(onCrashInfoRequestRedirected(const QUrl &)));
 }
 
 void MainWindow::showProgressDialog(const QString &title)
@@ -982,7 +962,7 @@ void MainWindow::showProgressDialog(const QString &title)
         g_progressDialog->setAutoClose(true);
         g_progressDialog->setAutoReset(true);
         g_progressDialog->setCancelButton(nullptr);
-        g_progressDialog->setRange(0,0);
+        g_progressDialog->setRange(0, 0);
         g_progressDialog->setMinimumDuration(0);
     }
     g_progressDialog->setLabelText(title);
@@ -996,7 +976,7 @@ void MainWindow::closeProgressDialog()
     {
         g_progressDialog->setValue(200);
         g_progressDialog->deleteLater();
-        g_progressDialog=nullptr;
+        g_progressDialog = nullptr;
 
 #if defined(Q_OS_WIN)
         if (g_winTaskbarButton)
@@ -1010,30 +990,21 @@ void MainWindow::closeProgressDialog()
 
 void MainWindow::applyProxySettings()
 {
-    if (g_settings->proxyType() != QNetworkProxy::NoProxy
-            && !g_settings->proxyHostName().isEmpty()
-            && g_settings->proxyPort() > 0
-            && g_settings->proxyPort() < 65535)
+    if (g_settings->proxyType() != QNetworkProxy::NoProxy && !g_settings->proxyHostName().isEmpty() && g_settings->proxyPort() > 0 &&
+        g_settings->proxyPort() < 65535)
     {
-        QNetworkProxy proxy(g_settings->proxyType(),
-                            g_settings->proxyHostName(),
-                            g_settings->proxyPort());
+        QNetworkProxy proxy(g_settings->proxyType(), g_settings->proxyHostName(), g_settings->proxyPort());
         m_nam->setProxy(proxy);
     }
 }
 
 void MainWindow::on_actionOpenFromPRTTrackingSystemURL_triggered()
 {
-    bool ok;
-    QString u = QInputDialog::getText(this,
-                                      tr("Input URL"),
-                                      tr("Input a valid PRT Tracking System URL"),
-                                      QLineEdit::Normal,
-                                      QString(),
-                                      &ok).trimmed();
-
-    QString pattern = "http:\\/\\/prt\\.jabberqa\\.cisco.com\\/#\\/?conversations\\/[0-9a-zA-Z]{24,24}";
-    QRegularExpression regex(pattern, QRegularExpression::CaseInsensitiveOption);
+    bool    ok;
+    QString u =
+        QInputDialog::getText(this, tr("Input URL"), tr("Input a valid PRT Tracking System URL"), QLineEdit::Normal, QString(), &ok).trimmed();
+    const static QString            pattern = "http:\\/\\/prt\\.jabberqa\\.cisco.com\\/#\\/?conversations\\/[0-9a-zA-Z]{24,24}";
+    const static QRegularExpression regex(pattern, QRegularExpression::CaseInsensitiveOption);
     if (ok && regex.match(u).hasMatch())
         openPRTFromURL(u);
 }
@@ -1063,7 +1034,8 @@ void MainWindow::on_actionAbout_triggered()
 {
     QMessageBox::about(this,
                        windowTitle(),
-                       tr("Easy to use tool for reading logs generated by Cisco Jabber.\r\nContact me on https://github.com/missdeer/cjlv if you have any problem about this tool.\r\nBuilt at " __DATE__ " " __TIME__));
+                       tr("Easy to use tool for reading logs generated by Cisco Jabber.\r\nContact me on https://github.com/missdeer/cjlv if you "
+                          "have any problem about this tool.\r\nBuilt at " __DATE__ " " __TIME__));
 }
 
 void MainWindow::on_actionAboutQt_triggered()
@@ -1157,7 +1129,8 @@ void MainWindow::on_actionRegexpMode_triggered()
 
 void MainWindow::dragEnterEvent(QDragEnterEvent *e)
 {
-    if (e->mimeData()->hasUrls()) {
+    if (e->mimeData()->hasUrls())
+    {
         e->acceptProposedAction();
     }
 }
@@ -1168,10 +1141,9 @@ void MainWindow::dropEvent(QDropEvent *e)
 
     if (!e->mimeData()->hasUrls())
         return;
-    QList<QUrl>&& urls = e->mimeData()->urls();
+    QList<QUrl> &&urls = e->mimeData()->urls();
 
-    std::for_each(urls.begin(), urls.end(),
-                  [&logs](const QUrl& url) {logs << url.toLocalFile();});
+    std::for_each(urls.begin(), urls.end(), [&logs](const QUrl &url) { logs << url.toLocalFile(); });
     openLogs(logs);
 }
 
@@ -1183,31 +1155,31 @@ void MainWindow::showEvent(QShowEvent *e)
         thumbbar = new QWinThumbnailToolBar(this);
         thumbbar->setWindow(windowHandle());
 
-        QWinThumbnailToolButton *openZipButton = new QWinThumbnailToolButton(thumbbar);
+        auto *openZipButton = new QWinThumbnailToolButton(thumbbar);
         openZipButton->setToolTip("Open Zip Log Bundle");
         openZipButton->setIcon(QIcon(":/image/open-zip-file.png"));
         openZipButton->setDismissOnClick(true);
         connect(openZipButton, SIGNAL(clicked()), ui->actionOpenZipLogBundle, SIGNAL(triggered()));
 
-        QWinThumbnailToolButton *openRawLogFileButton = new QWinThumbnailToolButton(thumbbar);
+        auto *openRawLogFileButton = new QWinThumbnailToolButton(thumbbar);
         openRawLogFileButton->setToolTip("Open Raw Log File");
         openRawLogFileButton->setIcon(QIcon(":/image/open-file.png"));
         openRawLogFileButton->setDismissOnClick(true);
         connect(openRawLogFileButton, SIGNAL(clicked()), ui->actionOpenRawLogFile, SIGNAL(triggered()));
 
-        QWinThumbnailToolButton *openLogFolderButton = new QWinThumbnailToolButton(thumbbar);
+        auto *openLogFolderButton = new QWinThumbnailToolButton(thumbbar);
         openLogFolderButton->setToolTip("Open Log Folder");
         openLogFolderButton->setIcon(QIcon(":/image/open-folder.png"));
         openLogFolderButton->setDismissOnClick(true);
         connect(openLogFolderButton, SIGNAL(clicked()), ui->actionOpenLogFolder, SIGNAL(triggered()));
 
-        QWinThumbnailToolButton *openCurrentInstalledJabberLogFolderButton = new QWinThumbnailToolButton(thumbbar);
+        auto *openCurrentInstalledJabberLogFolderButton = new QWinThumbnailToolButton(thumbbar);
         openCurrentInstalledJabberLogFolderButton->setToolTip("Open Current Installed Jabber Log Folder");
         openCurrentInstalledJabberLogFolderButton->setIcon(QIcon(":/image/open-installed-folder.png"));
         openCurrentInstalledJabberLogFolderButton->setDismissOnClick(true);
         connect(openCurrentInstalledJabberLogFolderButton, SIGNAL(clicked()), ui->actionOpenCurrentInstalledJabberLogFolder, SIGNAL(triggered()));
 
-        QWinThumbnailToolButton *openPRTUrlButton = new QWinThumbnailToolButton(thumbbar);
+        auto *openPRTUrlButton = new QWinThumbnailToolButton(thumbbar);
         openPRTUrlButton->setToolTip("Open From PRT Tracking System URL");
         openPRTUrlButton->setIcon(QIcon(":/image/open-prt-url.png"));
         openPRTUrlButton->setDismissOnClick(true);
@@ -1237,7 +1209,7 @@ void MainWindow::showEvent(QShowEvent *e)
 
 void MainWindow::downloadPRT(const QString &u)
 {
-    QUrl url(u);
+    QUrl            url(u);
     QNetworkRequest req(url);
     req.setAttribute(QNetworkRequest::HTTP2AllowedAttribute, true);
     req.setRawHeader("token", g_settings->prtTrackingSystemToken().toUtf8());
@@ -1252,16 +1224,15 @@ void MainWindow::downloadPRT(const QString &u)
         dir.mkpath(tempDir);
 
     int index = u.lastIndexOf(QChar(':'));
-    index = u.indexOf(QChar('_'), index);
-    QString f(u.mid(index+1));
+    index     = u.indexOf(QChar('_'), index);
+    QString f(u.mid(index + 1));
 
     m_prt = new QFile(tempDir % "/" % f);
     m_prt->open(QIODevice::WriteOnly | QIODevice::Truncate);
 
-    QNetworkReply* reply = m_nam->get(req);
+    auto *reply = m_nam->get(req);
     connect(reply, SIGNAL(readyRead()), this, SLOT(onPRTDownloadReadyRead()));
-    connect(reply, SIGNAL(error(QNetworkReply::NetworkError)),
-            this, SLOT(onPRTRequestError(QNetworkReply::NetworkError)));
+    connect(reply, SIGNAL(error(QNetworkReply::NetworkError)), this, SLOT(onPRTRequestError(QNetworkReply::NetworkError)));
     connect(reply, SIGNAL(finished()), this, SLOT(onPRTDownloadFinished()));
     showProgressDialog(QString(tr("Downloading PRT from %1...")).arg(u));
 }
@@ -1304,7 +1275,7 @@ void MainWindow::on_actionLogLevelTrace_triggered()
 void MainWindow::on_actionOpenFromJabberWinPRTSite_triggered()
 {
     bool ok = false;
-    int id = QInputDialog::getInt(this, "Input PRT Id", "Please input PRT Id", 0, 0, 99999, 1, &ok);
+    int  id = QInputDialog::getInt(this, "Input PRT Id", "Please input PRT Id", 0, 0, 99999, 1, &ok);
     if (ok)
         getJabberWinPRTInfo(QString("%1").arg(id));
 }

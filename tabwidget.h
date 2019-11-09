@@ -11,10 +11,10 @@ class TabWidget : public QTabWidget
 public:
     explicit TabWidget(QWidget *parent = 0);
 
-    void openZipBundle(const QString& zipBundle, const QString& crashInfo);
-    void openZipBundle(const QString& path);
-    void openRawLogFile(const QStringList& paths);
-    void openFolder(const QString& path, bool installed);
+    void openZipBundle(const QString &zipBundle, const QString &crashInfo);
+    void openZipBundle(const QString &path);
+    void openRawLogFile(const QStringList &paths);
+    void openFolder(const QString &path, bool installed);
 
     void inputKeyword();
     void clearKeyword();
@@ -30,7 +30,7 @@ public:
     void searchFieldLine();
     void searchFieldLevel();
 signals:
-    void statusBarMessage(const QString&);
+    void statusBarMessage(const QString &);
 
 public slots:
     void onCloseAll();
@@ -80,11 +80,11 @@ private slots:
     void onCustomContextMenuRequested(const QPoint &pos);
     void onCurrentChanged(int index);
     void onLogViewRowCountChanged();
-    
+
 private:
-    int findTab(const QString& path);
-    int findTab(const QStringList& paths);
-    int addTab(LogView *w, const QString& text, const QString& tooltip);
+    int findTab(const QString &path);
+    int findTab(const QStringList &paths);
+    int addTab(LogView *w, const QString &text, const QString &tooltip);
 };
 
 #endif // TABWIDGET_H

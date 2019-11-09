@@ -1,8 +1,9 @@
 #ifndef PREFERENCEDIALOG_H
 #define PREFERENCEDIALOG_H
 
-namespace Ui {
-class PreferenceDialog;
+namespace Ui
+{
+    class PreferenceDialog;
 }
 
 class PreferenceDialog : public QDialog

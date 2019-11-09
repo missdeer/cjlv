@@ -14,10 +14,11 @@ class PRTListItemDelegate : public QAbstractItemDelegate
 public:
     explicit PRTListItemDelegate(QListWidget *parent);
 
-    void paint ( QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const;
-    QSize sizeHint ( const QStyleOptionViewItem & option, const QModelIndex & index ) const;
+    void  paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
+    QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const;
+
 private:
-    QListWidget* m_parentListWidget;
+    QListWidget *m_parentListWidget;
 };
 
 #endif // PRTLISTITEMDELEGATE_H

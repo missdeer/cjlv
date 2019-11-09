@@ -29,19 +29,19 @@ class QuickWidgetAPI : public QObject
     Q_PROPERTY(bool startTlsStanza READ getStartTlsStanza WRITE setStartTlsStanza NOTIFY startTlsStanzaChanged)
     Q_PROPERTY(bool proceedStanza READ getProceedStanza WRITE setProceedStanza NOTIFY proceedStanzaChanged)
 public:
-    explicit QuickWidgetAPI(QObject* parent = nullptr);
+    explicit QuickWidgetAPI(QObject *parent = nullptr);
     ~QuickWidgetAPI();
 
-    int getFrom() const;
+    int  getFrom() const;
     void setFrom(int from);
 
-    int getTo() const;
+    int  getTo() const;
     void setTo(int to);
 
-    int getFirstValue() const;
+    int  getFirstValue() const;
     void setFirstValue(int v);
 
-    int getSecondValue() const;
+    int  getSecondValue() const;
     void setSecondValue(int v);
 
     bool getStanzaOnly() const;
@@ -119,11 +119,12 @@ signals:
     void authStanzaChanged();
     void startTlsStanzaChanged();
     void proceedStanzaChanged();
+
 private:
-    int m_firstValue;
-    int m_secondValue;
-    int m_from;
-    int m_to;
+    int  m_firstValue;
+    int  m_secondValue;
+    int  m_from;
+    int  m_to;
     bool m_stanzaOnly;
     bool m_receivedStanza;
     bool m_sentStanza;

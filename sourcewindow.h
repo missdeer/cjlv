@@ -2,10 +2,12 @@
 #define SOURCEWINDOW_H
 
 #include <QMainWindow>
+
 #include "sourceviewtabwidget.h"
 
-namespace Ui {
-class SourceWindow;
+namespace Ui
+{
+    class SourceWindow;
 }
 
 class TabWidget;
@@ -19,11 +21,12 @@ public:
     explicit SourceWindow(QWidget *parent = 0);
     ~SourceWindow();
 
-    SourceViewTabWidget* getSourceViewTabWidget();
-    void setMainTabWidget(TabWidget* w);
+    SourceViewTabWidget *getSourceViewTabWidget();
+    void                 setMainTabWidget(TabWidget *w);
 signals:
     void tabCloseRequested(int);
     void currentChanged(int);
+
 private:
     Ui::SourceWindow *ui;
 };

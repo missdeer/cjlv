@@ -1,14 +1,13 @@
 #include "stdafx.h"
 #if defined(Q_OS_WIN)
-#include "ShellContextMenu.h"
+#    include "ShellContextMenu.h"
 #endif
 #include "extensionmodel.h"
 #include "logview.h"
 #include "sourcewindow.h"
 #include "tabwidget.h"
 
-TabWidget::TabWidget(QWidget *parent)
-    : QTabWidget(parent)
+TabWidget::TabWidget(QWidget *parent) : QTabWidget(parent)
 {
     setTabBarAutoHide(true);
     connect(this, &QTabWidget::tabCloseRequested, this, &TabWidget::onTabCloseRequested);
@@ -25,7 +24,7 @@ void TabWidget::openZipBundle(const QString &zipBundle, const QString &crashInfo
         setCurrentIndex(index);
         return;
     }
-    LogView* v = new LogView(this);
+    auto *v = new LogView(this);
     v->openZipBundle(zipBundle, crashInfo);
     index = addTab(v, v->windowTitle(), zipBundle);
     setTabIcon(index, QIcon(":/image/open-zip-file.png"));
@@ -39,7 +38,7 @@ void TabWidget::openZipBundle(const QString &path)
         setCurrentIndex(index);
         return;
     }
-    LogView* v = new LogView(this);
+    auto *v = new LogView(this);
     v->openZipBundle(path);
     index = addTab(v, v->windowTitle(), path);
     setTabIcon(index, QIcon(":/image/open-zip-file.png"));
@@ -53,7 +52,7 @@ void TabWidget::openRawLogFile(const QStringList &paths)
         setCurrentIndex(index);
         return;
     }
-    LogView* v = new LogView(this);
+    auto *v = new LogView(this);
     v->openRawLogFile(paths);
     index = addTab(v, v->windowTitle(), paths.join("\n"));
     setTabIcon(index, QIcon(":/image/open-file.png"));
@@ -63,15 +62,15 @@ void TabWidget::openFolder(const QString &path, bool installed)
 {
     QString p = path;
 
-    while(p.at(p.length()-1) == QChar('/') || p.at(p.length()-1) == QChar('\\'))
-        p.remove(p.length() -1, 1);
+    while (p.at(p.length() - 1) == QChar('/') || p.at(p.length() - 1) == QChar('\\'))
+        p.remove(p.length() - 1, 1);
     int index = findTab(p);
     if (index >= 0)
     {
         setCurrentIndex(index);
         return;
     }
-    LogView* v = new LogView(this);
+    auto *v = new LogView(this);
     v->openFolder(p);
     index = addTab(v, v->windowTitle(), p);
     setTabIcon(index, QIcon(installed ? ":/image/open-installed-folder.png" : ":/image/open-folder.png"));
@@ -79,313 +78,313 @@ void TabWidget::openFolder(const QString &path, bool installed)
 
 void TabWidget::inputKeyword()
 {
-    QWidget* w = currentWidget();
+    auto *w = currentWidget();
     if (w)
     {
-        LogView* v = qobject_cast<LogView*>(w);
+        auto *v = qobject_cast<LogView *>(w);
         v->inputKeyword();
     }
 }
 
 void TabWidget::clearKeyword()
 {
-    QWidget* w = currentWidget();
+    auto *w = currentWidget();
     if (w)
     {
-        LogView* v = qobject_cast<LogView*>(w);
+        auto *v = qobject_cast<LogView *>(w);
         v->onClearKeyword();
     }
 }
 
 void TabWidget::enableRegexpMode(bool enabled)
 {
-    QWidget* w = currentWidget();
+    auto *w = currentWidget();
     if (w)
     {
-        LogView* v = qobject_cast<LogView*>(w);
+        auto *v = qobject_cast<LogView *>(w);
         v->enableRegexpMode(enabled);
     }
 }
 
 void TabWidget::searchFieldContent()
 {
-    QWidget* w = currentWidget();
+    auto *w = currentWidget();
     if (w)
     {
-        LogView* v = qobject_cast<LogView*>(w);
+        auto *v = qobject_cast<LogView *>(w);
         v->searchFieldContent();
     }
 }
 
 void TabWidget::searchFieldID()
 {
-    QWidget* w = currentWidget();
+    auto *w = currentWidget();
     if (w)
     {
-        LogView* v = qobject_cast<LogView*>(w);
+        auto *v = qobject_cast<LogView *>(w);
         v->searchFieldID();
     }
 }
 
 void TabWidget::searchFieldDateTime()
 {
-    QWidget* w = currentWidget();
+    auto *w = currentWidget();
     if (w)
     {
-        LogView* v = qobject_cast<LogView*>(w);
+        auto *v = qobject_cast<LogView *>(w);
         v->searchFieldDateTime();
     }
 }
 
 void TabWidget::searchFieldThread()
 {
-    QWidget* w = currentWidget();
+    auto *w = currentWidget();
     if (w)
     {
-        LogView* v = qobject_cast<LogView*>(w);
+        auto *v = qobject_cast<LogView *>(w);
         v->searchFieldThread();
     }
 }
 
 void TabWidget::searchFieldCategory()
 {
-    QWidget* w = currentWidget();
+    auto *w = currentWidget();
     if (w)
     {
-        LogView* v = qobject_cast<LogView*>(w);
+        auto *v = qobject_cast<LogView *>(w);
         v->searchFieldCategory();
     }
 }
 
 void TabWidget::searchFieldSourceFile()
 {
-    QWidget* w = currentWidget();
+    auto *w = currentWidget();
     if (w)
     {
-        LogView* v = qobject_cast<LogView*>(w);
+        auto *v = qobject_cast<LogView *>(w);
         v->searchFieldSourceFile();
     }
 }
 
 void TabWidget::searchFieldMethod()
 {
-    QWidget* w = currentWidget();
+    auto *w = currentWidget();
     if (w)
     {
-        LogView* v = qobject_cast<LogView*>(w);
+        auto *v = qobject_cast<LogView *>(w);
         v->searchFieldMethod();
     }
 }
 
 void TabWidget::searchFieldLogFile()
 {
-    QWidget* w = currentWidget();
+    auto *w = currentWidget();
     if (w)
     {
-        LogView* v = qobject_cast<LogView*>(w);
+        auto *v = qobject_cast<LogView *>(w);
         v->searchFieldLogFile();
     }
 }
 
 void TabWidget::searchFieldLine()
 {
-    QWidget* w = currentWidget();
+    auto *w = currentWidget();
     if (w)
     {
-        LogView* v = qobject_cast<LogView*>(w);
+        auto *v = qobject_cast<LogView *>(w);
         v->searchFieldLine();
     }
 }
 
 void TabWidget::searchFieldLevel()
 {
-    QWidget* w = currentWidget();
+    auto *w = currentWidget();
     if (w)
     {
-        LogView* v = qobject_cast<LogView*>(w);
+        auto *v = qobject_cast<LogView *>(w);
         v->searchFieldLevel();
     }
 }
 
 void TabWidget::onCopyCurrentCell()
 {
-    QWidget* w = currentWidget();
+    auto *w = currentWidget();
     if (w)
     {
-        LogView* v = qobject_cast<LogView*>(w);
+        auto *v = qobject_cast<LogView *>(w);
         v->copyCurrentCell();
     }
 }
 
 void TabWidget::onCopyCurrentRow()
 {
-    QWidget* w = currentWidget();
+    auto *w = currentWidget();
     if (w)
     {
-        LogView* v = qobject_cast<LogView*>(w);
+        auto *v = qobject_cast<LogView *>(w);
         v->copyCurrentRow();
     }
 }
 
 void TabWidget::onCopySelectedCells()
 {
-    QWidget* w = currentWidget();
+    auto *w = currentWidget();
     if (w)
     {
-        LogView* v = qobject_cast<LogView*>(w);
+        auto *v = qobject_cast<LogView *>(w);
         v->copySelectedCells();
     }
 }
 
 void TabWidget::onCopySelectedRows()
 {
-    QWidget* w = currentWidget();
+    auto *w = currentWidget();
     if (w)
     {
-        LogView* v = qobject_cast<LogView*>(w);
+        auto *v = qobject_cast<LogView *>(w);
         v->copySelectedRows();
     }
 }
 
 void TabWidget::onCopyCurrentCellWithXMLFormatted()
 {
-    QWidget* w = currentWidget();
+    auto *w = currentWidget();
     if (w)
     {
-        LogView* v = qobject_cast<LogView*>(w);
+        auto *v = qobject_cast<LogView *>(w);
         v->copyCurrentCellWithXMLFormatted();
     }
 }
 
 void TabWidget::onCopyCurrentRowWithXMLFormatted()
 {
-    QWidget* w = currentWidget();
+    auto *w = currentWidget();
     if (w)
     {
-        LogView* v = qobject_cast<LogView*>(w);
+        auto *v = qobject_cast<LogView *>(w);
         v->copyCurrentRowWithXMLFormatted();
     }
 }
 
 void TabWidget::onCopySelectedCellsWithXMLFormatted()
 {
-    QWidget* w = currentWidget();
+    auto *w = currentWidget();
     if (w)
     {
-        LogView* v = qobject_cast<LogView*>(w);
+        auto *v = qobject_cast<LogView *>(w);
         v->copySelectedCellsWithXMLFormatted();
     }
 }
 
 void TabWidget::onCopySelectedRowsWithXMLFormatted()
 {
-    QWidget* w = currentWidget();
+    auto *w = currentWidget();
     if (w)
     {
-        LogView* v = qobject_cast<LogView*>(w);
+        auto *v = qobject_cast<LogView *>(w);
         v->copySelectedRowsWithXMLFormatted();
     }
 }
 
 void TabWidget::onAddCurrentRowToBookmark()
 {
-    QWidget* w = currentWidget();
+    auto *w = currentWidget();
     if (w)
     {
-        LogView* v = qobject_cast<LogView*>(w);
+        auto *v = qobject_cast<LogView *>(w);
         v->addCurrentRowToBookmark();
     }
 }
 
 void TabWidget::onRemoveCurrentRowFromBookmark()
 {
-    QWidget* w = currentWidget();
+    auto *w = currentWidget();
     if (w)
     {
-        LogView* v = qobject_cast<LogView*>(w);
+        auto *v = qobject_cast<LogView *>(w);
         v->removeCurrentRowFromBookmark();
     }
 }
 
 void TabWidget::onAddSelectedRowsToBookmark()
 {
-    QWidget* w = currentWidget();
+    auto *w = currentWidget();
     if (w)
     {
-        LogView* v = qobject_cast<LogView*>(w);
+        auto *v = qobject_cast<LogView *>(w);
         v->addSelectedRowsToBookmark();
     }
 }
 
 void TabWidget::onRemoveSelectedRowsFromBookmark()
 {
-    QWidget* w = currentWidget();
+    auto *w = currentWidget();
     if (w)
     {
-        LogView* v = qobject_cast<LogView*>(w);
+        auto *v = qobject_cast<LogView *>(w);
         v->removeSelectedRowsFromBookmark();
     }
 }
 
 void TabWidget::onRemoveAllBookmarks()
 {
-    QWidget* w = currentWidget();
+    auto *w = currentWidget();
     if (w)
     {
-        LogView* v = qobject_cast<LogView*>(w);
+        auto *v = qobject_cast<LogView *>(w);
         v->removeAllBookmarks();
     }
 }
 
 void TabWidget::onGotoFirstBookmark()
 {
-    QWidget* w = currentWidget();
+    auto *w = currentWidget();
     if (w)
     {
-        LogView* v = qobject_cast<LogView*>(w);
+        auto *v = qobject_cast<LogView *>(w);
         v->gotoFirstBookmark();
     }
 }
 
 void TabWidget::onGotoPreviousBookmark()
 {
-    QWidget* w = currentWidget();
+    auto *w = currentWidget();
     if (w)
     {
-        LogView* v = qobject_cast<LogView*>(w);
+        auto *v = qobject_cast<LogView *>(w);
         v->gotoPreviousBookmark();
     }
 }
 
 void TabWidget::onGotoNextBookmark()
 {
-    QWidget* w = currentWidget();
+    auto *w = currentWidget();
     if (w)
     {
-        LogView* v = qobject_cast<LogView*>(w);
+        auto *v = qobject_cast<LogView *>(w);
         v->gotoNextBookmark();
     }
 }
 
 void TabWidget::onGotoLastBookmark()
 {
-    QWidget* w = currentWidget();
+    auto *w = currentWidget();
     if (w)
     {
-        LogView* v = qobject_cast<LogView*>(w);
+        auto *v = qobject_cast<LogView *>(w);
         v->gotoLastBookmark();
     }
 }
 
 void TabWidget::onCopyFileName()
 {
-    QClipboard *clipboard = QApplication::clipboard();
+    auto *clipboard = QApplication::clipboard();
     clipboard->setText(tabText(currentIndex()));
 }
 
 void TabWidget::onCopyFileFullPath()
 {
-    QClipboard *clipboard = QApplication::clipboard();
+    auto *clipboard = QApplication::clipboard();
 #if defined(Q_OS_WIN)
     clipboard->setText(QDir::toNativeSeparators(tabToolTip(currentIndex())));
 #else
@@ -398,147 +397,145 @@ void TabWidget::onOpenContainerFolder()
     QString fileFullPath = tabToolTip(currentIndex());
 #if defined(Q_OS_WIN)
     QString arg = QString("/select,\"%1\"").arg(QDir::toNativeSeparators(fileFullPath));
-    ::ShellExecuteW(NULL, L"open", L"explorer.exe", arg.toStdWString().c_str(), NULL, SW_SHOWNORMAL);
+    ::ShellExecuteW(nullptr, L"open", L"explorer.exe", arg.toStdWString().c_str(), nullptr, SW_SHOWNORMAL);
 #endif
 #if defined(Q_OS_MAC)
     QStringList scriptArgs;
-    scriptArgs << QLatin1String("-e")
-               << QString::fromLatin1("tell application \"Finder\" to reveal POSIX file \"%1\"").arg(fileFullPath);
+    scriptArgs << QLatin1String("-e") << QString::fromLatin1("tell application \"Finder\" to reveal POSIX file \"%1\"").arg(fileFullPath);
     QProcess::execute(QLatin1String("/usr/bin/osascript"), scriptArgs);
     scriptArgs.clear();
-    scriptArgs << QLatin1String("-e")
-               << QLatin1String("tell application \"Finder\" to activate");
+    scriptArgs << QLatin1String("-e") << QLatin1String("tell application \"Finder\" to activate");
     QProcess::execute("/usr/bin/osascript", scriptArgs);
 #endif
 }
 
 void TabWidget::onScrollToTop()
 {
-    QWidget* w = currentWidget();
+    auto *w = currentWidget();
     if (w)
     {
-        LogView* v = qobject_cast<LogView*>(w);
+        auto *v = qobject_cast<LogView *>(w);
         v->scrollToTop();
     }
 }
 
 void TabWidget::onScrollToBottom()
 {
-    QWidget* w = currentWidget();
+    auto *w = currentWidget();
     if (w)
     {
-        LogView* v = qobject_cast<LogView*>(w);
+        auto *v = qobject_cast<LogView *>(w);
         v->scrollToBottom();
     }
 }
 
 void TabWidget::onGotoById()
 {
-    QWidget* w = currentWidget();
+    auto *w = currentWidget();
     if (w)
     {
-        int i = QInputDialog::getInt(this, tr("Goto By Id"), tr("Input Id:"), 1, 1);
-        LogView* v = qobject_cast<LogView*>(w);
+        int   i = QInputDialog::getInt(this, tr("Goto By Id"), tr("Input Id:"), 1, 1);
+        auto *v = qobject_cast<LogView *>(w);
         v->gotoById(i);
     }
 }
 
 void TabWidget::onRunExtension(ExtensionPtr e)
 {
-    QWidget* w = currentWidget();
+    auto *w = currentWidget();
     if (w)
     {
-        LogView* v = qobject_cast<LogView*>(w);
+        auto *v = qobject_cast<LogView *>(w);
         v->onRunExtension(e);
-//        emit v->runExtension(e);
+        //        emit v->runExtension(e);
     }
 }
 
 void TabWidget::onExtensionActionTriggered()
 {
-    QAction* extensionAction = qobject_cast<QAction*>(sender());
-    QString uuid = extensionAction->data().toString();
-    ExtensionPtr e = ExtensionModel::instance(this)->extensionByUuid(uuid);
+    auto *extensionAction = qobject_cast<QAction *>(sender());
+    auto  uuid            = extensionAction->data().toString();
+    auto  e               = ExtensionModel::instance(this)->extensionByUuid(uuid);
     if (e)
         onRunExtension(e);
 }
 
 void TabWidget::onNewLogTableView()
 {
-    QWidget* w = currentWidget();
+    auto *w = currentWidget();
     if (w)
     {
-        LogView* v = qobject_cast<LogView*>(w);
+        auto *v = qobject_cast<LogView *>(w);
         v->newLogTableView();
     }
 }
 
 void TabWidget::onNewLogLevelPieChart()
 {
-    QWidget* w = currentWidget();
+    auto *w = currentWidget();
     if (w)
     {
-        LogView* v = qobject_cast<LogView*>(w);
+        auto *v = qobject_cast<LogView *>(w);
         v->newLogLevelPieChart();
     }
 }
 
 void TabWidget::onNewLogThreadPieChart()
 {
-    QWidget* w = currentWidget();
+    auto *w = currentWidget();
     if (w)
     {
-        LogView* v = qobject_cast<LogView*>(w);
+        auto *v = qobject_cast<LogView *>(w);
         v->newLogThreadPieChart();
     }
 }
 
 void TabWidget::onNewLogSourceFilePieChart()
 {
-    QWidget* w = currentWidget();
+    auto *w = currentWidget();
     if (w)
     {
-        LogView* v = qobject_cast<LogView*>(w);
+        auto *v = qobject_cast<LogView *>(w);
         v->newLogSourceFilePieChart();
     }
 }
 
 void TabWidget::onNewLogSourceLinePieChart()
 {
-    QWidget* w = currentWidget();
+    auto *w = currentWidget();
     if (w)
     {
-        LogView* v = qobject_cast<LogView*>(w);
+        auto *v = qobject_cast<LogView *>(w);
         v->newLogSourceLinePieChart();
     }
 }
 
 void TabWidget::onNewLogCategoryPieChart()
 {
-    QWidget* w = currentWidget();
+    auto *w = currentWidget();
     if (w)
     {
-        LogView* v = qobject_cast<LogView*>(w);
+        auto *v = qobject_cast<LogView *>(w);
         v->newLogCategoryPieChart();
     }
 }
 
 void TabWidget::onNewLogMethodPieChart()
 {
-    QWidget* w = currentWidget();
+    auto *w = currentWidget();
     if (w)
     {
-        LogView* v = qobject_cast<LogView*>(w);
+        auto *v = qobject_cast<LogView *>(w);
         v->newLogMethodPieChart();
     }
 }
 
 void TabWidget::onNewLogPresenceTableView()
 {
-    QWidget* w = currentWidget();
+    auto *w = currentWidget();
     if (w)
     {
-        LogView* v = qobject_cast<LogView*>(w);
+        auto *v = qobject_cast<LogView *>(w);
         v->newLogPresenceTableView();
     }
 }
@@ -550,9 +547,9 @@ void TabWidget::onCustomContextMenuRequested(const QPoint &pos)
     {
         bool onTabbar = false;
 
-        for (int i=0; i<c; i++)
+        for (int i = 0; i < c; i++)
         {
-            if ( tabBar()->tabRect(i).contains( pos ) )
+            if (tabBar()->tabRect(i).contains(pos))
             {
                 onTabbar = true;
                 tabBar()->setCurrentIndex(i);
@@ -564,34 +561,34 @@ void TabWidget::onCustomContextMenuRequested(const QPoint &pos)
             return;
 
         QMenu menu(this);
-        QAction* pCloseAction = new QAction(QIcon(":/image/close.png"), "Close", &menu);
+        auto *pCloseAction = new QAction(QIcon(":/image/close.png"), "Close", &menu);
         menu.addAction(pCloseAction);
         connect(pCloseAction, &QAction::triggered, this, &TabWidget::onCloseCurrent);
-        QAction* pCloseAllAction = new QAction(QIcon(":/image/closeall.png"), "Close All", &menu);
+        auto *pCloseAllAction = new QAction(QIcon(":/image/closeall.png"), "Close All", &menu);
         menu.addAction(pCloseAllAction);
         connect(pCloseAllAction, &QAction::triggered, this, &TabWidget::onCloseAll);
-        QAction* pCloseAllButThisAction = new QAction("Close All But This", &menu);
+        auto *pCloseAllButThisAction = new QAction("Close All But This", &menu);
         menu.addAction(pCloseAllButThisAction);
         connect(pCloseAllButThisAction, &QAction::triggered, this, &TabWidget::onCloseAllButThis);
 
         menu.addSeparator();
 
-        QAction* pCopyFileNameAction = new QAction("Copy File Name", &menu);
+        auto *pCopyFileNameAction = new QAction("Copy File Name", &menu);
         connect(pCopyFileNameAction, &QAction::triggered, this, &TabWidget::onCopyFileName);
         menu.addAction(pCopyFileNameAction);
-        QAction* pCopyFileFullPathAction = new QAction("Copy File Full Path", &menu);
+        auto *pCopyFileFullPathAction = new QAction("Copy File Full Path", &menu);
         connect(pCopyFileFullPathAction, &QAction::triggered, this, &TabWidget::onCopyFileFullPath);
         menu.addAction(pCopyFileFullPathAction);
 
         menu.addSeparator();
 
-        QAction* pOpenContainerFolderAction = new QAction("Open Container Folder", &menu);
+        auto *pOpenContainerFolderAction = new QAction("Open Container Folder", &menu);
         connect(pOpenContainerFolderAction, &QAction::triggered, this, &TabWidget::onOpenContainerFolder);
         menu.addAction(pOpenContainerFolderAction);
 
 #if defined(Q_OS_WIN)
         CShellContextMenu scm;
-        QPoint p = mapToGlobal(pos);
+        QPoint            p = mapToGlobal(pos);
         scm.ShowContextMenu(&menu, this, p, QDir::toNativeSeparators(tabToolTip(currentIndex())));
 #else
         menu.exec(mapToGlobal(pos));
@@ -601,12 +598,12 @@ void TabWidget::onCustomContextMenuRequested(const QPoint &pos)
 
 void TabWidget::onCurrentChanged(int /*index*/)
 {
-    QWidget* w = currentWidget();
+    auto *w = currentWidget();
     if (w)
     {
-        LogView* v = qobject_cast<LogView*>(w);
+        auto *  v   = qobject_cast<LogView *>(w);
         QString msg = QString("Row Count: %1").arg(v->rowCount());
-        emit statusBarMessage(msg);
+        emit    statusBarMessage(msg);
     }
     else
     {
@@ -616,17 +613,17 @@ void TabWidget::onCurrentChanged(int /*index*/)
 
 void TabWidget::onLogViewRowCountChanged()
 {
-    LogView *v = qobject_cast<LogView*>(sender());
+    auto *v = qobject_cast<LogView *>(sender());
     if (v == currentWidget())
     {
         QString msg = QString("Row Count: %1").arg(v->rowCount());
-        emit statusBarMessage(msg);
+        emit    statusBarMessage(msg);
     }
 }
 
 void TabWidget::onCloseAll()
 {
-    for (int index = count() -1; index >=0; index--)
+    for (int index = count() - 1; index >= 0; index--)
     {
         onTabCloseRequested(index);
     }
@@ -634,7 +631,7 @@ void TabWidget::onCloseAll()
 
 void TabWidget::onCloseAllButThis()
 {
-    for (int index = count() -1; index > currentIndex(); index--)
+    for (int index = count() - 1; index > currentIndex(); index--)
     {
         onTabCloseRequested(index);
     }
@@ -651,8 +648,8 @@ void TabWidget::onCloseCurrent()
 
 void TabWidget::onTabCloseRequested(int index)
 {
-    QWidget* w = widget(index);
-    LogView* v = qobject_cast<LogView*>(w);
+    auto *w = widget(index);
+    auto *v = qobject_cast<LogView *>(w);
     disconnect(v, &LogView::rowCountChanged, this, &TabWidget::onLogViewRowCountChanged);
     removeTab(index);
     delete w;
@@ -662,8 +659,8 @@ int TabWidget::findTab(const QString &path)
 {
     for (int index = 0; index < count(); index++)
     {
-        QWidget* w = widget(index);
-        LogView* v = qobject_cast<LogView*>(w);
+        auto *w = widget(index);
+        auto *v = qobject_cast<LogView *>(w);
         if (v->matched(path))
             return index;
     }
@@ -675,8 +672,8 @@ int TabWidget::findTab(const QStringList &paths)
 {
     for (int index = 0; index < count(); index++)
     {
-        QWidget* w = widget(index);
-        LogView* v = qobject_cast<LogView*>(w);
+        auto *w = widget(index);
+        auto *v = qobject_cast<LogView *>(w);
         if (v->matched(paths))
             return index;
     }

@@ -4,8 +4,9 @@
 #include "extension.h"
 
 class CodeEditor;
-namespace Ui {
-class ExtensionDialog;
+namespace Ui
+{
+    class ExtensionDialog;
 }
 
 class ExtensionDialog : public QDialog
@@ -44,13 +45,13 @@ private slots:
 
 private:
     Ui::ExtensionDialog *ui;
-    CodeEditor* m_contentEditor;
-    ExtensionPtr m_currentExtension;
-    bool m_modified;
-    bool m_notModifying;
-    QString m_defaultUserName;
+    CodeEditor *         m_contentEditor;
+    ExtensionPtr         m_currentExtension;
+    bool                 m_modified;
+    bool                 m_notModifying;
+    QString              m_defaultUserName;
 };
 
-extern ExtensionDialog* g_extensionDialog;
+extern ExtensionDialog *g_extensionDialog;
 
 #endif // EXTENSIONDIALOG_H

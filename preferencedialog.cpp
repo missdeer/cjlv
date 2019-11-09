@@ -1,28 +1,28 @@
 #include "stdafx.h"
-#include "settings.h"
+
 #include "preferencedialog.h"
+
+#include "settings.h"
 #include "ui_preferencedialog.h"
 
-PreferenceDialog::PreferenceDialog(QWidget *parent) :
-    QDialog(parent),
-    ui(new Ui::PreferenceDialog)
+PreferenceDialog::PreferenceDialog(QWidget *parent) : QDialog(parent), ui(new Ui::PreferenceDialog)
 {
     ui->setupUi(this);
 
-    std::map<QCheckBox*, int> m = {
-        { ui->cbId,         0 },
-        { ui->cbTime,       1 },
-        { ui->cbLevel,      2 },
-        { ui->cbThread,     3 },
-        { ui->cbSourceFile, 4 },
-        { ui->cbCategory,   5 },
-        { ui->cbMethod,     6 },
-        { ui->cbContent,    7 },
-        { ui->cbLogFile,    8 },
-        { ui->cbLine,       9 },
+    std::map<QCheckBox *, int> m = {
+        {ui->cbId, 0},
+        {ui->cbTime, 1},
+        {ui->cbLevel, 2},
+        {ui->cbThread, 3},
+        {ui->cbSourceFile, 4},
+        {ui->cbCategory, 5},
+        {ui->cbMethod, 6},
+        {ui->cbContent, 7},
+        {ui->cbLogFile, 8},
+        {ui->cbLine, 9},
     };
     int visible = g_settings->logTableColumnVisible();
-    for (auto p : m )
+    for (auto p : m)
     {
         if ((0x01 << p.second) & visible)
             p.first->setChecked(true);
@@ -36,19 +36,19 @@ PreferenceDialog::PreferenceDialog(QWidget *parent) :
     ui->btnSelectWinDBGPath->setVisible(false);
     ui->edtWinDBG->setVisible(false);
     ui->topFormLayout->removeRow(2);
-    connect(ui->cbId,         &QCheckBox::stateChanged, this, &PreferenceDialog::onCheckBoxStateChanged);
-    connect(ui->cbTime,       &QCheckBox::stateChanged, this, &PreferenceDialog::onCheckBoxStateChanged);
-    connect(ui->cbLevel,      &QCheckBox::stateChanged, this, &PreferenceDialog::onCheckBoxStateChanged);
-    connect(ui->cbThread,     &QCheckBox::stateChanged, this, &PreferenceDialog::onCheckBoxStateChanged);
+    connect(ui->cbId, &QCheckBox::stateChanged, this, &PreferenceDialog::onCheckBoxStateChanged);
+    connect(ui->cbTime, &QCheckBox::stateChanged, this, &PreferenceDialog::onCheckBoxStateChanged);
+    connect(ui->cbLevel, &QCheckBox::stateChanged, this, &PreferenceDialog::onCheckBoxStateChanged);
+    connect(ui->cbThread, &QCheckBox::stateChanged, this, &PreferenceDialog::onCheckBoxStateChanged);
     connect(ui->cbSourceFile, &QCheckBox::stateChanged, this, &PreferenceDialog::onCheckBoxStateChanged);
-    connect(ui->cbCategory,   &QCheckBox::stateChanged, this, &PreferenceDialog::onCheckBoxStateChanged);
-    connect(ui->cbMethod,     &QCheckBox::stateChanged, this, &PreferenceDialog::onCheckBoxStateChanged);
-    connect(ui->cbContent,    &QCheckBox::stateChanged, this, &PreferenceDialog::onCheckBoxStateChanged);
-    connect(ui->cbLogFile,    &QCheckBox::stateChanged, this, &PreferenceDialog::onCheckBoxStateChanged);
-    connect(ui->cbLine,       &QCheckBox::stateChanged, this, &PreferenceDialog::onCheckBoxStateChanged);
+    connect(ui->cbCategory, &QCheckBox::stateChanged, this, &PreferenceDialog::onCheckBoxStateChanged);
+    connect(ui->cbMethod, &QCheckBox::stateChanged, this, &PreferenceDialog::onCheckBoxStateChanged);
+    connect(ui->cbContent, &QCheckBox::stateChanged, this, &PreferenceDialog::onCheckBoxStateChanged);
+    connect(ui->cbLogFile, &QCheckBox::stateChanged, this, &PreferenceDialog::onCheckBoxStateChanged);
+    connect(ui->cbLine, &QCheckBox::stateChanged, this, &PreferenceDialog::onCheckBoxStateChanged);
 #endif
     adjustSize();
-    setFixedSize( size() );
+    setFixedSize(size());
     ui->edtTemporaryDirectory->setText(g_settings->temporaryDirectory());
     ui->edtSourceCodeDirectory->setText(g_settings->sourceDirectory());
     ui->edtCECId->setText(g_settings->cecId());
@@ -57,7 +57,7 @@ PreferenceDialog::PreferenceDialog(QWidget *parent) :
     ui->edtWinDBG->setText(g_settings->windbgPath());
 #endif
     ui->fontComboBox->setCurrentFont(QFont(g_settings->sourceViewFontFamily()));
-    switch(g_settings->proxyType())
+    switch (g_settings->proxyType())
     {
     case QNetworkProxy::NoProxy:
         ui->rbNoneProxy->setChecked(true);
@@ -71,11 +71,9 @@ PreferenceDialog::PreferenceDialog(QWidget *parent) :
     default:
         break;
     }
-    if (g_settings->proxyType() != QNetworkProxy::NoProxy
-            && !g_settings->proxyHostName().isEmpty()
-            && g_settings->proxyPort() > 0
-            && g_settings->proxyPort() < 65535)
-    ui->edtProxy->setText(QString("%1:%2").arg(g_settings->proxyHostName()).arg(g_settings->proxyPort()));
+    if (g_settings->proxyType() != QNetworkProxy::NoProxy && !g_settings->proxyHostName().isEmpty() && g_settings->proxyPort() > 0 &&
+        g_settings->proxyPort() < 65535)
+        ui->edtProxy->setText(QString("%1:%2").arg(g_settings->proxyHostName()).arg(g_settings->proxyPort()));
 
     QDir dir(":/resource/themes");
     dir.setFilter(QDir::Dirs | QDir::NoSymLinks);
@@ -84,9 +82,9 @@ PreferenceDialog::PreferenceDialog(QWidget *parent) :
     filters << "*.asTheme";
     dir.setNameFilters(filters);
 
-    QString currentTheme = g_settings->sourceViewTheme();
-    QFileInfoList list = dir.entryInfoList();
-    for( auto fi : list)
+    QString       currentTheme = g_settings->sourceViewTheme();
+    QFileInfoList list         = dir.entryInfoList();
+    for (auto fi : list)
     {
         ui->cbSourceViewTheme->addItem(fi.baseName());
     }
@@ -102,21 +100,21 @@ PreferenceDialog::~PreferenceDialog()
 
 void PreferenceDialog::accept()
 {
-    std::map<QCheckBox*, int> m = {
-        { ui->cbId,         0 },
-        { ui->cbTime,       1 },
-        { ui->cbLevel,      2 },
-        { ui->cbThread,     3 },
-        { ui->cbSourceFile, 4 },
-        { ui->cbCategory,   5 },
-        { ui->cbMethod,     6 },
-        { ui->cbContent,    7 },
-        { ui->cbLogFile,    8 },
-        { ui->cbLine,       9 },
+    std::map<QCheckBox *, int> m = {
+        {ui->cbId, 0},
+        {ui->cbTime, 1},
+        {ui->cbLevel, 2},
+        {ui->cbThread, 3},
+        {ui->cbSourceFile, 4},
+        {ui->cbCategory, 5},
+        {ui->cbMethod, 6},
+        {ui->cbContent, 7},
+        {ui->cbLogFile, 8},
+        {ui->cbLine, 9},
     };
 
     int res = 0;
-    for ( auto p : m )
+    for (auto p : m)
     {
         if (p.first->isChecked())
         {
@@ -145,8 +143,8 @@ void PreferenceDialog::accept()
         QStringList sl = ui->edtProxy->text().split(QChar(':'));
         if (sl.length() == 2)
         {
-            bool ok = false;
-            int port = sl.at(1).toInt(&ok);
+            bool ok   = false;
+            int  port = sl.at(1).toInt(&ok);
             if (ok)
             {
                 g_settings->setProxyHostName(sl.at(0));
@@ -163,10 +161,8 @@ void PreferenceDialog::on_btnSelectTemporaryDirectory_clicked()
     QString t = ui->edtTemporaryDirectory->text();
     if (t.isEmpty())
         t = g_settings->temporaryDirectory();
-    QString dir = QFileDialog::getExistingDirectory(this,
-                                                    tr("Select Temporary Directory"),
-                                                    t,
-                                                    QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+    QString dir =
+        QFileDialog::getExistingDirectory(this, tr("Select Temporary Directory"), t, QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
 
     if (dir.isEmpty())
         return;
@@ -183,10 +179,8 @@ void PreferenceDialog::on_btnSelectSourceCodeDirectory_clicked()
     QString s = ui->edtSourceCodeDirectory->text();
     if (s.isEmpty())
         s = g_settings->sourceDirectory();
-    QString dir = QFileDialog::getExistingDirectory(this,
-                                                    tr("Select Cisco Jabber Source Code Directory"),
-                                                    s,
-                                                    QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+    QString dir = QFileDialog::getExistingDirectory(
+        this, tr("Select Cisco Jabber Source Code Directory"), s, QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
 
     if (dir.isEmpty())
         return;
@@ -203,7 +197,6 @@ void PreferenceDialog::on_buttonBox_accepted()
     accept();
     QDialog::accept();
 }
-
 
 void PreferenceDialog::on_edtCECId_textChanged(const QString &)
 {
@@ -223,10 +216,7 @@ void PreferenceDialog::on_edtCECPassword_textChanged(const QString &)
 
 void PreferenceDialog::on_btnSelectWinDBGPath_clicked()
 {
-    QString path = QFileDialog::getOpenFileName(this,
-                                                tr("Find WinDBG.exe"),
-                                                QString(),
-                                                "WinDBG main executable (WinDBG.exe)");
+    QString path = QFileDialog::getOpenFileName(this, tr("Find WinDBG.exe"), QString(), "WinDBG main executable (WinDBG.exe)");
     if (QFile::exists(path))
     {
         ui->edtWinDBG->setText(path);
@@ -251,21 +241,21 @@ void PreferenceDialog::on_cbSourceViewTheme_currentIndexChanged(const QString &t
 
 void PreferenceDialog::onCheckBoxStateChanged(int)
 {
-    std::map<QCheckBox*, int> m = {
-        { ui->cbId,         0 },
-        { ui->cbTime,       1 },
-        { ui->cbLevel,      2 },
-        { ui->cbThread,     3 },
-        { ui->cbSourceFile, 4 },
-        { ui->cbCategory,   5 },
-        { ui->cbMethod,     6 },
-        { ui->cbContent,    7 },
-        { ui->cbLogFile,    8 },
-        { ui->cbLine,       9 },
+    std::map<QCheckBox *, int> m = {
+        {ui->cbId, 0},
+        {ui->cbTime, 1},
+        {ui->cbLevel, 2},
+        {ui->cbThread, 3},
+        {ui->cbSourceFile, 4},
+        {ui->cbCategory, 5},
+        {ui->cbMethod, 6},
+        {ui->cbContent, 7},
+        {ui->cbLogFile, 8},
+        {ui->cbLine, 9},
     };
 
     int res = 0;
-    for ( auto p : m )
+    for (auto p : m)
     {
         if (p.first->isChecked())
         {
@@ -278,7 +268,7 @@ void PreferenceDialog::onCheckBoxStateChanged(int)
 #endif
 }
 
-void PreferenceDialog::on_cbFTSSupport_stateChanged(int )
+void PreferenceDialog::on_cbFTSSupport_stateChanged(int)
 {
 #if defined(Q_OS_MAC)
     g_settings->setFtsEnabled(ui->cbFTSSupport->isChecked());

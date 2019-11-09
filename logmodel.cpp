@@ -1,14 +1,17 @@
 #include "stdafx.h"
-#include <tuple>
+
 #include <lua.hpp>
-#include "rowcountevent.h"
+#include <tuple>
+
+#include "logmodel.h"
+
 #include "finishedqueryevent.h"
-#include "readlinefromfile.h"
 #include "quickwidgetapi.h"
+#include "readlinefromfile.h"
+#include "rowcountevent.h"
+#include "scopedguard.h"
 #include "settings.h"
 #include "utils.h"
-#include "scopedguard.h"
-#include "logmodel.h"
 
 static const int g_rowCountLimit = 200;
 
@@ -39,24 +42,24 @@ LogModel::~LogModel()
     if (m_L)
     {
         lua_close(m_L);
-	}
-	QFile::remove(m_dbFile);
+    }
+    QFile::remove(m_dbFile);
 }
 
 QModelIndex LogModel::index(int row, int column, const QModelIndex &parent) const
 {
     if (!hasIndex(row, column, parent))
-            return QModelIndex();
+        return QModelIndex();
 
     return createIndex(row, column);
 }
 
-int LogModel::rowCount(const QModelIndex &/*parent*/) const
+int LogModel::rowCount(const QModelIndex & /*parent*/) const
 {
     return m_rowCount;
 }
 
-int LogModel::columnCount(const QModelIndex &/*parent*/) const
+int LogModel::columnCount(const QModelIndex & /*parent*/) const
 {
     return 10;
 }
@@ -73,17 +76,17 @@ QVariant LogModel::data(const QModelIndex &index, int role) const
         return QVariant();
 
     auto it = m_logs.find(index.row());
-    if (m_logs.end() == it || (*it)->level.isEmpty() || (*it)->logFile.isEmpty() || (*it)->source.isEmpty() )
+    if (m_logs.end() == it || (*it)->level.isEmpty() || (*it)->logFile.isEmpty() || (*it)->source.isEmpty())
     {
         int alignRow = ((index.row() < 100) ? index.row() : (index.row() - 100));
 #ifndef QT_NO_DEBUG
         qDebug() << "do query index:" << alignRow;
 #endif
-        const_cast<LogModel&>(*this).query(alignRow);
+        const_cast<LogModel &>(*this).query(alignRow);
         return QVariant();
     }
 
-    const QSharedPointer<LogItem>& r = *it;
+    const QSharedPointer<LogItem> &r = *it;
 
     if (role == Qt::BackgroundRole)
     {
@@ -158,112 +161,112 @@ QVariant LogModel::headerData(int section, Qt::Orientation orientation, int role
 
 void LogModel::initialize()
 {
-	m_forceQuerying.store(false);
-	qRegisterMetaType<QSharedPointer<LogItem>>("QSharedPointer<LogItem>");
-	connect(this, &LogModel::logItemReady, this, &LogModel::onLogItemReady);
-	qRegisterMetaType<QMap<int, QSharedPointer<LogItem>>>("QMap<int, QSharedPointer<LogItem>>");
-	connect(this, &LogModel::logItemsReady, this, &LogModel::onLogItemsReady);
+    m_forceQuerying.store(false);
+    qRegisterMetaType<QSharedPointer<LogItem>>("QSharedPointer<LogItem>");
+    connect(this, &LogModel::logItemReady, this, &LogModel::onLogItemReady);
+    qRegisterMetaType<QMap<int, QSharedPointer<LogItem>>>("QMap<int, QSharedPointer<LogItem>>");
+    connect(this, &LogModel::logItemsReady, this, &LogModel::onLogItemsReady);
 }
 
 void LogModel::postInitialize()
 {
-	if (m_sqlite3Helper->isDatabaseOpened())
-		loadFromDatabase();
+    if (m_sqlite3Helper->isDatabaseOpened())
+        loadFromDatabase();
 }
 
 void LogModel::addBookmark(int row)
 {
-	int id = getId(row);
-	m_bookmarkIds.append(id);
-	std::sort(m_bookmarkIds.begin(), m_bookmarkIds.end());
-	emit dataChanged(index(0, 0), index(m_rowCount, 0));
+    int id = getId(row);
+    m_bookmarkIds.append(id);
+    std::sort(m_bookmarkIds.begin(), m_bookmarkIds.end());
+    emit dataChanged(index(0, 0), index(m_rowCount, 0));
 }
 
 void LogModel::removeBookmark(int row)
 {
-	int id = getId(row);
-	m_bookmarkIds.removeAll(id);
-	emit dataChanged(index(0, 0), index(m_rowCount, 0));
+    int id = getId(row);
+    m_bookmarkIds.removeAll(id);
+    emit dataChanged(index(0, 0), index(m_rowCount, 0));
 }
 
 void LogModel::addBookmarks(const QList<int> &rows)
 {
-	for (int row : rows)
-	{
-		int id = getId(row);
-		m_bookmarkIds.append(id);
-	}
-	std::sort(m_bookmarkIds.begin(), m_bookmarkIds.end());
-	emit dataChanged(index(0, 0), index(m_rowCount, 0));
+    for (int row : rows)
+    {
+        int id = getId(row);
+        m_bookmarkIds.append(id);
+    }
+    std::sort(m_bookmarkIds.begin(), m_bookmarkIds.end());
+    emit dataChanged(index(0, 0), index(m_rowCount, 0));
 }
 
 void LogModel::removeBookmarks(const QList<int> &rows)
 {
-	for (auto row : rows)
-	{
-		int id = getId(row);
-		m_bookmarkIds.removeAll(id);
-	}
-	emit dataChanged(index(0, 0), index(m_rowCount, 0));
+    for (auto row : rows)
+    {
+        int id = getId(row);
+        m_bookmarkIds.removeAll(id);
+    }
+    emit dataChanged(index(0, 0), index(m_rowCount, 0));
 }
 
 void LogModel::clearBookmarks()
 {
-	m_bookmarkIds.clear();
-	emit dataChanged(index(0, 0), index(m_rowCount, 0));
+    m_bookmarkIds.clear();
+    emit dataChanged(index(0, 0), index(m_rowCount, 0));
 }
 
 int LogModel::getFirstBookmark()
 {
-	if (!m_bookmarkIds.empty())
-	{
-		m_lastBookmarkId = m_bookmarkIds.first();
-		return m_lastBookmarkId;
-	}
-	return -1;
+    if (!m_bookmarkIds.empty())
+    {
+        m_lastBookmarkId = m_bookmarkIds.first();
+        return m_lastBookmarkId;
+    }
+    return -1;
 }
 
 int LogModel::getNextBookmark(int currId)
 {
-	if (currId == -1)
-		currId = m_lastBookmarkId;
-	for (int i = 0; i < m_bookmarkIds.length() - 1; i++)
-	{
-		if (m_bookmarkIds.at(i) <= currId && m_bookmarkIds.at(i + 1) > currId)
-		{
-			m_lastBookmarkId = m_bookmarkIds.at(i + 1);
-			return m_lastBookmarkId;
-		}
-	}
-	return -1;
+    if (currId == -1)
+        currId = m_lastBookmarkId;
+    for (int i = 0; i < m_bookmarkIds.length() - 1; i++)
+    {
+        if (m_bookmarkIds.at(i) <= currId && m_bookmarkIds.at(i + 1) > currId)
+        {
+            m_lastBookmarkId = m_bookmarkIds.at(i + 1);
+            return m_lastBookmarkId;
+        }
+    }
+    return -1;
 }
 
 int LogModel::getPreviousBookmark(int currId)
 {
-	if (currId == -1)
-		currId = m_lastBookmarkId;
-	for (int i = 1; i < m_bookmarkIds.length(); i++)
-	{
-		if (m_bookmarkIds.at(i - 1) < currId && m_bookmarkIds.at(i) >= currId)
-		{
-			m_lastBookmarkId = m_bookmarkIds.at(i - 1);
-			return m_lastBookmarkId;
-		}
-	}
-	return -1;
+    if (currId == -1)
+        currId = m_lastBookmarkId;
+    for (int i = 1; i < m_bookmarkIds.length(); i++)
+    {
+        if (m_bookmarkIds.at(i - 1) < currId && m_bookmarkIds.at(i) >= currId)
+        {
+            m_lastBookmarkId = m_bookmarkIds.at(i - 1);
+            return m_lastBookmarkId;
+        }
+    }
+    return -1;
 }
 
 int LogModel::getLastBookmark()
 {
-	if (!m_bookmarkIds.empty())
-	{
-		m_lastBookmarkId = m_bookmarkIds.last();
-		return m_lastBookmarkId;
-	}
-	return -1;
+    if (!m_bookmarkIds.empty())
+    {
+        m_lastBookmarkId = m_bookmarkIds.last();
+        return m_lastBookmarkId;
+    }
+    return -1;
 }
 
-void LogModel::loadFromFiles(const QStringList& fileNames)
+void LogModel::loadFromFiles(const QStringList &fileNames)
 {
     m_logFiles = fileNames;
     reload();
@@ -280,13 +283,13 @@ void LogModel::onFilter(const QString &keyword)
     if (keyword != m_keyword)
     {
         // get regexp mode option and search field option
-        m_regexpMode = m_regexpModeOption;
+        m_regexpMode  = m_regexpModeOption;
         m_searchField = m_searchFieldOption;
     }
-    bool regexpMode = m_regexpMode;
-    bool fts = false;
+    bool    regexpMode  = m_regexpMode;
+    bool    fts         = false;
     QString searchField = m_searchField;
-    QString kw = keyword;
+    QString kw          = keyword;
 
     QStringList sl = keyword.split(">");
     if (sl.size() >= 2)
@@ -297,7 +300,7 @@ void LogModel::onFilter(const QString &keyword)
         if (ss.size() == 1 || (ss.size() == 2 && (ss.at(1) == "r" || ss.at(1) == "!r")))
         {
             prefix = ss.at(0);
-            kw = keyword.mid(keyword.indexOf(">") + 1);
+            kw     = keyword.mid(keyword.indexOf(">") + 1);
 
             if (ss.size() == 1 && prefix == "r")
             {
@@ -318,20 +321,20 @@ void LogModel::onFilter(const QString &keyword)
             }
             else
             {
-                std::vector< std::tuple<QString, QString>> m = {
-                    { "i", "id"},
-                    { "d", "datetime"},
-                    { "v", "level"},
-                    { "t", "thread"},
-                    { "s", "source"},
-                    { "a", "category"},
-                    { "m", "method"},
-                    { "c", "content"},
-                    { "f", "logfile"},
-                    { "l", "line"},
+                std::vector<std::tuple<QString, QString>> m = {
+                    {"i", "id"},
+                    {"d", "datetime"},
+                    {"v", "level"},
+                    {"t", "thread"},
+                    {"s", "source"},
+                    {"a", "category"},
+                    {"m", "method"},
+                    {"c", "content"},
+                    {"f", "logfile"},
+                    {"l", "line"},
                 };
 
-                for (const auto& [kwPrefix, kwName]: m)
+                for (const auto &[kwPrefix, kwName] : m)
                 {
                     if (kwPrefix == prefix || (prefix.size() > 1 && kwName.startsWith(prefix)))
                     {
@@ -351,10 +354,10 @@ void LogModel::onFilter(const QString &keyword)
 
 void LogModel::onSearchScopeChanged()
 {
-    m_allStanza = (m_api->getAStanza() && m_api->getRStanza() && m_api->getXStanza() && m_api->getEnableStanza() &&
-                   m_api->getEnabledStanza() && m_api->getPresenceStanza() && m_api->getMessageStanza() && m_api->getIqStanza() &&
-                   m_api->getSuccessStanza() && m_api->getStreamStreamStanza() && m_api->getStreamFeaturesStanza() && m_api->getAuthStanza() &&
-                   m_api->getStartTlsStanza() && m_api->getProceedStanza());
+    m_allStanza = (m_api->getAStanza() && m_api->getRStanza() && m_api->getXStanza() && m_api->getEnableStanza() && m_api->getEnabledStanza() &&
+                   m_api->getPresenceStanza() && m_api->getMessageStanza() && m_api->getIqStanza() && m_api->getSuccessStanza() &&
+                   m_api->getStreamStreamStanza() && m_api->getStreamFeaturesStanza() && m_api->getAuthStanza() && m_api->getStartTlsStanza() &&
+                   m_api->getProceedStanza());
 
     m_fullRange = (m_api->getFirstValue() == 1 && m_api->getSecondValue() == m_maxTotalRowCount);
 
@@ -362,7 +365,8 @@ void LogModel::onSearchScopeChanged()
     if (!m_fullRange)
     {
         m_sqlite3Helper->execDML("DROP VIEW IF EXISTS inRange;");
-        QString sql = QString("CREATE VIEW inRange AS SELECT * FROM logs WHERE id>=%1 AND id<=%2;").arg(m_api->getFirstValue()).arg(m_api->getSecondValue());
+        QString sql =
+            QString("CREATE VIEW inRange AS SELECT * FROM logs WHERE id>=%1 AND id<=%2;").arg(m_api->getFirstValue()).arg(m_api->getSecondValue());
         qDebug() << sql;
         m_sqlite3Helper->execDML(sql);
         globalScope = "inRange";
@@ -385,24 +389,25 @@ void LogModel::onSearchScopeChanged()
 
     QString sql = "CREATE VIEW customStanza AS SELECT * FROM " + dataSource + " WHERE 1=0";
 
-    struct{
+    struct
+    {
         std::function<bool()> f;
-        QString s;
-    }c[] ={
-        { std::bind(&QuickWidgetAPI::getAStanza, m_api),              " OR content LIKE '%:<a %'"},
-        { std::bind(&QuickWidgetAPI::getRStanza, m_api),              " OR content LIKE '%:<r %'"},
-        { std::bind(&QuickWidgetAPI::getXStanza, m_api),              " OR content LIKE '%:<x %'"},
-        { std::bind(&QuickWidgetAPI::getEnableStanza, m_api),         " OR content LIKE '%:<enable %'"},
-        { std::bind(&QuickWidgetAPI::getEnabledStanza, m_api),        " OR content LIKE '%:<enabled %'"},
-        { std::bind(&QuickWidgetAPI::getPresenceStanza, m_api),       " OR content LIKE '%:<presence %'"},
-        { std::bind(&QuickWidgetAPI::getMessageStanza, m_api),        " OR content LIKE '%:<message %'"},
-        { std::bind(&QuickWidgetAPI::getIqStanza, m_api),             " OR content LIKE '%:<iq %'"},
-        { std::bind(&QuickWidgetAPI::getSuccessStanza, m_api),        " OR content LIKE '%:<success %'"},
-        { std::bind(&QuickWidgetAPI::getStreamStreamStanza, m_api),   " OR content LIKE '%:<stream:stream %'"},
-        { std::bind(&QuickWidgetAPI::getStreamFeaturesStanza, m_api), " OR content LIKE '%:<stream:features %'"},
-        { std::bind(&QuickWidgetAPI::getAuthStanza, m_api),           " OR content LIKE '%:<auth %'"},
-        { std::bind(&QuickWidgetAPI::getStartTlsStanza, m_api),       " OR content LIKE '%:<starttls %'"},
-        { std::bind(&QuickWidgetAPI::getProceedStanza, m_api),        " OR content LIKE '%:<proceed %'"},
+        QString               s;
+    } c[] = {
+        {std::bind(&QuickWidgetAPI::getAStanza, m_api), " OR content LIKE '%:<a %'"},
+        {std::bind(&QuickWidgetAPI::getRStanza, m_api), " OR content LIKE '%:<r %'"},
+        {std::bind(&QuickWidgetAPI::getXStanza, m_api), " OR content LIKE '%:<x %'"},
+        {std::bind(&QuickWidgetAPI::getEnableStanza, m_api), " OR content LIKE '%:<enable %'"},
+        {std::bind(&QuickWidgetAPI::getEnabledStanza, m_api), " OR content LIKE '%:<enabled %'"},
+        {std::bind(&QuickWidgetAPI::getPresenceStanza, m_api), " OR content LIKE '%:<presence %'"},
+        {std::bind(&QuickWidgetAPI::getMessageStanza, m_api), " OR content LIKE '%:<message %'"},
+        {std::bind(&QuickWidgetAPI::getIqStanza, m_api), " OR content LIKE '%:<iq %'"},
+        {std::bind(&QuickWidgetAPI::getSuccessStanza, m_api), " OR content LIKE '%:<success %'"},
+        {std::bind(&QuickWidgetAPI::getStreamStreamStanza, m_api), " OR content LIKE '%:<stream:stream %'"},
+        {std::bind(&QuickWidgetAPI::getStreamFeaturesStanza, m_api), " OR content LIKE '%:<stream:features %'"},
+        {std::bind(&QuickWidgetAPI::getAuthStanza, m_api), " OR content LIKE '%:<auth %'"},
+        {std::bind(&QuickWidgetAPI::getStartTlsStanza, m_api), " OR content LIKE '%:<starttls %'"},
+        {std::bind(&QuickWidgetAPI::getProceedStanza, m_api), " OR content LIKE '%:<proceed %'"},
     };
 
     for (auto a : c)
@@ -416,7 +421,6 @@ void LogModel::onSearchScopeChanged()
     m_sqlite3Helper->execDML("DROP VIEW IF EXISTS customStanza;");
     m_sqlite3Helper->execDML(sql);
 
-
     m_forceQuerying.store(true);
     onFilter(m_lastFilterKeyword);
 }
@@ -429,24 +433,23 @@ int LogModel::getMaxTotalRowCount() const
 void LogModel::setRegexpMode(bool regexpMode)
 {
     m_regexpModeOption = regexpMode;
-    m_regexpMode = regexpMode;
+    m_regexpMode       = regexpMode;
 }
 
 void LogModel::setSearchField(const QString &searchField)
 {
     m_searchFieldOption = searchField;
-    m_searchField = searchField;
+    m_searchField       = searchField;
 }
 
 void LogModel::query(int offset)
 {
-    auto it = std::find_if(m_inQuery.begin(), m_inQuery.end(),
-                           [offset](int i){ return (offset >= i && offset < i + 200); });
+    auto it = std::find_if(m_inQuery.begin(), m_inQuery.end(), [offset](int i) { return (offset >= i && offset < i + 200); });
 
     if (m_inQuery.end() != it)
     {
 #ifndef QT_NO_DEBUG
-        qDebug() << __FUNCTION__ << "offset:" << offset ;
+        qDebug() << __FUNCTION__ << "offset:" << offset;
 #endif
         return;
     }
@@ -456,7 +459,7 @@ void LogModel::query(int offset)
     m_queryFuture = QtConcurrent::run(this, &LogModel::doQuery, offset);
 }
 
-void LogModel::copyCell(const QModelIndex& cell)
+void LogModel::copyCell(const QModelIndex &cell)
 {
     auto it = m_logs.find(cell.row());
     if (m_logs.end() == it)
@@ -465,7 +468,7 @@ void LogModel::copyCell(const QModelIndex& cell)
     }
 
     QSharedPointer<LogItem> r = *it;
-    QMap<int, QString> m = {
+    QMap<int, QString>      m = {
         {0, QString("%1").arg(r->id)},
         {1, r->time.toString("yyyy-MM-dd hh:mm:ss.zzz")},
         {2, r->level},
@@ -493,25 +496,25 @@ void LogModel::copyRow(int row)
         return;
     }
 
-    QSharedPointer<LogItem> r = *it;
-    QClipboard *clipboard = QApplication::clipboard();
-    QString text = QString("%1 %2 [%3] [%4] [%5] [%6] - %7")
-                   .arg(r->time.toString("yyyy-MM-dd hh:mm:ss.zzz"))
-                   .arg(r->level)
-                   .arg(r->thread)
-                   .arg(r->source)
-                   .arg(r->category)
-                   .arg(r->method)
-                   .arg(r->content);
+    QSharedPointer<LogItem> r         = *it;
+    QClipboard *            clipboard = QApplication::clipboard();
+    QString                 text      = QString("%1 %2 [%3] [%4] [%5] [%6] - %7")
+                       .arg(r->time.toString("yyyy-MM-dd hh:mm:ss.zzz"))
+                       .arg(r->level)
+                       .arg(r->thread)
+                       .arg(r->source)
+                       .arg(r->category)
+                       .arg(r->method)
+                       .arg(r->content);
     clipboard->setText(text);
 }
 
-void LogModel::copyCells(const QModelIndexList& cells)
+void LogModel::copyCells(const QModelIndexList &cells)
 {
     QString text;
     QString t;
-    int lastRow = cells.at(0).row();
-    for(const QModelIndex& cell : cells)
+    int     lastRow = cells.at(0).row();
+    for (const QModelIndex &cell : cells)
     {
         auto it = m_logs.find(cell.row());
         if (m_logs.end() == it)
@@ -562,10 +565,10 @@ void LogModel::copyCells(const QModelIndexList& cells)
     clipboard->setText(text);
 }
 
-void LogModel::copyRows(const QList<int>& rows)
+void LogModel::copyRows(const QList<int> &rows)
 {
     QString text;
-    for(int row : rows)
+    for (int row : rows)
     {
         auto it = m_logs.find(row);
         if (m_logs.end() == it)
@@ -574,14 +577,14 @@ void LogModel::copyRows(const QList<int>& rows)
         }
 
         QSharedPointer<LogItem> r = *it;
-        QString t = QString("%1 %2 [%3] [%4] [%5] [%6] - %7\n")
-                       .arg(r->time.toString("yyyy-MM-dd hh:mm:ss.zzz"))
-                       .arg(r->level)
-                       .arg(r->thread)
-                       .arg(r->source)
-                       .arg(r->category)
-                       .arg(r->method)
-                       .arg(r->content);
+        QString                 t = QString("%1 %2 [%3] [%4] [%5] [%6] - %7\n")
+                        .arg(r->time.toString("yyyy-MM-dd hh:mm:ss.zzz"))
+                        .arg(r->level)
+                        .arg(r->thread)
+                        .arg(r->source)
+                        .arg(r->category)
+                        .arg(r->method)
+                        .arg(r->content);
         text.append(t);
     }
     QClipboard *clipboard = QApplication::clipboard();
@@ -597,7 +600,7 @@ void LogModel::copyCellWithXMLFormatted(const QModelIndex &cell)
     }
 
     QSharedPointer<LogItem> r = *it;
-    QMap<int, QString> m = {
+    QMap<int, QString>      m = {
         {0, QString("%1").arg(r->id)},
         {1, r->time.toString("yyyy-MM-dd hh:mm:ss.zzz")},
         {2, r->level},
@@ -625,16 +628,16 @@ void LogModel::copyRowWithXMLFormatted(int row)
         return;
     }
 
-    QSharedPointer<LogItem> r = *it;
-    QClipboard *clipboard = QApplication::clipboard();
-    QString text = QString("%1 %2 [%3] [%4] [%5] [%6] - %7")
-                   .arg(r->time.toString("yyyy-MM-dd hh:mm:ss.zzz"))
-                   .arg(r->level)
-                   .arg(r->thread)
-                   .arg(r->source)
-                   .arg(r->category)
-                   .arg(r->method)
-                   .arg(Utils::formatXML(r->content));
+    QSharedPointer<LogItem> r         = *it;
+    QClipboard *            clipboard = QApplication::clipboard();
+    QString                 text      = QString("%1 %2 [%3] [%4] [%5] [%6] - %7")
+                       .arg(r->time.toString("yyyy-MM-dd hh:mm:ss.zzz"))
+                       .arg(r->level)
+                       .arg(r->thread)
+                       .arg(r->source)
+                       .arg(r->category)
+                       .arg(r->method)
+                       .arg(Utils::formatXML(r->content));
     clipboard->setText(text);
 }
 
@@ -642,12 +645,12 @@ void LogModel::copyCellsWithXMLFormatted(const QModelIndexList &cells)
 {
     QString text;
     QString t;
-    bool contentOnly = true;
-    int lastRow = cells.at(0).row();
-    for(const QModelIndex& cell : cells)
+    bool    contentOnly = true;
+    int     lastRow     = cells.at(0).row();
+    for (const QModelIndex &cell : cells)
     {
         if (cell.column() != 7)
-            contentOnly=false;
+            contentOnly = false;
         auto it = m_logs.find(cell.row());
         if (m_logs.end() == it)
         {
@@ -703,7 +706,7 @@ void LogModel::copyCellsWithXMLFormatted(const QModelIndexList &cells)
 void LogModel::copyRowsWithXMLFormatted(const QList<int> &rows)
 {
     QString text;
-    for(int row : rows)
+    for (int row : rows)
     {
         auto it = m_logs.find(row);
         if (m_logs.end() == it)
@@ -712,21 +715,21 @@ void LogModel::copyRowsWithXMLFormatted(const QList<int> &rows)
         }
 
         QSharedPointer<LogItem> r = *it;
-        QString t = QString("%1 %2 [%3] [%4] [%5] [%6] - %7\n")
-                       .arg(r->time.toString("yyyy-MM-dd hh:mm:ss.zzz"))
-                       .arg(r->level)
-                       .arg(r->thread)
-                       .arg(r->source)
-                       .arg(r->category)
-                       .arg(r->method)
-                       .arg(Utils::formatXML(r->content));
+        QString                 t = QString("%1 %2 [%3] [%4] [%5] [%6] - %7\n")
+                        .arg(r->time.toString("yyyy-MM-dd hh:mm:ss.zzz"))
+                        .arg(r->level)
+                        .arg(r->thread)
+                        .arg(r->source)
+                        .arg(r->category)
+                        .arg(r->method)
+                        .arg(Utils::formatXML(r->content));
         text.append(t);
     }
     QClipboard *clipboard = QApplication::clipboard();
     clipboard->setText(text);
 }
 
-const QString& LogModel::getLogContent(const QModelIndex& index)
+const QString &LogModel::getLogContent(const QModelIndex &index)
 {
     auto it = m_logs.find(index.row());
     Q_ASSERT(m_logs.end() != it);
@@ -751,14 +754,13 @@ QString LogModel::getLogFileName(const QModelIndex &index)
     auto it = m_logs.find(index.row());
     Q_ASSERT(m_logs.end() != it);
     QSharedPointer<LogItem> r = *it;
-    QString fileName;
+    QString                 fileName;
     if (r->logFile == "log")
         fileName = "jabber.log";
     else
         fileName = "jabber.log." % r->logFile;
 
-    auto itLog = std::find_if(m_logFiles.begin(), m_logFiles.end(),
-                           [&fileName](const QString& logFile) { return logFile.contains(fileName); });
+    auto itLog = std::find_if(m_logFiles.begin(), m_logFiles.end(), [&fileName](const QString &logFile) { return logFile.contains(fileName); });
     if (m_logFiles.end() != itLog)
         return *itLog;
     Q_ASSERT(0);
@@ -775,8 +777,7 @@ int LogModel::getLogFileLine(const QModelIndex &index, QString &fileName)
     else
         fileName = "jabber.log." % r->logFile;
 
-    auto itLog = std::find_if(m_logFiles.begin(), m_logFiles.end(),
-                           [&fileName](const QString& logFile) { return logFile.contains(fileName); });
+    auto itLog = std::find_if(m_logFiles.begin(), m_logFiles.end(), [&fileName](const QString &logFile) { return logFile.contains(fileName); });
     if (m_logFiles.end() != itLog)
         fileName = *itLog;
     return r->line;
@@ -806,15 +807,14 @@ void LogModel::runLuaExtension(ExtensionPtr e)
         m_L = luaL_newstate();
         luaL_openlibs(m_L);
     }
-    int error = luaL_loadbuffer(m_L, e->content().toStdString().c_str(), e->content().toStdString().size(), "match") ||
-            lua_pcall(m_L, 0, 0, 0);
+    int error = luaL_loadbuffer(m_L, e->content().toStdString().c_str(), e->content().toStdString().size(), "match") || lua_pcall(m_L, 0, 0, 0);
     if (error)
     {
         QString msg(lua_tostring(m_L, -1));
-        lua_pop(m_L, 1);  /* pop error message from the stack */        
+        lua_pop(m_L, 1); /* pop error message from the stack */
         for (QWidget *w : qApp->topLevelWidgets())
         {
-            if (QMainWindow* mainWin = qobject_cast<QMainWindow*>(w))
+            if (QMainWindow *mainWin = qobject_cast<QMainWindow *>(w))
             {
                 QMessageBox::warning(mainWin, tr("Warning"), msg, QMessageBox::Ok);
                 break;
@@ -830,7 +830,7 @@ void LogModel::runLuaExtension(ExtensionPtr e)
 void LogModel::saveRowsInFolder(const QList<int> &rows, const QString &folderName)
 {
     QString text;
-    for(int row : rows)
+    for (int row : rows)
     {
         auto it = m_logs.find(row);
         if (m_logs.end() == it)
@@ -839,18 +839,18 @@ void LogModel::saveRowsInFolder(const QList<int> &rows, const QString &folderNam
         }
 
         QSharedPointer<LogItem> r = *it;
-        QString t = QString("%1 %2 [%3] [%4] [%5] [%6] - %7\n")
-                       .arg(r->time.toString("yyyy-MM-dd hh:mm:ss.zzz"))
-                       .arg(r->level)
-                       .arg(r->thread)
-                       .arg(r->source)
-                       .arg(r->category)
-                       .arg(r->method)
-                       .arg(r->content);
+        QString                 t = QString("%1 %2 [%3] [%4] [%5] [%6] - %7\n")
+                        .arg(r->time.toString("yyyy-MM-dd hh:mm:ss.zzz"))
+                        .arg(r->level)
+                        .arg(r->thread)
+                        .arg(r->source)
+                        .arg(r->category)
+                        .arg(r->method)
+                        .arg(r->content);
         text.append(t);
     }
     // save text to file
-    QFile f(folderName+"/jabber.log");
+    QFile f(folderName + "/jabber.log");
     if (f.open(QIODevice::WriteOnly | QIODevice::Truncate))
     {
         QTextStream out(&f);
@@ -859,7 +859,7 @@ void LogModel::saveRowsInFolder(const QList<int> &rows, const QString &folderNam
     }
 }
 
-QString LogModel::getSqlWhereClause(const QModelIndex& beginAnchor, const QModelIndex& endAnchor)
+QString LogModel::getSqlWhereClause(const QModelIndex &beginAnchor, const QModelIndex &endAnchor)
 {
     auto itBeginAnchor = m_logs.find(beginAnchor.row());
     Q_ASSERT(m_logs.end() != itBeginAnchor);
@@ -870,7 +870,7 @@ QString LogModel::getSqlWhereClause(const QModelIndex& beginAnchor, const QModel
     QSharedPointer<LogItem> er = *itEndAnchor;
 
     int beginId = qMin(br->id, er->id);
-    int endId = qMax(br->id, er->id);
+    int endId   = qMax(br->id, er->id);
 
     return QString("id>=%1 and id<=%2").arg(beginId).arg(endId);
 }
@@ -891,21 +891,22 @@ void LogModel::saveRowsBetweenAnchorsInFolder(const QModelIndex &beginAnchor, co
         return;
     }
 
-    ScopedGuard queryMutexUnlock([this](){m_queryMutex.unlock();});
+    ScopedGuard queryMutexUnlock([this]() { m_queryMutex.unlock(); });
 
     QString sql = generateSQLStatement(qMin(br->id, er->id), qMax(br->id, er->id));
 
-    bool eof = false;
-    int nRet = 0;
-    sqlite3_stmt* pVM = nullptr;
-    do {
+    bool          eof  = false;
+    int           nRet = 0;
+    sqlite3_stmt *pVM  = nullptr;
+    do
+    {
         pVM = m_sqlite3Helper->compile(sql);
         if (!m_keyword.isEmpty() && sql.contains(QChar('?')))
             m_sqlite3Helper->bind(pVM, 1, m_keyword);
         nRet = m_sqlite3Helper->execQuery(pVM, eof);
         if (nRet == SQLITE_DONE || nRet == SQLITE_ROW)
         {
-            QFile f(folderName+"/jabber.log");
+            QFile f(folderName + "/jabber.log");
             if (!f.open(QIODevice::WriteOnly | QIODevice::Truncate))
             {
                 qDebug() << "opening file " << folderName << "/jabber.log failed";
@@ -915,18 +916,18 @@ void LogModel::saveRowsBetweenAnchorsInFolder(const QModelIndex &beginAnchor, co
             QTextStream out(&f);
             while (!eof && !m_stopQuerying.load())
             {
-                QSharedPointer<LogItem> log =  QSharedPointer<LogItem>(new LogItem);
-                log->id = sqlite3_column_int(pVM, 0);   // 0 - id
-                                                        // 1 - epoch
-                log->time = QDateTime::fromString(QString((const char *)sqlite3_column_text(pVM, 2)), Qt::ISODate); //  2 - time
-                log->level = (const char *)sqlite3_column_text(pVM, 3);
-                log->thread = (const char *)sqlite3_column_text(pVM, 4);
-                log->source = (const char *)sqlite3_column_text(pVM, 5);
+                QSharedPointer<LogItem> log = QSharedPointer<LogItem>(new LogItem);
+                log->id                     = sqlite3_column_int(pVM, 0);                                               // 0 - id
+                                                                                                                        // 1 - epoch
+                log->time     = QDateTime::fromString(QString((const char *)sqlite3_column_text(pVM, 2)), Qt::ISODate); //  2 - time
+                log->level    = (const char *)sqlite3_column_text(pVM, 3);
+                log->thread   = (const char *)sqlite3_column_text(pVM, 4);
+                log->source   = (const char *)sqlite3_column_text(pVM, 5);
                 log->category = (const char *)sqlite3_column_text(pVM, 6);
-                log->method = (const char *)sqlite3_column_text(pVM, 7);
-                log->content = (const char *)sqlite3_column_text(pVM, 8);
-                log->logFile = (const char *)sqlite3_column_text(pVM, 9);
-                log->line = sqlite3_column_int(pVM, 10);
+                log->method   = (const char *)sqlite3_column_text(pVM, 7);
+                log->content  = (const char *)sqlite3_column_text(pVM, 8);
+                log->logFile  = (const char *)sqlite3_column_text(pVM, 9);
+                log->line     = sqlite3_column_int(pVM, 10);
 
                 if (log->level.isEmpty() || log->source.isEmpty() || log->logFile.isEmpty())
                 {
@@ -936,33 +937,34 @@ void LogModel::saveRowsBetweenAnchorsInFolder(const QModelIndex &beginAnchor, co
 
                 // save to file
                 out << QString("%1 %2 [%3] [%4] [%5] [%6] - %7\n")
-                       .arg(log->time.toString("yyyy-MM-dd hh:mm:ss.zzz"))
-                       .arg(log->level)
-                       .arg(log->thread)
-                       .arg(log->source)
-                       .arg(log->category)
-                       .arg(log->method)
-                       .arg(log->content);
+                           .arg(log->time.toString("yyyy-MM-dd hh:mm:ss.zzz"))
+                           .arg(log->level)
+                           .arg(log->thread)
+                           .arg(log->source)
+                           .arg(log->category)
+                           .arg(log->method)
+                           .arg(log->content);
             }
 
             f.close();
             break;
         }
-    }while(nRet == SQLITE_SCHEMA);
+    } while (nRet == SQLITE_SCHEMA);
 }
 
 bool LogModel::getStatistic(const QString &tableName, QList<QSharedPointer<StatisticItem>> &sis)
 {
     int limitCount = 15;
-    for(int count = 0;;limitCount++)
+    for (int count = 0;; limitCount++)
     {
-        bool eof = false;
-        int nRet = 0;
-        sqlite3_stmt* pVM = nullptr;
-        QString sql = QString("SELECT * FROM %1 ORDER BY count DESC LIMIT %2;").arg(tableName).arg(limitCount);
+        bool          eof  = false;
+        int           nRet = 0;
+        sqlite3_stmt *pVM  = nullptr;
+        QString       sql  = QString("SELECT * FROM %1 ORDER BY count DESC LIMIT %2;").arg(tableName).arg(limitCount);
 
-        do {
-            pVM = m_sqlite3Helper->compile(sql);
+        do
+        {
+            pVM  = m_sqlite3Helper->compile(sql);
             nRet = m_sqlite3Helper->execQuery(pVM, eof);
             if (nRet == SQLITE_DONE || nRet == SQLITE_ROW)
             {
@@ -970,10 +972,10 @@ bool LogModel::getStatistic(const QString &tableName, QList<QSharedPointer<Stati
                 sis.clear();
                 while (!eof)
                 {
-                    QSharedPointer<StatisticItem> si =  QSharedPointer<StatisticItem>(new StatisticItem);
-                    si->content =(const char *)sqlite3_column_text(pVM, 1);
-                    si->count = sqlite3_column_int(pVM, 2);
-                    si->percent = ((double)si->count * 100)/((double)m_currentTotalRowCount);
+                    QSharedPointer<StatisticItem> si = QSharedPointer<StatisticItem>(new StatisticItem);
+                    si->content                      = (const char *)sqlite3_column_text(pVM, 1);
+                    si->count                        = sqlite3_column_int(pVM, 2);
+                    si->percent                      = ((double)si->count * 100) / ((double)m_currentTotalRowCount);
                     sis.append(si);
                     count += si->count;
                     m_sqlite3Helper->nextRow(pVM, eof);
@@ -983,17 +985,19 @@ bool LogModel::getStatistic(const QString &tableName, QList<QSharedPointer<Stati
 
                 if (count < m_currentTotalRowCount)
                 {
-                    QSharedPointer<StatisticItem> si =  QSharedPointer<StatisticItem>(new StatisticItem);
-                    si->content = "Other";
-                    si->count =  m_currentTotalRowCount - count;
-                    si->percent = ((double)si->count * 100)/((double)m_currentTotalRowCount);
+                    QSharedPointer<StatisticItem> si = QSharedPointer<StatisticItem>(new StatisticItem);
+                    si->content                      = "Other";
+                    si->count                        = m_currentTotalRowCount - count;
+                    si->percent                      = ((double)si->count * 100) / ((double)m_currentTotalRowCount);
                     sis.append(si);
                 }
                 return true;
-            } else {
+            }
+            else
+            {
                 return !sis.empty();
             }
-        }while(nRet == SQLITE_SCHEMA);
+        } while (nRet == SQLITE_SCHEMA);
     }
 
     return false;
@@ -1002,14 +1006,13 @@ bool LogModel::getStatistic(const QString &tableName, QList<QSharedPointer<Stati
 void LogModel::saveStatistic()
 {
     m_sqlite3Helper->beginTransaction();
-    for (auto i = m_levelCountMap.constBegin();
-         i != m_levelCountMap.constEnd();
-         ++i)
+    for (auto i = m_levelCountMap.constBegin(); i != m_levelCountMap.constEnd(); ++i)
     {
-        sqlite3_stmt* pVM = m_sqlite3Helper->compile("INSERT INTO level_statistic (key, count) VALUES (:key, :count);");
+        sqlite3_stmt *pVM = m_sqlite3Helper->compile("INSERT INTO level_statistic (key, count) VALUES (:key, :count);");
         m_sqlite3Helper->bind(pVM, ":key", i.key());
         m_sqlite3Helper->bind(pVM, ":count", i.value());
-        if (!m_sqlite3Helper->execDML(pVM)) {
+        if (!m_sqlite3Helper->execDML(pVM))
+        {
 #ifndef QT_NO_DEBUG
             qDebug() << " inserting level_statistic into database failed!";
 #endif
@@ -1017,14 +1020,13 @@ void LogModel::saveStatistic()
     }
     m_levelCountMap.clear();
 
-    for (auto i = m_threadCountMap.constBegin();
-         i != m_threadCountMap.constEnd();
-         ++i)
+    for (auto i = m_threadCountMap.constBegin(); i != m_threadCountMap.constEnd(); ++i)
     {
-        sqlite3_stmt* pVM = m_sqlite3Helper->compile("INSERT INTO thread_statistic (key, count) VALUES (:key, :count);");
+        sqlite3_stmt *pVM = m_sqlite3Helper->compile("INSERT INTO thread_statistic (key, count) VALUES (:key, :count);");
         m_sqlite3Helper->bind(pVM, ":key", i.key());
         m_sqlite3Helper->bind(pVM, ":count", i.value());
-        if (!m_sqlite3Helper->execDML(pVM)) {
+        if (!m_sqlite3Helper->execDML(pVM))
+        {
 #ifndef QT_NO_DEBUG
             qDebug() << " inserting thread_statistic into database failed!";
 #endif
@@ -1032,14 +1034,13 @@ void LogModel::saveStatistic()
     }
     m_threadCountMap.clear();
 
-    for (auto i = m_sourceFileCountMap.constBegin();
-         i != m_sourceFileCountMap.constEnd();
-         ++i)
+    for (auto i = m_sourceFileCountMap.constBegin(); i != m_sourceFileCountMap.constEnd(); ++i)
     {
-        sqlite3_stmt* pVM = m_sqlite3Helper->compile("INSERT INTO source_file_statistic (key, count) VALUES (:key, :count);");
+        sqlite3_stmt *pVM = m_sqlite3Helper->compile("INSERT INTO source_file_statistic (key, count) VALUES (:key, :count);");
         m_sqlite3Helper->bind(pVM, ":key", i.key());
         m_sqlite3Helper->bind(pVM, ":count", i.value());
-        if (!m_sqlite3Helper->execDML(pVM)) {
+        if (!m_sqlite3Helper->execDML(pVM))
+        {
 #ifndef QT_NO_DEBUG
             qDebug() << " inserting source_file_statistic into database failed!";
 #endif
@@ -1047,14 +1048,13 @@ void LogModel::saveStatistic()
     }
     m_sourceFileCountMap.clear();
 
-    for (auto i = m_sourceLineCountMap.constBegin();
-         i != m_sourceLineCountMap.constEnd();
-         ++i)
+    for (auto i = m_sourceLineCountMap.constBegin(); i != m_sourceLineCountMap.constEnd(); ++i)
     {
-        sqlite3_stmt* pVM = m_sqlite3Helper->compile("INSERT INTO source_line_statistic (key, count) VALUES (:key, :count);");
+        sqlite3_stmt *pVM = m_sqlite3Helper->compile("INSERT INTO source_line_statistic (key, count) VALUES (:key, :count);");
         m_sqlite3Helper->bind(pVM, ":key", i.key());
         m_sqlite3Helper->bind(pVM, ":count", i.value());
-        if (!m_sqlite3Helper->execDML(pVM)) {
+        if (!m_sqlite3Helper->execDML(pVM))
+        {
 #ifndef QT_NO_DEBUG
             qDebug() << " inserting source_line_statistic into database failed!";
 #endif
@@ -1062,14 +1062,13 @@ void LogModel::saveStatistic()
     }
     m_sourceLineCountMap.clear();
 
-    for (auto i = m_categoryCountMap.constBegin();
-         i != m_categoryCountMap.constEnd();
-         ++i)
+    for (auto i = m_categoryCountMap.constBegin(); i != m_categoryCountMap.constEnd(); ++i)
     {
-        sqlite3_stmt* pVM = m_sqlite3Helper->compile("INSERT INTO category_statistic (key, count) VALUES (:key, :count);");
+        sqlite3_stmt *pVM = m_sqlite3Helper->compile("INSERT INTO category_statistic (key, count) VALUES (:key, :count);");
         m_sqlite3Helper->bind(pVM, ":key", i.key());
         m_sqlite3Helper->bind(pVM, ":count", i.value());
-        if (!m_sqlite3Helper->execDML(pVM)) {
+        if (!m_sqlite3Helper->execDML(pVM))
+        {
 #ifndef QT_NO_DEBUG
             qDebug() << " inserting category_statistic into database failed!";
 #endif
@@ -1077,14 +1076,13 @@ void LogModel::saveStatistic()
     }
     m_categoryCountMap.clear();
 
-    for (auto i = m_methodCountMap.constBegin();
-         i != m_methodCountMap.constEnd();
-         ++i)
+    for (auto i = m_methodCountMap.constBegin(); i != m_methodCountMap.constEnd(); ++i)
     {
-        sqlite3_stmt* pVM = m_sqlite3Helper->compile("INSERT INTO method_statistic (key, count) VALUES (:key, :count);");
+        sqlite3_stmt *pVM = m_sqlite3Helper->compile("INSERT INTO method_statistic (key, count) VALUES (:key, :count);");
         m_sqlite3Helper->bind(pVM, ":key", i.key());
         m_sqlite3Helper->bind(pVM, ":count", i.value());
-        if (!m_sqlite3Helper->execDML(pVM)) {
+        if (!m_sqlite3Helper->execDML(pVM))
+        {
 #ifndef QT_NO_DEBUG
             qDebug() << " inserting method_statistic into database failed!";
 #endif
@@ -1141,7 +1139,7 @@ bool LogModel::getMethodStatistic(QList<QSharedPointer<StatisticItem>> &sis)
     return getStatistic("method_statistic", sis);
 }
 
-void LogModel::onLogItemReady(int i,  QSharedPointer<LogItem> log)
+void LogModel::onLogItemReady(int i, QSharedPointer<LogItem> log)
 {
 #ifndef QT_NO_DEBUG
     qDebug() << __FUNCTION__ << i << log;
@@ -1149,11 +1147,11 @@ void LogModel::onLogItemReady(int i,  QSharedPointer<LogItem> log)
     m_logs[i] = log;
 }
 
-void LogModel::onLogItemsReady(QMap<int, QSharedPointer<LogItem> > logs)
-{    
-    for (auto i = logs.constBegin();i != logs.constEnd(); ++i)
+void LogModel::onLogItemsReady(QMap<int, QSharedPointer<LogItem>> logs)
+{
+    for (auto i = logs.constBegin(); i != logs.constEnd(); ++i)
     {
-        m_logs[i.key()] = i.value();        
+        m_logs[i.key()] = i.value();
     }
 }
 
@@ -1161,35 +1159,35 @@ void LogModel::doReload()
 {
     createDatabase();
     QDateTime t = QDateTime::currentDateTime();
-    std::sort(m_logFiles.begin(), m_logFiles.end(), [](const QString &f1, const QString &f2){return f1 > f2;});
+    std::sort(m_logFiles.begin(), m_logFiles.end(), [](const QString &f1, const QString &f2) { return f1 > f2; });
     for (const auto &log : m_logFiles)
     {
         m_currentTotalRowCount += copyFromFileToDatabase(log);
-        RowCountEvent* e = new RowCountEvent;
-        e->m_rowCount = m_currentTotalRowCount;
+        RowCountEvent *e = new RowCountEvent;
+        e->m_rowCount    = m_currentTotalRowCount;
         QCoreApplication::postEvent(this, e);
     }
     if (m_maxTotalRowCount < m_currentTotalRowCount)
     {
         m_maxTotalRowCount = m_currentTotalRowCount;
 
-        connect(m_api.data(), &QuickWidgetAPI::sentStanzaChanged,           this, &LogModel::onSearchScopeChanged);
-        connect(m_api.data(), &QuickWidgetAPI::receivedStanzaChanged,       this, &LogModel::onSearchScopeChanged);
-        connect(m_api.data(), &QuickWidgetAPI::aStanzaChanged,              this, &LogModel::onSearchScopeChanged);
-        connect(m_api.data(), &QuickWidgetAPI::rStanzaChanged,              this, &LogModel::onSearchScopeChanged);
-        connect(m_api.data(), &QuickWidgetAPI::xStanzaChanged,              this, &LogModel::onSearchScopeChanged);
-        connect(m_api.data(), &QuickWidgetAPI::presenceStanzaChanged,       this, &LogModel::onSearchScopeChanged);
-        connect(m_api.data(), &QuickWidgetAPI::enableStanzaChanged,         this, &LogModel::onSearchScopeChanged);
-        connect(m_api.data(), &QuickWidgetAPI::enabledStanzaChanged,        this, &LogModel::onSearchScopeChanged);
-        connect(m_api.data(), &QuickWidgetAPI::messageStanzaChanged,        this, &LogModel::onSearchScopeChanged);
-        connect(m_api.data(), &QuickWidgetAPI::iqStanzaChanged,             this, &LogModel::onSearchScopeChanged);
-        connect(m_api.data(), &QuickWidgetAPI::successStanzaChanged,        this, &LogModel::onSearchScopeChanged);
-        connect(m_api.data(), &QuickWidgetAPI::streamStreamStanzaChanged,   this, &LogModel::onSearchScopeChanged);
+        connect(m_api.data(), &QuickWidgetAPI::sentStanzaChanged, this, &LogModel::onSearchScopeChanged);
+        connect(m_api.data(), &QuickWidgetAPI::receivedStanzaChanged, this, &LogModel::onSearchScopeChanged);
+        connect(m_api.data(), &QuickWidgetAPI::aStanzaChanged, this, &LogModel::onSearchScopeChanged);
+        connect(m_api.data(), &QuickWidgetAPI::rStanzaChanged, this, &LogModel::onSearchScopeChanged);
+        connect(m_api.data(), &QuickWidgetAPI::xStanzaChanged, this, &LogModel::onSearchScopeChanged);
+        connect(m_api.data(), &QuickWidgetAPI::presenceStanzaChanged, this, &LogModel::onSearchScopeChanged);
+        connect(m_api.data(), &QuickWidgetAPI::enableStanzaChanged, this, &LogModel::onSearchScopeChanged);
+        connect(m_api.data(), &QuickWidgetAPI::enabledStanzaChanged, this, &LogModel::onSearchScopeChanged);
+        connect(m_api.data(), &QuickWidgetAPI::messageStanzaChanged, this, &LogModel::onSearchScopeChanged);
+        connect(m_api.data(), &QuickWidgetAPI::iqStanzaChanged, this, &LogModel::onSearchScopeChanged);
+        connect(m_api.data(), &QuickWidgetAPI::successStanzaChanged, this, &LogModel::onSearchScopeChanged);
+        connect(m_api.data(), &QuickWidgetAPI::streamStreamStanzaChanged, this, &LogModel::onSearchScopeChanged);
         connect(m_api.data(), &QuickWidgetAPI::streamFeaturesStanzaChanged, this, &LogModel::onSearchScopeChanged);
-        connect(m_api.data(), &QuickWidgetAPI::authStanzaChanged,           this, &LogModel::onSearchScopeChanged);
-        connect(m_api.data(), &QuickWidgetAPI::proceedStanzaChanged,        this, &LogModel::onSearchScopeChanged);
-        connect(m_api.data(), &QuickWidgetAPI::startTlsStanzaChanged,       this, &LogModel::onSearchScopeChanged);
-        connect(m_api.data(), &QuickWidgetAPI::valueChanged,                this, &LogModel::onSearchScopeChanged);
+        connect(m_api.data(), &QuickWidgetAPI::authStanzaChanged, this, &LogModel::onSearchScopeChanged);
+        connect(m_api.data(), &QuickWidgetAPI::proceedStanzaChanged, this, &LogModel::onSearchScopeChanged);
+        connect(m_api.data(), &QuickWidgetAPI::startTlsStanzaChanged, this, &LogModel::onSearchScopeChanged);
+        connect(m_api.data(), &QuickWidgetAPI::valueChanged, this, &LogModel::onSearchScopeChanged);
     }
     saveStatistic();
 
@@ -1201,15 +1199,16 @@ void LogModel::doReload()
 
 void LogModel::loadFromDatabase()
 {
-    RowCountEvent* e = new RowCountEvent;
-    e->m_rowCount = 0;
+    RowCountEvent *e = new RowCountEvent;
+    e->m_rowCount    = 0;
 
     // read records count from database
-    bool eof = false;
-    int nRet = 0;
-    sqlite3_stmt* pVM = nullptr;
-    do {
-        pVM = m_sqlite3Helper->compile("SELECT COUNT(*) FROM logs;");
+    bool          eof  = false;
+    int           nRet = 0;
+    sqlite3_stmt *pVM  = nullptr;
+    do
+    {
+        pVM  = m_sqlite3Helper->compile("SELECT COUNT(*) FROM logs;");
         nRet = m_sqlite3Helper->execQuery(pVM, eof);
         if (nRet == SQLITE_DONE || nRet == SQLITE_ROW)
         {
@@ -1220,30 +1219,30 @@ void LogModel::loadFromDatabase()
             }
             break;
         }
-    }while(nRet == SQLITE_SCHEMA);
+    } while (nRet == SQLITE_SCHEMA);
 
     m_currentTotalRowCount = e->m_rowCount;
     if (m_maxTotalRowCount < m_currentTotalRowCount)
     {
         m_maxTotalRowCount = m_currentTotalRowCount;
 
-        connect(m_api.data(), &QuickWidgetAPI::sentStanzaChanged,           this, &LogModel::onSearchScopeChanged);
-        connect(m_api.data(), &QuickWidgetAPI::receivedStanzaChanged,       this, &LogModel::onSearchScopeChanged);
-        connect(m_api.data(), &QuickWidgetAPI::aStanzaChanged,              this, &LogModel::onSearchScopeChanged);
-        connect(m_api.data(), &QuickWidgetAPI::rStanzaChanged,              this, &LogModel::onSearchScopeChanged);
-        connect(m_api.data(), &QuickWidgetAPI::xStanzaChanged,              this, &LogModel::onSearchScopeChanged);
-        connect(m_api.data(), &QuickWidgetAPI::presenceStanzaChanged,       this, &LogModel::onSearchScopeChanged);
-        connect(m_api.data(), &QuickWidgetAPI::enableStanzaChanged,         this, &LogModel::onSearchScopeChanged);
-        connect(m_api.data(), &QuickWidgetAPI::enabledStanzaChanged,        this, &LogModel::onSearchScopeChanged);
-        connect(m_api.data(), &QuickWidgetAPI::messageStanzaChanged,        this, &LogModel::onSearchScopeChanged);
-        connect(m_api.data(), &QuickWidgetAPI::iqStanzaChanged,             this, &LogModel::onSearchScopeChanged);
-        connect(m_api.data(), &QuickWidgetAPI::successStanzaChanged,        this, &LogModel::onSearchScopeChanged);
-        connect(m_api.data(), &QuickWidgetAPI::streamStreamStanzaChanged,   this, &LogModel::onSearchScopeChanged);
+        connect(m_api.data(), &QuickWidgetAPI::sentStanzaChanged, this, &LogModel::onSearchScopeChanged);
+        connect(m_api.data(), &QuickWidgetAPI::receivedStanzaChanged, this, &LogModel::onSearchScopeChanged);
+        connect(m_api.data(), &QuickWidgetAPI::aStanzaChanged, this, &LogModel::onSearchScopeChanged);
+        connect(m_api.data(), &QuickWidgetAPI::rStanzaChanged, this, &LogModel::onSearchScopeChanged);
+        connect(m_api.data(), &QuickWidgetAPI::xStanzaChanged, this, &LogModel::onSearchScopeChanged);
+        connect(m_api.data(), &QuickWidgetAPI::presenceStanzaChanged, this, &LogModel::onSearchScopeChanged);
+        connect(m_api.data(), &QuickWidgetAPI::enableStanzaChanged, this, &LogModel::onSearchScopeChanged);
+        connect(m_api.data(), &QuickWidgetAPI::enabledStanzaChanged, this, &LogModel::onSearchScopeChanged);
+        connect(m_api.data(), &QuickWidgetAPI::messageStanzaChanged, this, &LogModel::onSearchScopeChanged);
+        connect(m_api.data(), &QuickWidgetAPI::iqStanzaChanged, this, &LogModel::onSearchScopeChanged);
+        connect(m_api.data(), &QuickWidgetAPI::successStanzaChanged, this, &LogModel::onSearchScopeChanged);
+        connect(m_api.data(), &QuickWidgetAPI::streamStreamStanzaChanged, this, &LogModel::onSearchScopeChanged);
         connect(m_api.data(), &QuickWidgetAPI::streamFeaturesStanzaChanged, this, &LogModel::onSearchScopeChanged);
-        connect(m_api.data(), &QuickWidgetAPI::authStanzaChanged,           this, &LogModel::onSearchScopeChanged);
-        connect(m_api.data(), &QuickWidgetAPI::proceedStanzaChanged,        this, &LogModel::onSearchScopeChanged);
-        connect(m_api.data(), &QuickWidgetAPI::startTlsStanzaChanged,       this, &LogModel::onSearchScopeChanged);
-        connect(m_api.data(), &QuickWidgetAPI::valueChanged,                this, &LogModel::onSearchScopeChanged);
+        connect(m_api.data(), &QuickWidgetAPI::authStanzaChanged, this, &LogModel::onSearchScopeChanged);
+        connect(m_api.data(), &QuickWidgetAPI::proceedStanzaChanged, this, &LogModel::onSearchScopeChanged);
+        connect(m_api.data(), &QuickWidgetAPI::startTlsStanzaChanged, this, &LogModel::onSearchScopeChanged);
+        connect(m_api.data(), &QuickWidgetAPI::valueChanged, this, &LogModel::onSearchScopeChanged);
     }
 
     QCoreApplication::postEvent(this, e);
@@ -1251,8 +1250,8 @@ void LogModel::loadFromDatabase()
 }
 
 void LogModel::generateSQLStatements(int offset, QString &sqlFetch, QString &sqlCount)
-{    
-    //qWarning() << __FUNCTION__ << m_keyword << m_searchField << m_regexpMode;
+{
+    // qWarning() << __FUNCTION__ << m_keyword << m_searchField << m_regexpMode;
     qDebug() << "data source:" << getDataSource();
     if (m_fts && !m_keyword.isEmpty())
     {
@@ -1266,7 +1265,8 @@ void LogModel::generateSQLStatements(int offset, QString &sqlFetch, QString &sql
         {
             // lua match
             sqlCount = QString("SELECT COUNT(*) FROM " + getDataSource() + " WHERE %1 MATCH 'dummy'").arg(m_searchField);
-            sqlFetch = QString("SELECT * FROM " + getDataSource() + " WHERE %1 MATCH 'dummy' ORDER BY id LIMIT %2, 200;").arg(m_searchField).arg(offset);
+            sqlFetch =
+                QString("SELECT * FROM " + getDataSource() + " WHERE %1 MATCH 'dummy' ORDER BY id LIMIT %2, 200;").arg(m_searchField).arg(offset);
             return;
         }
 
@@ -1297,25 +1297,26 @@ void LogModel::generateSQLStatements(int offset, QString &sqlFetch, QString &sql
         if (m_searchField == "datetime")
         {
             QString begin = "1970-01-01 00:00:00,000";
-            QString end = "1970-12-31 23:59:59,999";
+            QString end   = "1970-12-31 23:59:59,999";
             if (m_keyword.length() < begin.length())
             {
                 begin.replace(0, m_keyword.length(), m_keyword);
                 end.replace(0, m_keyword.length(), m_keyword);
                 sqlCount = QString("SELECT COUNT(*) FROM " + getDataSource() + " WHERE epoch >= %1 AND epoch <= %2")
-                        .arg(QDateTime::fromString(begin,"yyyy-MM-dd hh:mm:ss,zzz").toMSecsSinceEpoch())
-                        .arg(QDateTime::fromString(end,"yyyy-MM-dd hh:mm:ss,zzz").toMSecsSinceEpoch());
+                               .arg(QDateTime::fromString(begin, "yyyy-MM-dd hh:mm:ss,zzz").toMSecsSinceEpoch())
+                               .arg(QDateTime::fromString(end, "yyyy-MM-dd hh:mm:ss,zzz").toMSecsSinceEpoch());
                 sqlFetch = QString("SELECT * FROM " + getDataSource() + " WHERE epoch >= %1 AND epoch <= %2 ORDER BY epoch LIMIT %3, 200;")
-                        .arg(QDateTime::fromString(begin,"yyyy-MM-dd hh:mm:ss,zzz").toMSecsSinceEpoch())
-                        .arg(QDateTime::fromString(end,"yyyy-MM-dd hh:mm:ss,zzz").toMSecsSinceEpoch())
-                        .arg(offset);
+                               .arg(QDateTime::fromString(begin, "yyyy-MM-dd hh:mm:ss,zzz").toMSecsSinceEpoch())
+                               .arg(QDateTime::fromString(end, "yyyy-MM-dd hh:mm:ss,zzz").toMSecsSinceEpoch())
+                               .arg(offset);
                 return;
             }
         }
 
         // simple keyword, SQL LIKE fitler
         sqlCount = QString("SELECT COUNT(*) FROM " + getDataSource() + " WHERE %1 LIKE '%'||?||'%'").arg(m_searchField);
-        sqlFetch = QString("SELECT * FROM " + getDataSource() + " WHERE %1 LIKE '%'||?||'%' ORDER BY id LIMIT %2, 200;").arg(m_searchField).arg(offset);
+        sqlFetch =
+            QString("SELECT * FROM " + getDataSource() + " WHERE %1 LIKE '%'||?||'%' ORDER BY id LIMIT %2, 200;").arg(m_searchField).arg(offset);
         return;
     }
 
@@ -1323,7 +1324,9 @@ void LogModel::generateSQLStatements(int offset, QString &sqlFetch, QString &sql
     {
         // lua match
         sqlCount = QString("SELECT COUNT(*) FROM " + getDataSource() + " WHERE %1 MATCH 'dummy' AND level GLOB 'dummy'").arg(m_searchField);
-        sqlFetch = QString("SELECT * FROM " + getDataSource() + " WHERE %1 MATCH 'dummy' AND level GLOB 'dummy' ORDER BY id LIMIT %2, 200;").arg(m_searchField).arg(offset);
+        sqlFetch = QString("SELECT * FROM " + getDataSource() + " WHERE %1 MATCH 'dummy' AND level GLOB 'dummy' ORDER BY id LIMIT %2, 200;")
+                       .arg(m_searchField)
+                       .arg(offset);
         return;
     }
 
@@ -1339,7 +1342,8 @@ void LogModel::generateSQLStatements(int offset, QString &sqlFetch, QString &sql
     {
         // SQL WHERE clause extension
         sqlCount = QString("SELECT COUNT(*) FROM " + getDataSource() + " WHERE %1 AND level GLOB 'dummy'").arg(m_keyword);
-        sqlFetch = QString("SELECT * FROM " + getDataSource() + " WHERE %1 AND level GLOB 'dummy' ORDER BY id LIMIT %2, 200;").arg(m_keyword).arg(offset);
+        sqlFetch =
+            QString("SELECT * FROM " + getDataSource() + " WHERE %1 AND level GLOB 'dummy' ORDER BY id LIMIT %2, 200;").arg(m_keyword).arg(offset);
         return;
     }
 
@@ -1347,33 +1351,37 @@ void LogModel::generateSQLStatements(int offset, QString &sqlFetch, QString &sql
     {
         // regexp filter
         sqlCount = QString("SELECT COUNT(*) FROM " + getDataSource() + " WHERE %1 REGEXP ? AND level GLOB 'dummy'").arg(m_searchField);
-        sqlFetch = QString("SELECT * FROM " + getDataSource() + " WHERE %1 REGEXP ? AND level GLOB 'dummy' ORDER BY id LIMIT %2, 200;").arg(m_searchField).arg(offset);
+        sqlFetch = QString("SELECT * FROM " + getDataSource() + " WHERE %1 REGEXP ? AND level GLOB 'dummy' ORDER BY id LIMIT %2, 200;")
+                       .arg(m_searchField)
+                       .arg(offset);
         return;
     }
-
 
     if (m_searchField == "datetime")
     {
         QString begin = "1970-01-01 00:00:00,000";
-        QString end = "1970-12-31 23:59:59,999";
+        QString end   = "1970-12-31 23:59:59,999";
         if (m_keyword.length() < begin.length())
         {
             begin.replace(0, m_keyword.length(), m_keyword);
             end.replace(0, m_keyword.length(), m_keyword);
             sqlCount = QString("SELECT COUNT(*) FROM " + getDataSource() + " WHERE epoch >= %1 AND epoch <= %2 AND level GLOB 'dummy'")
-                    .arg(QDateTime::fromString(begin,"yyyy-MM-dd hh:mm:ss,zzz").toMSecsSinceEpoch())
-                    .arg(QDateTime::fromString(end,"yyyy-MM-dd hh:mm:ss,zzz").toMSecsSinceEpoch());
-            sqlFetch = QString("SELECT * FROM " + getDataSource() + " WHERE epoch >= %1 AND epoch <= %2 AND level GLOB 'dummy' ORDER BY epoch LIMIT %3, 200;")
-                    .arg(QDateTime::fromString(begin,"yyyy-MM-dd hh:mm:ss,zzz").toMSecsSinceEpoch())
-                    .arg(QDateTime::fromString(end,"yyyy-MM-dd hh:mm:ss,zzz").toMSecsSinceEpoch())
-                    .arg(offset);
+                           .arg(QDateTime::fromString(begin, "yyyy-MM-dd hh:mm:ss,zzz").toMSecsSinceEpoch())
+                           .arg(QDateTime::fromString(end, "yyyy-MM-dd hh:mm:ss,zzz").toMSecsSinceEpoch());
+            sqlFetch = QString("SELECT * FROM " + getDataSource() +
+                               " WHERE epoch >= %1 AND epoch <= %2 AND level GLOB 'dummy' ORDER BY epoch LIMIT %3, 200;")
+                           .arg(QDateTime::fromString(begin, "yyyy-MM-dd hh:mm:ss,zzz").toMSecsSinceEpoch())
+                           .arg(QDateTime::fromString(end, "yyyy-MM-dd hh:mm:ss,zzz").toMSecsSinceEpoch())
+                           .arg(offset);
             return;
         }
     }
 
     // simple keyword, SQL LIKE fitler
     sqlCount = QString("SELECT COUNT(*) FROM " + getDataSource() + " WHERE %1 LIKE '%'||?||'%' AND level GLOB 'dummy'").arg(m_searchField);
-    sqlFetch = QString("SELECT * FROM " + getDataSource() + " WHERE %1 LIKE '%'||?||'%' AND level GLOB 'dummy' ORDER BY epoch LIMIT %2, 200;").arg(m_searchField).arg(offset);
+    sqlFetch = QString("SELECT * FROM " + getDataSource() + " WHERE %1 LIKE '%'||?||'%' AND level GLOB 'dummy' ORDER BY epoch LIMIT %2, 200;")
+                   .arg(m_searchField)
+                   .arg(offset);
 }
 
 QString LogModel::generateSQLStatement(int from, int to)
@@ -1383,7 +1391,10 @@ QString LogModel::generateSQLStatement(int from, int to)
         if (m_luaMode)
         {
             // lua match
-            return QString("SELECT * FROM " + getDataSource() + " WHERE %1 AND id >= %2 AND id <= %3 MATCH 'dummy' ORDER BY epoch LIMIT 400000;").arg(m_searchField).arg(from).arg(to);
+            return QString("SELECT * FROM " + getDataSource() + " WHERE %1 AND id >= %2 AND id <= %3 MATCH 'dummy' ORDER BY epoch LIMIT 400000;")
+                .arg(m_searchField)
+                .arg(from)
+                .arg(to);
         }
 
         if (m_keyword.isEmpty())
@@ -1395,73 +1406,105 @@ QString LogModel::generateSQLStatement(int from, int to)
         if (m_searchField.isEmpty())
         {
             // SQL WHERE clause extension
-            return QString("SELECT * FROM " + getDataSource() + " WHERE %1 AND id >= %2 AND id <= %3 ORDER BY epoch LIMIT 400000;").arg(m_keyword).arg(from).arg(to);
+            return QString("SELECT * FROM " + getDataSource() + " WHERE %1 AND id >= %2 AND id <= %3 ORDER BY epoch LIMIT 400000;")
+                .arg(m_keyword)
+                .arg(from)
+                .arg(to);
         }
 
         if (m_regexpMode)
         {
             // regexp filter
-            return QString("SELECT * FROM " + getDataSource() + " WHERE %1 AND id >= %2 AND id <= %3 REGEXP ? ORDER BY epoch LIMIT 400000;").arg(m_searchField).arg(from).arg(to);
+            return QString("SELECT * FROM " + getDataSource() + " WHERE %1 AND id >= %2 AND id <= %3 REGEXP ? ORDER BY epoch LIMIT 400000;")
+                .arg(m_searchField)
+                .arg(from)
+                .arg(to);
         }
 
         if (m_searchField == "datetime")
         {
             QString begin = "1970-01-01 00:00:00,000";
-            QString end = "1970-12-31 23:59:59,999";
+            QString end   = "1970-12-31 23:59:59,999";
             if (m_keyword.length() < begin.length())
             {
                 begin.replace(0, m_keyword.length(), m_keyword);
                 end.replace(0, m_keyword.length(), m_keyword);
-                return QString("SELECT * FROM " + getDataSource() + " WHERE epoch >= %1 AND epoch <= %2 AND id >= %3 AND id <= %4 ORDER BY epoch LIMIT 400000;")
-                        .arg(QDateTime::fromString(begin,"yyyy-MM-dd hh:mm:ss,zzz").toMSecsSinceEpoch())
-                        .arg(QDateTime::fromString(end,"yyyy-MM-dd hh:mm:ss,zzz").toMSecsSinceEpoch())
-                        .arg(from).arg(to);;
+                return QString("SELECT * FROM " + getDataSource() +
+                               " WHERE epoch >= %1 AND epoch <= %2 AND id >= %3 AND id <= %4 ORDER BY epoch LIMIT 400000;")
+                    .arg(QDateTime::fromString(begin, "yyyy-MM-dd hh:mm:ss,zzz").toMSecsSinceEpoch())
+                    .arg(QDateTime::fromString(end, "yyyy-MM-dd hh:mm:ss,zzz").toMSecsSinceEpoch())
+                    .arg(from)
+                    .arg(to);
+                ;
             }
         }
         // simple keyword, SQL LIKE fitler
-        return QString("SELECT * FROM " + getDataSource() + " WHERE %1 LIKE '%'||?||'%' AND id >= %2 AND id <= %3 ORDER BY epoch LIMIT 400000;").arg(m_searchField).arg(from).arg(to);
+        return QString("SELECT * FROM " + getDataSource() + " WHERE %1 LIKE '%'||?||'%' AND id >= %2 AND id <= %3 ORDER BY epoch LIMIT 400000;")
+            .arg(m_searchField)
+            .arg(from)
+            .arg(to);
     }
 
     if (m_luaMode)
     {
         // lua match
-        return QString("SELECT * FROM " + getDataSource() + " WHERE %1 AND id >= %2 AND id <= %3 MATCH 'dummy' AND level GLOB 'dummy' ORDER BY epoch LIMIT 400000;").arg(m_searchField).arg(from).arg(to);
+        return QString("SELECT * FROM " + getDataSource() +
+                       " WHERE %1 AND id >= %2 AND id <= %3 MATCH 'dummy' AND level GLOB 'dummy' ORDER BY epoch LIMIT 400000;")
+            .arg(m_searchField)
+            .arg(from)
+            .arg(to);
     }
 
     if (m_keyword.isEmpty())
     {
         // no search, no filter
-        return QString("SELECT * FROM " + getDataSource() + " WHERE level GLOB 'dummy' AND id >= %1 AND id <= %2 ORDER BY epoch LIMIT 400000;").arg(from).arg(to);
+        return QString("SELECT * FROM " + getDataSource() + " WHERE level GLOB 'dummy' AND id >= %1 AND id <= %2 ORDER BY epoch LIMIT 400000;")
+            .arg(from)
+            .arg(to);
     }
 
     if (m_searchField.isEmpty())
     {
         // SQL WHERE clause extension
-        return QString("SELECT * FROM " + getDataSource() + " WHERE %1 AND level GLOB 'dummy' AND id >= %2 AND id <= %3 ORDER BY epoch LIMIT 400000;").arg(m_keyword).arg(from).arg(to);
+        return QString("SELECT * FROM " + getDataSource() + " WHERE %1 AND level GLOB 'dummy' AND id >= %2 AND id <= %3 ORDER BY epoch LIMIT 400000;")
+            .arg(m_keyword)
+            .arg(from)
+            .arg(to);
     }
 
     if (m_regexpMode)
     {
         // regexp filter
-        return QString("SELECT * FROM " + getDataSource() + " WHERE %1 REGEXP ? AND level GLOB 'dummy' AND id >= %2 AND id <= %3 ORDER BY epoch LIMIT 400000;").arg(m_searchField).arg(from).arg(to);
+        return QString("SELECT * FROM " + getDataSource() +
+                       " WHERE %1 REGEXP ? AND level GLOB 'dummy' AND id >= %2 AND id <= %3 ORDER BY epoch LIMIT 400000;")
+            .arg(m_searchField)
+            .arg(from)
+            .arg(to);
     }
 
     if (m_searchField == "datetime")
     {
         QString begin = "1970-01-01 00:00:00,000";
-        QString end = "1970-12-31 23:59:59,999";
+        QString end   = "1970-12-31 23:59:59,999";
         if (m_keyword.length() < begin.length())
         {
             begin.replace(0, m_keyword.length(), m_keyword);
             end.replace(0, m_keyword.length(), m_keyword);
-            return QString("SELECT * FROM " + getDataSource() + " WHERE epoch >= %1 AND epoch <= %2 AND level GLOB 'dummy' AND id >= %3 AND id <= %4 ORDER BY epoch LIMIT 400000;")
-                    .arg(QDateTime::fromString(begin,"yyyy-MM-dd hh:mm:ss,zzz").toMSecsSinceEpoch())
-                    .arg(QDateTime::fromString(end,"yyyy-MM-dd hh:mm:ss,zzz").toMSecsSinceEpoch())
-                    .arg(from).arg(to);;
+            return QString("SELECT * FROM " + getDataSource() +
+                           " WHERE epoch >= %1 AND epoch <= %2 AND level GLOB 'dummy' AND id >= %3 AND id <= %4 ORDER BY epoch LIMIT 400000;")
+                .arg(QDateTime::fromString(begin, "yyyy-MM-dd hh:mm:ss,zzz").toMSecsSinceEpoch())
+                .arg(QDateTime::fromString(end, "yyyy-MM-dd hh:mm:ss,zzz").toMSecsSinceEpoch())
+                .arg(from)
+                .arg(to);
+            ;
         }
     }
     // simple keyword, SQL LIKE fitler
-    return QString("SELECT * FROM " + getDataSource() + " WHERE %1 LIKE '%'||?||'%' AND level GLOB 'dummy' AND id >= %2 AND id <= %3 ORDER BY epoch LIMIT 400000;").arg(m_searchField).arg(from).arg(to);
+    return QString("SELECT * FROM " + getDataSource() +
+                   " WHERE %1 LIKE '%'||?||'%' AND level GLOB 'dummy' AND id >= %2 AND id <= %3 ORDER BY epoch LIMIT 400000;")
+        .arg(m_searchField)
+        .arg(from)
+        .arg(to);
 }
 
 void LogModel::doFilter(const QString &content, bool fts, const QString &field, bool regexpMode, bool luaMode, bool saveOptions)
@@ -1482,7 +1525,7 @@ void LogModel::doFilter(const QString &content, bool fts, const QString &field, 
     // then start new query
     if (m_rowCount > 0)
     {
-        beginRemoveRows(QModelIndex(), 0, m_rowCount-1);
+        beginRemoveRows(QModelIndex(), 0, m_rowCount - 1);
         m_logs.clear();
         m_rowCount = 0;
         endRemoveRows();
@@ -1491,13 +1534,13 @@ void LogModel::doFilter(const QString &content, bool fts, const QString &field, 
     if (regexpMode)
         m_sqlite3Helper->setRegexpPattern(content);
 
-    m_fts = fts;
-    m_luaMode = luaMode;
-    bool regexpModeBackup = m_regexpMode;
-    m_regexpMode = regexpMode;
+    m_fts                     = fts;
+    m_luaMode                 = luaMode;
+    bool regexpModeBackup     = m_regexpMode;
+    m_regexpMode              = regexpMode;
     QString searchFieldBackup = m_searchField;
-    m_searchField = field;
-    m_keyword = content;
+    m_searchField             = field;
+    m_keyword                 = content;
     qWarning() << __FUNCTION__ << content << field << regexpMode << fts << m_keyword << m_searchField << m_regexpMode;
     query(0);
 
@@ -1505,7 +1548,7 @@ void LogModel::doFilter(const QString &content, bool fts, const QString &field, 
     m_dataMemberCondition.wait(&m_dataMemberMutex, 500);
     if (!saveOptions)
     {
-        m_regexpMode = regexpModeBackup;
+        m_regexpMode  = regexpModeBackup;
         m_searchField = searchFieldBackup;
     }
 }
@@ -1518,19 +1561,19 @@ void LogModel::doQuery(int offset)
         m_toQueryOffset = offset;
         return;
     }
-    
-    ScopedGuard queryMutexUnlock([this](){m_queryMutex.unlock();});
+
+    ScopedGuard queryMutexUnlock([this]() { m_queryMutex.unlock(); });
 
     QString sqlCount;
-    QString sqlFetch ;
+    QString sqlFetch;
     generateSQLStatements(offset, sqlFetch, sqlCount);
     m_dataMemberCondition.wakeAll();
 
-    FinishedQueryEvent* e = new FinishedQueryEvent;
-    e->m_offset = offset;
-    e->m_size = 0;
+    FinishedQueryEvent *e = new FinishedQueryEvent;
+    e->m_offset           = offset;
+    e->m_size             = 0;
 
-    ScopedGuard postFinishedQueryEvent([this, e](){QCoreApplication::postEvent(this, e);});
+    ScopedGuard postFinishedQueryEvent([this, e]() { QCoreApplication::postEvent(this, e); });
 
     if (sqlFetch == m_sqlFetch && sqlCount == m_sqlCount && m_keyword.isEmpty() && !m_forceQuerying)
     {
@@ -1540,25 +1583,26 @@ void LogModel::doQuery(int offset)
     m_sqlCount = sqlCount;
     m_sqlFetch = sqlFetch;
 
-    qDebug() << __FUNCTION__ <<  m_sqlCount << m_sqlFetch << m_keyword << m_searchField;
+    qDebug() << __FUNCTION__ << m_sqlCount << m_sqlFetch << m_keyword << m_searchField;
 
     m_stopQuerying.store(false);
 
     if (m_stopQuerying.load())
         return;
 
-    bool eof = false;
-    int nRet = 0;
-    sqlite3_stmt* pVM = nullptr;
-    do {
+    bool          eof  = false;
+    int           nRet = 0;
+    sqlite3_stmt *pVM  = nullptr;
+    do
+    {
         pVM = m_sqlite3Helper->compile(m_sqlCount);
         if (!m_keyword.isEmpty() && m_sqlCount.contains(QChar('?')))
             m_sqlite3Helper->bind(pVM, 1, m_keyword);
         nRet = m_sqlite3Helper->execQuery(pVM, eof);
         if (nRet == SQLITE_DONE || nRet == SQLITE_ROW)
         {
-            RowCountEvent* erc = new RowCountEvent;
-            erc->m_rowCount = 0;
+            RowCountEvent *erc = new RowCountEvent;
+            erc->m_rowCount    = 0;
             while (!eof)
             {
                 erc->m_rowCount = sqlite3_column_int(pVM, 0);
@@ -1569,15 +1613,16 @@ void LogModel::doQuery(int offset)
             QCoreApplication::postEvent(this, erc);
             break;
         }
-    }while(nRet == SQLITE_SCHEMA);
+    } while (nRet == SQLITE_SCHEMA);
 
     if (m_stopQuerying.load())
         return;
 
-    eof = false;
+    eof  = false;
     nRet = 0;
-    pVM = nullptr;
-    do {
+    pVM  = nullptr;
+    do
+    {
         pVM = m_sqlite3Helper->compile(m_sqlFetch);
         if (!m_keyword.isEmpty() && m_sqlFetch.contains(QChar('?')))
             m_sqlite3Helper->bind(pVM, 1, m_keyword);
@@ -1587,28 +1632,28 @@ void LogModel::doQuery(int offset)
             if (m_stopQuerying.load())
                 return;
             QMap<int, QSharedPointer<LogItem>> logs;
-            int logItemCount = 0;
+            int                                logItemCount = 0;
             while (!eof && !m_stopQuerying.load())
             {
-                QSharedPointer<LogItem> log =  QSharedPointer<LogItem>(new LogItem);
-                log->id = sqlite3_column_int(pVM, 0);   // 0 - id
-                                                        // 1 - epoch
-                log->time = QDateTime::fromString(QString((const char *)sqlite3_column_text(pVM, 2)), Qt::ISODate); //  2 - time
-                log->level = (const char *)sqlite3_column_text(pVM, 3);
-                log->thread = (const char *)sqlite3_column_text(pVM, 4);
-                log->source = (const char *)sqlite3_column_text(pVM, 5);
+                QSharedPointer<LogItem> log = QSharedPointer<LogItem>(new LogItem);
+                log->id                     = sqlite3_column_int(pVM, 0);                                               // 0 - id
+                                                                                                                        // 1 - epoch
+                log->time     = QDateTime::fromString(QString((const char *)sqlite3_column_text(pVM, 2)), Qt::ISODate); //  2 - time
+                log->level    = (const char *)sqlite3_column_text(pVM, 3);
+                log->thread   = (const char *)sqlite3_column_text(pVM, 4);
+                log->source   = (const char *)sqlite3_column_text(pVM, 5);
                 log->category = (const char *)sqlite3_column_text(pVM, 6);
-                log->method = (const char *)sqlite3_column_text(pVM, 7);
-                log->content = (const char *)sqlite3_column_text(pVM, 8);
-                log->logFile = (const char *)sqlite3_column_text(pVM, 9);
-                log->line = sqlite3_column_int(pVM, 10);
+                log->method   = (const char *)sqlite3_column_text(pVM, 7);
+                log->content  = (const char *)sqlite3_column_text(pVM, 8);
+                log->logFile  = (const char *)sqlite3_column_text(pVM, 9);
+                log->line     = sqlite3_column_int(pVM, 10);
 
                 if (log->level.isEmpty() || log->source.isEmpty() || log->logFile.isEmpty())
                 {
                     qDebug() << "empty record, quit iterating now";
                     break;
                 }
-                logs[ offset ] = log;
+                logs[offset] = log;
                 offset++;
 
                 e->m_size++;
@@ -1632,15 +1677,15 @@ void LogModel::doQuery(int offset)
             m_forceQuerying.store(false);
             break;
         }
-    }while(nRet == SQLITE_SCHEMA);
+    } while (nRet == SQLITE_SCHEMA);
 }
 
-bool LogModel::parseLine(const QString& line, QStringList& results)
+bool LogModel::parseLine(const QString &line, QStringList &results)
 {
     results.clear();
     // manual parse
     int startPos = 0;
-    int endPos = line.indexOf(' ');
+    int endPos   = line.indexOf(' ');
     if (endPos <= startPos)
         return false;
     endPos = line.indexOf(' ', endPos + 1);
@@ -1649,10 +1694,10 @@ bool LogModel::parseLine(const QString& line, QStringList& results)
     results.append(line.mid(startPos, endPos - startPos)); // date time
 
     startPos = endPos;
-    while(startPos < line.length() && line.at(startPos) == ' ')
+    while (startPos < line.length() && line.at(startPos) == ' ')
         startPos++;
     endPos = line.indexOf(' ', startPos + 1);
-    if (endPos < 0 || endPos - startPos > 6 )
+    if (endPos < 0 || endPos - startPos > 6)
         return false;
     results.append(line.mid(startPos, endPos - startPos)); // level
 
@@ -1664,7 +1709,7 @@ bool LogModel::parseLine(const QString& line, QStringList& results)
         endPos = line.indexOf(']', startPos + 1);
         if (endPos <= startPos)
             return false;
-        results.append(line.mid(startPos + 1, endPos - startPos -1)); // thread, source, category, method
+        results.append(line.mid(startPos + 1, endPos - startPos - 1)); // thread, source, category, method
     }
 
     results.append(line.mid(endPos + 3, -1)); // content
@@ -1673,7 +1718,6 @@ bool LogModel::parseLine(const QString& line, QStringList& results)
 
     return true;
 }
-
 
 void LogModel::updateStatistic(QStringList &results)
 {
@@ -1696,7 +1740,7 @@ void LogModel::updateStatistic(QStringList &results)
         (*it)++;
 
     QString sourceFile = results.at(3);
-    int index = sourceFile.indexOf(QChar('('));
+    int     index      = sourceFile.indexOf(QChar('('));
     if (index > 0)
         sourceFile.remove(index, sourceFile.length() - index);
     it = m_sourceFileCountMap.find(sourceFile);
@@ -1718,20 +1762,20 @@ void LogModel::updateStatistic(QStringList &results)
         (*it)++;
 }
 
-bool LogModel::parseLine2(const QString &line, QStringList& results)
+bool LogModel::parseLine2(const QString &line, QStringList &results)
 {
     results.clear();
     // manual parse
     int startPos = 0;
-    int endPos = line.indexOf(' ');
+    int endPos   = line.indexOf(' ');
     if (endPos <= startPos)
         return false;
     endPos = line.indexOf(' ', endPos + 1);
     if (endPos - startPos != 18) // MM-dd hh:mm:ss.zzz  18 characters
         return false;
     QString dt = line.mid(startPos, endPos - startPos);
-    dt = QString("%1-%2").arg(QDate::currentDate().year()).arg(dt);
-    dt = dt.replace(QChar('.'), QChar(','));
+    dt         = QString("%1-%2").arg(QDate::currentDate().year()).arg(dt);
+    dt         = dt.replace(QChar('.'), QChar(','));
     results.append(dt); // date time
 
     startPos = endPos;
@@ -1763,7 +1807,7 @@ bool LogModel::parseLine2(const QString &line, QStringList& results)
         {"T", "TRACE"},
         {"F", "FATAL"},
     };
-    results.append(m[line.mid(startPos, endPos - startPos)]); // level 
+    results.append(m[line.mid(startPos, endPos - startPos)]); // level
 
     startPos = endPos;
     while (startPos < line.length() && line.at(startPos) == ' ')
@@ -1776,7 +1820,9 @@ bool LogModel::parseLine2(const QString &line, QStringList& results)
     results.append(tid);
 
     if (cats == "jcf.jni")
-        results << "jcf.jni" << "jcf.jni" << "jcf.jni";
+        results << "jcf.jni"
+                << "jcf.jni"
+                << "jcf.jni";
     else
     {
         for (int i = 0; i < 3; i++)
@@ -1803,44 +1849,43 @@ bool LogModel::event(QEvent *e)
     switch (int(e->type()))
     {
     case ROWCOUNT_EVENT:
-        if (dynamic_cast<RowCountEvent*>(e)->m_rowCount > m_rowCount)
+        if (dynamic_cast<RowCountEvent *>(e)->m_rowCount > m_rowCount)
         {
             // append
             int oldRowCount = m_rowCount;
-            m_rowCount = dynamic_cast<RowCountEvent*>(e)->m_rowCount;
-            beginInsertRows(QModelIndex(), oldRowCount, m_rowCount-1);
+            m_rowCount      = dynamic_cast<RowCountEvent *>(e)->m_rowCount;
+            beginInsertRows(QModelIndex(), oldRowCount, m_rowCount - 1);
             endInsertRows();
-        } 
-        else 
+        }
+        else
         {
             // re add
             if (m_rowCount != 0)
             {
-                beginRemoveRows(QModelIndex(), 0, m_rowCount-1);
+                beginRemoveRows(QModelIndex(), 0, m_rowCount - 1);
                 endRemoveRows();
             }
-            m_rowCount = dynamic_cast<RowCountEvent*>(e)->m_rowCount;
+            m_rowCount = dynamic_cast<RowCountEvent *>(e)->m_rowCount;
             qDebug() << "row count event:" << m_rowCount;
             if (m_rowCount != 0)
             {
-                beginInsertRows(QModelIndex(), 0, m_rowCount-1);
+                beginInsertRows(QModelIndex(), 0, m_rowCount - 1);
                 endInsertRows();
             }
         }
         emit rowCountChanged();
         return true;
-    case FINISHEDQUERY_EVENT:
-    {
-        int offset = dynamic_cast<FinishedQueryEvent*>(e)->m_offset;
+    case FINISHEDQUERY_EVENT: {
+        int offset = dynamic_cast<FinishedQueryEvent *>(e)->m_offset;
         qDebug() << "remove offset " << offset;
         m_inQuery.removeAll(offset);
 
-        int size = dynamic_cast<FinishedQueryEvent*>(e)->m_size;
-        emit dataChanged(index(offset,0), index(offset+size, 0));
+        int  size = dynamic_cast<FinishedQueryEvent *>(e)->m_size;
+        emit dataChanged(index(offset, 0), index(offset + size, 0));
 
         if (m_toQueryOffset >= 0)
         {
-            offset = m_toQueryOffset;
+            offset          = m_toQueryOffset;
             m_toQueryOffset = -1;
             query(offset);
         }
@@ -1891,7 +1936,8 @@ void LogModel::createDatabase()
 
     if (g_settings->ftsEnabled())
         m_sqlite3Helper->execDML("CREATE VIRTUAL TABLE ftsLogs USING fts5(epoch, time, level ,thread ,source,category ,method, content, log, line);");
-    m_sqlite3Helper->execDML("CREATE TABLE logs(id INTEGER PRIMARY KEY AUTOINCREMENT,epoch INTEGER, time DATETIME,level TEXT,thread TEXT,source TEXT,category TEXT,method TEXT, content TEXT, log TEXT, line INTEGER);");
+    m_sqlite3Helper->execDML("CREATE TABLE logs(id INTEGER PRIMARY KEY AUTOINCREMENT,epoch INTEGER, time DATETIME,level TEXT,thread TEXT,source "
+                             "TEXT,category TEXT,method TEXT, content TEXT, log TEXT, line INTEGER);");
     m_sqlite3Helper->execDML("CREATE TABLE level_statistic(id INTEGER PRIMARY KEY AUTOINCREMENT, key TEXT, count INTEGER);");
     m_sqlite3Helper->execDML("CREATE TABLE thread_statistic(id INTEGER PRIMARY KEY AUTOINCREMENT, key TEXT, count INTEGER);");
     m_sqlite3Helper->execDML("CREATE TABLE source_file_statistic(id INTEGER PRIMARY KEY AUTOINCREMENT, key TEXT, count INTEGER);");
@@ -1909,10 +1955,10 @@ int LogModel::copyFromFileToDatabase(const QString &fileName)
         return 0;
     }
 
-    QFileInfo fi(fileName);
-    QString suffix = fi.suffix();
+    QFileInfo   fi(fileName);
+    QString     suffix = fi.suffix();
     QStringList results;
-    QString line = f.readLine();
+    QString     line = f.readLine();
     while (line.isEmpty() && !f.atEnd())
         line = f.readLine();
     int lineNo = 1;
@@ -1924,22 +1970,22 @@ int LogModel::copyFromFileToDatabase(const QString &fileName)
     else
     {
         dateTime = results.at(0);
-        level = results.at(1);
-        thread = results.at(2);
-        source = results.at(3);
+        level    = results.at(1);
+        thread   = results.at(2);
+        source   = results.at(3);
         category = results.at(4);
-        method = results.at(5);
-        content = results.at(6);
+        method   = results.at(5);
+        content  = results.at(6);
     }
 
-    int recordCount = 0;
-    int appendLine = 1;
+    int  recordCount   = 0;
+    int  appendLine    = 1;
     bool pendingRecord = false;
 
     m_sqlite3Helper->execDML("PRAGMA synchronous = OFF");
     m_sqlite3Helper->execDML("PRAGMA journal_mode = MEMORY");
     m_sqlite3Helper->beginTransaction();
-    while(!f.atEnd())
+    while (!f.atEnd())
     {
         QString lookAhead = f.readLine();
         while (lookAhead.isEmpty() && !f.atEnd())
@@ -1955,8 +2001,9 @@ int LogModel::copyFromFileToDatabase(const QString &fileName)
         else
         {
             // save to database
-            sqlite3_stmt* pVM = m_sqlite3Helper->compile("INSERT INTO logs (time, epoch, level, thread, source, category, method, content, log, line) "
-                "VALUES (:time, :epoch, :level, :thread, :source, :category, :method, :content, :log, :line );");
+            sqlite3_stmt *pVM =
+                m_sqlite3Helper->compile("INSERT INTO logs (time, epoch, level, thread, source, category, method, content, log, line) "
+                                         "VALUES (:time, :epoch, :level, :thread, :source, :category, :method, :content, :log, :line );");
             if (!pVM)
             {
                 qDebug() << "logs inserting pVM is null";
@@ -1972,18 +2019,21 @@ int LogModel::copyFromFileToDatabase(const QString &fileName)
             m_sqlite3Helper->bind(pVM, ":content", content);
             m_sqlite3Helper->bind(pVM, ":log", suffix);
             m_sqlite3Helper->bind(pVM, ":line", lineNo - appendLine);
-            if (!m_sqlite3Helper->execDML(pVM)) {
-        #ifndef QT_NO_DEBUG
+            if (!m_sqlite3Helper->execDML(pVM))
+            {
+#ifndef QT_NO_DEBUG
                 qDebug() << dateTime << level << thread << source << category << method << content << " inserting log into database failed!";
-        #endif
-            } else {
+#endif
+            }
+            else
+            {
                 recordCount++;
             }
 
             if (g_settings->ftsEnabled())
             {
                 pVM = m_sqlite3Helper->compile("INSERT INTO ftsLogs (time, epoch, level, thread, source, category, method, content, log, line) "
-                    "VALUES (:time, :epoch, :level, :thread, :source, :category, :method, :content, :log, :line );");
+                                               "VALUES (:time, :epoch, :level, :thread, :source, :category, :method, :content, :log, :line );");
                 if (!pVM)
                 {
                     qDebug() << "ftsLogs inserting pVM is null";
@@ -1999,29 +2049,30 @@ int LogModel::copyFromFileToDatabase(const QString &fileName)
                 m_sqlite3Helper->bind(pVM, ":content", content);
                 m_sqlite3Helper->bind(pVM, ":log", suffix);
                 m_sqlite3Helper->bind(pVM, ":line", lineNo - appendLine);
-                if (!m_sqlite3Helper->execDML(pVM)) {
-            #ifndef QT_NO_DEBUG
+                if (!m_sqlite3Helper->execDML(pVM))
+                {
+#ifndef QT_NO_DEBUG
                     qDebug() << dateTime << level << thread << source << category << method << content << " inserting log into database failed!";
-            #endif
+#endif
                 }
             }
             appendLine = 1;
             // parse lookAhead
-            dateTime = results.at(0);
-            level = results.at(1);
-            thread = results.at(2);
-            source = results.at(3);
-            category = results.at(4);
-            method = results.at(5);
-            content = results.at(6);
+            dateTime      = results.at(0);
+            level         = results.at(1);
+            thread        = results.at(2);
+            source        = results.at(3);
+            category      = results.at(4);
+            method        = results.at(5);
+            content       = results.at(6);
             pendingRecord = true;
         }
     }
     if (pendingRecord)
     {
         // save the last record to database
-        sqlite3_stmt* pVM = m_sqlite3Helper->compile("INSERT INTO logs (time, epoch, level, thread, source, category, method, content, log, line) "
-            "VALUES (:time, :epoch, :level, :thread, :source, :category, :method, :content, :log, :line );");
+        sqlite3_stmt *pVM = m_sqlite3Helper->compile("INSERT INTO logs (time, epoch, level, thread, source, category, method, content, log, line) "
+                                                     "VALUES (:time, :epoch, :level, :thread, :source, :category, :method, :content, :log, :line );");
         if (pVM)
         {
             m_sqlite3Helper->bind(pVM, ":time", dateTime);
@@ -2033,18 +2084,19 @@ int LogModel::copyFromFileToDatabase(const QString &fileName)
             m_sqlite3Helper->bind(pVM, ":method", method);
             m_sqlite3Helper->bind(pVM, ":content", content);
             m_sqlite3Helper->bind(pVM, ":log", suffix);
-            m_sqlite3Helper->bind(pVM, ":line", lineNo +1 - appendLine);
-            if (!m_sqlite3Helper->execDML(pVM)) {
-    #ifndef QT_NO_DEBUG
-                qDebug() << dateTime << level << thread << source << category << method << content << " inserting log into database failed!" ;
-    #endif
+            m_sqlite3Helper->bind(pVM, ":line", lineNo + 1 - appendLine);
+            if (!m_sqlite3Helper->execDML(pVM))
+            {
+#ifndef QT_NO_DEBUG
+                qDebug() << dateTime << level << thread << source << category << method << content << " inserting log into database failed!";
+#endif
             }
         }
 
         if (g_settings->ftsEnabled())
         {
             pVM = m_sqlite3Helper->compile("INSERT INTO ftsLogs (time, epoch, level, thread, source, category, method, content, log, line) "
-                "VALUES (:time, :epoch, :level, :thread, :source, :category, :method, :content, :log, :line );");
+                                           "VALUES (:time, :epoch, :level, :thread, :source, :category, :method, :content, :log, :line );");
             if (pVM)
             {
                 m_sqlite3Helper->bind(pVM, ":time", dateTime);
@@ -2056,11 +2108,12 @@ int LogModel::copyFromFileToDatabase(const QString &fileName)
                 m_sqlite3Helper->bind(pVM, ":method", method);
                 m_sqlite3Helper->bind(pVM, ":content", content);
                 m_sqlite3Helper->bind(pVM, ":log", suffix);
-                m_sqlite3Helper->bind(pVM, ":line", lineNo +1- appendLine);
-                if (!m_sqlite3Helper->execDML(pVM)) {
-            #ifndef QT_NO_DEBUG
+                m_sqlite3Helper->bind(pVM, ":line", lineNo + 1 - appendLine);
+                if (!m_sqlite3Helper->execDML(pVM))
+                {
+#ifndef QT_NO_DEBUG
                     qDebug() << dateTime << level << thread << source << category << method << content << " inserting log into database failed!";
-            #endif
+#endif
                 }
             }
         }

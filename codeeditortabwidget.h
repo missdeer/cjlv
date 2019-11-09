@@ -1,7 +1,6 @@
 #ifndef CODEEDITORTABWIDGET_H
 #define CODEEDITORTABWIDGET_H
 
-
 class CodeEditor;
 
 class CodeEditorTabWidget : public QTabWidget
@@ -10,8 +9,8 @@ class CodeEditorTabWidget : public QTabWidget
 public:
     explicit CodeEditorTabWidget(QWidget *parent = 0);
 
-    void setContent(const QString& content);
-    void gotoLine(const QString& fileName, int line = -1);
+    void setContent(const QString &content);
+    void gotoLine(const QString &fileName, int line = -1);
 
     bool copyable();
     void copy();
@@ -28,9 +27,10 @@ private slots:
     void onTabCloseRequested(int index);
     void onCurrentChanged(int index);
     void onCustomContextMenuRequested(const QPoint &pos);
+
 private:
-    CodeEditor *createCodeEditor(const QString& text, const QString& tooltip);
-    int m_line;
+    CodeEditor *createCodeEditor(const QString &text, const QString &tooltip);
+    int         m_line;
 };
 
 #endif // CODEEDITORTABWIDGET_H

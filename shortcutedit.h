@@ -10,7 +10,7 @@ QT_END_NAMESPACE
 class ShortcutEdit : public QLineEdit
 {
 public:
-    explicit ShortcutEdit(QWidget* parent = 0);
+    explicit ShortcutEdit(QWidget *parent = 0);
     bool event(QEvent *e);
 };
 

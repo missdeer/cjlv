@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include "quickwidgetapi.h"
 
 QuickWidgetAPI::QuickWidgetAPI(QObject *parent)
@@ -25,13 +26,9 @@ QuickWidgetAPI::QuickWidgetAPI(QObject *parent)
     , m_startTlsStanza(true)
     , m_proceedStanza(true)
 {
-
 }
 
-QuickWidgetAPI::~QuickWidgetAPI()
-{
-
-}
+QuickWidgetAPI::~QuickWidgetAPI() {}
 
 int QuickWidgetAPI::getSecondValue() const
 {

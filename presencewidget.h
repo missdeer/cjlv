@@ -2,6 +2,7 @@
 #define PRESENCEWIDGET_H
 
 #include <QWidget>
+
 #include "sqlite3helper.h"
 
 class PresenceModel;
@@ -19,10 +20,11 @@ public slots:
     void onRefreshBuddyList();
     void onReceivedPresenceBuddyList(QStringList bl);
     void onResizeTableCells(int columns, int rows);
+
 private:
-    PresenceModel* m_model;
-    QComboBox* m_cbBuddyList;
-    QTableView* m_presenceTableView;
+    PresenceModel *m_model;
+    QComboBox *    m_cbBuddyList;
+    QTableView *   m_presenceTableView;
 };
 
 #endif // PRESENCEWIDGET_H

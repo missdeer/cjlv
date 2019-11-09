@@ -1,13 +1,14 @@
 #ifndef LOGTABLEVIEW_H
 #define LOGTABLEVIEW_H
 
-#include <QWidget>
-#include <QStringList>
 #include <QMutex>
+#include <QStringList>
+#include <QWidget>
+
 #include "codeeditortabwidget.h"
 #include "extension.h"
-#include "sqlite3helper.h"
 #include "quickwidgetapi.h"
+#include "sqlite3helper.h"
 
 class MainWindow;
 class LogModel;
@@ -21,17 +22,16 @@ class QQmlEngine;
 class QJSEngine;
 QT_END_NAMESPACE
 
-
 class LogTableView : public QWidget
 {
     Q_OBJECT
 public:
     LogTableView(QWidget *parent, Sqlite3HelperPtr sqlite3Helper);
 
-    LogModel *getModel();
-    const QString & path() const;
-    void setPath(const QString &path);
-    void loadFromFiles(const QStringList& fileNames);
+    LogModel *     getModel();
+    const QString &path() const;
+    void           setPath(const QString &path);
+    void           loadFromFiles(const QStringList &fileNames);
 
     void copyCurrentCell();
     void copyCurrentRow();
@@ -72,16 +72,16 @@ public:
     void onRunExtension(ExtensionPtr e);
 signals:
     void dataLoaded();
-    void databaseCreated(const QString&);
+    void databaseCreated(const QString &);
     void rowCountChanged();
     void runExtension(ExtensionPtr e);
     void itemDoubleClicked(const QModelIndex &index);
-    void gotoLogLine(int line, const QString& filePath);
+    void gotoLogLine(int line, const QString &filePath);
     void extractContent(const QString &text);
-    void openLog(const QString& filePath);
-    void openSourceFileWithBuiltinEditor(const QString& filePath, int line);
-    void openSourceFileInVS(const QString& filePath, int line);
-    void openSourceFileWithOpenGrok(const QString& filePath, int line);
+    void openLog(const QString &filePath);
+    void openSourceFileWithBuiltinEditor(const QString &filePath, int line);
+    void openSourceFileInVS(const QString &filePath, int line);
+    void openSourceFileWithOpenGrok(const QString &filePath, int line);
 public slots:
     void onClearKeyword();
     void onShowLogItemsBetweenSelectedRows();
@@ -104,22 +104,22 @@ private slots:
 
 private:
     QuickWidgetAPIPtr m_api;
-    QTableView *m_logsTableView;
-    LogModel* m_logModel;
-    QComboBox* m_cbSearchKeyword;
-    QQuickWidget* m_extraToolPanel;
-    QToolButton* m_inputKeywordlLockButton;
-    QToolButton* m_extraToolPanelVisibleButton;
-    QTimer* m_keywordChangedTimer;
-    QString m_path;
-    int m_lastId;
-    int m_lastColumn;
-    QModelIndex m_beginAnchor;
-    QModelIndex m_endAnchor;
+    QTableView *      m_logsTableView;
+    LogModel *        m_logModel;
+    QComboBox *       m_cbSearchKeyword;
+    QQuickWidget *    m_extraToolPanel;
+    QToolButton *     m_inputKeywordlLockButton;
+    QToolButton *     m_extraToolPanelVisibleButton;
+    QTimer *          m_keywordChangedTimer;
+    QString           m_path;
+    int               m_lastId;
+    int               m_lastColumn;
+    QModelIndex       m_beginAnchor;
+    QModelIndex       m_endAnchor;
 
     QList<bool> m_hheaderColumnHidden;
 
-    void openSourceFile(const QModelIndex &index, std::function<void(const QString&, int)> callback);
+    void openSourceFile(const QModelIndex &index, std::function<void(const QString &, int)> callback);
 
     void filter(const QString &keyword);
     void initialize();

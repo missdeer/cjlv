@@ -1,24 +1,26 @@
 #include "stdafx.h"
+
+#include "extensiondialog.h"
+
 #include "codeeditor.h"
 #include "extensionmodel.h"
-#include "extensiondialog.h"
 #include "ui_extensiondialog.h"
 
-ExtensionDialog* g_extensionDialog = nullptr;
+ExtensionDialog *g_extensionDialog = nullptr;
 
-ExtensionDialog::ExtensionDialog(QWidget *parent) :
-    QDialog(parent),
-    ui(new Ui::ExtensionDialog),
-    m_currentExtension(new Extension),
-    m_modified(false),
-    m_notModifying(false)
+ExtensionDialog::ExtensionDialog(QWidget *parent)
+    : QDialog(parent)
+    , ui(new Ui::ExtensionDialog)
+    , m_currentExtension(new Extension)
+    , m_modified(false)
+    , m_notModifying(false)
 {
     ui->setupUi(this);
     setWindowFlags(Qt::Window);
     m_contentEditor = new CodeEditor(ui->codeEditorPlaceholder);
     m_contentEditor->initialize();
 
-    QVBoxLayout* m_mainLayout = new QVBoxLayout;
+    QVBoxLayout *m_mainLayout = new QVBoxLayout;
     Q_ASSERT(m_mainLayout);
     m_mainLayout->setMargin(0);
     m_mainLayout->addWidget(m_contentEditor);
@@ -43,10 +45,10 @@ ExtensionDialog::~ExtensionDialog()
     delete ui;
 }
 
-void ExtensionDialog::onTableViewSelectionChanged(const QItemSelection &selected, const QItemSelection &/*deselected*/)
+void ExtensionDialog::onTableViewSelectionChanged(const QItemSelection &selected, const QItemSelection & /*deselected*/)
 {
     QModelIndexList list = selected.indexes();
-    for(const QModelIndex& index : list)
+    for (const QModelIndex &index : list)
     {
         m_currentExtension = ExtensionModel::instance()->extension(index);
         if (!m_currentExtension)
@@ -92,7 +94,7 @@ void ExtensionDialog::on_btnNewExtension_clicked()
 
 void ExtensionDialog::on_btnDeleteExtension_clicked()
 {
-    QItemSelectionModel* selection = ui->tableView->selectionModel();
+    QItemSelectionModel *selection = ui->tableView->selectionModel();
     if (!selection || !selection->hasSelection())
         return;
 
@@ -103,7 +105,8 @@ void ExtensionDialog::on_btnDeleteExtension_clicked()
             if (QMessageBox::question(this, tr("Confirm"), tr("Discard modification?"), QMessageBox::Ok | QMessageBox::Cancel) == QMessageBox::Cancel)
                 return;
         }
-        if (QMessageBox::question(this, tr("Confirm"), tr("Delete the selected extension?"), QMessageBox::Ok | QMessageBox::Cancel) == QMessageBox::Cancel)
+        if (QMessageBox::question(this, tr("Confirm"), tr("Delete the selected extension?"), QMessageBox::Ok | QMessageBox::Cancel) ==
+            QMessageBox::Cancel)
             return;
 
         m_currentExtension->destroy();
@@ -131,7 +134,7 @@ void ExtensionDialog::on_btnApplyModification_clicked()
                                   tr("Current selected extension is built-in extension, do you want to fork a custom one?"),
                                   QMessageBox::Ok | QMessageBox::Cancel) == QMessageBox::Cancel)
             return;
-        ExtensionPtr e(new Extension( *m_currentExtension.data()));
+        ExtensionPtr e(new Extension(*m_currentExtension.data()));
         m_currentExtension.swap(e);
         m_currentExtension->setCreatedAt(QDateTime::currentDateTime().toString(Qt::ISODate));
         m_currentExtension->setUuid(QUuid::createUuid().toString());
@@ -140,19 +143,13 @@ void ExtensionDialog::on_btnApplyModification_clicked()
     }
     else
     {
-        if (QMessageBox::question(this,
-                                  tr("Confirm"),
-                                  tr("Save changes?"),
-                                  QMessageBox::Ok | QMessageBox::Cancel) == QMessageBox::Cancel)
+        if (QMessageBox::question(this, tr("Confirm"), tr("Save changes?"), QMessageBox::Ok | QMessageBox::Cancel) == QMessageBox::Cancel)
             return;
     }
 
     if (ui->cbMethod->currentIndex() == 1 && ui->cbField->currentIndex() != 0)
     {
-        QMessageBox::information(this,
-                                 tr("Notice"),
-                                 tr("Field must be empty when method is SQL WHERE clause."),
-                                 QMessageBox::Ok);
+        QMessageBox::information(this, tr("Notice"), tr("Field must be empty when method is SQL WHERE clause."), QMessageBox::Ok);
         return;
     }
 
@@ -170,7 +167,6 @@ void ExtensionDialog::on_btnApplyModification_clicked()
     ExtensionModel::instance()->updateExtension(m_currentExtension);
     m_modified = false;
     m_contentEditor->setSavePoint();
-
 }
 
 void ExtensionDialog::on_btnTestExtension_clicked()
@@ -181,12 +177,12 @@ void ExtensionDialog::on_btnTestExtension_clicked()
     }
 }
 
-void ExtensionDialog::on_edtTitle_textChanged(const QString &/*arg1*/)
+void ExtensionDialog::on_edtTitle_textChanged(const QString & /*arg1*/)
 {
     m_modified = true;
 }
 
-void ExtensionDialog::on_edtAuthor_textChanged(const QString &/*arg1*/)
+void ExtensionDialog::on_edtAuthor_textChanged(const QString & /*arg1*/)
 {
     m_modified = true;
 }
@@ -218,29 +214,28 @@ void ExtensionDialog::on_cbMethod_currentIndexChanged(int /*index*/)
     }
 }
 
-void ExtensionDialog::on_edtComment_textChanged(const QString &/*arg1*/)
+void ExtensionDialog::on_edtComment_textChanged(const QString & /*arg1*/)
 {
     m_modified = true;
 }
 
-void ExtensionDialog::on_edtShortcut_textChanged(const QString & text)
+void ExtensionDialog::on_edtShortcut_textChanged(const QString &text)
 {
     if (!text.isEmpty())
     {
-        QWidget* parent = parentWidget();
+        QWidget *parent = parentWidget();
         Q_ASSERT(parent);
-        auto actions = parent->findChildren<QAction*>();
+        auto                actions = parent->findChildren<QAction *>();
         QList<QKeySequence> shortcuts;
-        for(auto a: actions)
+        for (auto a : actions)
         {
             shortcuts.append(a->shortcuts());
         }
 
         if (!m_notModifying && shortcuts.contains(QKeySequence(text)))
         {
-            QMessageBox::warning(this, tr("Shortcut is used"),
-                                 QString("Shortcut %1 is used already, please choose another one.").arg(text),
-                                 QMessageBox::Ok);
+            QMessageBox::warning(
+                this, tr("Shortcut is used"), QString("Shortcut %1 is used already, please choose another one.").arg(text), QMessageBox::Ok);
             ui->edtShortcut->clear();
             return;
         }
@@ -249,7 +244,7 @@ void ExtensionDialog::on_edtShortcut_textChanged(const QString & text)
     m_modified = true;
 }
 
-void ExtensionDialog::on_edtCategory_textChanged(const QString &/*arg1*/)
+void ExtensionDialog::on_edtCategory_textChanged(const QString & /*arg1*/)
 {
     m_modified = true;
 }
