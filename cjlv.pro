@@ -147,7 +147,7 @@ win32: {
         win.qrc
     win32-*msvc* {
         QMAKE_CXXFLAGS_RELEASE += /Zi
-        QMAKE_LFLAGS_RELEASE += /DEBUG
+        #QMAKE_LFLAGS_RELEASE += /DEBUG
     }
 
     DISTFILES += \
