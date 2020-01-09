@@ -3,11 +3,10 @@
 #include <QFontDatabase>
 #include <QSslSocket>
 
-#include <boost/scope_exit.hpp>
-
 #include "mainwindow.h"
 #include "qtsingleapplication.h"
 #include "settings.h"
+#include "scopedguard.h"
 
 #if defined(Q_OS_WIN)
 #    include "everythingwrapper.h"
@@ -92,10 +91,7 @@ int main(int argc, char *argv[])
 
     splash.showMessage("Applying global configurations...");
     g_settings = new Settings;
-    BOOST_SCOPE_EXIT(g_settings)
-    {
-        delete g_settings;
-    }
+    ScopedGuard sg([g_settings](){ delete g_settings;});
     BOOST_SCOPE_EXIT_END
     g_settings->initialize();
     QString t = parser.value("t");
