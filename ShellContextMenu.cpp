@@ -2,7 +2,7 @@
 
 #include "ShellContextMenu.h"
 
-#include <boost/scope_exit.hpp>
+#include "scopedguard.h"
 
 #define MIN_ID 1
 #define MAX_ID 10000
@@ -13,34 +13,24 @@ void CShellContextMenu::ShowContextMenu(QMenu *menu, QWidget *parent, QPoint &pt
     HRESULT     result = SHParseDisplayName(QDir::toNativeSeparators(path).toStdWString().c_str(), 0, &id, 0, 0);
     if (!SUCCEEDED(result) || !id)
         return;
-    BOOST_SCOPE_EXIT(id)
-    {
+    ScopedGuard sg1([id]() { 
         LPMALLOC lpMalloc = nullptr;
         SHGetMalloc(&lpMalloc);
         lpMalloc->Free(id);
-    }
-    BOOST_SCOPE_EXIT_END
+	});
     IShellFolder *ifolder = nullptr;
 
     LPCITEMIDLIST idChild = nullptr;
     result                = SHBindToParent(id, IID_IShellFolder, (void **)&ifolder, &idChild);
     if (!SUCCEEDED(result) || !ifolder)
         return;
-    BOOST_SCOPE_EXIT(ifolder)
-    {
-        ifolder->Release();
-    }
-    BOOST_SCOPE_EXIT_END
+    ScopedGuard sg2([ifolder](){ ifolder->Release();});
 
     IContextMenu *imenu = nullptr;
     result              = ifolder->GetUIObjectOf((HWND)parent->winId(), 1, (const ITEMIDLIST **)&idChild, IID_IContextMenu, 0, (void **)&imenu);
     if (!SUCCEEDED(result) || !ifolder)
         return;
-    BOOST_SCOPE_EXIT(imenu)
-    {
-        imenu->Release();
-    }
-    BOOST_SCOPE_EXIT_END
+    ScopedGuard sg3([imenu](){ imenu->Release();});
 
     HMENU hMenu = CreatePopupMenu();
     if (!hMenu)
