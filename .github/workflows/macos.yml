@@ -45,7 +45,6 @@ jobs:
         with:
           fetch-depth: 1
       - name: Checkout submodules
-        shell: cmd
         env:
           vc_arch: ${{ matrix.msvc_arch }}
         run: |
