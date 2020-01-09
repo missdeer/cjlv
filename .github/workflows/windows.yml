@@ -69,7 +69,11 @@ jobs:
         with:
           fetch-depth: 1
       - name: Checkout submodules
-        uses: textbook/git-checkout-submodule-action@2.0.0
+        shell: cmd
+        env:
+          vc_arch: ${{ matrix.msvc_arch }}
+        run: |
+          git submodule update --init --recursive
       # 编译msvc
       - name: build-msvc
         shell: cmd

@@ -45,7 +45,11 @@ jobs:
         with:
           fetch-depth: 1
       - name: Checkout submodules
-        uses: textbook/git-checkout-submodule-action@2.0.0
+        shell: cmd
+        env:
+          vc_arch: ${{ matrix.msvc_arch }}
+        run: |
+          git submodule update --init --recursive
       - name: build macos
         run: |
           cd 3rdparty/scintilla/qt/ScintillaEdit
