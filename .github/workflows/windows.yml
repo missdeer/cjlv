@@ -68,6 +68,8 @@ jobs:
       - uses: actions/checkout@v1
         with:
           fetch-depth: 1
+      - name: Checkout submodules
+        uses: textbook/git-checkout-submodule-action@2.0.0
       # 编译msvc
       - name: build-msvc
         shell: cmd
@@ -75,6 +77,9 @@ jobs:
           vc_arch: ${{ matrix.msvc_arch }}
         run: |
           call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" %vc_arch%
+          cd 3rdparty\scintilla\qt\ScintillaEdit
+          python WidgetGen.py
+          cd ..\..\..\..
           qmake -r CONFIG+=release CONFIG+=qtquickcompiler
           nmake
       # tag 打包
