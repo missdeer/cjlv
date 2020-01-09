@@ -91,7 +91,7 @@ int main(int argc, char *argv[])
 
     splash.showMessage("Applying global configurations...");
     g_settings = new Settings;
-    ScopedGuard sg([g_settings](){ delete g_settings;});
+    ScopedGuard sg([](){ delete g_settings;});
     g_settings->initialize();
     QString t = parser.value("t");
     if (!t.isEmpty())
