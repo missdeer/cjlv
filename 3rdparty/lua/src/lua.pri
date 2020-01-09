@@ -29,42 +29,39 @@ HEADERS += \
     $$PWD/lvm.h \
     $$PWD/lzio.h
 
-win32-*msvc* {
-    SOURCES += \
-        $$PWD/lapi.c \
-        $$PWD/lauxlib.c \
-        $$PWD/lbaselib.c \
-        $$PWD/lbitlib.c \
-        $$PWD/lcode.c \
-        $$PWD/lcorolib.c \
-        $$PWD/lctype.c \
-        $$PWD/ldblib.c \
-        $$PWD/ldebug.c \
-        $$PWD/ldo.c \
-        $$PWD/ldump.c \
-        $$PWD/lfunc.c \
-        $$PWD/lgc.c \
-        $$PWD/linit.c \
-        $$PWD/liolib.c \
-        $$PWD/llex.c \
-        $$PWD/lmathlib.c \
-        $$PWD/lmem.c \
-        $$PWD/loadlib.c \
-        $$PWD/lobject.c \
-        $$PWD/lopcodes.c \
-        $$PWD/loslib.c \
-        $$PWD/lparser.c \
-        $$PWD/lstate.c \
-        $$PWD/lstring.c \
-        $$PWD/lstrlib.c \
-        $$PWD/ltable.c \
-        $$PWD/ltablib.c \
-        $$PWD/ltm.c \
-        $$PWD/lundump.c \
-        $$PWD/lutf8lib.c \
-        $$PWD/lvm.c \
-        $$PWD/lzio.c
-} else {
-    DEFINES += STRSAFE_NO_DEPRECATE
-    LIBS += -llua
-}
+SOURCES += \
+	$$PWD/lapi.c \
+	$$PWD/lauxlib.c \
+	$$PWD/lbaselib.c \
+	$$PWD/lbitlib.c \
+	$$PWD/lcode.c \
+	$$PWD/lcorolib.c \
+	$$PWD/lctype.c \
+	$$PWD/ldblib.c \
+	$$PWD/ldebug.c \
+	$$PWD/ldo.c \
+	$$PWD/ldump.c \
+	$$PWD/lfunc.c \
+	$$PWD/lgc.c \
+	$$PWD/linit.c \
+	$$PWD/liolib.c \
+	$$PWD/llex.c \
+	$$PWD/lmathlib.c \
+	$$PWD/lmem.c \
+	$$PWD/loadlib.c \
+	$$PWD/lobject.c \
+	$$PWD/lopcodes.c \
+	$$PWD/loslib.c \
+	$$PWD/lparser.c \
+	$$PWD/lstate.c \
+	$$PWD/lstring.c \
+	$$PWD/lstrlib.c \
+	$$PWD/ltable.c \
+	$$PWD/ltablib.c \
+	$$PWD/ltm.c \
+	$$PWD/lundump.c \
+	$$PWD/lutf8lib.c \
+	$$PWD/lvm.c \
+	$$PWD/lzio.c
+	
+DEFINES += STRSAFE_NO_DEPRECATE
