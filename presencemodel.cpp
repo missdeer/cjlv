@@ -2,7 +2,7 @@
 
 #include "presencemodel.h"
 
-#include <boost/scope_exit.hpp>
+#include "scopedguard.h"
 
 PresenceModel::PresenceModel(QObject *parent, Sqlite3HelperPtr sqlite3Helper) : QAbstractTableModel(parent), m_sqlite3Helper(sqlite3Helper)
 {
@@ -258,11 +258,7 @@ void PresenceModel::doRequestReceivedPresenceBuddyList()
         return;
     }
 
-    BOOST_SCOPE_EXIT(this_)
-    {
-        this_->m_mutex.unlock();
-    }
-    BOOST_SCOPE_EXIT_END
+    ScopedGuard queryMutexUnlock([this]() { m_mutex.unlock(); });
 
     QStringList result;
 
