@@ -53,7 +53,7 @@ jobs:
         run: |
           cd 3rdparty/scintilla/qt/ScintillaEdit
           python WidgetGen.py
-          cd ..\..\..\..
+          cd ../../../..
           qmake -r CONFIG+=release CONFIG+=qtquickcompiler
           make -j 2
       # tag 打包
