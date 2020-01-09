@@ -92,7 +92,6 @@ int main(int argc, char *argv[])
     splash.showMessage("Applying global configurations...");
     g_settings = new Settings;
     ScopedGuard sg([g_settings](){ delete g_settings;});
-    BOOST_SCOPE_EXIT_END
     g_settings->initialize();
     QString t = parser.value("t");
     if (!t.isEmpty())
