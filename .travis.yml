@@ -44,7 +44,7 @@ deploy:
     secure: h7u8XulfhbHOODk56K/kbGQhuTEta8UZ1VDLVzpXUFNESv7ImLf+SHXiALBxX9FQDcwvrHbTigA9DLvv/wSN4+pmAK8OmeP0WQEmwKndM77cuPySDtvGxHiJGP5loQ3qsejIyrtcKkCg2OLscJjkJH65HuRCn96Vk/r6ujuRuxNmJZ7nM24rdwK3JZnleKmEgyXBWUJwmpI/eepblRXDvi6344SsWNm/AR3d0ePxyFVq8YBNRZ7J9BWZWBYnbUhZdvGCUpONeKUkOUr8jmGbTJZnB4h3myZQlMp4qSyNW3BKbN3lypR9IAQRf0gqIUwENch2BB29yEhYUndiMrlFidWG/H+kKTQpMljU1QX7rnTLYxrCL3Gfpv4t4uS2RhoQxI4p7lVQv08ODRnkTtUwEaJdXYIMSpXDs3dzNRmwixThTczDa6uSvspzmq43tnnfTPDokeHBfYuEhd/sT9QypP9uSk6Hw8WQJwrMRb0lS2sBwo0KGntPc5NlsiuHAlMm0CJSLhmTKEFR9rYk+p2ZXfiUGu8KuFJyN7TJQ0ZGMEmttDNU96KJx96wiajeebwyr7LCwHKPI8utdt2MAwOLPxJu+OZcQp2uch2o6cqSzQuvv3YM51C67jUL6I/uY04Sm4l6RAVvhC1sWOiWHUsSbgUb7A8z2HQI1iRzo2wMWRw=
   file: ${project_dir}/build/distrib/cjlv-${version}-x64.dmg
   on:
-    condition: $TRAVIS_OS_NAME == osx
+    condition: $TRAVIS_OS_NAME == deprected
     repo: missdeer/cjlv
     tags: true
   skip_cleanup: true
