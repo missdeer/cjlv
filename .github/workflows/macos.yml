@@ -54,14 +54,17 @@ jobs:
           cd 3rdparty/scintilla/qt/ScintillaEdit
           python WidgetGen.py
           cd ../../../..
-          qmake -r CONFIG+=release CONFIG+=qtquickcompiler
+          mkdir build
+          cd build
+          qmake -r CONFIG+=release CONFIG+=qtquickcompiler ../cjlv.pro
           make -j 2
+          cd ..
       # tag 打包
       - name: package
         if: startsWith(github.event.ref, 'refs/tags/')
         run: |
           # 拷贝依赖
-          macdeployqt bin/${targetName}.app -qmldir=. -verbose=1 -dmg
+          macdeployqt "build/${targetName}.app" -qmldir=. -verbose=1 -dmg
       # tag 查询github-Release
       - name: queryRelease
         id: queryReleaseMacos
