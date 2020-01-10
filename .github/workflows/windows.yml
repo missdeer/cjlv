@@ -34,7 +34,7 @@ jobs:
             msvc_arch: x86
             qt_arch_install: msvc2017
     env:
-      targetName: CJLV.exe
+      targetName: CJLV
     # 步骤
     steps:
       - name: Install Qt
@@ -76,15 +76,17 @@ jobs:
         if: startsWith(github.event.ref, 'refs/tags/')
         env:
           VCINSTALLDIR: 'C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC'
-          archiveName: ${{ matrix.qt_ver }}-${{ matrix.qt_target }}-${{ matrix.qt_arch }}
+          archiveName: ${{ env.targetName }}-${{ matrix.qt_arch }}
         shell: pwsh
         run: |
           # 创建文件夹
           New-Item -ItemType Directory ${env:archiveName}
           # 拷贝exe
-          Copy-Item build\Release\${env:targetName} ${env:archiveName}\
+          Copy-Item build\Release\${env:targetName}'.exe' ${env:archiveName}\
+          Copy-Item build\Release\Everything.exe ${env:archiveName}\
+          Copy-Item build\Release\Everything*.dll ${env:archiveName}\
           # 拷贝依赖
-          windeployqt --qmldir . ${env:archiveName}\${env:targetName}
+          windeployqt --qmldir . ${env:archiveName}\${env:targetName}'.exe'
           # 打包zip
           Compress-Archive -Path ${env:archiveName} ${env:archiveName}'.zip'
           # 记录环境变量packageName给后续step
