@@ -52,7 +52,7 @@ jobs:
         uses: actions/upload-artifact@v1.0.0
         with:
           name: ${targetName}-macOS
-          path: build/${targetName}.app
+          path: "build/${{ env.targetName }}.app"
 
       - name: queryRelease
         id: queryReleaseMacos
