@@ -5,3 +5,4 @@
 [submodule "3rdparty/KDMacTouchBar"]
 	path = 3rdparty/KDMacTouchBar
 	url = https://github.com/KDAB/KDMacTouchBar.git
+	branch = master
