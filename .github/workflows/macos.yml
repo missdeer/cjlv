@@ -51,8 +51,8 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v1.0.0
         with:
-          name: ${targetName}-macOS
-          path: "build/${{ env.targetName }}.app"
+          name: ${{ env.targetName }}-macOS
+          path: "build/${{ env.targetName }}.dmg"
 
       - name: queryRelease
         id: queryReleaseMacos
