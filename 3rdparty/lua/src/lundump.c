@@ -3,7 +3,10 @@
 ** load precompiled Lua chunks
 ** See Copyright Notice in lua.h
 */
-
+#ifdef _WIN32
+  #pragma push_macro("LoadString")
+  #undef LoadString
+#endif
 #define lundump_c
 #define LUA_CORE
 
@@ -277,3 +280,6 @@ LClosure *luaU_undump(lua_State *L, ZIO *Z, const char *name) {
   return cl;
 }
 
+#ifdef _WIN32
+  #pragma pop_macro("LoadString")
+#endif
