@@ -1,0 +1,93 @@
+name: Windows-mingw
+on: 
+  push:
+    paths-ignore:
+      - 'README.md'
+      - 'LICENSE'
+      - '.github/workflows/macos.yml'
+      - '.github/workflows/win-msvc.yml'
+  pull_request:
+    paths-ignore:
+      - 'README.md'
+      - 'LICENSE'
+      - '.github/workflows/macos.yml'
+      - '.github/workflows/win-msvc.yml'
+jobs:
+  build:
+    name: Build
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        qt_arch: [mingw64_qt5-gcc, mingw32_qt5-gcc, mingw64_qt5-clang, mingw32_qt5-clang]
+        include:
+          - qt_arch: mingw64_qt5-gcc
+            mingw_arch: MINGW64 
+            mingw_prefix: mingw-w64-x86_64
+            toolchains: gcc
+            mkspec: win32-g++
+          - qt_arch: mingw32_qt5-gcc
+            mingw_arch: MINGW32
+            mingw_prefix: mingw-w64-i686
+            toolchains: gcc
+            mkspec: win32-g++
+          - qt_arch: mingw64_qt5-clang
+            mingw_arch: MINGW64 
+            mingw_prefix: mingw-w64-x86_64
+            toolchains: clang
+            mkspec: win32-clang-g++
+          - qt_arch: mingw32_qt5-clang
+            mingw_arch: MINGW32
+            mingw_prefix: mingw-w64-i686
+            toolchains: clang
+            mkspec: win32-clang-g++
+    env:
+      targetName: CJLV
+      
+    steps:
+      - uses: numworks/setup-msys2@v1
+        with:
+          update: true
+          msystem: ${{ matrix.mingw_arch }}
+          
+      - run: msys2do pacman --noconfirm -S ${{ matrix.mingw_prefix }}-${{ matrix.toolchains }} ${{ matrix.mingw_prefix }}-make ${{ matrix.mingw_prefix }}-qt5 
+                              
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 1
+          submodules: true
+      
+      - run: mkdir build
+          
+      - name: qmake
+        shell: cmd
+        run: |
+          cd 3rdparty\scintilla\qt\ScintillaEdit
+          python WidgetGen.py
+          cd ..\..\..\..
+          cd build
+          msys2do qmake.exe -r -spec ${{ matrix.mkspec }} CONFIG+=release CONFIG+=qtquickcompiler ..
+          cd ..
+
+      - name: mingw32-make
+        shell: cmd
+        run: |
+          cd build
+          msys2do mingw32-make.exe -j 4
+          cd ..
+                    
+      - name: deploy
+        env:
+          archiveName: ${{ env.targetName }}-${{ matrix.toolchains }}
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory ${env:archiveName}
+          Copy-Item build\src\release\${env:targetName}'.exe' ${env:archiveName}\
+          msys2do windeployqt.exe ${env:archiveName}/${env:targetName}'.exe'
+          
+      - name: upload artifact
+        uses: actions/upload-artifact@v1
+        env:
+          archiveName: ${{ env.targetName }}-${{ matrix.toolchains }}
+        with:
+          path: ${{ env.archiveName }}
+          name: ${{ env.targetName }}-${{ matrix.mingw_prefix }}-${{ matrix.toolchains }}

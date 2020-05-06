@@ -4,10 +4,14 @@ on:
     paths-ignore:
       - 'README.md'
       - 'LICENSE'
+      - '.github/workflows/macos.yml'
+      - '.github/workflows/win-mingw.yml'
   pull_request:
     paths-ignore:
       - 'README.md'
       - 'LICENSE'
+      - '.github/workflows/macos.yml'
+      - '.github/workflows/win-mingw.yml'
 jobs:
   build:
     name: Build
@@ -36,15 +40,12 @@ jobs:
           target: ${{ matrix.qt_target }}
           # Architecture for Windows/Android
           arch: ${{ matrix.qt_arch }}
-      - uses: actions/checkout@v1
+          
+      - uses: actions/checkout@v2
         with:
           fetch-depth: 1
-      - name: Checkout submodules
-        shell: cmd
-        env:
-          vc_arch: ${{ matrix.msvc_arch }}
-        run: |
-          git submodule update --init --recursive
+          submodules: true
+          
       - name: build-msvc
         shell: cmd
         env:
@@ -56,7 +57,7 @@ jobs:
           cd ..\..\..\..
           mkdir build
           cd build
-          qmake -r CONFIG+=release CONFIG+=qtquickcompiler ..\cjlv.pro
+          qmake -r CONFIG+=release CONFIG+=qtquickcompiler ..
           nmake
           cd ..
       - name: package
