@@ -81,7 +81,9 @@ jobs:
         shell: pwsh
         run: |
           New-Item -ItemType Directory ${env:archiveName}
-          Copy-Item build\src\release\${env:targetName}'.exe' ${env:archiveName}\
+          Copy-Item build\release\${env:targetName}'.exe' ${env:archiveName}\
+          Copy-Item build\Release\Everything.exe ${env:archiveName}\
+          Copy-Item build\Release\Everything*.dll ${env:archiveName}\
           msys2do windeployqt.exe ${env:archiveName}/${env:targetName}'.exe'
           
       - name: upload artifact
