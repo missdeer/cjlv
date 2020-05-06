@@ -120,4 +120,4 @@ jobs:
           archiveName: ${{ env.targetName }}-${{ matrix.toolchains }}
         with:
           path: ${{ env.archiveName }}
-          name: ${{ env.targetName }}-${{ matrix.mingw_prefix }}-${{ matrix.toolchains }}
+          name: ${{ env.targetName }}-${{ matrix.mingw_prefix }}-${{ matrix.toolchains }}-${{ matrix.qt_build }}
