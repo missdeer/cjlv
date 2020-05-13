@@ -1,4 +1,4 @@
-name: Windows
+name: Windows-MSVC
 on: 
   push:
     paths-ignore:
@@ -65,17 +65,13 @@ jobs:
           nmake
           cd ..
 
-      - name: openssl-dist
-        run: |
-          wget ${{ matrix.openssl_url }} -O openssl_prebuild.7z
-          7z x openssl_prebuild.7z
-
       - name: package
         env:
-          VCINSTALLDIR: 'C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC'
           archiveName: ${{ env.targetName }}-${{ matrix.qt_arch }}
         shell: pwsh
         run: |
+          Invoke-WebRequest -Uri  ${{ matrix.openssl_url }} -UserAgent [Microsoft.PowerShell.Commands.PSUserAgent]::FireFox -OutFile 'openssl_prebuild.7z'
+          7z x openssl_prebuild.7z
           New-Item -ItemType Directory ${env:archiveName}
           Copy-Item build\Release\${env:targetName}'.exe' ${env:archiveName}\
           Copy-Item build\Release\Everything.exe ${env:archiveName}\
