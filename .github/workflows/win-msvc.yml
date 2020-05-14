@@ -53,8 +53,10 @@ jobs:
       - name: get-jom
         shell: pwsh
         run: |
-          Invoke-WebRequest -Uri 'https://download.qt.io/official_releases/jom/jom.zip' -UserAgent [Microsoft.PowerShell.Commands.PSUserAgent]::FireFox -OutFile 'jom.zip'
-          7z x jom.zip
+          $jomuri = "https://download.qt.io/official_releases/jom/jom.zip"
+          $jomoutput = "jom.zip"
+          Invoke-WebRequest -Uri $jomuri -UserAgent [Microsoft.PowerShell.Commands.PSUserAgent]::FireFox -OutFile $jomoutput
+          7z x $jomoutput
 
       - name: build-msvc
         shell: cmd
@@ -76,8 +78,9 @@ jobs:
           archiveName: ${{ env.targetName }}-${{ matrix.qt_arch }}
         shell: pwsh
         run: |
-          Invoke-WebRequest -Uri  ${{ matrix.openssl_url }} -UserAgent [Microsoft.PowerShell.Commands.PSUserAgent]::FireFox -OutFile 'openssl_prebuild.7z'
-          7z x openssl_prebuild.7z
+          $openssloutput = "openssl_prebuild.7z"
+          Invoke-WebRequest -Uri ${{ matrix.openssl_url }} -UserAgent [Microsoft.PowerShell.Commands.PSUserAgent]::FireFox -OutFile $openssloutput
+          7z x $openssloutput
           New-Item -ItemType Directory ${env:archiveName}
           Copy-Item build\Release\${env:targetName}'.exe' ${env:archiveName}\
           Copy-Item build\Release\Everything.exe ${env:archiveName}\
