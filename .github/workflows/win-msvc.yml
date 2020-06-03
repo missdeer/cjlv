@@ -42,6 +42,7 @@ jobs:
           target: ${{ matrix.qt_target }}
           arch: ${{ matrix.qt_arch }}
           host: 'windows'
+          modules: 'qtcharts'
           install-deps: 'true'
           aqtversion: '>=0.9.0'
           
