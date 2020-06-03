@@ -34,13 +34,7 @@ jobs:
             openssl_dir: Tools\OpenSSL\Win_x86\bin
     env:
       targetName: CJLV
-    steps:
-      - name: Prepare aqtinstall
-        run: |
-          python.exe -m pip install --upgrade pip
-          pip install aqtinstall
-          aqt install -O Qt ${{ matrix.qt_ver }} windows ${{ matrix.qt_target }} ${{ matrix.qt_arch }}
-        
+    steps:        
       - name: Install Qt
         uses: jurplel/install-qt-action@v2.6.3
         with:
@@ -56,9 +50,6 @@ jobs:
           fetch-depth: 1
           submodules: true
 
-      - run: Invoke-WebRequest -Uri https://download.qt.io/official_releases/jom/jom.zip -OutFile jom.zip
-      - run: 7z x jom.zip
-
       - name: build-msvc
         shell: cmd
         env:
@@ -70,8 +61,8 @@ jobs:
           cd ..\..\..\..
           mkdir build
           cd build
-          Qt\${{ matrix.qt_ver }}\${{ matrix.qt_arch_install }}\bin\qmake.exe -r CONFIG+=release CONFIG+=qtquickcompiler ..
-          ..\jom.exe -j 4
+          qmake.exe -r CONFIG+=release CONFIG+=qtquickcompiler ..
+          nmake
           cd ..
 
       - run: Invoke-WebRequest -Uri ${{ matrix.openssl_url }} -OutFile openssl_prebuild.7z
@@ -87,7 +78,7 @@ jobs:
           Copy-Item build\Release\Everything.exe ${env:archiveName}\
           Copy-Item build\Release\Everything*.dll ${env:archiveName}\
           Copy-Item ${{ matrix.openssl_dir }}\*.dll ${env:archiveName}\
-          Qt\${{ matrix.qt_ver }}\${{ matrix.qt_arch_install }}\bin\windeployqt.exe --qmldir . ${env:archiveName}\${env:targetName}'.exe'
+          windeployqt.exe --qmldir . ${env:archiveName}\${env:targetName}'.exe'
           Compress-Archive -Path ${env:archiveName} ${env:archiveName}'.zip'
           $name = ${env:archiveName}
           echo "::set-env name=packageName::$name"
