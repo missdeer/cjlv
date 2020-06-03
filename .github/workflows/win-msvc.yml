@@ -64,9 +64,6 @@ jobs:
           qmake.exe -r CONFIG+=release CONFIG+=qtquickcompiler ..
           nmake
           cd ..
-
-      - run: Invoke-WebRequest -Uri ${{ matrix.openssl_url }} -OutFile openssl_prebuild.7z
-      - run: 7z x openssl_prebuild.7z
       
       - name: package
         env:
@@ -77,7 +74,6 @@ jobs:
           Copy-Item build\Release\${env:targetName}'.exe' ${env:archiveName}\
           Copy-Item build\Release\Everything.exe ${env:archiveName}\
           Copy-Item build\Release\Everything*.dll ${env:archiveName}\
-          Copy-Item ${{ matrix.openssl_dir }}\*.dll ${env:archiveName}\
           windeployqt.exe --qmldir . ${env:archiveName}\${env:targetName}'.exe'
           Compress-Archive -Path ${env:archiveName} ${env:archiveName}'.zip'
           $name = ${env:archiveName}
