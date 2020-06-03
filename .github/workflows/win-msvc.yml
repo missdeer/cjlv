@@ -36,7 +36,10 @@ jobs:
       targetName: CJLV
     steps:
       - name: Prepare aqtinstall
-        run: pip install aqtinstall
+        run: |
+          python.exe -m pip install --upgrade pip
+          pip install aqtinstall
+          aqt install -O Qt ${{ matrix.qt_ver }} windows ${{ matrix.qt_target }} ${{ matrix.qt_arch }}
         
       - name: Install Qt
         uses: jurplel/install-qt-action@v2.0.0
