@@ -42,7 +42,7 @@ jobs:
           aqt install -O Qt ${{ matrix.qt_ver }} windows ${{ matrix.qt_target }} ${{ matrix.qt_arch }}
         
       - name: Install Qt
-        uses: jurplel/install-qt-action@v2.0.0
+        uses: jurplel/install-qt-action@v2.6.3
         with:
           version: ${{ matrix.qt_ver }}
           target: ${{ matrix.qt_target }}
