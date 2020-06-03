@@ -44,12 +44,12 @@ jobs:
       - name: Install Qt
         uses: jurplel/install-qt-action@v2.0.0
         with:
-          # Version of Qt to install
           version: ${{ matrix.qt_ver }}
-          # Target platform for build
           target: ${{ matrix.qt_target }}
-          # Architecture for Windows/Android
           arch: ${{ matrix.qt_arch }}
+          host: 'windows'
+          install-deps: 'true'
+          aqtversion: '>=0.9.0'
           
       - uses: actions/checkout@v2
         with:
@@ -70,7 +70,7 @@ jobs:
           cd ..\..\..\..
           mkdir build
           cd build
-          qmake -r CONFIG+=release CONFIG+=qtquickcompiler ..
+          Qt\${{ matrix.qt_ver }}\${{ matrix.qt_arch_install }}\bin\qmake.exe -r CONFIG+=release CONFIG+=qtquickcompiler ..
           ..\jom.exe -j 4
           cd ..
 
@@ -87,7 +87,7 @@ jobs:
           Copy-Item build\Release\Everything.exe ${env:archiveName}\
           Copy-Item build\Release\Everything*.dll ${env:archiveName}\
           Copy-Item ${{ matrix.openssl_dir }}\*.dll ${env:archiveName}\
-          windeployqt --qmldir . ${env:archiveName}\${env:targetName}'.exe'
+          Qt\${{ matrix.qt_ver }}\${{ matrix.qt_arch_install }}\bin\windeployqt.exe --qmldir . ${env:archiveName}\${env:targetName}'.exe'
           Compress-Archive -Path ${env:archiveName} ${env:archiveName}'.zip'
           $name = ${env:archiveName}
           echo "::set-env name=packageName::$name"
