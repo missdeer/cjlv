@@ -82,11 +82,9 @@ jobs:
         with:
           fetch-depth: 1
           submodules: true
-      
-      - run: mkdir build
-          
-      - name: qmake
-        shell: msys2 {0}
+
+      - name: prepare scintilla
+        shell: cmd
         run: |
           cd 3rdparty
           cd scintilla
@@ -97,6 +95,10 @@ jobs:
           cd ..
           cd ..
           cd ..
+  
+      - name: qmake
+        shell: msys2 {0}
+          mkdir build
           cd build
           ${{ matrix.qmake }} -r -spec ${{ matrix.mkspec }} CONFIG+=release CONFIG+=qtquickcompiler ..
           cd ..
