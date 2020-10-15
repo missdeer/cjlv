@@ -2,7 +2,3 @@
 	path = 3rdparty/scintilla
 	url = https://github.com/amezin/scintilla.git
 	branch = upstream
-[submodule "3rdparty/KDMacTouchBar"]
-	path = 3rdparty/KDMacTouchBar
-	url = https://github.com/KDAB/KDMacTouchBar.git
-	branch = master
