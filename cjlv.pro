@@ -101,7 +101,6 @@ RC_FILE = cjlv.rc
 
 # Mac OS X icon
 macx: {
-    include($$PWD/3rdparty/kdmactouchbar.pri)
     HEADERS += \
         macheader.h 
     OBJECTIVE_SOURCES += \
