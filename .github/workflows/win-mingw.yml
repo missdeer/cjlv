@@ -88,9 +88,15 @@ jobs:
       - name: qmake
         shell: msys2 {0}
         run: |
-          cd 3rdparty\scintilla\qt\ScintillaEdit
+          cd 3rdparty
+          cd scintilla
+          cd qt
+          cd ScintillaEdit
           python WidgetGen.py
-          cd ..\..\..\..
+          cd ..
+          cd ..
+          cd ..
+          cd ..
           cd build
           ${{ matrix.qmake }} -r -spec ${{ matrix.mkspec }} CONFIG+=release CONFIG+=qtquickcompiler ..
           cd ..
