@@ -11,6 +11,7 @@
 #include "ui_mainwindow.h"
 
 #if defined(Q_OS_WIN)
+#include <QtPlatformHeaders/QWindowsWindowFunctions>
 QWinTaskbarButton *  g_winTaskbarButton   = nullptr;
 QWinTaskbarProgress *g_winTaskbarProgress = nullptr;
 #endif
@@ -29,6 +30,7 @@ MainWindow::MainWindow(QSplashScreen &splash, QWidget *parent)
     ui->setupUi(this);
     g_mainTabWidget = ui->tabWidget;
 #if defined(Q_OS_WIN)
+    QWindowsWindowFunctions::setWindowActivationBehavior(QWindowsWindowFunctions::AlwaysActivateWindow);
     ui->tabbarTopPlaceholder->setVisible(false);
 #endif
 
