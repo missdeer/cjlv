@@ -19,13 +19,13 @@ jobs:
     strategy:
       matrix:
         os: [macos-latest]
-        qt_ver: [5.15.1]
+        qt_ver: [5.15.2]
         qt_arch: [clang_64]
     env:
       targetName: "Cisco Jabber Log Viewer"
     steps:
       - name: Install Qt
-        uses: jurplel/install-qt-action@v2.0.0
+        uses: jurplel/install-qt-action@v2
         with:
           version: ${{ matrix.qt_ver }}
       
